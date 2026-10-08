@@ -470,12 +470,19 @@ async def leonteq_api(DISC, src, NOW, ctx):
         log["body"] = body
         pno, total = 1, None
         while total is None or (pno - 1) * 100 < total:
-            r = await ctx.request.post(api, data=json.dumps({**body, "pageNumber": pno}),
-                                       headers={"content-type": "application/json", "accept": "*/*",
-                                                "origin": base, "referer": base + "/"})
-            txt = await r.text()
-            if r.status != 200:
-                log["pages"].append({"page": pno, "status": r.status, "err": txt[:500]})
+            # fetch dalla pagina (cookie/stato Incapsula del browser); se bloccata ricarica e riprova
+            for attempt in range(3):
+                try:
+                    st, txt = await fetch(page, api, "POST", json.dumps({**body, "pageNumber": pno}),
+                                          {"content-type": "application/json", "accept": "*/*"})
+                except Exception as e:
+                    st, txt = 0, repr(e)
+                if st == 200:
+                    break
+                log["pages"].append({"page": pno, "attempt": attempt, "status": st, "err": txt[:300]})
+                await page.goto(base + "/", wait_until="domcontentloaded", timeout=60000)
+                await page.wait_for_timeout(8000)
+            if st != 200:
                 break
             d = json.loads(txt)
             total = (d.get("searchMetadata") or {}).get("totalHits") or 0
