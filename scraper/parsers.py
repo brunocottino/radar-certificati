@@ -528,10 +528,24 @@ async def leonteq_api(DISC, src, NOW, ctx):
                 break
     finally:
         # la ricerca non riporta l'emittente: lo ricaviamo filtrando per ciascun emittente
+        # (solo per gli ISIN nuovi: gli altri hanno già l'emittente in archivio, e Incapsula
+        #  blocca il runner se le richieste sono troppe)
+        from run import DATA
+        known = {}
         try:
-            await leonteq_assign_issuers(page, api, body, found, total, log)
-        except Exception as e:
-            log["issuer_error"] = repr(e)[:500]
+            known = {c["isin"]: c["issuer"] for c in json.loads(DATA.read_text()).get("certs", [])
+                     if c.get("platform") == "Leonteq" and c.get("issuer")}
+        except Exception:
+            pass
+        unknown = [i for i in found if i not in known]
+        log["issuer_unknown"] = len(unknown)
+        for i, c in found.items():
+            c["issuer"] = known.get(i, c["issuer"])
+        if unknown:
+            try:
+                await leonteq_assign_issuers(page, api, body, {i: found[i] for i in unknown}, total, log)
+            except Exception as e:
+                log["issuer_error"] = repr(e)[:500]
         log["issuers"] = {}
         for c in found.values():
             log["issuers"][c["issuer"]] = log["issuers"].get(c["issuer"], 0) + 1
@@ -558,6 +572,7 @@ async def leonteq_assign_issuers(page, api, body, found, total, log):
     for key in keys:
         pno, hits = 1, None
         while hits is None or (pno - 1) * 100 < hits:
+            await page.wait_for_timeout(1500)
             st, txt = await fetch(page, api, "POST", json.dumps({**body, "issuers": [key], "pageNumber": pno}),
                                   {"content-type": "application/json", "accept": "*/*"})
             if st != 200:
