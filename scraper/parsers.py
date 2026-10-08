@@ -670,18 +670,17 @@ def sg_cert(it, src, NOW):
     return c
 
 
-SG_CLASS_RX = re.compile(r"cash ?collect|phoenix|express|autocall|bonus|premium|fixed|cedol|coupon|certificat|memory", re.I)
+SG_CLASS_RX = re.compile(r"cash ?collect|phoenix|express|autocall|premium|fixed ?coupon|cedol|coupon|memory|income", re.I)
 
 
 def sg_classes(obj, out=None):
-    """Raccoglie (id, nome, conteggio) delle classificazioni prodotto da qualunque struttura JSON."""
+    """Raccoglie {id: (nome, conteggio)} delle classificazioni prodotto da qualunque struttura JSON."""
     out = {} if out is None else out
     if isinstance(obj, dict):
-        cid = next((obj[k] for k in ("ProductClassificationId", "productClassificationId", "Id", "id") if isinstance(obj.get(k), int)), None)
-        name = next((obj[k] for k in ("Name", "name", "Label", "label", "Title") if isinstance(obj.get(k), str)), None)
-        cnt = next((obj[k] for k in ("ProductsCount", "productsCount", "Count", "count") if isinstance(obj.get(k), int)), None)
-        if cid is not None and name:
-            out[cid] = (name, cnt)
+        cid = obj.get("ProductClassificationId")
+        name = obj.get("DisplayName") or obj.get("Name")
+        if isinstance(cid, int) and isinstance(name, str):
+            out[cid] = (name.strip(), obj.get("ProductsCount"))
         for v in obj.values():
             sg_classes(v, out)
     elif isinstance(obj, list):
@@ -697,11 +696,50 @@ async def sg_get(page, path, params=None):
     return url, st, txt
 
 
+def sg_items(txt):
+    d = json.loads(txt)
+    if isinstance(d, dict):
+        for k in ("Products", "products", "Items", "items", "Data", "data"):
+            if isinstance(d.get(k), list):
+                return d[k], d.get("TotalCount") or d.get("totalCount")
+    return generic_items(d), None
+
+
+def sg_cert_grid(it, grid, src, NOW):
+    """Certificato da un elemento di Search usando le etichette di GridConfig (Name -> Label)."""
+    from run import map_headers
+    c = sg_cert(it, src, NOW)
+    if not c or not grid:
+        return c
+    names = [g.get("Name") for g in grid]
+    col = map_headers([re.sub(r"<[^>]+>|-", "", g.get("Label") or "") for g in grid])
+    for key, idx in col.items():
+        v = it.get(names[idx])
+        if v in (None, "") or key in ("isin", "issuer"):
+            continue
+        if key == "maturity":
+            v = pdate(v)
+        elif key == "freq":
+            v = freq_of(v)
+        elif key in ("underlyings",):
+            v = [x.strip() for x in re.split(r"\s*[,;/]\s*", str(v)) if x.strip()]
+        elif key in ("type", "callable"):
+            v = str(v)
+        else:
+            v = num(v)
+        if v not in (None, "", []):
+            c[key] = v
+    return c
+
+
 async def socgen_api(DISC, src, NOW, ctx):
-    """Tentativo 2: ProductSearch/Search è un GET con parametri in query (vedi chunk JS)."""
+    """Tentativo 3: apre la ricerca filtrata per classificazione, intercetta la GET a
+    ProductSearch/Search fatta dal sito e la ripete cambiando pagina."""
+    from urllib.parse import urlsplit, parse_qsl, urlencode
     page = await ctx.new_page()
-    reqs, log = [], {"attempts": [], "classes": {}}
-    page.on("request", lambda q: reqs.append(q) if "EmcWebApi" in q.url else None)
+    seen = []
+    page.on("request", lambda q: seen.append(q.url) if "ProductSearch/Search?" in q.url else None)
+    log = {"classes": {}, "runs": []}
     found = {}
     try:
         await page.goto(src["url"], wait_until="domcontentloaded", timeout=60000)
@@ -716,89 +754,58 @@ async def socgen_api(DISC, src, NOW, ctx):
             except Exception:
                 break
             await page.wait_for_timeout(3000)
-        try:
-            await page.wait_for_load_state("networkidle", timeout=15000)
-        except Exception:
-            pass
 
-        # 1) classificazioni prodotto (servono per GridConfig e Search)
-        classes = {}
-        for path, params in (("ProductClassificationsWithProductsCount", None), ("ProductClassifications", None),
-                             ("ProductClassificationsWithProductsCount", {"assetTypeMenuId": 0}),
-                             ("SearchTop/TabConfig", None)):
-            url, st, txt = await sg_get(page, path, params)
-            log["classes"][url] = {"status": st, "head": txt[:4000]}
-            if st == 200:
-                try:
-                    classes.update(sg_classes(json.loads(txt)))
-                except Exception:
-                    pass
-        log["class_list"] = {k: v for k, v in list(classes.items())[:200]}
-        cand = [k for k, (n, c) in classes.items() if SG_CLASS_RX.search(n) and c != 0] or list(classes)[:30]
-        log["candidates"] = cand[:40]
+        url, st, txt = await sg_get(page, "ProductClassificationsWithProductsCount")
+        classes = sg_classes(json.loads(txt)) if st == 200 else {}
+        log["classes"] = {k: v for k, v in classes.items()}
+        cand = [k for k, (n, c) in classes.items() if SG_CLASS_RX.search(n) and c != 0]
+        log["candidates"] = {k: classes[k] for k in cand}
 
-        # 2) per ogni classificazione: GridConfig, poi Search GET con i nomi di parametro plausibili
-        variants = [
-            lambda cid, pg: {"productClassificationId": cid, "pageIndex": pg, "pageSize": 100},
-            lambda cid, pg: {"ProductClassificationId": cid, "PageIndex": pg, "PageSize": 100},
-            lambda cid, pg: {"productClassificationIds": cid, "page": pg + 1, "pageSize": 100},
-            lambda cid, pg: {"productClassificationId": cid, "pageNumber": pg + 1, "itemsPerPage": 100},
-            lambda cid, pg: {"productClassificationId": cid},
-        ]
-        good = None
-        for cid in cand[:40]:
-            url, st, txt = await sg_get(page, "GridConfig", {"productClassificationId": cid})
-            if cid == cand[0]:
-                log["gridconfig"] = {"status": st, "head": txt[:6000]}
-            order = [good] if good is not None else range(len(variants))
-            for vi in order:
-                seen_page = set()
-                for pg in range(0, 100):
-                    url, st, txt = await sg_get(page, "Search", variants[vi](cid, pg))
-                    isins = set(ISIN_RE.findall(txt))
-                    if pg == 0:
-                        log["attempts"].append({"url": url, "status": st, "len": len(txt), "isins": len(isins),
-                                                "head": txt[:1500] if len(log["attempts"]) < 12 else None})
-                    if st != 200 or not isins or isins <= seen_page:
-                        break
-                    seen_page |= isins
-                    items = generic_items(json.loads(txt))
-                    if "sample" not in log:
-                        log["sample"] = items[:2]
-                    for it in items:
-                        c = sg_cert(it, src, NOW)
-                        if c:
-                            c["type"] = c.get("type") or classes.get(cid, ("",))[0] or None
-                            found.setdefault(c["isin"], c)
-                    if vi == len(variants) - 1:  # senza paginazione
-                        break
-                if seen_page:
-                    good = vi
-                    log["variant"] = vi
+        for cid in cand[:10]:
+            run = {"cid": cid, "name": classes[cid][0]}
+            log["runs"].append(run)
+            _, st, gtxt = await sg_get(page, "GridConfig", {"productClassificationId": cid})
+            grid = json.loads(gtxt) if st == 200 else []
+            run["grid"] = [(g.get("Name"), g.get("Label")) for g in grid] if isinstance(grid, list) else str(grid)[:500]
+            # la pagina di ricerca filtrata: il sito fa la sua GET a Search
+            seen.clear()
+            await page.goto(f"{SG}/product-search?productClassificationId={cid}", wait_until="domcontentloaded", timeout=60000)
+            for _ in range(20):
+                await page.wait_for_timeout(1000)
+                if seen:
                     break
-
-        # 3) la pagina stessa: richieste EmcWebApi viste (utile se i parametri sono altri)
-        log["emc_requests"] = [{"m": q.method, "url": q.url[:500]} for q in reqs][:80]
-        if not found:
-            # contesto JS dei punti in cui il sito chiama la ricerca
-            urls = await page.evaluate("() => performance.getEntriesByType('resource').map(e => e.name)"
-                                       ".filter(u => /\\.js(\\?|$)/.test(u) && u.includes('societegenerale'))")
-            todo, done, ctxjs = list(urls), set(), {}
-            while todo and len(done) < 150:
-                u = todo.pop()
-                if u in done:
-                    continue
-                done.add(u)
-                try:
-                    st, t = await fetch(page, u)
-                except Exception:
-                    continue
-                for m in re.finditer(r'["\'](\./chunk-[A-Z0-9]+\.js)["\']', t):
-                    todo.append(SG + "/" + m.group(1)[2:])
-                for m in re.finditer(r"getProductsByFamily\(|productClassificationId", t):
-                    ctxjs.setdefault(u.rsplit("/", 1)[-1], []).append(t[max(0, m.start() - 1200):m.end() + 800])
-            log["js_files"] = len(done)
-            log["js_context"] = {k: v[:6] for k, v in ctxjs.items()}
+            run["site_urls"] = seen[:5]
+            base = seen[0] if seen else SG_API + "Search?" + urlencode({"ProductClassificationId": cid})
+            q = dict(parse_qsl(urlsplit(base).query, keep_blank_values=True))
+            run["site_params"] = q
+            pkey = next((k for k in q if re.search(r"page.?(num|index)?$", k, re.I) and not re.search(r"size", k, re.I)), None)
+            skey = next((k for k in q if re.search(r"page.?size|take|items", k, re.I)), None)
+            if skey:
+                q[skey] = "100"
+            pkey = pkey or ("PageNum" if q.keys() and next(iter(q))[0].isupper() else "pageNum")
+            start = int(q.get(pkey) or 1)
+            run["pages"] = []
+            for n in range(start, start + 200):
+                q[pkey] = str(n)
+                u = SG_API + "Search?" + urlencode(q)
+                st, txt = await fetch(page, u, "GET", None, {"accept": "application/json"})
+                if st != 200:
+                    run["pages"].append({"n": n, "status": st, "err": txt[:300]})
+                    break
+                items, total = sg_items(txt)
+                if n == start:
+                    run["head"] = txt[:2000]
+                    run["sample"] = items[:2]
+                new = 0
+                for it in items:
+                    c = sg_cert_grid(it, grid if isinstance(grid, list) else [], src, NOW)
+                    if c and c["isin"] not in found:
+                        c["type"] = c.get("type") or classes[cid][0]
+                        found[c["isin"]] = c
+                        new += 1
+                run["pages"].append({"n": n, "items": len(items), "new": new, "total": total})
+                if not new:
+                    break
     except Exception as e:
         log["error"] = repr(e)[:800]
     finally:
