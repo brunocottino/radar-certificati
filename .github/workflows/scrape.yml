@@ -2,7 +2,9 @@ name: Aggiornamento certificati
 
 on:
   schedule:
-    - cron: "10 4 * * 1-5"   # 06:10 ora italiana (legale), 05:10 in inverno
+    # in orario di borsa (SeDeX/Cert-X 9:00-17:30): fuori orario gli emittenti non espongono denaro/lettera
+    - cron: "40 9 * * 1-5"    # 11:40 ora italiana (legale), 10:40 in inverno
+    - cron: "40 14 * * 1-5"   # 16:40 ora italiana (legale), 15:40 in inverno
   workflow_dispatch:
     inputs:
       sources:

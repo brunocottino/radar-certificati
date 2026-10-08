@@ -5,7 +5,7 @@ clicca "carica di più" finché serve, intercetta le risposte JSON delle API
 interne e legge le tabelle HTML. Normalizza tutto nello schema del sito e
 scrive docs/data/certs.json. Salva anche discovery/ per il debug.
 """
-import asyncio, json, os, re, sys, time, unicodedata, traceback
+import asyncio, inspect, json, os, re, sys, time, unicodedata, traceback
 from datetime import datetime, timezone, date
 from pathlib import Path
 
@@ -172,13 +172,13 @@ async def click_load_more(page, max_clicks):
 
 
 async def accept_cookies(page):
-    for name in [r"accett", r"accept", r"consent", r"agree", r"ok, ho capito", r"alle akzeptieren", r"tutti"]:
+    # cookie banner + eventuali disclaimer di residenza: clicca tutto ciò che somiglia a un consenso
+    for name in [r"accett", r"accept", r"consent", r"agree", r"ok, ho capito", r"alle akzeptieren", r"tutti", r"^ok$", r"confermo", r"prosegui"]:
         try:
             b = page.get_by_role("button", name=re.compile(name, re.I))
             if await b.count():
                 await b.first.click(timeout=3000)
-                await page.wait_for_timeout(500)
-                return
+                await page.wait_for_timeout(700)
         except Exception:
             pass
 
@@ -201,7 +201,14 @@ async def scrape_source(ctx, src):
         except Exception:
             pass
 
+    xhr = []
+
+    def on_request(req):
+        if req.resource_type in ("xhr", "fetch") and len(xhr) < 80:
+            xhr.append({"method": req.method, "url": req.url[:400], "post": (req.post_data or "")[:1500]})
+
     page.on("response", on_response)
+    page.on("request", on_request)
     t0 = time.time()
     info = {"name": src["name"], "url": src["url"]}
     try:
@@ -228,6 +235,8 @@ async def scrape_source(ctx, src):
     # discovery delle API JSON
     api = sorted(captured, key=lambda x: -x["isins"])
     info["json"] = [{k: v for k, v in a.items() if k != "body"} for a in api[:25]]
+    info["xhr"] = xhr
+    info["final_url"] = page.url
     for i, a in enumerate(api[:5]):
         if a["isins"]:
             (DISC / f"{src['name']}_api{i}.json").write_text(a["body"][:5_000_000])
@@ -270,7 +279,11 @@ async def main():
             if parser:
                 try:
                     mod = __import__("parsers", fromlist=[parser])
-                    extra = getattr(mod, parser)(DISC, src, NOW)
+                    fn = getattr(mod, parser)
+                    args = (DISC, src, NOW, ctx)[:len(inspect.signature(fn).parameters)]
+                    extra = fn(*args)
+                    if inspect.isawaitable(extra):
+                        extra = await extra
                     info["from_parser"] = len(extra)
                     certs += extra
                 except Exception:
