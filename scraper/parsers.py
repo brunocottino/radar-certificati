@@ -732,6 +732,37 @@ def sg_cert_grid(it, grid, src, NOW):
     return c
 
 
+def sg_detail(c, d):
+    """Arricchisce un certificato SocGen con il dettaglio Products/{isin} e con il nome prodotto."""
+    f = {k: v for k, v in flat(d if isinstance(d, dict) else {}).items()}
+    for k, v in f.items():
+        n = norm(k)
+        if v in (None, "", 0) or isinstance(v, (list, dict)):
+            continue
+        if "barrierPct" not in c and re.search(r"barrier.*(pct|perc|level)$|^barrier$", n) and num(v) and num(v) <= 100:
+            c["barrierPct"] = num(v)
+        elif "distBarrier" not in c and re.search(r"dist.*barr", n):
+            c["distBarrier"] = num(v)
+        elif "couponPa" not in c and re.search(r"(coupon|premi).*(p ?a|annu|yearly)", n):
+            c["couponPa"] = num(v)
+        elif "triggerPct" not in c and re.search(r"(coupon|premi).*(trigger|barrier|level)", n) and num(v) and num(v) <= 100:
+            c["triggerPct"] = num(v)
+        elif "nominal" not in c and re.search(r"nominal|denomination", n):
+            c["nominal"] = num(v)
+    for l in (d.get("Underlyings") or d.get("Assets") or []) if isinstance(d, dict) else []:
+        if isinstance(l, dict) and (l.get("Name") or l.get("AssetName")):
+            c.setdefault("underlyings", []).append(l.get("Name") or l.get("AssetName"))
+    name = (d.get("Name") if isinstance(d, dict) else None) or c.get("name") or ""
+    m = re.search(r"\bsu (.+)$", name)
+    if m and not c.get("underlyings"):
+        c["underlyings"] = [x.strip() for x in re.split(r",\s*|\s+e\s+", m.group(1)) if x.strip()]
+    if re.search(r"memory|memoria", name, re.I):
+        c["memory"] = True
+    if not c.get("nominal") and (c.get("ask") or c.get("bid") or 0) > 400:
+        c["nominal"] = 1000
+    c.pop("name", None)
+
+
 async def socgen_api(DISC, src, NOW, ctx):
     """Tentativo 3: apre la ricerca filtrata per classificazione, intercetta la GET a
     ProductSearch/Search fatta dal sito e la ripete cambiando pagina."""
@@ -801,11 +832,28 @@ async def socgen_api(DISC, src, NOW, ctx):
                     c = sg_cert_grid(it, grid if isinstance(grid, list) else [], src, NOW)
                     if c and c["isin"] not in found:
                         c["type"] = c.get("type") or classes[cid][0]
+                        c["name"] = it.get("Name")
                         found[c["isin"]] = c
                         new += 1
                 run["pages"].append({"n": n, "items": len(items), "new": new, "total": total})
                 if not new:
                     break
+        # dettaglio di ogni prodotto: barriera, cedola, sottostanti (se esposti)
+        for i, c in enumerate(list(found.values())[:400]):
+            try:
+                st, txt = await fetch(page, SG_API.replace("ProductSearch/", "Products/") + c["isin"], "GET", None,
+                                      {"accept": "application/json"})
+                if st != 200:
+                    continue
+                d = json.loads(txt)
+                if i == 0:
+                    log["detail_sample"] = txt[:12000]
+                sg_detail(c, d)
+            except Exception as e:
+                log.setdefault("detail_errors", []).append(repr(e)[:200])
+        for c in found.values():
+            if c.get("name"):
+                sg_detail(c, {})
     except Exception as e:
         log["error"] = repr(e)[:800]
     finally:

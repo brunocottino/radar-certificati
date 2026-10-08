@@ -31,7 +31,7 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | Leonteq | API `product-model/search` paginata; `issuer` = emittente reale, `platform` = "Leonteq" |
 | BNP Paribas | API `productlist` paginata |
 | UniCredit (onemarkets) | tabella paginata |
-| Société Générale | API `EmcWebApi/api/ProductSearch` (GridConfig + Search dopo l'avviso di residenza) |
+| Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
 | Marex | sonda, nessuna API trovata |
 
 ## Note
