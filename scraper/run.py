@@ -231,6 +231,8 @@ async def scrape_source(ctx, src):
     for i, a in enumerate(api[:5]):
         if a["isins"]:
             (DISC / f"{src['name']}_api{i}.json").write_text(a["body"][:5_000_000])
+    for i, a in enumerate(sorted((a for a in captured if not a["isins"]), key=lambda x: -x["len"])[:3]):
+        (DISC / f"{src['name']}_json{i}.json").write_text(a["body"][:1_000_000])
     info["secs"] = round(time.time() - t0, 1)
     await page.close()
     return certs, info
