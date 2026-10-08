@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Radar Certificati</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}
+/* Layout: desk column — AI query, filters, then a dense sortable grid (desktop) or term-sheet cards (phone); worst-of distance is the hero metric */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --ink:#14212b; --muted:#5b6b78; --line:#dbe2e8; --row:#f8fafb;
+  --accent:#0e6b62; --accent-soft:#e2f1ee; --brass:#9a6b12; --brass-soft:#f6eedd;
+  --good:#1d7a3e; --warn:#a35f00; --bad:#b3261e; --good-bg:#e5f4ea; --warn-bg:#fdf0dc; --bad-bg:#fbe6e4;
+  --f-ui:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161c; --surface:#16212a; --ink:#e4ecf1; --muted:#93a4b1; --line:#26343f; --row:#1a2731;
+  --accent:#4cc3b3; --accent-soft:#16332f; --brass:#e0b45c; --brass-soft:#33280f;
+  --good:#5fcf87; --warn:#f0a94a; --bad:#ff8a80; --good-bg:#15301f; --warn-bg:#352612; --bad-bg:#3a1a18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161c; --surface:#16212a; --ink:#e4ecf1; --muted:#93a4b1; --line:#26343f; --row:#1a2731;
+  --accent:#4cc3b3; --accent-soft:#16332f; --brass:#e0b45c; --brass-soft:#33280f;
+  --good:#5fcf87; --warn:#f0a94a; --bad:#ff8a80; --good-bg:#15301f; --warn-bg:#352612; --bad-bg:#3a1a18; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:18px 60px;display:grid;gap:16px}
+h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px;font-weight:600}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.status{font-size:.82rem;color:var(--muted)}
+.status b{color:var(--ink);font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.ai{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea,input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box}
+textarea{min-height:60px;resize:vertical}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+button:disabled{opacity:.55;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chips button{font-size:.82rem;padding:5px 10px;border-radius:99px}
+.chips button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.ai-out{margin-top:12px;font-size:.92rem;display:grid;gap:8px}
+.ai-out p{margin:0;max-width:80ch}
+.grid-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.grid-f label{display:grid;grid-template-rows:1fr auto;align-items:end;gap:4px;font-size:.76rem;color:var(--muted);min-width:0}
+.check{display:flex;gap:6px;align-items:center;font-size:.85rem}
+.check input{width:auto}
+details summary{cursor:pointer;font-weight:600;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:" ▾";color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:none;border-radius:0;font-size:.85rem}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
+.note{font-size:.78rem;color:var(--muted);max-width:90ch}
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{padding:7px 9px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{position:sticky;top:0;background:var(--surface);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;cursor:pointer;user-select:none}
+th.sorted{color:var(--accent)}
+th.l,td.l{text-align:left}
+td{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+td.t{font-family:var(--f-ui)}
+tbody tr:nth-child(4n+1),tbody tr:nth-child(4n+2){background:var(--row)}
+tr.det td{white-space:normal;text-align:left;background:var(--surface)}
+tr.pick td:first-child{box-shadow:inset 3px 0 0 var(--brass)}
+.unds-cell{max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.w{font-weight:600}
+.pos{color:var(--good)} .mid{color:var(--warn)} .neg{color:var(--bad)}
+.hi{color:var(--accent);font-weight:600}
+.expand{border:none;background:none;padding:0 4px;color:var(--muted);font-size:.9rem}
+/* cards */
+.list{display:grid;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;min-width:0}
+.card.pick{border-color:var(--brass)}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card-top .who{min-width:0}
+.unds{font-weight:600;font-size:1rem;overflow-wrap:anywhere}
+.score{text-align:right;flex:none}
+.score .v{font-family:var(--f-num);font-size:1.5rem;font-weight:600;color:var(--accent);line-height:1}
+.score .l{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{font-size:.72rem;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;font-family:var(--f-ui)}
+.b.ok{background:var(--good-bg);color:var(--good);border-color:transparent}
+.b.wa{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.b.ko{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+.b.pk{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 14px;border-top:1px dashed var(--line);padding-top:10px}
+@media (max-width:560px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.m .k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.m .v{font-family:var(--f-num);font-variant-numeric:tabular-nums;font-size:.98rem}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:.8rem;color:var(--muted)}
+.foot a,.det a{color:var(--accent)}
+.isin{font-family:var(--f-num);background:none;border:none;padding:0;color:var(--ink);text-decoration:underline dotted;font-size:.82rem}
+.why{font-size:.88rem;background:var(--brass-soft);border-radius:8px;padding:8px 10px;margin:0}
+/* worst-of ladder */
+.ladder{display:grid;gap:6px}
+.lad{display:grid;grid-template-columns:minmax(90px,170px) 1fr 62px;gap:8px;align-items:center;font-size:.8rem}
+.lad .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--f-ui)}
+.lad .bar{height:8px;border-radius:4px;background:var(--line);position:relative;overflow:hidden}
+.lad .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--accent)}
+.lad.worst .n{font-weight:700}
+.lad.worst .bar i{background:var(--brass)}
+.lad.under .bar i{background:var(--bad)}
+.lad .d{text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.ladder-cap{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.more{justify-self:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.85rem;z-index:5}
+.sel{width:auto;margin:0}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Certificati a cedola · Italia + Europa</div>
+      <h1>Radar Certificati</h1>
+    </div>
+    <div class="status" id="status">Collegamento al database…</div>
+  </header>
+
+
+  <section class="panel" id="daily" hidden>
+    <h2>Scelte del giorno · regole del profilo selezionato</h2>
+    <div id="dailybody" class="ai-out" style="margin-top:0"></div>
+  </section>
+
+  <section class="panel">
+    <details id="fbox" open>
+      <summary>Filtri e profilo</summary>
+      <div style="display:grid;gap:14px;margin-top:12px">
+        <div class="row">
+          <span class="note">Profilo</span>
+          <div class="seg" id="profile">
+            <button data-p="prudente">Prudente</button>
+            <button data-p="bilanciato" aria-pressed="true">Bilanciato</button>
+            <button data-p="aggressivo">Aggressivo</button>
+          </div>
+        </div>
+        <div class="grid-f">
+          <label>Cerca sottostante / ISIN<input id="f-text" type="search" placeholder="Intesa, ASML, DE000…"></label>
+          <label>Rend. a scadenza min % annuo<input id="f-yield" type="number" step="0.5" value="8"></label>
+          <label>Peggiore: distanza barriera min %<input id="f-buf" type="number" step="5" value="25"></label>
+          <label>Peggiore: distanza trigger cedola min %<input id="f-trig" type="number" step="5" placeholder="es. 10"></label>
+          <label>Scadenza max (anni)<input id="f-mat" type="number" step="0.5" value="5"></label>
+          <label>Prezzo max (% del nominale)<input id="f-price" type="number" step="1" placeholder="es. 100"></label>
+          <label>Spread max %<input id="f-spread" type="number" step="0.25" value="2"></label>
+          <label>Sottostanti<select id="f-n"><option value="all">Tutti</option><option value="single">Singolo</option><option value="multi">Worst-of (2+)</option></select></label>
+          <label>Frequenza cedola<select id="f-freq"><option value="1m">Solo mensile</option><option value="all">Tutte</option></select></label>
+          <label>Richiamo<select id="f-call"><option value="all">Tutti</option><option value="callable">Callable emittente (softcallable)</option><option value="autocall">Autocall</option></select></label>
+        </div>
+        <div class="row" style="gap:16px">
+          <label class="check"><input type="checkbox" id="f-active"> Solo cedola in pagamento (peggiore sopra il trigger)</label>
+          <label class="check"><input type="checkbox" id="f-mem"> Solo con effetto memoria</label>
+          <label class="check"><input type="checkbox" id="f-illiq"> Mostra anche senza mercato</label>
+        </div>
+        <div class="row chips" id="issuers"></div>
+      </div>
+    </details>
+  </section>
+
+  <section style="display:grid;gap:10px;min-width:0">
+    <div class="toolbar">
+      <div><h2 style="margin:0" id="count">Certificati</h2><span class="note" id="excluded"></span></div>
+      <div class="row">
+        <div class="seg" id="view"><button data-v="table">Tabella</button><button data-v="cards">Schede</button></div>
+        <button id="export">Esporta Excel</button>
+      </div>
+    </div>
+    <div id="results"><div class="empty">I certificati compaiono qui appena il database risponde.</div></div>
+  </section>
+
+
+  <p class="note">Distanze calcolate sul sottostante peggiore. Rend. a scadenza = cedole sul prezzo lettera + recupero verso 100, annualizzato, se tutte le cedole sono pagate. Rend. a richiamo = stesso calcolo alla prossima data di richiamo. Dati raccolti ogni mattina dai siti degli emittenti, indicativi. Non considera rischio emittente, fiscalità e cedole in memoria già maturate. Verifica sempre KID e term sheet dell'emittente.</p>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const state={certs:[],status:null,daily:null,requests:[],profile:"bilanciato",issuers:new Set(),aiPicks:null,db:null,view:null,sort:{key:"score",dir:-1},open:new Set(),sel:new Set(),limit:80};
+const W={prudente:{y:.2,b:.4,t:.2,s:.2},bilanciato:{y:.35,b:.3,t:.15,s:.2},aggressivo:{y:.55,b:.2,t:.1,s:.15}};
+const fmt=(v,d=2)=>v==null||isNaN(v)?"—":Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d});
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2400)}
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+if(W[ls.get("rc-profile")])state.profile=ls.get("rc-profile");
+state.view=ls.get("rc-view")||(window.innerWidth>=820?"table":"cards");
+
+function parseDate(s){if(s==null||s==="")return null;if(typeof s==="number"&&s>20000&&s<80000){return new Date(Math.round((s-25569)*864e5))}
+  if(s instanceof Date)return s;let m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return new Date(+m[1],m[2]-1,+m[3]);m=String(s).match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return new Date(y,m[2]-1,+m[1])}return null}
+const today=new Date();today.setHours(0,0,0,0);
+
+function enrich(c){
+  const r={...c};
+  const ask=+c.ask||null,bid=+c.bid||null;
+  const nominal=+c.nominal||((ask||bid||0)>400?1000:100);
+  r.nominal=nominal;r.ask=ask;r.bid=bid;
+  r.pricePct=ask?ask/nominal*100:null;
+  r.spread=(ask&&bid)?(ask-bid)/ask*100:null;
+  r.matDate=parseDate(c.maturity);
+  r.years=r.matDate?Math.max((r.matDate-today)/(365.25*864e5),.05):null;
+  r.couponPa=c.couponPa==null||c.couponPa===""?null:+c.couponPa;
+  r.unds=Array.isArray(c.underlyings)?c.underlyings:String(c.underlyings||"").split("|").map(s=>s.trim()).filter(Boolean);
+  r.und=Array.isArray(c.underlyingsDetail)&&c.underlyingsDetail.length?c.underlyingsDetail:null;
+  r.n=r.und?r.und.length:r.unds.length;
+  r.dist=c.distBarrier==null||c.distBarrier===""?null:+c.distBarrier;
+  r.worst=c.worstName||(r.n===1?(r.und?r.und[0].name:r.unds[0]):null);
+  const bp=+c.barrierPct||null,tp=+c.triggerPct||null,ap=+c.autocallPct||null;
+  r.spotPct=(bp&&r.dist!=null&&r.dist<100)?bp/(1-r.dist/100):null;
+  r.trigDist=(tp&&r.spotPct)?(r.spotPct-tp)/r.spotPct*100:null;
+  r.callDist=(ap&&r.spotPct)?(r.spotPct-ap)/r.spotPct*100:null;
+  r.couponActive=r.trigDist==null?null:r.trigDist>=0;
+  r.belowBarrier=r.dist!=null&&r.dist<0;
+  r.cy=(r.pricePct&&r.couponPa!=null)?r.couponPa/r.pricePct*100:null;
+  r.ytm=(r.pricePct&&r.couponPa!=null&&r.years)?(r.couponPa+(100-r.pricePct)/r.years)/r.pricePct*100:null;
+  const cd=parseDate(c.nextCallDate);r.callDate=cd&&cd>=today?cd:null;
+  if(r.callDate&&r.pricePct&&r.couponPa!=null){const t=Math.max((r.callDate-today)/(365.25*864e5),1/12);r.ytc=(r.couponPa+(100-r.pricePct)/t)/r.pricePct*100}else r.ytc=null;
+  const nc=parseDate(c.nextCouponDate);r.couponDate=nc&&nc>=today?nc:null;
+  r.callKind=/autocall/i.test(c.callable||"")?"autocall":/callable|soft/i.test(c.callable||"")?"callable":null;
+  return r;
+}
+function liquid(c,maxSpread){return !!(c.ask&&c.bid&&c.spread!=null&&c.spread<=maxSpread)}
+function score(c){
+  const w=W[state.profile];
+  const ys=clamp((c.ytm??0)/25,0,1);
+  const bs=c.dist==null?.3:c.belowBarrier?0:Math.min(c.dist/60,1);
+  const ts=c.trigDist==null?bs*.8:clamp((c.trigDist+5)/45,0,1);
+  const ss=c.spread==null?0:Math.max(0,1-c.spread/3);
+  let s=(w.y*ys+w.b*bs+w.t*ts+w.s*ss)*100;
+  if(c.belowBarrier)s*=.4;else if(c.couponActive===false)s*=.75;
+  return Math.round(s);
+}
+const V=id=>{const v=parseFloat($(id).value);return isNaN(v)?null:v};
+function filters(){return{text:$("#f-text").value.trim().toLowerCase(),y:V("#f-yield"),b:V("#f-buf"),t:V("#f-trig"),mat:V("#f-mat"),price:V("#f-price"),sp:V("#f-spread")??2,n:$("#f-n").value,freq:$("#f-freq").value,call:$("#f-call").value,active:$("#f-active").checked,mem:$("#f-mem").checked,illiq:$("#f-illiq").checked}}
+
+function all(){const f=filters();return state.certs.map(enrich).map(c=>{c.score=score(c);c.liq=liquid(c,f.sp);return c})}
+const SORT={score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
+function compute(){
+  const f=filters();const A=all();let excluded=0;
+  const rows=A.filter(c=>{
+    if(!c.liq&&!f.illiq){excluded++;return false}
+    if(f.text&&!(c.isin+" "+c.unds.join(" ")+" "+(c.und||[]).map(u=>u.name).join(" ")+" "+(c.issuer||"")).toLowerCase().includes(f.text))return false;
+    if(state.issuers.size&&!state.issuers.has(c.issuer))return false;
+    if(f.freq==="1m"&&c.freq!=="1m")return false;
+    if(f.n==="single"&&c.n!==1)return false;
+    if(f.n==="multi"&&c.n<2)return false;
+    if(f.call!=="all"&&c.callKind!==f.call)return false;
+    if(f.y!=null&&c.liq&&(c.ytm??-99)<f.y)return false;
+    if(f.b!=null&&c.dist!=null&&c.dist<f.b)return false;
+    if(f.t!=null&&c.trigDist!=null&&c.trigDist<f.t)return false;
+    if(f.active&&c.couponActive!==true)return false;
+    if(f.mem&&c.memory!==true)return false;
+    if(f.mat!=null&&c.years!=null&&c.years>f.mat)return false;
+    if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)return false;
+    return true;
+  });
+  const g=SORT[state.sort.key]||SORT.score,d=state.sort.dir;
+  rows.sort((a,b)=>{const x=g(a),y=g(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return d*(x-y)});
+  return{A,rows,excluded};
+}
+const cls=v=>v==null?"":v<0?"neg":v<20?"mid":"pos";
+const pct=(v,d=1)=>v==null?"—":fmt(v,d)+"%";
+const dshort=d=>d?d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"}):"—";
+
+function ladder(c){
+  const list=c.und||c.unds.map(n=>({name:n,dist:c.n===1?c.dist:null}));
+  if(!list.length)return"";
+  const sorted=[...list].sort((a,b)=>(a.dist??999)-(b.dist??999));
+  const max=Math.max(60,...sorted.map(u=>u.dist??0));
+  return `<div class="ladder"><div class="ladder-cap">Distanza dalla barriera per sottostante${c.barrierPct?` · barriera ${fmt(c.barrierPct,0)}%`:""}${c.triggerPct?` · trigger cedola ${fmt(c.triggerPct,0)}%`:""}${c.barrierType?` · osservazione ${esc(c.barrierType==="scadenza"?"a scadenza":c.barrierType)}`:""}</div>`+
+    sorted.map(u=>{const d=u.dist;const w=c.worst&&u.name===c.worst||(c.n>1&&u===sorted[0]&&d!=null);const width=d==null?0:d<0?100:d/max*100;
+      return `<div class="lad ${w?"worst":""} ${d!=null&&d<0?"under":""}"><span class="n" title="${esc(u.name)}">${w?"▸ ":""}${esc(u.name)}</span><span class="bar"><i style="width:${width}%"></i></span><span class="d ${cls(d)}">${pct(d)}</span></div>`}).join("")+`</div>`;
+}
+function badges(c){
+  const b=[];
+  b.push(`<span class="b">${c.n>1?"Worst-of "+c.n:"Singolo"}</span>`);
+  if(c.freq)b.push(`<span class="b ${c.freq==="1m"?"pk":""}">${c.freq==="1m"?"Mensile":c.freq==="3m"?"Trimestrale":esc(c.freq)}</span>`);
+  if(c.callable)b.push(`<span class="b pk">${esc(c.callable)}</span>`);
+  if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
+  if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
+  if(!c.ask)b.push(`<span class="b ko">Senza lettera</span>`);else if(!c.liq)b.push(`<span class="b wa">Spread ampio</span>`);
+  if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);
+  else if(c.couponActive===false)b.push(`<span class="b wa">Cedola sospesa</span>`);
+  else if(c.couponActive===true)b.push(`<span class="b ok">Cedola in pagamento</span>`);
+  if(c.pricePct&&c.pricePct<97)b.push(`<span class="b ok">Sotto la pari</span>`);
+  return b.join("");
+}
+function links(c){const bi=`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-SEDX.html?lang=it`;return `<a href="${bi}" target="_blank" rel="noopener">Borsa Italiana</a>${c.url?` · <a href="${esc(c.url.includes(c.isin)?c.url:c.url+"/"+c.isin)}" target="_blank" rel="noopener">Emittente</a>`:""}`}
+function card(c,why){
+  return `<article class="card ${why!=null?"pick":""}">
+    <div class="card-top"><div class="who"><div class="eyebrow">${esc(c.issuer||"Emittente n.d.")}${c.type?" · "+esc(c.type):""}</div><div class="unds">${esc((c.und?c.und.map(u=>u.name):c.unds).join(" · ")||"Sottostanti n.d.")}</div></div>
+    <div class="score"><div class="v">${c.score}</div><div class="l">punteggio</div></div></div>
+    <div class="badges">${badges(c)}</div>
+    ${why?`<p class="why">${esc(why)}</p>`:""}
+    <div class="metrics">
+      <div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
+      <div class="m"><div class="k">Dist. trigger cedola</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
+      <div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
+      <div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
+      <div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div></div>
+      <div class="m"><div class="k">Lettera · prezzo</div><div class="v">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
+      <div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
+      <div class="m"><div class="k">Prossimo richiamo · scad.</div><div class="v">${dshort(c.callDate)} · ${dshort(c.matDate)}</div></div>
+    </div>
+    ${ladder(c)}
+    <div class="foot"><span><label class="check" style="display:inline-flex"><input type="checkbox" class="sel" data-sel="${esc(c.isin)}" ${state.sel.has(c.isin)?"checked":""}> </label><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${c.couponDate?` · prossima cedola ${dshort(c.couponDate)}`:""}</span><span>${links(c)}</span></div>
+  </article>`;
+}
+const COLS=[["","",null],["Pt.","score","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","dist","dist"],["Dist. trigger","trig","trig"],["Barr.","",null],["Cedola","coupon","coupon"],["Lettera %","price","price"],["Spread","spread","spread"],["Rend. ced.","cy","cy"],["Rend. scad.","ytm","ytm"],["Rend. rich.","ytc","ytc"],["Richiamo","call","call"],["Scadenza","mat","mat"]];
+function table(rows,picks){
+  const pickMap=new Map(picks.map(p=>[p.c.isin,p.why]));
+  const head=COLS.map(([t,k,s])=>`<th class="${k==="l"?"l":""} ${s&&state.sort.key===s?"sorted":""}" ${s?`data-sort="${s}"`:""}>${t}${s&&state.sort.key===s?(state.sort.dir<0?" ↓":" ↑"):""}</th>`).join("");
+  const body=rows.map(c=>{const open=state.open.has(c.isin);const why=pickMap.get(c.isin);
+    return `<tr class="${why!=null?"pick":""}">
+      <td class="t"><input type="checkbox" class="sel" data-sel="${esc(c.isin)}" ${state.sel.has(c.isin)?"checked":""} aria-label="Seleziona ${esc(c.isin)}"><button class="expand" data-open="${esc(c.isin)}" aria-label="Dettaglio">${open?"▾":"▸"}</button></td>
+      <td class="hi">${c.score}</td>
+      <td class="l"><button class="isin" data-copy="${esc(c.isin)}">${esc(c.isin)}</button><div class="note">${esc(c.issuer||"")}</div></td>
+      <td class="l t unds-cell" title="${esc((c.und?c.und.map(u=>u.name):c.unds).join(", "))}">${esc((c.und?c.und.map(u=>u.name):c.unds).join(", "))}</td>
+      <td class="l t w">${esc(c.worst||"—")}</td>
+      <td class="${cls(c.dist)} w">${pct(c.dist)}</td>
+      <td class="${cls(c.trigDist)}">${pct(c.trigDist)}</td>
+      <td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
+      <td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
+      <td>${c.pricePct?fmt(c.pricePct,2):"—"}</td>
+      <td>${pct(c.spread,2)}</td>
+      <td>${pct(c.cy)}</td>
+      <td class="hi">${pct(c.ytm)}</td>
+      <td>${pct(c.ytc)}</td>
+      <td class="t">${c.callKind==="callable"?"Soft ":c.callKind==="autocall"?"Auto ":""}${dshort(c.callDate)}</td>
+      <td>${dshort(c.matDate)}</td></tr>`+
+      (open||why?`<tr class="det"><td></td><td colspan="${COLS.length-1}"><div style="display:grid;gap:8px;padding:4px 0 8px">${why?`<p class="why">${esc(why)}</p>`:""}<div class="badges">${badges(c)}</div>${open?ladder(c):""}${open?`<div class="note">${c.type?esc(c.type)+" · ":""}${c.couponDate?"prossima cedola "+dshort(c.couponDate)+" · ":""}${c.callDist!=null?"peggiore "+(c.callDist>=0?"sopra":"sotto")+" il livello di autocall di "+fmt(Math.abs(c.callDist),1)+"% · ":""}denaro ${fmt(c.bid)} / lettera ${fmt(c.ask)} · ${links(c)}</div>`:""}</div></td></tr>`:"");
+  }).join("");
+  return `<div class="tbl-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+function render(){
+  const {A,rows,excluded}=compute();
+  const iss=[...new Set(A.map(c=>c.issuer).filter(Boolean))].sort();
+  const html=iss.map(i=>`<button data-i="${esc(i)}" aria-pressed="${state.issuers.has(i)}">${esc(i)} <span class="note">${A.filter(c=>c.issuer===i).length}</span></button>`).join("");
+  if($("#issuers").innerHTML!==html)$("#issuers").innerHTML=html;
+  document.querySelectorAll("#profile button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
+  document.querySelectorAll("#view button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===state.view));
+  let picks=[];
+  if(state.aiPicks){const map=new Map(A.map(c=>[c.isin,c]));picks=state.aiPicks.items.map(p=>map.get(p.isin)&&{c:map.get(p.isin),why:p.why}).filter(Boolean)}
+  const pickSet=new Set(picks.map(p=>p.c.isin));
+  const ordered=[...picks.map(p=>p.c),...rows.filter(c=>!pickSet.has(c.isin))];
+  const shown=ordered.slice(0,state.limit);
+  const res=$("#results");
+  if(!state.certs.length){res.innerHTML=`<div class="empty">${state.db===false?"Dati non disponibili: riprova tra poco.":"Nessun certificato ancora: il robot li carica ogni mattina."}</div>`}
+  else if(!ordered.length){res.innerHTML=`<div class="empty">Nessun certificato con questi filtri. Prova ad abbassare il rendimento minimo o la distanza dalla barriera.</div>`}
+  else{
+    const pickWhy=new Map(picks.map(p=>[p.c.isin,p.why]));
+    res.innerHTML=(state.view==="table"?table(shown,picks):`<div class="list">${shown.map(c=>card(c,pickWhy.get(c.isin))).join("")}</div>`)+
+      (ordered.length>shown.length?`<div style="display:grid;margin-top:12px"><button class="more" id="more">Mostra altri ${Math.min(80,ordered.length-shown.length)} di ${ordered.length-shown.length}</button></div>`:"");
+  }
+  $("#count").textContent=`${rows.length} certificati${picks.length?" · "+picks.length+" scelti dall'IA in cima":""}`;
+  $("#excluded").textContent=(excluded?` · ${excluded} esclusi perché senza mercato`:"")+(state.sel.size?` · ${state.sel.size} selezionati`:"");
+  $("#export").textContent=state.sel.size?`Esporta selezione (${state.sel.size})`:"Esporta Excel";
+  const s=state.status;const liqN=A.filter(c=>c.liq).length;
+  $("#status").innerHTML=state.db===false?"Dati non disponibili":`<b>${A.length}</b> in archivio · <b>${liqN}</b> con mercato${s&&s.lastRun?` · aggiornato <b>${new Date(s.lastRun).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}</b>`:""}`;
+  const d=state.daily;
+  if(d&&d.picks&&d.picks.length){$("#daily").hidden=false;$("#dailybody").innerHTML=(d.summary?`<p>${esc(d.summary)}</p>`:"")+d.picks.map(p=>`<p><button class="isin" data-copy="${esc(p.isin)}">${esc(p.isin)}</button> — ${esc(p.why)}</p>`).join("")+(d.date?`<p class="note">Aggiornata il ${new Date(d.date).toLocaleDateString("it-IT")}</p>`:"")}
+  }
+
+// events
+["#f-text","#f-yield","#f-buf","#f-trig","#f-mat","#f-price","#f-spread","#f-n","#f-freq","#f-call","#f-active","#f-mem","#f-illiq"].forEach(s=>$(s).addEventListener("input",()=>{state.limit=80;render()}));
+$("#profile").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.profile=b.dataset.p;ls.set("rc-profile",state.profile);state.daily=pickDaily();render()});
+$("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render()});
+$("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.issuers.has(i)?state.issuers.delete(i):state.issuers.add(i);render()});
+$("#results").addEventListener("click",e=>{
+  const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};render();return}
+  const o=e.target.closest("[data-open]");if(o){const i=o.dataset.open;state.open.has(i)?state.open.delete(i):state.open.add(i);render();return}
+  if(e.target.id==="more"){state.limit+=80;render();return}
+});
+$("#results").addEventListener("change",e=>{const s=e.target.closest("[data-sel]");if(!s)return;s.checked?state.sel.add(s.dataset.sel):state.sel.delete(s.dataset.sel);render()});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if(!b)return;const t=b.dataset.copy;navigator.clipboard?.writeText(t).then(()=>toast("ISIN copiato: "+t)).catch(()=>toast(t))});
+
+// export
+$("#export").addEventListener("click",async()=>{
+  const {rows}=compute();const A=all();
+  const list=state.sel.size?A.filter(c=>state.sel.has(c.isin)):rows;
+  if(!list.length){toast("Niente da esportare");return}
+  if(!window.XLSX){toast("Esportazione non disponibile");return}
+  const data=list.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Sottostanti:(c.und?c.und.map(u=>u.name):c.unds).join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Dist. trigger cedola %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:c.freq||"",Memoria:c.memory?"Sì":"",Richiamo:c.callable||"","Prossimo richiamo":c.callDate?c.callDate.toLocaleDateString("it-IT"):"",Scadenza:c.matDate?c.matDate.toLocaleDateString("it-IT"):"",Denaro:c.bid,Lettera:c.ask,"Prezzo % nominale":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. cedolare %":c.cy==null?null:+c.cy.toFixed(2),"Rend. scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),Punteggio:c.score}));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
+  const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`radar-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+});
+
+// boot
+render();
+fetch("data/certs.json?t="+Date.now()).then(r=>r.json()).then(j=>{state.certs=j.certs||[];state.status={lastRun:j.updatedAt};state.db=true;state.daily=pickDaily();render()}).catch(()=>{state.db=false;render()});
+function pickDaily(){
+  const A=state.certs.map(enrich).map(c=>{c.score=score(c);c.liq=liquid(c,1.5);return c});
+  const ok=A.filter(c=>c.liq&&c.freq==="1m"&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=30&&!c.belowBarrier).sort((a,b)=>b.score-a.score).slice(0,3);
+  const susp=A.filter(c=>c.liq&&c.couponActive===false&&!c.belowBarrier).length;
+  return{summary:`Migliori 3 per il profilo ${state.profile}: cedola mensile in pagamento, peggiore ad almeno 30% dalla barriera, spread entro 1,5%.${susp?` ${susp} certificati con mercato hanno oggi la cedola sospesa.`:""}`,
+    picks:ok.map(c=>({isin:c.isin,why:`${c.issuer||""} su ${(c.und?c.und.map(u=>u.name):c.unds).join(", ")}: cedola ${fmt(c.couponPa,2)}% annua, peggiore${c.worst?" ("+c.worst+")":""} a ${fmt(c.dist,1)}% dalla barriera${c.trigDist!=null?" e "+fmt(c.trigDist,1)+"% sopra il trigger":""}, lettera ${fmt(c.pricePct,1)}%, rendimento a scadenza ${fmt(c.ytm,1)}%.`}))};
+}
+})();
+</script>
+
+</body>
+</html>

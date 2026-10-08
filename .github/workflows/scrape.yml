@@ -1,0 +1,48 @@
+name: Aggiornamento certificati
+
+on:
+  schedule:
+    - cron: "10 4 * * 1-5"   # 06:10 ora italiana (legale), 05:10 in inverno
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: "Sorgenti (vuoto = tutte)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installa Playwright
+        run: |
+          pip install playwright==1.47.0
+          python -m playwright install --with-deps chromium
+      - name: Esegui robot
+        run: python scraper/run.py ${{ github.event.inputs.sources }}
+      - name: Salva esplorazione
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: discovery
+          path: discovery/
+          retention-days: 7
+      - name: Pubblica dati
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git add docs/data/certs.json
+          git diff --cached --quiet || git commit -m "Dati certificati $(date -u +%F)"
+          git push
