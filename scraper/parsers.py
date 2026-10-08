@@ -417,6 +417,32 @@ def pct(x):
     return round(x * 100, 4) if x is not None else None
 
 
+# chiavi emittente della piattaforma Leonteq -> nome leggibile
+LEONTEQ_ISSUERS = [
+    (r"^leonteq.*guernsey", "Leonteq Securities (Guernsey)"), (r"^leonteq", "Leonteq Securities"),
+    (r"^efg", "EFG International"), (r"^raiffeisen", "Raiffeisen"), (r"^swissquote", "Swissquote"),
+    (r"^bil$", "BIL"), (r"^bkb$", "Basler Kantonalbank"), (r"^akb$", "Aargauische Kantonalbank"),
+    (r"^deutsche ?bank", "Deutsche Bank"), (r"^standard ?chartered", "Standard Chartered"),
+    (r"^corner ?bank", "Cornèr Banca"), (r"^mora", "Mora"), (r"^post ?finance", "PostFinance"),
+    (r"^jpm|^jp ?morgan", "J.P. Morgan"),
+]
+
+
+def leonteq_issuer(p):
+    """Emittente reale del prodotto (la piattaforma è sempre Leonteq)."""
+    for k in ("issuer", "issuerName", "issuer-name", "issuerKey", "issuer-key", "issuerDisplayName"):
+        v = p.get(k)
+        if isinstance(v, dict):
+            v = v.get("value") or v.get("raw") or v.get("name")
+        if isinstance(v, str) and v.strip():
+            v = v.strip()
+            for rx, name in LEONTEQ_ISSUERS:
+                if re.search(rx, v, re.I):
+                    return name
+            return re.sub(r"(?<=[a-z])(?=[A-Z])", " ", v)
+    return None
+
+
 def leonteq_cert(p, src, NOW):
     isin = lv(p, "isin", "value")
     if not isin:
@@ -426,7 +452,8 @@ def leonteq_cert(p, src, NOW):
     ptype = lv(p, "product-type", "value")
     name = (lv(p, "name", "value") or "") + " " + (ptype or "")
     return clean({
-        "isin": isin, "issuer": src["issuer"], "source": src["name"], "type": ptype,
+        "isin": isin, "issuer": leonteq_issuer(p) or "Leonteq Securities", "platform": "Leonteq",
+        "source": src["name"], "type": ptype,
         "underlyings": unds or [x.strip() for x in (lv(p, "underlyings", "value") or "").split(",") if x.strip()],
         "couponPa": pct(lv(p, "conditional-coupon")) if lv(p, "conditional-coupon") is not None else pct(lv(p, "coupon")),
         "triggerPct": pct(lv(p, "conditionalCouponTriggerLevel")),
@@ -488,6 +515,8 @@ async def leonteq_api(DISC, src, NOW, ctx):
             total = (d.get("searchMetadata") or {}).get("totalHits") or 0
             prods = d.get("products") or []
             log["pages"].append({"page": pno, "got": len(prods), "total": total})
+            if pno == 1:
+                log["sample"] = prods[:2]
             if not prods:
                 break
             for p in prods:
@@ -498,6 +527,7 @@ async def leonteq_api(DISC, src, NOW, ctx):
             if pno > 60:
                 break
     finally:
+        log["issuers"] = sorted({c.get("issuer") for c in found.values()})
         save(DISC, f"{src['name']}_parser.json", log)
         await page.close()
     return list(found.values())
@@ -556,3 +586,145 @@ async def socgen_probe(DISC, src, NOW, ctx):
 async def marex_probe(DISC, src, NOW, ctx):
     calls = [("GET", "https://fp.marex.com/api/products", None), ("GET", "https://fp.marex.com/api/products?country=IT", None)]
     return await probe(DISC, src, NOW, ctx, src["url"], calls)
+
+
+# ---------------------------------------------------------------- Société Générale
+# Sito Angular con API EmcWebApi. Dopo l'avviso di residenza ("OK") la pagina di
+# ricerca chiama ProductSearch/GridConfig e poi ProductSearch/Search (POST).
+# Intercettiamo quella richiesta e la ripetiamo cambiando pagina finché ci sono risultati.
+
+SG = "https://www.prodotti.societegenerale.it"
+SG_API = SG + "/EmcWebApi/api/ProductSearch/"
+SG_PAGE_KEYS = ("PageIndex", "pageIndex", "Page", "page", "PageNumber", "pageNumber", "CurrentPage", "currentPage")
+SG_SIZE_KEYS = ("PageSize", "pageSize", "Take", "take", "Size", "size", "ItemsPerPage", "itemsPerPage")
+
+
+def sg_key(d, keys):
+    if isinstance(d, dict):
+        for k in keys:
+            if k in d:
+                return d, k
+        for v in d.values():
+            r = sg_key(v, keys)
+            if r:
+                return r
+    return None
+
+
+def sg_cert(it, src, NOW):
+    c = generic_cert(it, src, NOW)
+    if not c:
+        return None
+    f = {norm(k): v for k, v in flat(it).items()}
+    for k, v in f.items():
+        if "underlying" in k and "name" in k and isinstance(v, str) and "underlyings" not in c:
+            c["underlyings"] = [x.strip() for x in re.split(r"\s*[,;/]\s*", v) if x.strip()]
+    c["url"] = f"{SG}/it/prodotto/{c['isin']}"
+    return c
+
+
+async def socgen_api(DISC, src, NOW, ctx):
+    page = await ctx.new_page()
+    reqs, log = [], {"attempts": []}
+    page.on("request", lambda q: reqs.append(q) if "EmcWebApi" in q.url else None)
+    found = {}
+    try:
+        await page.goto(src["url"], wait_until="domcontentloaded", timeout=60000)
+        await page.wait_for_timeout(4000)
+        await accept_cookies(page)
+        for _ in range(4):  # avviso di residenza: bottone "OK" (anche dentro dialog/overlay)
+            clicked = False
+            for loc in (page.get_by_role("button", name=re.compile(r"^\s*ok\s*$", re.I)),
+                        page.locator("button:has-text('OK'), a:has-text('OK')")):
+                try:
+                    if await loc.count():
+                        await loc.first.click(timeout=3000)
+                        clicked = True
+                        break
+                except Exception:
+                    pass
+            if not clicked:
+                break
+            await page.wait_for_timeout(3000)
+        try:
+            await page.wait_for_load_state("networkidle", timeout=20000)
+        except Exception:
+            pass
+        await page.wait_for_timeout(4000)
+        log["final_url"] = page.url
+        log["emc_requests"] = [{"m": q.method, "url": q.url, "post": (q.post_data or "")[:3000]} for q in reqs][:60]
+
+        # 1) GridConfig: dice quali colonne/criteri usa la ricerca
+        st, grid = await fetch(page, SG_API + "GridConfig")
+        log["gridconfig"] = {"status": st, "body": grid[:20000]}
+
+        # 2) la richiesta Search fatta dal sito (se c'è) con i suoi header
+        bodies = []
+        for q in reqs:
+            if q.method == "POST" and re.search(r"ProductSearch/Search(\?|$)", q.url) and q.post_data:
+                try:
+                    hdr = {k: v for k, v in (await q.all_headers()).items() if not k.startswith(":") and k.lower() not in
+                           ("content-length", "cookie", "host", "accept-encoding", "connection")}
+                    bodies.append((q.url, json.loads(q.post_data), hdr))
+                except Exception:
+                    pass
+        log["site_search"] = [b[1] for b in bodies]
+        # 3) senza richiesta del sito: corpi minimi
+        if not bodies:
+            hdr = {"content-type": "application/json", "accept": "application/json"}
+            for b in ({"PageIndex": 0, "PageSize": 100}, {"Page": 1, "PageSize": 100, "ProductTypeIds": []},
+                      {"pageIndex": 0, "pageSize": 100, "filters": []}):
+                bodies.append((SG_API + "Search", b, hdr))
+
+        for url, body0, hdr in bodies:
+            pk = sg_key(body0, SG_PAGE_KEYS)
+            sk = sg_key(body0, SG_SIZE_KEYS)
+            if sk:
+                sk[0][sk[1]] = 100
+            start = pk[0][pk[1]] if pk else 0
+            n_before = len(found)
+            for i in range(200):
+                if pk:
+                    pk[0][pk[1]] = start + i
+                st, txt = await fetch(page, url, "POST", json.dumps(body0), hdr)
+                entry = {"url": url, "i": i, "status": st, "len": len(txt), "isins": len(set(ISIN_RE.findall(txt)))}
+                if i == 0:
+                    entry["body"] = body0
+                    entry["head"] = txt[:3000]
+                log["attempts"].append(entry)
+                if st != 200 or not entry["isins"]:
+                    break
+                items = generic_items(json.loads(txt))
+                if i == 0:
+                    log["sample"] = items[:2]
+                new = 0
+                for it in items:
+                    c = sg_cert(it, src, NOW)
+                    if c and c["isin"] not in found:
+                        found[c["isin"]] = c
+                        new += 1
+                if not pk or not new:
+                    break
+            if len(found) > n_before:
+                break
+
+        # 4) contesto JS intorno alle chiamate, per il prossimo tentativo
+        if not found:
+            urls = await page.evaluate("() => performance.getEntriesByType('resource').map(e => e.name)"
+                                       ".filter(u => /\\.js(\\?|$)/.test(u) && u.includes('societegenerale'))")
+            ctxjs = {}
+            for u in urls[:40]:
+                try:
+                    st, t = await fetch(page, u)
+                except Exception:
+                    continue
+                for m in re.finditer(r"ProductSearch/(Search|GridConfig)\b", t):
+                    ctxjs.setdefault(u, []).append(t[max(0, m.start() - 1500):m.end() + 1500])
+            log["js_context"] = ctxjs
+    except Exception as e:
+        log["error"] = repr(e)[:800]
+    finally:
+        log["found"] = len(found)
+        save(DISC, f"{src['name']}_parser.json", log)
+        await page.close()
+    return list(found.values())

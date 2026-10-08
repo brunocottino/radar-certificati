@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Radar Certificati</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#0e6b62">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Radar Certificati">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -118,6 +124,10 @@ tr.pick td:first-child{box-shadow:inset 3px 0 0 var(--brass)}
 .more{justify-self:center}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.85rem;z-index:5}
 .sel{width:auto;margin:0}
+.stale{color:var(--warn)!important;background:var(--warn-bg)}
+.upd{width:100%;font-size:.84rem}
+.upd td,.upd th{padding:5px 8px}
+.upd th{cursor:default;position:static}
 </style>
 
 </head>
@@ -131,6 +141,14 @@ tr.pick td:first-child{box-shadow:inset 3px 0 0 var(--brass)}
     <div class="status" id="status">Collegamento al database…</div>
   </header>
 
+
+  <section class="panel">
+    <details id="updbox">
+      <summary>Aggiornamento per emittente</summary>
+      <div id="upd" style="margin-top:12px"></div>
+      <p class="note">In arancione i prezzi rilevati più di 2 giorni lavorativi fa: l'ultima run non ha trovato denaro e lettera e restano quelli precedenti.</p>
+    </details>
+  </section>
 
   <section class="panel" id="daily" hidden>
     <h2>Scelte del giorno · regole del profilo selezionato</h2>
@@ -190,7 +208,7 @@ tr.pick td:first-child{box-shadow:inset 3px 0 0 var(--brass)}
 <script>
 (function(){
 const $=s=>document.querySelector(s);
-const state={certs:[],status:null,daily:null,requests:[],profile:"bilanciato",issuers:new Set(),aiPicks:null,db:null,view:null,sort:{key:"score",dir:-1},open:new Set(),sel:new Set(),limit:80};
+const state={certs:[],status:null,daily:null,requests:[],profile:"bilanciato",issuers:new Set(),aiPicks:null,db:null,view:null,sort:{key:"score",dir:-1},open:new Set(),sel:new Set(),limit:100};
 const W={prudente:{y:.2,b:.4,t:.2,s:.2},bilanciato:{y:.35,b:.3,t:.15,s:.2},aggressivo:{y:.55,b:.2,t:.1,s:.15}};
 const fmt=(v,d=2)=>v==null||isNaN(v)?"—":Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d});
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -203,6 +221,10 @@ state.view=ls.get("rc-view")||(window.innerWidth>=820?"table":"cards");
 function parseDate(s){if(s==null||s==="")return null;if(typeof s==="number"&&s>20000&&s<80000){return new Date(Math.round((s-25569)*864e5))}
   if(s instanceof Date)return s;let m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return new Date(+m[1],m[2]-1,+m[3]);m=String(s).match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return new Date(y,m[2]-1,+m[1])}return null}
 const today=new Date();today.setHours(0,0,0,0);
+// giorni lavorativi (lun-ven) trascorsi da una data
+function bizDaysSince(d){if(!d)return null;const x=new Date(d);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;
+  for(const t=new Date(x);t<today;t.setDate(t.getDate()+1)){const w=t.getDay();if(w!==0&&w!==6)n++}return n}
+const dtime=d=>d?new Date(d).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
 
 function enrich(c){
   const r={...c};
@@ -230,6 +252,8 @@ function enrich(c){
   const cd=parseDate(c.nextCallDate);r.callDate=cd&&cd>=today?cd:null;
   if(r.callDate&&r.pricePct&&r.couponPa!=null){const t=Math.max((r.callDate-today)/(365.25*864e5),1/12);r.ytc=(r.couponPa+(100-r.pricePct)/t)/r.pricePct*100}else r.ytc=null;
   const nc=parseDate(c.nextCouponDate);r.couponDate=nc&&nc>=today?nc:null;
+  r.priceAt=c.priceAt||(ask&&bid?c.updatedAt:null);
+  r.stale=!!(ask&&bid&&r.priceAt&&bizDaysSince(r.priceAt)>2);
   r.callKind=/autocall/i.test(c.callable||"")?"autocall":/callable|soft/i.test(c.callable||"")?"callable":null;
   return r;
 }
@@ -293,6 +317,8 @@ function badges(c){
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
   if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
   if(!c.ask)b.push(`<span class="b ko">Senza lettera</span>`);else if(!c.liq)b.push(`<span class="b wa">Spread ampio</span>`);
+  if(c.stale)b.push(`<span class="b wa">Prezzo del ${dtime(c.priceAt)}</span>`);
+  if(c.platform)b.push(`<span class="b">via ${esc(c.platform)}</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);
   else if(c.couponActive===false)b.push(`<span class="b wa">Cedola sospesa</span>`);
   else if(c.couponActive===true)b.push(`<span class="b ok">Cedola in pagamento</span>`);
@@ -312,7 +338,7 @@ function card(c,why){
       <div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
       <div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
       <div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div></div>
-      <div class="m"><div class="k">Lettera · prezzo</div><div class="v">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
+      <div class="m"><div class="k">Lettera · prezzo</div><div class="v ${c.stale?"stale":""}" title="${c.priceAt?"Prezzo del "+dtime(c.priceAt):""}">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
       <div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
       <div class="m"><div class="k">Prossimo richiamo · scad.</div><div class="v">${dshort(c.callDate)} · ${dshort(c.matDate)}</div></div>
     </div>
@@ -335,7 +361,7 @@ function table(rows,picks){
       <td class="${cls(c.trigDist)}">${pct(c.trigDist)}</td>
       <td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
       <td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
-      <td>${c.pricePct?fmt(c.pricePct,2):"—"}</td>
+      <td class="${c.stale?"stale":""}" title="${c.priceAt?"Prezzo del "+dtime(c.priceAt):""}">${c.pricePct?fmt(c.pricePct,2):"—"}</td>
       <td>${pct(c.spread,2)}</td>
       <td>${pct(c.cy)}</td>
       <td class="hi">${pct(c.ytm)}</td>
@@ -365,26 +391,39 @@ function render(){
   else{
     const pickWhy=new Map(picks.map(p=>[p.c.isin,p.why]));
     res.innerHTML=(state.view==="table"?table(shown,picks):`<div class="list">${shown.map(c=>card(c,pickWhy.get(c.isin))).join("")}</div>`)+
-      (ordered.length>shown.length?`<div style="display:grid;margin-top:12px"><button class="more" id="more">Mostra altri ${Math.min(80,ordered.length-shown.length)} di ${ordered.length-shown.length}</button></div>`:"");
+      (ordered.length>shown.length?`<div style="display:grid;margin-top:12px"><button class="more" id="more">Mostra altri ${Math.min(100,ordered.length-shown.length)} di ${ordered.length-shown.length}</button></div>`:"");
   }
   $("#count").textContent=`${rows.length} certificati${picks.length?" · "+picks.length+" scelti dall'IA in cima":""}`;
   $("#excluded").textContent=(excluded?` · ${excluded} esclusi perché senza mercato`:"")+(state.sel.size?` · ${state.sel.size} selezionati`:"");
   $("#export").textContent=state.sel.size?`Esporta selezione (${state.sel.size})`:"Esporta Excel";
   const s=state.status;const liqN=A.filter(c=>c.liq).length;
   $("#status").innerHTML=state.db===false?"Dati non disponibili":`<b>${A.length}</b> in archivio · <b>${liqN}</b> con mercato${s&&s.lastRun?` · aggiornato <b>${new Date(s.lastRun).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}</b>`:""}`;
+  renderUpd(A);
   const d=state.daily;
   if(d&&d.picks&&d.picks.length){$("#daily").hidden=false;$("#dailybody").innerHTML=(d.summary?`<p>${esc(d.summary)}</p>`:"")+d.picks.map(p=>`<p><button class="isin" data-copy="${esc(p.isin)}">${esc(p.isin)}</button> — ${esc(p.why)}</p>`).join("")+(d.date?`<p class="note">Aggiornata il ${new Date(d.date).toLocaleDateString("it-IT")}</p>`:"")}
   }
 
+function renderUpd(A){
+  const g=new Map();
+  for(const c of A){const k=c.issuer||"n.d.";const e=g.get(k)||{n:0,p:0,st:0,last:null,plat:c.platform};e.n++;
+    if(c.ask&&c.bid){e.p++;if(c.stale)e.st++}
+    if(c.updatedAt&&(!e.last||c.updatedAt>e.last))e.last=c.updatedAt;g.set(k,e)}
+  const rows=[...g.entries()].sort((a,b)=>b[1].n-a[1].n);
+  const html=`<div class="tbl-wrap"><table class="upd"><thead><tr><th class="l">Emittente</th><th>Ultimo aggiornamento</th><th>Certificati</th><th>Con prezzo</th><th>Prezzi vecchi</th></tr></thead><tbody>${
+    rows.map(([k,e])=>{const old=e.last&&bizDaysSince(e.last)>2;return `<tr><td class="l t">${esc(k)}${e.plat?` <span class="note">via ${esc(e.plat)}</span>`:""}</td><td class="${old?"stale":""}">${dtime(e.last)}</td><td>${e.n}</td><td>${e.p}</td><td class="${e.st?"stale":""}">${e.st||"—"}</td></tr>`}).join("")
+  }</tbody></table></div>`;
+  if($("#upd").innerHTML!==html)$("#upd").innerHTML=html;
+}
+
 // events
-["#f-text","#f-yield","#f-buf","#f-trig","#f-mat","#f-price","#f-spread","#f-n","#f-freq","#f-call","#f-active","#f-mem","#f-illiq"].forEach(s=>$(s).addEventListener("input",()=>{state.limit=80;render()}));
+["#f-text","#f-yield","#f-buf","#f-trig","#f-mat","#f-price","#f-spread","#f-n","#f-freq","#f-call","#f-active","#f-mem","#f-illiq"].forEach(s=>$(s).addEventListener("input",()=>{state.limit=100;render()}));
 $("#profile").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.profile=b.dataset.p;ls.set("rc-profile",state.profile);state.daily=pickDaily();render()});
 $("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render()});
 $("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.issuers.has(i)?state.issuers.delete(i):state.issuers.add(i);render()});
 $("#results").addEventListener("click",e=>{
   const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};render();return}
   const o=e.target.closest("[data-open]");if(o){const i=o.dataset.open;state.open.has(i)?state.open.delete(i):state.open.add(i);render();return}
-  if(e.target.id==="more"){state.limit+=80;render();return}
+  if(e.target.id==="more"){state.limit+=100;render();return}
 });
 $("#results").addEventListener("change",e=>{const s=e.target.closest("[data-sel]");if(!s)return;s.checked?state.sel.add(s.dataset.sel):state.sel.delete(s.dataset.sel);render()});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if(!b)return;const t=b.dataset.copy;navigator.clipboard?.writeText(t).then(()=>toast("ISIN copiato: "+t)).catch(()=>toast(t))});
@@ -402,6 +441,7 @@ $("#export").addEventListener("click",async()=>{
 });
 
 // boot
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 render();
 fetch("data/certs.json?t="+Date.now()).then(r=>r.json()).then(j=>{state.certs=j.certs||[];state.status={lastRun:j.updatedAt};state.db=true;state.daily=pickDaily();render()}).catch(()=>{state.db=false;render()});
 function pickDaily(){

@@ -247,18 +247,37 @@ async def scrape_source(ctx, src):
     return certs, info
 
 
+def has_price(c):
+    return bool(c.get("bid")) and bool(c.get("ask"))
+
+
 def merge(old, new):
-    by = {c["isin"]: c for c in old}
+    """Unisce i certificati nuovi all'archivio.
+
+    Denaro e lettera si aggiornano solo in coppia: se una run non li trova entrambi
+    restano i prezzi precedenti, con la loro data (priceAt).
+    """
+    by = {}
+    for c in old:
+        c = dict(c)
+        if has_price(c) and not c.get("priceAt"):
+            c["priceAt"] = c.get("updatedAt")
+        by[c["isin"]] = c
     for c in new:
-        prev = by.get(c["isin"], {})
-        m = {**prev, **{k: v for k, v in c.items() if v not in (None, "", [])}}
-        by[c["isin"]] = m
+        c = {k: v for k, v in c.items() if v not in (None, "", [])}
+        if has_price(c):
+            c["priceAt"] = NOW
+        else:
+            c.pop("bid", None)
+            c.pop("ask", None)
+        by[c["isin"]] = {**by.get(c["isin"], {}), **c}
     today = date.today().isoformat()
     return [c for c in by.values() if not c.get("maturity") or c["maturity"] >= today]
 
 
 async def main():
-    old = json.loads(DATA.read_text()).get("certs", []) if DATA.exists() else []
+    old_meta = json.loads(DATA.read_text()) if DATA.exists() else {}
+    old = old_meta.get("certs", [])
     report = []
     found = []
     async with async_playwright() as p:
@@ -289,14 +308,20 @@ async def main():
                 except Exception:
                     info["parser_error"] = traceback.format_exc()[-800:]
             info["certs"] = len({c["isin"] for c in certs})
+            info["withPrice"] = len({c["isin"] for c in certs if has_price(c)})
             print(f"[{src['name']}] {info.get('certs')} certificati · {info.get('clicks', 0)} click · {info.get('secs')}s · errore={info.get('error', '-')}", flush=True)
             report.append(info)
             found += certs
         await browser.close()
     certs = merge(old, found)
+    # stato per sorgente: quelle non eseguite in questa run mantengono i dati precedenti
+    srcs = {s["name"]: s for s in old_meta.get("sources", [])}
+    for r in report:
+        srcs[r["name"]] = {"name": r["name"], "certs": r.get("certs", 0), "updatedAt": NOW,
+                           "withPrice": r.get("withPrice", 0)}
     DATA.parent.mkdir(parents=True, exist_ok=True)
     DATA.write_text(json.dumps({"updatedAt": NOW, "count": len(certs),
-                                "sources": [{"name": r["name"], "certs": r.get("certs", 0)} for r in report],
+                                "sources": list(srcs.values()),
                                 "certs": certs}, ensure_ascii=False, separators=(",", ":")))
     (DISC / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=1))
     print(f"TOTALE in archivio: {len(certs)}")
