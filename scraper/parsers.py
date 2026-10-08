@@ -201,6 +201,10 @@ def uc_rows(heads, rows, src, NOW, base):
             cpa = None
         if coupon is not None and freq in UC_PER_YEAR:
             cpa = round(coupon / nominal * 100 * UC_PER_YEAR[freq], 4)
+            if cpa > 40 and nominal == 100:  # importo su nominale 1000 con prezzo quotato in %
+                nominal, cpa = 1000, round(cpa / 10, 4)
+            if cpa > 40:
+                cpa = None
         und = g("underlyings")
         out.append(clean({
             "isin": isin, "issuer": src["issuer"], "source": src["name"], "type": g("type"),
