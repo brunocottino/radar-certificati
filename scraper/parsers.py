@@ -527,10 +527,57 @@ async def leonteq_api(DISC, src, NOW, ctx):
             if pno > 60:
                 break
     finally:
-        log["issuers"] = sorted({c.get("issuer") for c in found.values()})
+        # la ricerca non riporta l'emittente: lo ricaviamo filtrando per ciascun emittente
+        try:
+            await leonteq_assign_issuers(page, api, body, found, total, log)
+        except Exception as e:
+            log["issuer_error"] = repr(e)[:500]
+        log["issuers"] = {}
+        for c in found.values():
+            log["issuers"][c["issuer"]] = log["issuers"].get(c["issuer"], 0) + 1
         save(DISC, f"{src['name']}_parser.json", log)
         await page.close()
     return list(found.values())
+
+
+LEONTEQ_ISSUER_KEYS = ["Leonteq", "LeonteqGuernsey", "LeonteqTCM", "LeonteqGuernseyTCM", "LeonteqAMGuernsey", "BIL",
+                       "EFG International Guernsey", "EFGInternationalFinanceGuernseyFLT", "EFG Int Hedge", "Raiffeisen",
+                       "RaiffeisenAmsterdam", "Swissquote", "Swissquote Europe", "Mora", "Standard Chartered Bank London",
+                       "BKB", "CornerBank2", "DeutscheBank"]
+
+
+async def leonteq_assign_issuers(page, api, body, found, total, log):
+    keys = LEONTEQ_ISSUER_KEYS
+    try:
+        st, txt = await fetch(page, "https://certificati.leonteq.com/content/main.json?language_id=5")
+        if st == 200:
+            keys = list((json.loads(txt).get("issuers") or {}).keys()) or keys
+    except Exception:
+        pass
+    per = {}
+    for key in keys:
+        pno, hits = 1, None
+        while hits is None or (pno - 1) * 100 < hits:
+            st, txt = await fetch(page, api, "POST", json.dumps({**body, "issuers": [key], "pageNumber": pno}),
+                                  {"content-type": "application/json", "accept": "*/*"})
+            if st != 200:
+                per[key] = f"HTTP {st}"
+                break
+            d = json.loads(txt)
+            hits = (d.get("searchMetadata") or {}).get("totalHits") or 0
+            if total and hits >= total and len(keys) > 1:  # filtro ignorato: non assegnare
+                per[key] = f"filtro ignorato ({hits})"
+                break
+            prods = d.get("products") or []
+            for p in prods:
+                isin = lv(p, "isin", "value")
+                if isin in found:
+                    found[isin]["issuer"] = leonteq_issuer({"issuer": key})
+            per[key] = hits
+            if not prods or pno >= 20:
+                break
+            pno += 1
+    log["per_issuer"] = per
 
 
 async def leonteq_probe(DISC, src, NOW, ctx):
@@ -623,104 +670,135 @@ def sg_cert(it, src, NOW):
     return c
 
 
+SG_CLASS_RX = re.compile(r"cash ?collect|phoenix|express|autocall|bonus|premium|fixed|cedol|coupon|certificat|memory", re.I)
+
+
+def sg_classes(obj, out=None):
+    """Raccoglie (id, nome, conteggio) delle classificazioni prodotto da qualunque struttura JSON."""
+    out = {} if out is None else out
+    if isinstance(obj, dict):
+        cid = next((obj[k] for k in ("ProductClassificationId", "productClassificationId", "Id", "id") if isinstance(obj.get(k), int)), None)
+        name = next((obj[k] for k in ("Name", "name", "Label", "label", "Title") if isinstance(obj.get(k), str)), None)
+        cnt = next((obj[k] for k in ("ProductsCount", "productsCount", "Count", "count") if isinstance(obj.get(k), int)), None)
+        if cid is not None and name:
+            out[cid] = (name, cnt)
+        for v in obj.values():
+            sg_classes(v, out)
+    elif isinstance(obj, list):
+        for v in obj:
+            sg_classes(v, out)
+    return out
+
+
+async def sg_get(page, path, params=None):
+    from urllib.parse import urlencode
+    url = SG_API + path + ("?" + urlencode(params, doseq=True) if params else "")
+    st, txt = await fetch(page, url, "GET", None, {"accept": "application/json"})
+    return url, st, txt
+
+
 async def socgen_api(DISC, src, NOW, ctx):
+    """Tentativo 2: ProductSearch/Search è un GET con parametri in query (vedi chunk JS)."""
     page = await ctx.new_page()
-    reqs, log = [], {"attempts": []}
+    reqs, log = [], {"attempts": [], "classes": {}}
     page.on("request", lambda q: reqs.append(q) if "EmcWebApi" in q.url else None)
     found = {}
     try:
         await page.goto(src["url"], wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_timeout(4000)
         await accept_cookies(page)
-        for _ in range(4):  # avviso di residenza: bottone "OK" (anche dentro dialog/overlay)
-            clicked = False
-            for loc in (page.get_by_role("button", name=re.compile(r"^\s*ok\s*$", re.I)),
-                        page.locator("button:has-text('OK'), a:has-text('OK')")):
-                try:
-                    if await loc.count():
-                        await loc.first.click(timeout=3000)
-                        clicked = True
-                        break
-                except Exception:
-                    pass
-            if not clicked:
+        for _ in range(4):  # avviso di residenza
+            loc = page.get_by_role("button", name=re.compile(r"^\s*ok\s*$", re.I))
+            try:
+                if not await loc.count():
+                    break
+                await loc.first.click(timeout=3000)
+            except Exception:
                 break
             await page.wait_for_timeout(3000)
         try:
-            await page.wait_for_load_state("networkidle", timeout=20000)
+            await page.wait_for_load_state("networkidle", timeout=15000)
         except Exception:
             pass
-        await page.wait_for_timeout(4000)
-        log["final_url"] = page.url
-        log["emc_requests"] = [{"m": q.method, "url": q.url, "post": (q.post_data or "")[:3000]} for q in reqs][:60]
 
-        # 1) GridConfig: dice quali colonne/criteri usa la ricerca
-        st, grid = await fetch(page, SG_API + "GridConfig")
-        log["gridconfig"] = {"status": st, "body": grid[:20000]}
-
-        # 2) la richiesta Search fatta dal sito (se c'è) con i suoi header
-        bodies = []
-        for q in reqs:
-            if q.method == "POST" and re.search(r"ProductSearch/Search(\?|$)", q.url) and q.post_data:
+        # 1) classificazioni prodotto (servono per GridConfig e Search)
+        classes = {}
+        for path, params in (("ProductClassificationsWithProductsCount", None), ("ProductClassifications", None),
+                             ("ProductClassificationsWithProductsCount", {"assetTypeMenuId": 0}),
+                             ("SearchTop/TabConfig", None)):
+            url, st, txt = await sg_get(page, path, params)
+            log["classes"][url] = {"status": st, "head": txt[:4000]}
+            if st == 200:
                 try:
-                    hdr = {k: v for k, v in (await q.all_headers()).items() if not k.startswith(":") and k.lower() not in
-                           ("content-length", "cookie", "host", "accept-encoding", "connection")}
-                    bodies.append((q.url, json.loads(q.post_data), hdr))
+                    classes.update(sg_classes(json.loads(txt)))
                 except Exception:
                     pass
-        log["site_search"] = [b[1] for b in bodies]
-        # 3) senza richiesta del sito: corpi minimi
-        if not bodies:
-            hdr = {"content-type": "application/json", "accept": "application/json"}
-            for b in ({"PageIndex": 0, "PageSize": 100}, {"Page": 1, "PageSize": 100, "ProductTypeIds": []},
-                      {"pageIndex": 0, "pageSize": 100, "filters": []}):
-                bodies.append((SG_API + "Search", b, hdr))
+        log["class_list"] = {k: v for k, v in list(classes.items())[:200]}
+        cand = [k for k, (n, c) in classes.items() if SG_CLASS_RX.search(n) and c != 0] or list(classes)[:30]
+        log["candidates"] = cand[:40]
 
-        for url, body0, hdr in bodies:
-            pk = sg_key(body0, SG_PAGE_KEYS)
-            sk = sg_key(body0, SG_SIZE_KEYS)
-            if sk:
-                sk[0][sk[1]] = 100
-            start = pk[0][pk[1]] if pk else 0
-            n_before = len(found)
-            for i in range(200):
-                if pk:
-                    pk[0][pk[1]] = start + i
-                st, txt = await fetch(page, url, "POST", json.dumps(body0), hdr)
-                entry = {"url": url, "i": i, "status": st, "len": len(txt), "isins": len(set(ISIN_RE.findall(txt)))}
-                if i == 0:
-                    entry["body"] = body0
-                    entry["head"] = txt[:3000]
-                log["attempts"].append(entry)
-                if st != 200 or not entry["isins"]:
+        # 2) per ogni classificazione: GridConfig, poi Search GET con i nomi di parametro plausibili
+        variants = [
+            lambda cid, pg: {"productClassificationId": cid, "pageIndex": pg, "pageSize": 100},
+            lambda cid, pg: {"ProductClassificationId": cid, "PageIndex": pg, "PageSize": 100},
+            lambda cid, pg: {"productClassificationIds": cid, "page": pg + 1, "pageSize": 100},
+            lambda cid, pg: {"productClassificationId": cid, "pageNumber": pg + 1, "itemsPerPage": 100},
+            lambda cid, pg: {"productClassificationId": cid},
+        ]
+        good = None
+        for cid in cand[:40]:
+            url, st, txt = await sg_get(page, "GridConfig", {"productClassificationId": cid})
+            if cid == cand[0]:
+                log["gridconfig"] = {"status": st, "head": txt[:6000]}
+            order = [good] if good is not None else range(len(variants))
+            for vi in order:
+                seen_page = set()
+                for pg in range(0, 100):
+                    url, st, txt = await sg_get(page, "Search", variants[vi](cid, pg))
+                    isins = set(ISIN_RE.findall(txt))
+                    if pg == 0:
+                        log["attempts"].append({"url": url, "status": st, "len": len(txt), "isins": len(isins),
+                                                "head": txt[:1500] if len(log["attempts"]) < 12 else None})
+                    if st != 200 or not isins or isins <= seen_page:
+                        break
+                    seen_page |= isins
+                    items = generic_items(json.loads(txt))
+                    if "sample" not in log:
+                        log["sample"] = items[:2]
+                    for it in items:
+                        c = sg_cert(it, src, NOW)
+                        if c:
+                            c["type"] = c.get("type") or classes.get(cid, ("",))[0] or None
+                            found.setdefault(c["isin"], c)
+                    if vi == len(variants) - 1:  # senza paginazione
+                        break
+                if seen_page:
+                    good = vi
+                    log["variant"] = vi
                     break
-                items = generic_items(json.loads(txt))
-                if i == 0:
-                    log["sample"] = items[:2]
-                new = 0
-                for it in items:
-                    c = sg_cert(it, src, NOW)
-                    if c and c["isin"] not in found:
-                        found[c["isin"]] = c
-                        new += 1
-                if not pk or not new:
-                    break
-            if len(found) > n_before:
-                break
 
-        # 4) contesto JS intorno alle chiamate, per il prossimo tentativo
+        # 3) la pagina stessa: richieste EmcWebApi viste (utile se i parametri sono altri)
+        log["emc_requests"] = [{"m": q.method, "url": q.url[:500]} for q in reqs][:80]
         if not found:
+            # contesto JS dei punti in cui il sito chiama la ricerca
             urls = await page.evaluate("() => performance.getEntriesByType('resource').map(e => e.name)"
                                        ".filter(u => /\\.js(\\?|$)/.test(u) && u.includes('societegenerale'))")
-            ctxjs = {}
-            for u in urls[:40]:
+            todo, done, ctxjs = list(urls), set(), {}
+            while todo and len(done) < 150:
+                u = todo.pop()
+                if u in done:
+                    continue
+                done.add(u)
                 try:
                     st, t = await fetch(page, u)
                 except Exception:
                     continue
-                for m in re.finditer(r"ProductSearch/(Search|GridConfig)\b", t):
-                    ctxjs.setdefault(u, []).append(t[max(0, m.start() - 1500):m.end() + 1500])
-            log["js_context"] = ctxjs
+                for m in re.finditer(r'["\'](\./chunk-[A-Z0-9]+\.js)["\']', t):
+                    todo.append(SG + "/" + m.group(1)[2:])
+                for m in re.finditer(r"getProductsByFamily\(|productClassificationId", t):
+                    ctxjs.setdefault(u.rsplit("/", 1)[-1], []).append(t[max(0, m.start() - 1200):m.end() + 800])
+            log["js_files"] = len(done)
+            log["js_context"] = {k: v[:6] for k, v in ctxjs.items()}
     except Exception as e:
         log["error"] = repr(e)[:800]
     finally:
