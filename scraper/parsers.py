@@ -190,17 +190,24 @@ def uc_rows(heads, rows, src, NOW, base):
             continue
         isin = m.group(1)
         freq = freq_of(g("freq")) if g("freq") not in (None, "-") else None
+        bid, ask = num(g("bid")) or None, num(g("ask")) or None
+        # "Coupon Condizionato" è un importo per certificato: va riportato in % del nominale
         coupon = num(g("coupon"))
+        nominal = 1000 if (ask or bid or 0) > 400 else 100 if (ask or bid) else None
+        if coupon is not None and nominal is None:
+            nominal = 1000 if coupon > 5 else 100
         cpa = num(g("yieldPa"))
+        if cpa is not None and not 0 < cpa < 40:
+            cpa = None
         if coupon is not None and freq in UC_PER_YEAR:
-            cpa = round(coupon * UC_PER_YEAR[freq], 4)
+            cpa = round(coupon / nominal * 100 * UC_PER_YEAR[freq], 4)
         und = g("underlyings")
         out.append(clean({
             "isin": isin, "issuer": src["issuer"], "source": src["name"], "type": g("type"),
             "underlyings": [p.strip() for p in re.split(r"\s+/\s+|\s*;\s*", und) if p.strip()] if und and und != "-" else None,
             "distBarrier": num(g("distBarrier")), "barrierPct": num(g("barrierPct")), "triggerPct": num(g("triggerPct")),
             "maturity": pdate(g("maturity")) or pdate(g("matPay")),
-            "bid": num(g("bid")) or None, "ask": num(g("ask")) or None,
+            "bid": bid, "ask": ask, "nominal": nominal,
             "freq": freq, "couponPa": cpa,
             "callable": "Autocall" if norm(g("autocall")) in ("si", "yes") else None,
             "url": f"https://www.onemarkets.it/it.omr-redirect.html/{isin}",
