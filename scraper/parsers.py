@@ -104,27 +104,49 @@ def bnp_cert(r, src, NOW):
 
 
 async def bnp_api(DISC, src, NOW, ctx):
-    page = await open_page(ctx, src["url"])
-    out, log = {}, []
+    page = await ctx.new_page()
+    orig = []
+    page.on("request", lambda q: orig.append(q) if "/productlist" in q.url and q.method == "POST" else None)
+    await page.goto(src["url"], wait_until="domcontentloaded", timeout=60000)
+    await page.wait_for_timeout(2500)
+    await accept_cookies(page)
     try:
-        # prima i Cash Collect (set 22/23), poi tutto il gruppo "investimento" (6)
-        for sets in (src.get("productSetIds", [22, 23]), []):
+        await page.wait_for_load_state("networkidle", timeout=20000)
+    except Exception:
+        pass
+    out, log = {}, {"pages": []}
+    hdr = {"content-type": "application/json", "accept": "application/json"}
+    body0 = dict(BNP_BODY)
+    if orig:
+        q = orig[0]
+        h = await q.all_headers()
+        log["orig_headers"] = {k: v for k, v in h.items() if k.lower() != "cookie"}
+        hdr = {k: v for k, v in h.items() if not k.startswith(":") and k.lower() not in
+               ("content-length", "cookie", "host", "accept-encoding", "connection")}
+        try:
+            body0 = json.loads(q.post_data)
+        except Exception:
+            pass
+        log["orig_body"] = body0
+    try:
+        for sets in (body0.get("productSetIds") or [22, 23], []):
             off, total = 0, None
             while total is None or off < total:
-                body = {**BNP_BODY, "productSetIds": sets, "offset": off, "limit": 50}
-                try:
-                    d = await fetch_json(page, BNP_API, body)
-                except Exception as e:
-                    log.append({"sets": sets, "offset": off, "error": repr(e)[:400]})
+                body = {**body0, "productSetIds": sets, "offset": off, "limit": 50}
+                r = await ctx.request.post(BNP_API, data=json.dumps(body), headers=hdr)
+                txt = await r.text()
+                if r.status != 200:
+                    log["pages"].append({"sets": sets, "offset": off, "status": r.status, "err": txt[:500]})
                     break
+                d = json.loads(txt)
                 total = d.get("total") or 0
                 res = d.get("result") or []
-                log.append({"sets": sets, "offset": off, "got": len(res), "total": total})
+                log["pages"].append({"sets": sets, "offset": off, "got": len(res), "total": total})
                 if not res:
                     break
-                for r in res:
-                    if r.get("isin") and r["isin"] not in out:
-                        out[r["isin"]] = bnp_cert(r, src, NOW)
+                for x in res:
+                    if x.get("isin") and x["isin"] not in out:
+                        out[x["isin"]] = bnp_cert(x, src, NOW)
                 off += len(res)
                 if off > 5000:
                     break
@@ -373,60 +395,90 @@ LEONTEQ_FILTERS = {"partner": "LEONTEQ", "regions": ["IT"], "language": "it", "c
                    "barrierTypes": [], "countrySpecificTitles": [], "couponFrequencies": []}
 
 
+def lv(p, k, f="raw"):
+    v = p.get(k)
+    return v.get(f) if isinstance(v, dict) else None
+
+
+def pct(x):
+    x = num(x)
+    return round(x * 100, 4) if x is not None else None
+
+
+def leonteq_cert(p, src, NOW):
+    isin = lv(p, "isin", "value")
+    if not isin:
+        return None
+    unds = [u.get("shortName") for u in (p.get("underlyingList") or {}).get("values") or [] if u.get("shortName")]
+    sub = lv(p, "subtitle", "value") or ""
+    ptype = lv(p, "product-type", "value")
+    name = (lv(p, "name", "value") or "") + " " + (ptype or "")
+    return clean({
+        "isin": isin, "issuer": src["issuer"], "source": src["name"], "type": ptype,
+        "underlyings": unds or [x.strip() for x in (lv(p, "underlyings", "value") or "").split(",") if x.strip()],
+        "couponPa": pct(lv(p, "conditional-coupon")) if lv(p, "conditional-coupon") is not None else pct(lv(p, "coupon")),
+        "triggerPct": pct(lv(p, "conditionalCouponTriggerLevel")),
+        "barrierPct": pct(lv(p, "barrier")),
+        "distBarrier": pct(lv(p, "distance-to-barrier-level")),
+        "maturity": pdate(lv(p, "redemption-date") or lv(p, "last-trading-date")),
+        "bid": (p.get("bid") or {}).get("initialValue") or None,
+        "ask": (p.get("ask") or {}).get("initialValue") or None,
+        "nominal": num(lv(p, "issue-price")),
+        "currency": lv(p, "currency", "value"),
+        "callable": sub if re.search(r"call", sub, re.I) else ("Autocall" if re.search(r"express|autocall", name, re.I) else None),
+        "memory": True if re.search(r"memory|memoria", name, re.I) else None,
+        "market": ", ".join(m.get("marketVenue", "") for m in (p.get("listingMarkets") or {}).get("values") or []) or None,
+        "url": f"https://certificati.leonteq.com/isin/{isin}",
+        "updatedAt": NOW,
+    })
+
+
 async def leonteq_api(DISC, src, NOW, ctx):
     base = "https://certificati.leonteq.com"
-    seen = {}
+    api = base + "/api/product-model/search"
     page = await ctx.new_page()
-
-    async def on_resp(resp):
-        if "/api/product-model/search" in resp.url or "/website-api/brochure/search" in resp.url:
-            try:
-                seen.setdefault(resp.url, []).append({"post": resp.request.post_data, "status": resp.status,
-                                                      "headers": await resp.request.all_headers(),
-                                                      "body": (await resp.text())[:400000]})
-            except Exception as e:
-                seen.setdefault(resp.url, []).append({"error": repr(e)})
-
-    page.on("response", on_resp)
-    log = {"seen": seen, "replay": []}
+    orig = []
+    page.on("request", lambda q: orig.append(q.post_data) if q.url == api and q.method == "POST" else None)
+    log = {"pages": []}
     found = {}
     try:
-        for start in (base + "/", base + "/prodotti", base + "/products?region=IT"):
-            try:
-                await page.goto(start, wait_until="domcontentloaded", timeout=60000)
-                await page.wait_for_timeout(6000)
-            except Exception as e:
-                log["replay"].append({"goto": start, "error": repr(e)[:300]})
-            log.setdefault("final", []).append(page.url)
-        await page.wait_for_timeout(2000)
-        for url, calls in list(seen.items()):
-            for c in calls:
-                if c.get("body") and ISIN_RE.search(c["body"]):
-                    items = generic_items(json.loads(c["body"]))
-                    for i in items:
-                        g = generic_cert(i, src, NOW)
-                        if g:
-                            found[g["isin"]] = g
-        # ripete la ricerca prodotti con pagine più grandi
-        pm = next((c for c in seen.get(base + "/api/product-model/search", []) if c.get("post")), None)
-        if pm:
-            body = json.loads(pm["post"])
-            hdr = {k: v for k, v in pm["headers"].items() if k.lower() in ("content-type", "accept", "x-requested-with", "authorization") or k.lower().startswith("x-")}
-            for variant in ({}, {"pageSize": 200, "page": 0}, {"size": 200, "from": 0}, {"pagination": {"resultPerPage": 200, "page": 0}}):
-                b = {**body, **variant}
-                r = await ctx.request.post(base + "/api/product-model/search", data=json.dumps(b), headers=hdr)
-                txt = await r.text()
-                log["replay"].append({"variant": variant, "status": r.status, "len": len(txt),
-                                      "isins": len(set(ISIN_RE.findall(txt))), "head": txt[:1500]})
-                if r.status == 200 and ISIN_RE.search(txt):
-                    for i in generic_items(json.loads(txt)):
-                        g = generic_cert(i, src, NOW)
-                        if g:
-                            found[g["isin"]] = g
+        await page.goto(base + "/", wait_until="domcontentloaded", timeout=60000)
+        await page.wait_for_timeout(6000)
+        log["final"] = page.url
+        body = json.loads(orig[0]) if orig else {
+            "partner": "LEONTEQ", "currencies": [], "productCategories": [], "productGroups": [], "productTypes": [],
+            "maturityRangeKey": [], "distanceToBarriers": [], "barrierLevelRanges": [], "strikeLevelRanges": [],
+            "underlyings": [], "marketVenues": [], "assetClasses": [], "barrierTypes": [], "countrySpecificTitles": [],
+            "couponFrequencies": [], "sortFields": [],
+            "displayColumns": ["valor", "coupon", "conditionalCoupon", "underlying", "barrierPercentage", "currency",
+                               "lastTradingDate", "bidAsk", "subscriptionEndDate", "documentLinks"],
+            "language": "it", "regions": ["IT"]}
+        # tutto il listino italiano: niente filtro emittente / nuove emissioni
+        body.update({"issuers": [], "omni": "", "conditions": {"": True}, "resultsPerPage": 100})
+        log["body"] = body
+        pno, total = 1, None
+        while total is None or (pno - 1) * 100 < total:
+            r = await ctx.request.post(api, data=json.dumps({**body, "pageNumber": pno}),
+                                       headers={"content-type": "application/json", "accept": "*/*",
+                                                "origin": base, "referer": base + "/"})
+            txt = await r.text()
+            if r.status != 200:
+                log["pages"].append({"page": pno, "status": r.status, "err": txt[:500]})
+                break
+            d = json.loads(txt)
+            total = (d.get("searchMetadata") or {}).get("totalHits") or 0
+            prods = d.get("products") or []
+            log["pages"].append({"page": pno, "got": len(prods), "total": total})
+            if not prods:
+                break
+            for p in prods:
+                c = leonteq_cert(p, src, NOW)
+                if c:
+                    found[c["isin"]] = c
+            pno += 1
+            if pno > 60:
+                break
     finally:
-        for calls in seen.values():
-            for c in calls:
-                c["body"] = (c.get("body") or "")[:30000]
         save(DISC, f"{src['name']}_parser.json", log)
         await page.close()
     return list(found.values())
@@ -446,27 +498,29 @@ async def leonteq_probe(DISC, src, NOW, ctx):
 
 
 async def socgen_probe(DISC, src, NOW, ctx):
-    base = "https://www.prodotti.societegenerale.it/"
-    info = {}
-    r = await ctx.request.get(src["url"])
-    html = await r.text()
-    for js in sorted(set(re.findall(r'(?:src|href)="((?:main|chunk)-[A-Z0-9]+\.js)"', html))):
-        try:
-            t = await (await ctx.request.get(base + js)).text()
-        except Exception as e:
-            info[js] = repr(e)
-            continue
-        hits = sorted(set(re.findall(r'["\'`]([^"\'`]{0,60}(?:EmcWebApi|/api/)[^"\'`]{0,120})["\'`]', t)))
-        ctx_hits = []
-        for m in re.finditer(r"(?i)search|filter|productlist|products", t):
-            if len(ctx_hits) > 40:
-                break
-            frag = t[max(0, m.start() - 150): m.start() + 150]
-            if "api" in frag.lower():
-                ctx_hits.append(frag)
-        if hits or ctx_hits:
-            info[js] = {"paths": hits[:200], "ctx": ctx_hits}
-    save(DISC, f"{src['name']}_js.json", info)
+    page = await open_page(ctx, src["url"])
+    info = {"scripts": {}}
+    try:
+        await page.wait_for_timeout(4000)
+        urls = await page.evaluate("() => performance.getEntriesByType('resource').map(e => e.name)"
+                                   ".filter(u => /\\.js(\\?|$)/.test(u) && u.includes('societegenerale'))")
+        info["script_urls"] = urls
+        for u in urls[:40]:
+            try:
+                st, t = await fetch(page, u)
+            except Exception as e:
+                info["scripts"][u] = repr(e)[:200]
+                continue
+            hits = sorted(set(re.findall(r'["\'`]([^"\'`\s]{0,80}(?:EmcWebApi|api/)[^"\'`\s]{0,120})["\'`]', t)))
+            if hits:
+                info["scripts"][u] = hits[:300]
+        # bottoni presenti nella pagina di ricerca
+        info["buttons"] = await page.evaluate("() => [...document.querySelectorAll('button,a.btn,[role=button]')].map(b=>b.innerText.trim()).filter(Boolean).slice(0,60)")
+    except Exception as e:
+        info["error"] = repr(e)[:500]
+    finally:
+        save(DISC, f"{src['name']}_js.json", info)
+        await page.close()
     return await probe(DISC, src, NOW, ctx, src["url"], [])
 
 
