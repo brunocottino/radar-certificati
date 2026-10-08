@@ -74,7 +74,8 @@ def bnp_cert(r, src, NOW):
     dist = f.get("distanceToKnockInPercent")
     if dist is None and dists:
         dist = min(dists)
-    worst = min(items, key=lambda u: u["distanceToKnockInPercent"]) if dists else None
+    worst = min((u for u in items if u.get("distanceToKnockInPercent") is not None),
+                key=lambda u: u["distanceToKnockInPercent"]) if dists else None
     trig = None
     m = re.search(r"([\d.,]+)\s*%", f.get("nextCondition") or "")
     if m:
@@ -502,6 +503,16 @@ async def socgen_probe(DISC, src, NOW, ctx):
     info = {"scripts": {}}
     try:
         await page.wait_for_timeout(4000)
+        for _ in range(3):  # disclaimer di residenza (bottone "OK")
+            ok = page.get_by_role("button", name=re.compile(r"^\s*ok\s*$", re.I))
+            if await ok.count():
+                try:
+                    await ok.first.click(timeout=3000)
+                except Exception:
+                    pass
+                await page.wait_for_timeout(2500)
+        st, cfg = await fetch(page, "https://www.prodotti.societegenerale.it/EmcWebApi/api/AppConfig")
+        info["appconfig"] = cfg[:20000]
         urls = await page.evaluate("() => performance.getEntriesByType('resource').map(e => e.name)"
                                    ".filter(u => /\\.js(\\?|$)/.test(u) && u.includes('societegenerale'))")
         info["script_urls"] = urls
@@ -511,7 +522,7 @@ async def socgen_probe(DISC, src, NOW, ctx):
             except Exception as e:
                 info["scripts"][u] = repr(e)[:200]
                 continue
-            hits = sorted(set(re.findall(r'["\'`]([^"\'`\s]{0,80}(?:EmcWebApi|api/)[^"\'`\s]{0,120})["\'`]', t)))
+            hits = sorted(set(re.findall(r'["\'`]([^"\'`\s]{0,80}(?:EmcWebApi|api/|[Pp]roduct[A-Za-z]*/|[Ss]earch)[^"\'`\s]{0,120})["\'`]', t)))
             if hits:
                 info["scripts"][u] = hits[:300]
         # bottoni presenti nella pagina di ricerca
