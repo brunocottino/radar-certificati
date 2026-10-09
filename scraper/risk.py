@@ -325,10 +325,10 @@ def update_state(certs, m, offline, force):
 # ---------------------------------------------------------------- distanza dai prezzi dei sottostanti
 
 def refresh_distance(c, m, st):
-    """Per i certificati senza distanza aggiornata dall'emittente (source borsa_isin): se sono noti
+    """Per i certificati con distanza non aggiornata dall'emittente (distAt valorizzato): se sono noti
     strike di ogni sottostante e barriera %, ricalcola le distanze dalle ultime chiusure.
     Altrimenti resta l'ultima distanza nota con la sua data (distAt)."""
-    if c.get("source") != "borsa_isin":
+    if not c.get("distAt"):
         return False
     det, bp = c.get("underlyingsDetail") or [], c.get("barrierPct")
     if not det or not bp or not all(u.get("strike") for u in det):
