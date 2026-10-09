@@ -175,6 +175,7 @@ tr.pick td:first-child{box-shadow:inset 3px 0 0 var(--brass)}
           <label>Scadenza max (anni)<input id="f-mat" type="number" step="0.5" value="5"></label>
           <label>Prezzo max (% del nominale)<input id="f-price" type="number" step="1" placeholder="es. 100"></label>
           <label>Spread max %<input id="f-spread" type="number" step="0.25" value="2"></label>
+          <label>Prob. minima % tenuta barriera<input id="f-prob" type="number" step="5" min="0" max="100" placeholder="es. 80"></label>
           <label>Sottostanti<select id="f-n"><option value="all">Tutti</option><option value="single">Singolo</option><option value="multi">Worst-of (2+)</option></select></label>
           <label>Frequenza cedola<select id="f-freq"><option value="1m">Solo mensile</option><option value="all">Tutte</option></select></label>
           <label>Richiamo<select id="f-call"><option value="all">Tutti</option><option value="callable">Callable emittente (softcallable)</option><option value="autocall">Autocall</option></select></label>
@@ -201,6 +202,7 @@ tr.pick td:first-child{box-shadow:inset 3px 0 0 var(--brass)}
   </section>
 
 
+  <p class="note">Prob. tenuta = probabilità stimata che tutti i sottostanti restino sopra la barriera capitale fino a scadenza (Monte Carlo su volatilità storica, correlazioni a 1 anno, drift 0, senza richiamo anticipato). Verde ≥85%, arancio 70–85%, rosso &lt;70%. L'asterisco indica che è nota solo la distanza del peggiore: la stima è un limite superiore. Stime statistiche, non previsioni né consulenza. Dati anche via <a href="api/v1/meta.json">API JSON</a>.</p>
   <p class="note">Distanze calcolate sul sottostante peggiore. Rend. a scadenza = cedole sul prezzo lettera + recupero verso 100, annualizzato, se tutte le cedole sono pagate. Rend. a richiamo = stesso calcolo alla prossima data di richiamo. Dati raccolti ogni mattina dai siti degli emittenti, indicativi. Non considera rischio emittente, fiscalità e cedole in memoria già maturate. Verifica sempre KID e term sheet dell'emittente.</p>
 </div>
 <div class="toast" id="toast" hidden></div>
@@ -252,6 +254,9 @@ function enrich(c){
   const cd=parseDate(c.nextCallDate);r.callDate=cd&&cd>=today?cd:null;
   if(r.callDate&&r.pricePct&&r.couponPa!=null){const t=Math.max((r.callDate-today)/(365.25*864e5),1/12);r.ytc=(r.couponPa+(100-r.pricePct)/t)/r.pricePct*100}else r.ytc=null;
   const nc=parseDate(c.nextCouponDate);r.couponDate=nc&&nc>=today?nc:null;
+  r.prob=c.probBarrierHold==null?null:c.probBarrierHold*100;
+  r.probUpper=c.probMethod==="solo_peggiore";
+  r.wvol=c.worstVol==null?null:c.worstVol*100;
   r.priceAt=c.priceAt||(ask&&bid?c.updatedAt:null);
   r.stale=!!(ask&&bid&&r.priceAt&&bizDaysSince(r.priceAt)>2);
   r.callKind=/autocall/i.test(c.callable||"")?"autocall":/callable|soft/i.test(c.callable||"")?"callable":null;
@@ -269,10 +274,10 @@ function score(c){
   return Math.round(s);
 }
 const V=id=>{const v=parseFloat($(id).value);return isNaN(v)?null:v};
-function filters(){return{text:$("#f-text").value.trim().toLowerCase(),y:V("#f-yield"),b:V("#f-buf"),t:V("#f-trig"),mat:V("#f-mat"),price:V("#f-price"),sp:V("#f-spread")??2,n:$("#f-n").value,freq:$("#f-freq").value,call:$("#f-call").value,active:$("#f-active").checked,mem:$("#f-mem").checked,illiq:$("#f-illiq").checked}}
+function filters(){return{text:$("#f-text").value.trim().toLowerCase(),y:V("#f-yield"),b:V("#f-buf"),t:V("#f-trig"),mat:V("#f-mat"),price:V("#f-price"),sp:V("#f-spread")??2,prob:V("#f-prob"),n:$("#f-n").value,freq:$("#f-freq").value,call:$("#f-call").value,active:$("#f-active").checked,mem:$("#f-mem").checked,illiq:$("#f-illiq").checked}}
 
 function all(){const f=filters();return state.certs.map(enrich).map(c=>{c.score=score(c);c.liq=liquid(c,f.sp);return c})}
-const SORT={score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
+const SORT={prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
 function compute(){
   const f=filters();const A=all();let excluded=0;
   const rows=A.filter(c=>{
@@ -290,6 +295,7 @@ function compute(){
     if(f.mem&&c.memory!==true)return false;
     if(f.mat!=null&&c.years!=null&&c.years>f.mat)return false;
     if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)return false;
+    if(f.prob!=null&&(c.prob==null||c.prob<f.prob))return false;
     return true;
   });
   const g=SORT[state.sort.key]||SORT.score,d=state.sort.dir;
@@ -297,6 +303,12 @@ function compute(){
   return{A,rows,excluded};
 }
 const cls=v=>v==null?"":v<0?"neg":v<20?"mid":"pos";
+const pcls=v=>v==null?"":v>=85?"pos":v>=70?"mid":"neg";
+const probTxt=c=>c.prob==null?"—":fmt(c.prob,0)+"%"+(c.probUpper?"*":"");
+function probTitle(c){if(c.prob==null)return "Probabilità non calcolabile: mancano prezzo, distanza o volatilità dei sottostanti";
+  return `Probabilità stimata che la barriera tenga fino a scadenza (${c.probMethod==="mc_continua"?"barriera continua":c.probMethod==="mc_europea"?"barriera a scadenza":"solo il peggiore: limite superiore"}), orizzonte ${fmt(c.probHorizonYears,1)} anni${c.probNote?". "+c.probNote:""}`}
+function riskList(c){const r=c.underlyingsRisk||[];if(!r.length)return"";
+  return `<div class="ladder"><div class="ladder-cap">Volatilità storica dei sottostanti (annua)</div>${r.map(u=>`<div class="lad"><span class="n" title="${esc(u.name)}">${esc(u.name)}</span><span class="note">${u.ticker?esc(u.ticker):"ticker non trovato"}</span><span class="d">${u.vol1y!=null?pct(u.vol1y*100,0)+" 1a":"—"}${u.vol3m!=null?" · "+pct(u.vol3m*100,0)+" 3m":""}</span></div>`).join("")}</div>`}
 const pct=(v,d=1)=>v==null?"—":fmt(v,d)+"%";
 const dshort=d=>d?d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"}):"—";
 
@@ -334,6 +346,8 @@ function card(c,why){
     ${why?`<p class="why">${esc(why)}</p>`:""}
     <div class="metrics">
       <div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
+      <div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}" title="${probTitle(c)}">${probTxt(c)}</div></div>
+      <div class="m"><div class="k">Vol peggiore</div><div class="v">${pct(c.wvol,0)}</div></div>
       <div class="m"><div class="k">Dist. trigger cedola</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
       <div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
       <div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
@@ -343,10 +357,11 @@ function card(c,why){
       <div class="m"><div class="k">Prossimo richiamo · scad.</div><div class="v">${dshort(c.callDate)} · ${dshort(c.matDate)}</div></div>
     </div>
     ${ladder(c)}
+    ${riskList(c)}
     <div class="foot"><span><label class="check" style="display:inline-flex"><input type="checkbox" class="sel" data-sel="${esc(c.isin)}" ${state.sel.has(c.isin)?"checked":""}> </label><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${c.couponDate?` · prossima cedola ${dshort(c.couponDate)}`:""}</span><span>${links(c)}</span></div>
   </article>`;
 }
-const COLS=[["","",null],["Pt.","score","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","dist","dist"],["Dist. trigger","trig","trig"],["Barr.","",null],["Cedola","coupon","coupon"],["Lettera %","price","price"],["Spread","spread","spread"],["Rend. ced.","cy","cy"],["Rend. scad.","ytm","ytm"],["Rend. rich.","ytc","ytc"],["Richiamo","call","call"],["Scadenza","mat","mat"]];
+const COLS=[["","",null],["Pt.","score","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","dist","dist"],["Prob. tenuta","prob","prob"],["Vol pegg.","vol","vol"],["Dist. trigger","trig","trig"],["Barr.","",null],["Cedola","coupon","coupon"],["Lettera %","price","price"],["Spread","spread","spread"],["Rend. ced.","cy","cy"],["Rend. scad.","ytm","ytm"],["Rend. rich.","ytc","ytc"],["Richiamo","call","call"],["Scadenza","mat","mat"]];
 function table(rows,picks){
   const pickMap=new Map(picks.map(p=>[p.c.isin,p.why]));
   const head=COLS.map(([t,k,s])=>`<th class="${k==="l"?"l":""} ${s&&state.sort.key===s?"sorted":""}" ${s?`data-sort="${s}"`:""}>${t}${s&&state.sort.key===s?(state.sort.dir<0?" ↓":" ↑"):""}</th>`).join("");
@@ -358,6 +373,8 @@ function table(rows,picks){
       <td class="l t unds-cell" title="${esc((c.und?c.und.map(u=>u.name):c.unds).join(", "))}">${esc((c.und?c.und.map(u=>u.name):c.unds).join(", "))}</td>
       <td class="l t w">${esc(c.worst||"—")}</td>
       <td class="${cls(c.dist)} w">${pct(c.dist)}</td>
+      <td class="${pcls(c.prob)} w" title="${probTitle(c)}">${probTxt(c)}</td>
+      <td>${pct(c.wvol,0)}</td>
       <td class="${cls(c.trigDist)}">${pct(c.trigDist)}</td>
       <td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
       <td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
@@ -368,7 +385,7 @@ function table(rows,picks){
       <td>${pct(c.ytc)}</td>
       <td class="t">${c.callKind==="callable"?"Soft ":c.callKind==="autocall"?"Auto ":""}${dshort(c.callDate)}</td>
       <td>${dshort(c.matDate)}</td></tr>`+
-      (open||why?`<tr class="det"><td></td><td colspan="${COLS.length-1}"><div style="display:grid;gap:8px;padding:4px 0 8px">${why?`<p class="why">${esc(why)}</p>`:""}<div class="badges">${badges(c)}</div>${open?ladder(c):""}${open?`<div class="note">${c.type?esc(c.type)+" · ":""}${c.couponDate?"prossima cedola "+dshort(c.couponDate)+" · ":""}${c.callDist!=null?"peggiore "+(c.callDist>=0?"sopra":"sotto")+" il livello di autocall di "+fmt(Math.abs(c.callDist),1)+"% · ":""}denaro ${fmt(c.bid)} / lettera ${fmt(c.ask)} · ${links(c)}</div>`:""}</div></td></tr>`:"");
+      (open||why?`<tr class="det"><td></td><td colspan="${COLS.length-1}"><div style="display:grid;gap:8px;padding:4px 0 8px">${why?`<p class="why">${esc(why)}</p>`:""}<div class="badges">${badges(c)}</div>${open?ladder(c)+riskList(c):""}${open?`<div class="note">${c.type?esc(c.type)+" · ":""}${c.couponDate?"prossima cedola "+dshort(c.couponDate)+" · ":""}${c.callDist!=null?"peggiore "+(c.callDist>=0?"sopra":"sotto")+" il livello di autocall di "+fmt(Math.abs(c.callDist),1)+"% · ":""}denaro ${fmt(c.bid)} / lettera ${fmt(c.ask)} · ${links(c)}</div>`:""}</div></td></tr>`:"");
   }).join("");
   return `<div class="tbl-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
@@ -416,7 +433,7 @@ function renderUpd(A){
 }
 
 // events
-["#f-text","#f-yield","#f-buf","#f-trig","#f-mat","#f-price","#f-spread","#f-n","#f-freq","#f-call","#f-active","#f-mem","#f-illiq"].forEach(s=>$(s).addEventListener("input",()=>{state.limit=100;render()}));
+["#f-text","#f-yield","#f-buf","#f-trig","#f-mat","#f-price","#f-spread","#f-prob","#f-n","#f-freq","#f-call","#f-active","#f-mem","#f-illiq"].forEach(s=>$(s).addEventListener("input",()=>{state.limit=100;render()}));
 $("#profile").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.profile=b.dataset.p;ls.set("rc-profile",state.profile);state.daily=pickDaily();render()});
 $("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render()});
 $("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.issuers.has(i)?state.issuers.delete(i):state.issuers.add(i);render()});
@@ -434,7 +451,7 @@ $("#export").addEventListener("click",async()=>{
   const list=state.sel.size?A.filter(c=>state.sel.has(c.isin)):rows;
   if(!list.length){toast("Niente da esportare");return}
   if(!window.XLSX){toast("Esportazione non disponibile");return}
-  const data=list.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Sottostanti:(c.und?c.und.map(u=>u.name):c.unds).join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Dist. trigger cedola %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:c.freq||"",Memoria:c.memory?"Sì":"",Richiamo:c.callable||"","Prossimo richiamo":c.callDate?c.callDate.toLocaleDateString("it-IT"):"",Scadenza:c.matDate?c.matDate.toLocaleDateString("it-IT"):"",Denaro:c.bid,Lettera:c.ask,"Prezzo % nominale":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. cedolare %":c.cy==null?null:+c.cy.toFixed(2),"Rend. scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),Punteggio:c.score}));
+  const data=list.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Sottostanti:(c.und?c.und.map(u=>u.name):c.unds).join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger cedola %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:c.freq||"",Memoria:c.memory?"Sì":"",Richiamo:c.callable||"","Prossimo richiamo":c.callDate?c.callDate.toLocaleDateString("it-IT"):"",Scadenza:c.matDate?c.matDate.toLocaleDateString("it-IT"):"",Denaro:c.bid,Lettera:c.ask,"Prezzo % nominale":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. cedolare %":c.cy==null?null:+c.cy.toFixed(2),"Rend. scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),Punteggio:c.score}));
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`radar-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);

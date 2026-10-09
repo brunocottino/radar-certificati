@@ -1,0 +1,140 @@
+{
+ "3 months euribor": {
+  "isin": null,
+  "manual": "-",
+  "name": "3 months Euribor",
+  "ticker": null
+ },
+ "6 months euribor": {
+  "isin": null,
+  "manual": "-",
+  "name": "6 months Euribor",
+  "ticker": null
+ },
+ "cac 40": {
+  "isin": null,
+  "manual": "^FCHI",
+  "name": "CAC 40",
+  "ticker": null
+ },
+ "dax": {
+  "isin": null,
+  "manual": "^GDAXI",
+  "name": "DAX",
+  "ticker": null
+ },
+ "dax index": {
+  "isin": null,
+  "manual": "^GDAXI",
+  "name": "DAX Index",
+  "ticker": null
+ },
+ "dow jones industrial average": {
+  "isin": null,
+  "manual": "^DJI",
+  "name": "Dow Jones Industrial Average",
+  "ticker": null
+ },
+ "euro stoxx 50": {
+  "isin": null,
+  "manual": "^STOXX50E",
+  "name": "EURO STOXX 50",
+  "ticker": null
+ },
+ "euro stoxx 50 index": {
+  "isin": null,
+  "manual": "^STOXX50E",
+  "name": "Euro Stoxx 50 Index",
+  "ticker": null
+ },
+ "euro stoxx banks": {
+  "isin": null,
+  "manual": "^SX7E",
+  "name": "EURO STOXX Banks",
+  "ticker": null
+ },
+ "euro stoxx banks index": {
+  "isin": null,
+  "manual": "^SX7E",
+  "name": "Euro Stoxx Banks Index",
+  "ticker": null
+ },
+ "ftse 100": {
+  "isin": null,
+  "manual": "^FTSE",
+  "name": "FTSE 100",
+  "ticker": null
+ },
+ "ftse mib": {
+  "isin": null,
+  "manual": "FTSEMIB.MI",
+  "name": "FTSE MIB",
+  "ticker": null
+ },
+ "ftse mib index": {
+  "isin": null,
+  "manual": "FTSEMIB.MI",
+  "name": "FTSE MIB Index",
+  "ticker": null
+ },
+ "hang seng": {
+  "isin": null,
+  "manual": "^HSI",
+  "name": "Hang Seng",
+  "ticker": null
+ },
+ "ibex 35": {
+  "isin": null,
+  "manual": "^IBEX",
+  "name": "IBEX 35",
+  "ticker": null
+ },
+ "nasdaq 100": {
+  "isin": null,
+  "manual": "^NDX",
+  "name": "NASDAQ 100",
+  "ticker": null
+ },
+ "nasdaq 100 index": {
+  "isin": null,
+  "manual": "^NDX",
+  "name": "Nasdaq 100 Index",
+  "ticker": null
+ },
+ "nikkei 225": {
+  "isin": null,
+  "manual": "^N225",
+  "name": "NIKKEI 225",
+  "ticker": null
+ },
+ "russell 2000": {
+  "isin": null,
+  "manual": "^RUT",
+  "name": "Russell 2000",
+  "ticker": null
+ },
+ "s p 500": {
+  "isin": null,
+  "manual": "^GSPC",
+  "name": "S&P 500",
+  "ticker": null
+ },
+ "s p 500 composite stock price index": {
+  "isin": null,
+  "manual": "^GSPC",
+  "name": "S&P 500 COMPOSITE STOCK PRICE INDEX",
+  "ticker": null
+ },
+ "s p 500 index": {
+  "isin": null,
+  "manual": "^GSPC",
+  "name": "S&P 500 Index",
+  "ticker": null
+ },
+ "smi": {
+  "isin": null,
+  "manual": "^SSMI",
+  "name": "SMI",
+  "ticker": null
+ }
+}

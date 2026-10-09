@@ -65,6 +65,16 @@ BNP_BODY = {"clientId": 1, "languageId": "it", "countryId": "", "sortPreference"
             "allowLeverageGrouping": False}
 
 
+def barrier_type(v):
+    """Tipo di barriera dell'emittente -> "scadenza" | "continua" (None se non riconosciuto)."""
+    n = norm(v)
+    if re.search(r"maturity|scadenza|europe|final", n):
+        return "scadenza"
+    if re.search(r"continu|americ|daily|giornalier|intraday", n):
+        return "continua"
+    return None
+
+
 def bnp_cert(r, src, NOW):
     f = r.get("first") or {}
     kf = r.get("keyFigures") or {}
@@ -87,7 +97,10 @@ def bnp_cert(r, src, NOW):
         "isin": r["isin"], "issuer": src["issuer"], "source": src["name"],
         "type": r.get("derivativeTypeName"), "underlyings": unds,
         "underlyingsDetail": [clean({"name": u.get("underlyingName"), "strike": u.get("strikeAbsolute"),
-                                     "dist": u.get("distanceToKnockInPercent")}) for u in items] if len(items) > 1 else None,
+                                     "dist": u.get("distanceToKnockInPercent"),
+                                     "isin": u.get("underlyingISIN") if ISIN_RE.fullmatch(u.get("underlyingISIN") or "") else None})
+                              for u in items] if items else None,
+        "barrierType": barrier_type(items[0].get("barrierTypeName") if items else None),
         "worstName": worst.get("underlyingName") if worst else None,
         "couponPa": r.get("premiumPerAnnumPercent"),
         "freq": months_to_freq(kf.get("couponFrequency")) or freq_of(kf.get("couponFrequencyText")),
@@ -447,12 +460,15 @@ def leonteq_cert(p, src, NOW):
     isin = lv(p, "isin", "value")
     if not isin:
         return None
-    unds = [u.get("shortName") for u in (p.get("underlyingList") or {}).get("values") or [] if u.get("shortName")]
+    ulist = [u for u in (p.get("underlyingList") or {}).get("values") or [] if u.get("shortName")]
+    unds = [u.get("shortName") for u in ulist]
     sub = lv(p, "subtitle", "value") or ""
     ptype = lv(p, "product-type", "value")
     name = (lv(p, "name", "value") or "") + " " + (ptype or "")
     return clean({
         "isin": isin, "issuer": leonteq_issuer(p) or "Leonteq Securities", "platform": "Leonteq",
+        "underlyingsDetail": [clean({"name": u.get("shortName"), "isin": u.get("isin")}) for u in ulist] or None,
+        "barrierType": barrier_type(lv(p, "barrier-type", "value")),
         "source": src["name"], "type": ptype,
         "underlyings": unds or [x.strip() for x in (lv(p, "underlyings", "value") or "").split(",") if x.strip()],
         "couponPa": pct(lv(p, "conditional-coupon")) if lv(p, "conditional-coupon") is not None else pct(lv(p, "coupon")),
