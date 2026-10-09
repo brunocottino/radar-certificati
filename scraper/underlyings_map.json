@@ -397,9 +397,8 @@
   "yahooName": "Alstom SA"
  },
  "altria": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US02209S1033",
   "manual": null,
   "name": "Altria Group Inc.",
   "score": 1.0,
@@ -5423,6 +5422,42 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "isin de000bd9vxp0": {
+  "isin": null,
+  "manual": null,
+  "name": "ISIN DE000BD9VXP0",
+  "ticker": null
+ },
+ "isin de000bd9yrq4": {
+  "isin": null,
+  "manual": null,
+  "name": "ISIN DE000BD9YRQ4",
+  "ticker": null
+ },
+ "isin de000bd9yrw2": {
+  "isin": null,
+  "manual": null,
+  "name": "ISIN DE000BD9YRW2",
+  "ticker": null
+ },
+ "isin de000bd9yrx0": {
+  "isin": null,
+  "manual": null,
+  "name": "ISIN DE000BD9YRX0",
+  "ticker": null
+ },
+ "isin de000bd9yry8": {
+  "isin": null,
+  "manual": null,
+  "name": "ISIN DE000BD9YRY8",
+  "ticker": null
+ },
+ "isin de000bd9yrz5": {
+  "isin": null,
+  "manual": null,
+  "name": "ISIN DE000BD9YRZ5",
+  "ticker": null
  },
  "isin de000vc02l14": {
   "checkedAt": "2026-10-09",
@@ -10868,6 +10903,12 @@
   "ticker": "MONC.MI",
   "type": "EQUITY",
   "yahooName": "Moncler S.p.A."
+ },
+ "mondelez": {
+  "isin": "US6092071058",
+  "manual": null,
+  "name": "Mondelez",
+  "ticker": null
  },
  "mondelez international": {
   "checkedAt": "2026-10-09",
