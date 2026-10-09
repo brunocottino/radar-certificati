@@ -49,13 +49,13 @@
  },
  "euro stoxx banks": {
   "isin": null,
-  "manual": "^SX7E",
+  "manual": "EXX1.DE",
   "name": "EURO STOXX Banks",
   "ticker": null
  },
  "euro stoxx banks index": {
   "isin": null,
-  "manual": "^SX7E",
+  "manual": "EXX1.DE",
   "name": "Euro Stoxx Banks Index",
   "ticker": null
  },
