@@ -30,7 +30,7 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | Vontobel | tabelle HTML delle liste prodotti |
 | Leonteq | API `product-model/search` paginata; `issuer` = emittente reale, `platform` = "Leonteq" |
 | BNP Paribas | API `productlist` paginata |
-| UniCredit (onemarkets) | tabella paginata |
+| UniCredit (`borsa_isin`) | per gli ISIN UniCredit già in archivio: denaro e lettera dalla scheda pubblica di Borsa Italiana (`<ISIN>-SEDX`, poi `-ETLX` per Cert-X; ripiego Teleborsa). Playwright, 1 richiesta al secondo, prima le cedole mensili, al massimo 35 minuti per run: la run successiva riprende dagli ISIN non ancora visitati (`scraper/borsa_state.json`). I dati contrattuali restano quelli in archivio; la distanza dalla barriera viene ricalcolata dalle chiusure dei sottostanti solo se strike e barriera sono noti, altrimenti resta l'ultima nota con la data in `distAt` |
 | Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
 | Marex | sonda, nessuna API trovata |
 

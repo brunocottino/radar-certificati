@@ -8,7 +8,9 @@ e cookie del browser. Restituisce una lista di certificati nello schema di
 docs/data/certs.json.
 """
 import json
+import os
 import re
+from pathlib import Path
 
 from run import ISIN_RE, accept_cookies, freq_of, norm, num, pdate
 
@@ -169,126 +171,6 @@ async def bnp_api(DISC, src, NOW, ctx):
         await page.close()
     # solo prodotti a cedola/barriera (il gruppo 6 contiene anche protetti, tracker…)
     return [c for c in out.values() if c.get("couponPa") is not None or c.get("barrierPct") is not None]
-
-
-# ---------------------------------------------------------------- UniCredit (onemarkets)
-# L'elenco prodotti è un frammento HTML (/it.omr-search.html) paginato via JS:
-# lo sfogliamo cliccando "Pagina successiva" e leggendo la tabella a ogni pagina.
-
-UC_COLS = [
-    ("isin", r"^isin"), ("type", r"tipo di prodotto"), ("underlyings", r"^sottostante"),
-    ("distBarrier", r"distanza dalla barriera"), ("maturity", r"^scadenza"),
-    ("matPay", r"data di pagamento finale"), ("bid", r"^denaro"), ("ask", r"^lettera"),
-    ("freq", r"frequenza"), ("autocall", r"autocall"), ("coupon", r"coupon condizionato"),
-    ("yieldPa", r"rendimento potenziale annuo"), ("barrierPct", r"^barriera"), ("triggerPct", r"trigger"),
-]
-UC_PER_YEAR = {"1m": 12, "3m": 4, "6m": 2, "12m": 1}
-
-
-def uc_rows(heads, rows, src, NOW, base):
-    col = {}
-    for i, h in enumerate(heads):
-        n = norm(h)
-        for k, rx in UC_COLS:
-            if k not in col and re.search(rx, n):
-                col[k] = i
-                break
-    if "isin" not in col:
-        return []
-    out = []
-    for r in rows:
-        g = lambda k: r[col[k]].strip() if k in col and col[k] < len(r) else None
-        m = ISIN_RE.search(g("isin") or "")
-        if not m:
-            continue
-        isin = m.group(1)
-        freq = freq_of(g("freq")) if g("freq") not in (None, "-") else None
-        bid, ask = num(g("bid")) or None, num(g("ask")) or None
-        # "Coupon Condizionato" è un importo per certificato: va riportato in % del nominale
-        coupon = num(g("coupon"))
-        nominal = 1000 if (ask or bid or 0) > 400 else 100 if (ask or bid) else None
-        if coupon is not None and nominal is None:
-            nominal = 1000 if coupon > 5 else 100
-        cpa = num(g("yieldPa"))
-        if cpa is not None and not 0 < cpa < 40:
-            cpa = None
-        if coupon is not None and freq in UC_PER_YEAR:
-            cpa = round(coupon / nominal * 100 * UC_PER_YEAR[freq], 4)
-            if cpa > 40 and nominal == 100:  # importo su nominale 1000 con prezzo quotato in %
-                nominal, cpa = 1000, round(cpa / 10, 4)
-            if cpa > 40:
-                cpa = None
-        und = g("underlyings")
-        out.append(clean({
-            "isin": isin, "issuer": src["issuer"], "source": src["name"], "type": g("type"),
-            "underlyings": [p.strip() for p in re.split(r"\s+/\s+|\s*;\s*", und) if p.strip()] if und and und != "-" else None,
-            "distBarrier": num(g("distBarrier")), "barrierPct": num(g("barrierPct")), "triggerPct": num(g("triggerPct")),
-            "maturity": pdate(g("maturity")) or pdate(g("matPay")),
-            "bid": bid, "ask": ask, "nominal": nominal,
-            "freq": freq, "couponPa": cpa,
-            "callable": "Autocall" if norm(g("autocall")) in ("si", "yes") else None,
-            "url": f"https://www.onemarkets.it/it.omr-redirect.html/{isin}",
-            "updatedAt": NOW,
-        }))
-    return out
-
-
-async def unicredit_pages(DISC, src, NOW, ctx):
-    from run import extract_tables
-    out, log, reqs = {}, [], []
-    base = "https://www.onemarkets.it/it/search-page.investment.html?productCategory={0}&productgroupList={0}"
-    for cat in src.get("categories", [129830054, 1050]):
-        page = await ctx.new_page()
-        page.on("request", lambda q: reqs.append({"url": q.url, "post": q.post_data}) if "omr-search" in q.url and len(reqs) < 5 else None)
-        try:
-            await page.goto(base.format(cat), wait_until="domcontentloaded", timeout=60000)
-            await page.wait_for_timeout(2500)
-            await accept_cookies(page)
-            try:
-                await page.wait_for_load_state("networkidle", timeout=20000)
-            except Exception:
-                pass
-            total = None
-            try:
-                total = await page.locator(".headline-total").first.inner_text(timeout=5000)
-            except Exception:
-                pass
-            prev_first = None
-            for pno in range(1, src.get("max_pages", 80) + 1):
-                tables = await extract_tables(page)
-                got = []
-                for t in tables:
-                    heads = t["heads"]
-                    rows = t["rows"]
-                    if rows and len(heads) <= 1 and rows[0] and norm(rows[0][0]) == "isin":
-                        heads, rows = rows[0], rows[1:]
-                    got += uc_rows(heads, rows, src, NOW, base)
-                first = got[0]["isin"] if got else None
-                log.append({"cat": cat, "page": pno, "rows": len(got), "total": total})
-                if not got or first == prev_first:
-                    break
-                prev_first = first
-                for c in got:
-                    out[c["isin"]] = {**out.get(c["isin"], {}), **c}
-                nxt = page.locator('a[title="Pagina successiva"]').first
-                if not await nxt.count():
-                    break
-                if "disabled" in (await nxt.evaluate("a => a.parentElement.className") or ""):
-                    break
-                await nxt.click(timeout=8000)
-                # attende che la tabella cambi
-                for _ in range(30):
-                    await page.wait_for_timeout(500)
-                    t2 = await extract_tables(page)
-                    txt = json.dumps(t2)[:20000]
-                    if first not in txt:
-                        break
-        except Exception as e:
-            log.append({"cat": cat, "error": repr(e)[:500]})
-        finally:
-            await page.close()
-    save(DISC, f"{src['name']}_parser.json", {"log": log, "omr_search_requests": reqs})
-    return list(out.values())
 
 
 # ---------------------------------------------------------------- sonde (Leonteq / SocGen / Marex)
@@ -892,3 +774,139 @@ async def socgen_api(DISC, src, NOW, ctx):
         save(DISC, f"{src['name']}_parser.json", log)
         await page.close()
     return list(found.values())
+
+
+# ---------------------------------------------------------------- Borsa Italiana per ISIN
+# Per i certificati UniCredit già in archivio: denaro e lettera dalla scheda pubblica di
+# Borsa Italiana (SeDeX, poi Cert-X), con ripiego su Teleborsa. 1 richiesta al secondo,
+# prima le cedole mensili; se il tempo della run finisce, la run successiva riparte
+# dagli ISIN non ancora visitati nel ciclo (scraper/borsa_state.json).
+
+BI = "https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/{isin}-{mkt}.html?lang=it"
+BI_MARKETS = (("SEDX", "SeDeX"), ("ETLX", "Cert-X"))
+TELEBORSA = "https://www.teleborsa.it/Ricerca?q={isin}"
+BORSA_STATE = Path(__file__).resolve().parent / "borsa_state.json"
+BORSA_BUDGET_S = int(os.environ.get("BORSA_BUDGET_MIN", "35")) * 60
+BID_RX = re.compile(r"^(prezzo )?(denaro|bid)( \(?eur\)?)?$")
+ASK_RX = re.compile(r"^(prezzo )?(lettera|ask|offer)( \(?eur\)?)?$")
+
+LABEL_PAIRS_JS = """() => {
+  const out = [];
+  for (const tr of document.querySelectorAll('tr')) {
+    const cells = [...tr.children].map(td => td.innerText.trim()).filter(Boolean);
+    for (let i = 0; i + 1 < cells.length; i += 2) out.push([cells[i], cells[i + 1]]);
+  }
+  for (const dt of document.querySelectorAll('dt')) {
+    const dd = dt.nextElementSibling; if (dd) out.push([dt.innerText.trim(), dd.innerText.trim()]);
+  }
+  // etichetta e valore in elementi fratelli (layout a griglia)
+  for (const el of document.querySelectorAll('span,div,strong,label,th')) {
+    if (el.children.length) continue;
+    const t = el.innerText.trim();
+    if (/^(prezzo )?(denaro|lettera|bid|ask)$/i.test(t)) {
+      const sib = el.nextElementSibling || el.parentElement?.nextElementSibling;
+      if (sib) out.push([t, sib.innerText.trim()]);
+    }
+  }
+  return out.slice(0, 400);
+}"""
+
+
+def borsa_prices(pairs):
+    bid = ask = None
+    for k, v in pairs:
+        n = norm(k)
+        val = num(v.split("\n")[0]) if v else None
+        if bid is None and BID_RX.search(n):
+            bid = val
+        elif ask is None and ASK_RX.search(n):
+            ask = val
+    return bid or None, ask or None
+
+
+def borsa_queue(certs, state, today):
+    """ISIN UniCredit non scaduti, prima le cedole mensili, esclusi quelli già fatti nel ciclo."""
+    live = [c for c in certs if c.get("issuer") == "UniCredit" and (not c.get("maturity") or c["maturity"] >= today)]
+    done = set(state.get("done", []))
+    todo = [c for c in live if c["isin"] not in done]
+    if not todo:  # ciclo completo: ne inizia uno nuovo
+        state.update({"cycleStart": today, "done": []})
+        todo = live
+    todo.sort(key=lambda c: (c.get("freq") != "1m", c.get("freq") is None, c["isin"]))
+    return todo
+
+
+async def borsa_isin(DISC, src, NOW, ctx):
+    from datetime import date as _date
+    import time as _time
+    from run import DATA
+    certs = json.loads(DATA.read_text()).get("certs", []) if DATA.exists() else []
+    state = json.loads(BORSA_STATE.read_text()) if BORSA_STATE.exists() else {}
+    today = _date.today().isoformat()
+    todo = borsa_queue(certs, state, today)
+    log = {"queue": len(todo), "cycleStart": state.get("cycleStart"), "samples": [], "fails": 0}
+    page = await ctx.new_page()
+    await page.route("**/*", lambda r: r.abort() if r.request.resource_type in ("image", "font", "media") else r.continue_())
+    out, t_start, t_last = [], _time.time(), 0.0
+
+    async def visit(url):
+        nonlocal t_last
+        wait = 1.0 - (_time.time() - t_last)  # al massimo 1 richiesta al secondo
+        if wait > 0:
+            await page.wait_for_timeout(int(wait * 1000))
+        t_last = _time.time()
+        resp = await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+        return resp.status if resp else 0
+
+    try:
+        for c in todo:
+            if _time.time() - t_start > BORSA_BUDGET_S:
+                log["stopped"] = "tempo esaurito"
+                break
+            isin, got = c["isin"], None
+            for code, label in BI_MARKETS:
+                url = BI.format(isin=isin, mkt=code)
+                try:
+                    st = await visit(url)
+                except Exception as e:
+                    st = repr(e)[:80]
+                if st != 200 or isin not in page.url:
+                    continue
+                if not log.get("cookies"):
+                    await accept_cookies(page)
+                    log["cookies"] = True
+                pairs = await page.evaluate(LABEL_PAIRS_JS)
+                bid, ask = borsa_prices(pairs)
+                if len(log["samples"]) < 3:
+                    log["samples"].append({"url": url, "pairs": pairs[:80]})
+                    (DISC / f"borsa_{isin}_{code}.html").write_text((await page.content())[:1_500_000])
+                if bid or ask or ISIN_RE.search(await page.inner_text("body")):
+                    got = {"url": url.replace("?lang=it", ""), "market": label, "bid": bid, "ask": ask}
+                    break
+            if got is None:  # ripiego: Teleborsa
+                try:
+                    st = await visit(TELEBORSA.format(isin=isin))
+                    if st == 200:
+                        bid, ask = borsa_prices(await page.evaluate(LABEL_PAIRS_JS))
+                        if bid or ask:
+                            got = {"url": page.url, "market": None, "bid": bid, "ask": ask}
+                        if len(log["samples"]) < 5 and not log.get("teleborsa_sample"):
+                            log["teleborsa_sample"] = {"url": page.url, "status": st}
+                            (DISC / f"teleborsa_{isin}.html").write_text((await page.content())[:1_500_000])
+                except Exception:
+                    pass
+            state.setdefault("done", []).append(isin)
+            if got is None:
+                log["fails"] += 1
+                continue
+            out.append(clean({"isin": isin, "issuer": "UniCredit", "source": "borsa_isin", "url": got["url"],
+                              "market": got["market"], "bid": got["bid"], "ask": got["ask"], "updatedAt": NOW}))
+    finally:
+        await page.close()
+        state.update({"lastRun": NOW, "lastVisited": len(out) + log["fails"],
+                      "remaining": len([c for c in todo if c["isin"] not in set(state.get("done", []))])})
+        BORSA_STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1))
+        log.update({k: state[k] for k in ("lastVisited", "remaining")})
+        log["withPrice"] = sum(1 for c in out if c.get("bid") and c.get("ask"))
+        save(DISC, f"{src['name']}_parser.json", log)
+    return out

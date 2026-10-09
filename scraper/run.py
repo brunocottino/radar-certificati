@@ -290,7 +290,10 @@ async def main():
             if ONLY and src["name"] not in ONLY:
                 continue
             try:
-                certs, info = await scrape_source(ctx, src)
+                if src.get("skip_page"):  # sorgente servita solo dal parser
+                    certs, info = [], {"name": src["name"], "url": src["url"]}
+                else:
+                    certs, info = await scrape_source(ctx, src)
             except Exception:
                 certs, info = [], {"name": src["name"], "error": traceback.format_exc()[-800:]}
             # parser specifici (API) se presenti

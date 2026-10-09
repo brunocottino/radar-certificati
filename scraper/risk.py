@@ -322,6 +322,32 @@ def update_state(certs, m, offline, force):
     return st
 
 
+# ---------------------------------------------------------------- distanza dai prezzi dei sottostanti
+
+def refresh_distance(c, m, st):
+    """Per i certificati senza distanza aggiornata dall'emittente (source borsa_isin): se sono noti
+    strike di ogni sottostante e barriera %, ricalcola le distanze dalle ultime chiusure.
+    Altrimenti resta l'ultima distanza nota con la sua data (distAt)."""
+    if c.get("source") != "borsa_isin":
+        return False
+    det, bp = c.get("underlyingsDetail") or [], c.get("barrierPct")
+    if not det or not bp or not all(u.get("strike") for u in det):
+        return False
+    U = st.get("underlyings", {})
+    rows = []
+    for u in det:
+        v = U.get(ticker_of(m, u.get("name")) or "")
+        if not v or not v.get("lastClose"):
+            return False
+        rows.append((u, v))
+    for u, v in rows:
+        u["dist"] = round((1 - u["strike"] * bp / 100 / v["lastClose"]) * 100, 2)
+    w = min(rows, key=lambda r: r[0]["dist"])
+    c.update({"distBarrier": w[0]["dist"], "worstName": w[0].get("name"),
+              "distAt": min(v["lastDate"] for _, v in rows), "distSource": "chiusure sottostanti"})
+    return True
+
+
 # ---------------------------------------------------------------- Monte Carlo
 
 def nearest_corr(c):
@@ -430,6 +456,9 @@ def risk_for(c, m, st):
                 rho = 1.0
             corr[i, j] = corr[j, i] = rho if rho is not None else 0.0  # correlazione ignota: 0 (prudente)
     p = mc_hold(levels, sig, corr, T, continuous, seed_of(c["isin"]))
+    if c.get("distAt") and (TODAY - date.fromisoformat(c["distAt"][:10])).days > 3:
+        out["probNote"] = ((out.get("probNote") + "; ") if out.get("probNote") else "") + \
+            f"distanza dalla barriera del {c['distAt'][:10]}"
     worst = int(np.argmin(dists))
     out.update({"probBarrierHold": round(p, 3), "probMethod": method, "probHorizonYears": round(T, 2),
                 "worstVol": round(float(sig[worst]), 4)})
@@ -448,17 +477,18 @@ def main():
     first_today = load(STATE, {}).get("date") != TODAY.isoformat() or force
     m = update_map(unds, offline or not first_today)
     st = update_state(certs, m, offline, force)
-    t0, n_prob = time.time(), 0
+    t0, n_prob, n_dist = time.time(), 0, 0
     for c in certs:
         for k in ("probBarrierHold", "probMethod", "probHorizonYears", "worstVol", "underlyingsRisk", "riskAt", "probNote"):
             c.pop(k, None)
+        n_dist += refresh_distance(c, m, st)
         r = risk_for(c, m, st)
         c.update({k: v for k, v in r.items() if k != "probNote" or v})
         n_prob += r["probBarrierHold"] is not None
     meta["riskAt"] = NOW
     DATA.write_text(json.dumps(meta, ensure_ascii=False, separators=(",", ":")))
     mapped = sum(1 for k in unds if ticker_of(m, unds[k]["name"]))
-    log(f"sottostanti mappati {mapped}/{len(unds)}; certificati con probabilità {n_prob}; MC {time.time() - t0:.0f}s")
+    log(f"sottostanti mappati {mapped}/{len(unds)}; certificati con probabilità {n_prob}; distanze ricalcolate {n_dist}; MC {time.time() - t0:.0f}s")
 
 
 if __name__ == "__main__":

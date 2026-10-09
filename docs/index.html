@@ -330,6 +330,7 @@ function badges(c){
   if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
   if(!c.ask)b.push(`<span class="b ko">Senza lettera</span>`);else if(!c.liq)b.push(`<span class="b wa">Spread ampio</span>`);
   if(c.stale)b.push(`<span class="b wa">Prezzo del ${dtime(c.priceAt)}</span>`);
+  if(c.distAt&&bizDaysSince(c.distAt)>2)b.push(`<span class="b wa">Distanza del ${dshort(new Date(c.distAt))}</span>`);
   if(c.platform)b.push(`<span class="b">via ${esc(c.platform)}</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);
   else if(c.couponActive===false)b.push(`<span class="b wa">Cedola sospesa</span>`);
@@ -337,7 +338,7 @@ function badges(c){
   if(c.pricePct&&c.pricePct<97)b.push(`<span class="b ok">Sotto la pari</span>`);
   return b.join("");
 }
-function links(c){const bi=`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-SEDX.html?lang=it`;return `<a href="${bi}" target="_blank" rel="noopener">Borsa Italiana</a>${c.url?` · <a href="${esc(c.url.includes(c.isin)?c.url:c.url+"/"+c.isin)}" target="_blank" rel="noopener">Emittente</a>`:""}`}
+function links(c){const own=c.url&&/borsaitaliana\.it/.test(c.url);const bi=own?c.url:`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-SEDX.html?lang=it`;return `<a href="${esc(bi)}" target="_blank" rel="noopener">Borsa Italiana</a>${c.url&&!own?` · <a href="${esc(c.url.includes(c.isin)?c.url:c.url+"/"+c.isin)}" target="_blank" rel="noopener">Emittente</a>`:""}`}
 function card(c,why){
   return `<article class="card ${why!=null?"pick":""}">
     <div class="card-top"><div class="who"><div class="eyebrow">${esc(c.issuer||"Emittente n.d.")}${c.type?" · "+esc(c.type):""}</div><div class="unds">${esc((c.und?c.und.map(u=>u.name):c.unds).join(" · ")||"Sottostanti n.d.")}</div></div>
