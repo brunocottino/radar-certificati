@@ -397,6 +397,7 @@
   "yahooName": "Alstom SA"
  },
  "altria": {
+  "checkedAt": "2026-10-12",
   "exchange": "NYQ",
   "isin": "US02209S1033",
   "manual": null,
@@ -5424,40 +5425,70 @@
   "yahooName": null
  },
  "isin de000bd9vxp0": {
+  "checkedAt": "2026-10-12",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "ISIN DE000BD9VXP0",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "isin de000bd9yrq4": {
+  "checkedAt": "2026-10-12",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "ISIN DE000BD9YRQ4",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "isin de000bd9yrw2": {
+  "checkedAt": "2026-10-12",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "ISIN DE000BD9YRW2",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "isin de000bd9yrx0": {
+  "checkedAt": "2026-10-12",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "ISIN DE000BD9YRX0",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "isin de000bd9yry8": {
+  "checkedAt": "2026-10-12",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "ISIN DE000BD9YRY8",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "isin de000bd9yrz5": {
+  "checkedAt": "2026-10-12",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "ISIN DE000BD9YRZ5",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "isin de000vc02l14": {
   "checkedAt": "2026-10-09",
@@ -9958,6 +9989,17 @@
   "type": null,
   "yahooName": null
  },
+ "leonardo stellantis telecom": {
+  "checkedAt": "2026-10-12",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Leonardo, Stellantis, Telecom",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "leonteq 10y us treasury 9 rc index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -10905,10 +10947,15 @@
   "yahooName": "Moncler S.p.A."
  },
  "mondelez": {
+  "checkedAt": "2026-10-12",
+  "exchange": "NMS",
   "isin": "US6092071058",
   "manual": null,
   "name": "Mondelez",
-  "ticker": null
+  "score": 0.8,
+  "ticker": "MDLZ",
+  "type": "EQUITY",
+  "yahooName": "Mondelez International, Inc."
  },
  "mondelez international": {
   "checkedAt": "2026-10-09",
