@@ -5391,6 +5391,17 @@
   "type": null,
   "yahooName": null
  },
+ "isin de000bd95gu2": {
+  "checkedAt": "2026-10-13",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ISIN DE000BD95GU2",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "isin de000bd9lvf6": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -13941,6 +13952,17 @@
   "ticker": "UCG.MI",
   "type": "EQUITY",
   "yahooName": "UniCredit S.p.A."
+ },
+ "unilever": {
+  "checkedAt": "2026-10-13",
+  "exchange": "LSE",
+  "isin": "GB00BVZK7T90",
+  "manual": null,
+  "name": "Unilever",
+  "score": 1.0,
+  "ticker": "ULVR.L",
+  "type": "EQUITY",
+  "yahooName": "Unilever PLC"
  },
  "unipol": {
   "checkedAt": "2026-10-09",
