@@ -33,6 +33,15 @@ async def main():
         await pg.fill("#q", "IT0000000000")
         await pg.wait_for_timeout(800)
         rep["isin_absent"] = (await pg.text_content("#isinbox") or "").strip()[:200]
+        await pg.fill("#q", "")
+        await pg.wait_for_timeout(800)
+        await pg.click("#reset")
+        await pg.wait_for_timeout(800)
+        rep["count_all"] = await pg.text_content("#count")
+        await pg.select_option("#f-cat", "Leva") if await pg.locator("#f-cat option[value=Leva]").count() else None
+        await pg.evaluate("() => { const c = document.querySelector('#f-lev'); c.checked = true; c.dispatchEvent(new Event('input', {bubbles: true})) }")
+        await pg.wait_for_timeout(9000)
+        rep["count_with_leva"] = await pg.text_content("#count")
         m = await b.new_page(viewport={"width": 390, "height": 844})
         await m.goto(SITE, wait_until="domcontentloaded")
         await m.wait_for_selector(".card", timeout=60000)
