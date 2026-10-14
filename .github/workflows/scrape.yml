@@ -85,7 +85,7 @@ jobs:
         run: |
           git config user.name "radar-bot"
           git config user.email "radar-bot@users.noreply.github.com"
-          git add docs/data docs/api scraper/underlyings_map.json $(ls scraper/risk_state.json scraper/leonteq_state.json 2>/dev/null)
+          git add docs/data docs/api scraper/underlyings_map.json $(ls scraper/risk_state.json scraper/leonteq_state.json scraper/scheda_state.json 2>/dev/null)
           git diff --cached --quiet || git commit -m "Dati certificati $(date -u +%F)"
           git pull --rebase -q origin "${GITHUB_REF_NAME}"
           git push
