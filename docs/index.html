@@ -425,7 +425,7 @@ function enrich(c){
   r.wvol=c.worstVol==null?null:c.worstVol*100;
   // rendimento atteso: media pesata con la probabilità tra "la barriera tiene" e "la barriera viene rotta"
   // (rotta: rimborso ≈ 80% del livello barriera, incassato ≈ 40% delle cedole residue)
-  if(r.prob!=null&&r.ytmGood!=null){const P=r.prob/100,red=(bp||60)*.85;r.ytmBad=(r.couponPa*.5+(red-r.pricePct)/Math.max(ya,1))/r.pricePct*100; // perdita spalmata su almeno un annor.expRet=P*r.ytmGood+(1-P)*r.ytmBad}else{r.ytmBad=null;r.expRet=null}
+  if(r.prob!=null&&r.ytmGood!=null){const P=r.prob/100,red=(bp||60)*.85;r.ytmBad=(r.couponPa*.5+(red-r.pricePct)/Math.max(ya,1))/r.pricePct*100; /* perdita spalmata su almeno un anno */r.expRet=P*r.ytmGood+(1-P)*r.ytmBad}else{r.ytmBad=null;r.expRet=null}
   // senza probabilità: rendimento a scadenza limitato al 25% e scontato secondo quanto è lontano il peggiore
   r.retProxy=r.expRet??(r.ytm!=null?Math.min(r.ytm,25)*(r.dist==null?.5:r.dist>=30?.85:r.dist>=15?.65:.4):null);
   r.ytmHigh=r.ytm!=null&&r.ytm>40; // rendimento "troppo bello": il mercato prezza una perdita probabile

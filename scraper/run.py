@@ -263,12 +263,20 @@ BAD_PRICE_RUN = "2026-10-14T13:19"
 JUNK_UND = re.compile(r"^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$")
 
 
+# tipologie senza cedola periodica: un "premio annuo" eventualmente letto non è una cedola (Twin Win, Jet Cap, Bonus…)
+NO_COUPON = re.compile(r"twin ?win|jet ?cap|outperformance|bonus|discount|tracker|airbag(?!.*cash)|benchmark|turbo|leva|warrant|mini ?future", re.I)
+HAS_COUPON = re.compile(r"cash ?collect|phoenix|express|autocall|coupon|cedol|premi|reverse|fixed|digital|credit linked|step", re.I)
+
+
 def clean_underlyings(c):
     """Toglie dai sottostanti le voci spurie lette dalle tabelle (es. "ISIN DE000…") e normalizza il nominale."""
     if isinstance(c.get("underlyings"), list):
         c["underlyings"] = [u for u in c["underlyings"] if u and not JUNK_UND.match(str(u).strip())]
     if isinstance(c.get("nominal"), str):
         c["nominal"] = num(c["nominal"])
+    kind = f'{c.get("type") or ""} {c.get("typeMarket") or ""}'
+    if c.get("couponPa") is not None and NO_COUPON.search(kind) and not HAS_COUPON.search(kind):
+        c.pop("couponPa")
     return c
 
 
