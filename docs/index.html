@@ -14,222 +14,342 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
 <style>
 *{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}
-/* Layout: desk column — AI query, filters, then a dense sortable grid (desktop) or term-sheet cards (phone); worst-of distance is the hero metric */
+/* Layout: ricerca fissa in alto, chip dei filtri attivi, griglia virtualizzata (desktop) o schede (telefono); scheda dettaglio a comparsa */
 :root{
   --bg:#f3f5f7; --surface:#ffffff; --ink:#14212b; --muted:#5b6b78; --line:#dbe2e8; --row:#f8fafb;
   --accent:#0e6b62; --accent-soft:#e2f1ee; --brass:#9a6b12; --brass-soft:#f6eedd;
-  --good:#1d7a3e; --warn:#a35f00; --bad:#b3261e; --good-bg:#e5f4ea; --warn-bg:#fdf0dc; --bad-bg:#fbe6e4;
+  --good:#1d7a3e; --good-bg:#e5f4ea; --caution:#7d6400; --caution-bg:#faf2cc; --bad:#b3261e; --bad-bg:#fbe6e4;
+  --stale:#b35400; --stale-bg:#fde9d6;
   --f-ui:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-  --r:10px;
+  --r:10px; --row-h:44px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f161c; --surface:#16212a; --ink:#e4ecf1; --muted:#93a4b1; --line:#26343f; --row:#1a2731;
   --accent:#4cc3b3; --accent-soft:#16332f; --brass:#e0b45c; --brass-soft:#33280f;
-  --good:#5fcf87; --warn:#f0a94a; --bad:#ff8a80; --good-bg:#15301f; --warn-bg:#352612; --bad-bg:#3a1a18; color-scheme:dark}}
+  --good:#5fcf87; --good-bg:#15301f; --caution:#e8cc55; --caution-bg:#2f2a10; --bad:#ff8a80; --bad-bg:#3a1a18;
+  --stale:#f59a4a; --stale-bg:#3a2412; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f161c; --surface:#16212a; --ink:#e4ecf1; --muted:#93a4b1; --line:#26343f; --row:#1a2731;
   --accent:#4cc3b3; --accent-soft:#16332f; --brass:#e0b45c; --brass-soft:#33280f;
-  --good:#5fcf87; --warn:#f0a94a; --bad:#ff8a80; --good-bg:#15301f; --warn-bg:#352612; --bad-bg:#3a1a18; color-scheme:dark}
+  --good:#5fcf87; --good-bg:#15301f; --caution:#e8cc55; --caution-bg:#2f2a10; --bad:#ff8a80; --bad-bg:#3a1a18;
+  --stale:#f59a4a; --stale-bg:#3a2412; color-scheme:dark}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45}
-.wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:18px 60px;display:grid;gap:16px}
-h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:14px 80px;display:grid;gap:14px}
+h1{font-size:1.15rem;margin:0;letter-spacing:-.01em}
 h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px;font-weight:600}
-.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
-.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
-.status{font-size:.82rem;color:var(--muted)}
-.status b{color:var(--ink);font-weight:600}
+.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.note{font-size:.78rem;color:var(--muted);max-width:90ch}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
-.ai{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-textarea,input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box}
-textarea{min-height:60px;resize:vertical}
+textarea,input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px}
 button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+button.ghost{border-color:transparent;background:none}
 button:disabled{opacity:.55;cursor:default}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.chips button{font-size:.82rem;padding:5px 10px;border-radius:99px}
-.chips button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-.ai-out{margin-top:12px;font-size:.92rem;display:grid;gap:8px}
-.ai-out p{margin:0;max-width:80ch}
-.grid-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+/* barra in alto */
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgb(0 0 0 / .04)}
+.top-in{max-width:1320px;margin:0 auto;padding:10px 16px 8px;display:grid;gap:8px}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.brand .tools{display:flex;gap:6px;flex-wrap:wrap}
+.brand .tools button{font-size:.84rem;padding:6px 10px}
+.status{font-size:.8rem;color:var(--muted)}
+.status b{color:var(--ink);font-weight:600}
+.search{position:relative}
+.search input{font-size:1.15rem;padding:13px 44px 13px 44px;border-radius:12px;background:var(--surface);border:1.5px solid var(--line)}
+.search input:focus{border-color:var(--accent)}
+.search .ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search .clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;font-size:1.2rem;color:var(--muted)}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgb(0 0 0 / .14);list-style:none;margin:0;padding:4px;z-index:30;max-height:60vh;overflow:auto}
+.sugg li{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer}
+.sugg li[aria-selected="true"],.sugg li:hover{background:var(--accent-soft)}
+.sugg .k{font-size:.72rem;color:var(--muted);white-space:nowrap}
+.sugg .v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;padding:3px 4px 3px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);border:1px solid transparent}
+.chip button{border:none;background:none;color:inherit;padding:0 6px;font-size:.95rem;line-height:1}
+.count{font-weight:700;font-size:.92rem}
+.linkbtn{border:none;background:none;color:var(--accent);padding:2px 4px;font-size:.8rem;text-decoration:underline}
+.banner{background:var(--bad);color:#fff;padding:8px 16px;font-size:.88rem;text-align:center;font-weight:600}
+/* filtri */
+.grid-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
 .grid-f label{display:grid;grid-template-rows:1fr auto;align-items:end;gap:4px;font-size:.76rem;color:var(--muted);min-width:0}
 .check{display:flex;gap:6px;align-items:center;font-size:.85rem}
 .check input{width:auto}
-details summary{cursor:pointer;font-weight:600;list-style:none}
-details summary::-webkit-details-marker{display:none}
-details summary::after{content:" ▾";color:var(--muted)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:none;border-radius:0;font-size:.85rem}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
-.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
-.note{font-size:.78rem;color:var(--muted);max-width:90ch}
-/* table */
-.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.chips button{font-size:.8rem;padding:4px 10px;border-radius:99px}
+.chips button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+details summary{cursor:pointer;font-weight:600;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:" ▾";color:var(--muted)}
+.sheet-head{display:none}
+@media (max-width:819px){
+  .fpanel{position:fixed;left:0;right:0;bottom:0;z-index:40;max-height:85dvh;overflow:auto;border-radius:16px 16px 0 0;transform:translateY(105%);transition:transform .22s ease;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px rgb(0 0 0 / .2)}
+  .fpanel.open{transform:none}
+  .sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;position:sticky;top:-16px;background:var(--surface);padding:6px 0}
+  .fpanel > details > summary{display:none}
+  .only-wide{display:none!important}
+}
+@media (min-width:820px){.only-narrow{display:none!important}}
+.scrim{position:fixed;inset:0;background:rgb(0 0 0 / .35);z-index:35}
+/* tabella virtualizzata */
+.vt{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);height:calc(100dvh - var(--top-h,190px) - 24px);min-height:320px;contain:strict}
 table{border-collapse:collapse;width:100%;font-size:.84rem}
-th,td{padding:7px 9px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
-th{position:sticky;top:0;background:var(--surface);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;cursor:pointer;user-select:none}
+th,td{padding:0 9px;height:var(--row-h);text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);overflow:hidden;text-overflow:ellipsis}
+th{position:sticky;top:0;z-index:2;background:var(--surface);height:38px;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;cursor:pointer;user-select:none}
 th.sorted{color:var(--accent)}
 th.l,td.l{text-align:left}
 td{font-family:var(--f-num);font-variant-numeric:tabular-nums}
 td.t{font-family:var(--f-ui)}
-tbody tr:nth-child(4n+1),tbody tr:nth-child(4n+2){background:var(--row)}
-tr.det td{white-space:normal;text-align:left;background:var(--surface)}
-tr.pick td:first-child{box-shadow:inset 3px 0 0 var(--brass)}
-.unds-cell{max-width:260px;overflow:hidden;text-overflow:ellipsis}
+tbody tr.r{cursor:pointer}
+tbody tr.r:nth-child(even){background:var(--row)}
+tbody tr.r:hover{background:var(--accent-soft)}
+tr.sp td{height:auto;border:none;padding:0}
+.unds-cell{max-width:240px}
 .w{font-weight:600}
-.pos{color:var(--good)} .mid{color:var(--warn)} .neg{color:var(--bad)}
+.pos{color:var(--good)} .ca{color:var(--caution)} .neg{color:var(--bad)}
 .hi{color:var(--accent);font-weight:600}
-.expand{border:none;background:none;padding:0 4px;color:var(--muted);font-size:.9rem}
-/* cards */
+.stale{color:var(--stale)!important;background:var(--stale-bg)}
+.star{border:none;background:none;padding:0 4px;font-size:1.05rem;color:var(--muted);line-height:1}
+.star[aria-pressed="true"]{color:var(--brass)}
+.sel{width:auto;margin:0}
+/* schede */
 .list{display:grid;gap:12px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;min-width:0}
-.card.pick{border-color:var(--brass)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;min-width:0;cursor:pointer}
 .card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .card-top .who{min-width:0}
 .unds{font-weight:600;font-size:1rem;overflow-wrap:anywhere}
 .score{text-align:right;flex:none}
-.score .v{font-family:var(--f-num);font-size:1.5rem;font-weight:600;color:var(--accent);line-height:1}
+.score .v{font-family:var(--f-num);font-size:1.4rem;font-weight:600;color:var(--accent);line-height:1}
 .score .l{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .badges{display:flex;flex-wrap:wrap;gap:6px}
 .b{font-size:.72rem;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;font-family:var(--f-ui)}
 .b.ok{background:var(--good-bg);color:var(--good);border-color:transparent}
-.b.wa{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.b.ca{background:var(--caution-bg);color:var(--caution);border-color:transparent}
 .b.ko{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+.b.st{background:var(--stale-bg);color:var(--stale);border-color:transparent}
 .b.pk{background:var(--accent-soft);color:var(--accent);border-color:transparent}
 .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 14px;border-top:1px dashed var(--line);padding-top:10px}
 @media (max-width:560px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .m .k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .m .v{font-family:var(--f-num);font-variant-numeric:tabular-nums;font-size:.98rem}
-.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:.8rem;color:var(--muted)}
-.foot a,.det a{color:var(--accent)}
 .isin{font-family:var(--f-num);background:none;border:none;padding:0;color:var(--ink);text-decoration:underline dotted;font-size:.82rem}
 .why{font-size:.88rem;background:var(--brass-soft);border-radius:8px;padding:8px 10px;margin:0}
-/* worst-of ladder */
 .ladder{display:grid;gap:6px}
-.lad{display:grid;grid-template-columns:minmax(90px,170px) 1fr 62px;gap:8px;align-items:center;font-size:.8rem}
-.lad .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--f-ui)}
+.lad{display:grid;grid-template-columns:minmax(90px,190px) 1fr 70px;gap:8px;align-items:center;font-size:.8rem}
+.lad .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lad .bar{height:8px;border-radius:4px;background:var(--line);position:relative;overflow:hidden}
 .lad .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--accent)}
 .lad.worst .n{font-weight:700}
 .lad.worst .bar i{background:var(--brass)}
 .lad.under .bar i{background:var(--bad)}
 .lad .d{text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums}
-.ladder-cap{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.cap{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .empty{text-align:center;color:var(--muted);padding:30px 10px}
-.more{justify-self:center}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.85rem;z-index:5}
-.sel{width:auto;margin:0}
-.stale{color:var(--warn)!important;background:var(--warn-bg)}
+/* scheda dettaglio e confronto */
+.drawer{position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end}
+.drawer .dbody{position:relative;background:var(--bg);width:min(760px,100%);height:100%;overflow:auto;box-shadow:-10px 0 30px rgb(0 0 0 / .2);padding:16px 16px 60px;display:grid;gap:14px;align-content:start}
+.drawer.wide .dbody{width:min(1200px,100%)}
+.dhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;position:sticky;top:-16px;background:var(--bg);padding:8px 0;z-index:2}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 16px;font-size:.84rem}
+.kv div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:3px 0}
+.kv span:first-child{color:var(--muted)}
+.kv span:last-child{font-family:var(--f-num);text-align:right;overflow-wrap:anywhere}
+.chart svg{width:100%;height:180px;display:block}
+.chart .tip{font-size:.8rem;min-height:1.3em;color:var(--muted)}
+.inline-detail .dhead{position:static;background:none;padding:0}
+.drawer .lad,.inline-detail .lad{grid-template-columns:minmax(150px,340px) 1fr 70px}
+@media (max-width:819px){.chiprow{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.chip{flex:none}.top-in{gap:6px;padding-top:8px}.status{font-size:.74rem}
+  .drawer .lad,.inline-detail .lad{grid-template-columns:minmax(110px,1fr) 70px 56px}}
+.inline-detail{border:2px solid var(--accent);border-radius:var(--r);background:var(--surface);padding:16px;display:grid;gap:14px}
+.cmp-table td,.cmp-table th{height:auto;padding:7px 10px;white-space:normal;vertical-align:top}
+.cmp-table th{position:static;cursor:default;text-align:left}
+.cmp-table td:first-child{color:var(--muted);text-align:left;font-family:var(--f-ui);font-size:.78rem}
+.cmpbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);border-radius:99px;padding:6px 6px 6px 16px;display:flex;gap:10px;align-items:center;font-size:.88rem;box-shadow:0 6px 20px rgb(0 0 0 / .25)}
+.cmpbar button{border-radius:99px}
+.gloss{max-width:520px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:16px 18px;box-shadow:0 10px 30px rgb(0 0 0 / .2)}
+.gloss dt{font-weight:700;margin-top:8px}
+.gloss dd{margin:2px 0 0;font-size:.88rem;color:var(--muted)}
+.info{border:1px solid var(--line);border-radius:99px;width:24px;height:24px;padding:0;font-size:.78rem;font-weight:700;color:var(--muted);background:var(--surface)}
+.alerts p{margin:4px 0;font-size:.9rem}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(70px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:.85rem;z-index:60}
 .upd{width:100%;font-size:.84rem}
-.upd td,.upd th{padding:5px 8px}
+.upd td,.upd th{height:auto;padding:5px 8px}
 .upd th{cursor:default;position:static}
 </style>
-
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <div class="eyebrow">Certificati a cedola · Italia + Europa</div>
-      <h1>Radar Certificati</h1>
+<div id="banner" class="banner" role="alert" hidden></div>
+<header class="top" id="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="row" style="gap:10px"><h1>Radar Certificati</h1><span class="status" id="status">Caricamento…</span></div>
+      <div class="tools">
+        <button id="b-fav" aria-pressed="false" title="Mostra solo i preferiti">★ Preferiti <span class="num" id="n-fav">0</span></button>
+        <button id="b-filters" aria-expanded="false">Filtri <span class="num" id="n-filt"></span></button>
+        <div class="seg only-wide" id="view"><button data-v="table">Tabella</button><button data-v="cards">Schede</button></div>
+        <button class="info" id="b-gloss" popovertarget="gloss" title="Glossario" aria-label="Glossario">i</button>
+      </div>
     </div>
-    <div class="status" id="status">Collegamento al database…</div>
-  </header>
+    <div class="search" role="combobox" aria-expanded="false" aria-owns="sugg" aria-haspopup="listbox">
+      <svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="text" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="ISIN, sottostanti, emittente, tipologia… es. intesa enel mensile" aria-label="Cerca certificati" aria-autocomplete="list" aria-controls="sugg">
+      <button class="clear" id="q-clear" aria-label="Svuota ricerca" hidden>×</button>
+      <ul id="sugg" class="sugg" role="listbox" hidden></ul>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <div class="chiprow" id="chips"></div>
+      <div class="row">
+        <span class="count" id="count" aria-live="polite"></span>
+        <button id="export" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
+      </div>
+    </div>
+  </div>
+</header>
 
+<main class="wrap">
+  <section class="panel alerts" id="alerts" hidden></section>
 
-  <section class="panel">
-    <details id="updbox">
-      <summary>Aggiornamento per emittente</summary>
-      <div id="upd" style="margin-top:12px"></div>
-      <p class="note">In arancione i prezzi rilevati più di 2 giorni lavorativi fa: l'ultima run non ha trovato denaro e lettera e restano quelli precedenti.</p>
-    </details>
-  </section>
-
-  <section class="panel" id="daily" hidden>
-    <h2>Scelte del giorno · regole del profilo selezionato</h2>
-    <div id="dailybody" class="ai-out" style="margin-top:0"></div>
-  </section>
-
-  <section class="panel">
-    <details id="fbox" open>
+  <section class="panel fpanel" id="fpanel" aria-label="Filtri">
+    <div class="sheet-head"><b>Filtri</b><button id="sheet-close">Fatto</button></div>
+    <details id="fbox">
       <summary>Filtri e profilo</summary>
       <div style="display:grid;gap:14px;margin-top:12px">
         <div class="row">
           <span class="note">Profilo</span>
           <div class="seg" id="profile">
             <button data-p="prudente">Prudente</button>
-            <button data-p="bilanciato" aria-pressed="true">Bilanciato</button>
+            <button data-p="bilanciato">Bilanciato</button>
             <button data-p="aggressivo">Aggressivo</button>
           </div>
+          <span class="note" id="prof-note">imposta i filtri qui sotto; puoi modificarli dopo</span>
         </div>
         <div class="grid-f">
-          <label>Cerca sottostante / ISIN<input id="f-text" type="search" placeholder="Intesa, ASML, DE000…"></label>
-          <label>Rend. a scadenza min % annuo<input id="f-yield" type="number" step="0.5" value="8"></label>
-          <label>Peggiore: distanza barriera min %<input id="f-buf" type="number" step="5" value="25"></label>
-          <label>Peggiore: distanza trigger cedola min %<input id="f-trig" type="number" step="5" placeholder="es. 10"></label>
-          <label>Scadenza max (anni)<input id="f-mat" type="number" step="0.5" value="5"></label>
-          <label>Prezzo max (% del nominale)<input id="f-price" type="number" step="1" placeholder="es. 100"></label>
-          <label>Spread max %<input id="f-spread" type="number" step="0.25" value="2"></label>
-          <label>Prob. minima % tenuta barriera<input id="f-prob" type="number" step="5" min="0" max="100" placeholder="es. 80"></label>
-          <label>Sottostanti<select id="f-n"><option value="all">Tutti</option><option value="single">Singolo</option><option value="multi">Worst-of (2+)</option></select></label>
-          <label>Frequenza cedola<select id="f-freq"><option value="1m">Solo mensile</option><option value="all">Tutte</option></select></label>
-          <label>Richiamo<select id="f-call"><option value="all">Tutti</option><option value="callable">Callable emittente (softcallable)</option><option value="autocall">Autocall</option></select></label>
+          <label>Rend. a scadenza min % annuo<input id="f-y" type="number" step="0.5"></label>
+          <label>Peggiore: distanza barriera min %<input id="f-b" type="number" step="5"></label>
+          <label>Peggiore: distanza trigger cedola min %<input id="f-t" type="number" step="5"></label>
+          <label>Prob. minima % tenuta barriera<input id="f-prob" type="number" step="5" min="0" max="100"></label>
+          <label>Scadenza max (anni)<input id="f-mat" type="number" step="0.5"></label>
+          <label>Prezzo max (% del nominale)<input id="f-price" type="number" step="1"></label>
+          <label>Spread max %<input id="f-sp" type="number" step="0.25"></label>
+          <label>Sottostanti<select id="f-n"><option value="">Tutti</option><option value="single">Singolo</option><option value="multi">Worst-of (2+)</option></select></label>
+          <label>Frequenza cedola<select id="f-freq"><option value="">Tutte</option><option value="1m">Mensile</option><option value="3m">Trimestrale</option><option value="6m">Semestrale</option><option value="12m">Annuale</option></select></label>
+          <label>Richiamo<select id="f-call"><option value="">Tutti</option><option value="callable">Callable emittente (softcallable)</option><option value="autocall">Autocall</option></select></label>
+          <label>Categoria<select id="f-cat"><option value="">Tutte (senza leva)</option></select></label>
         </div>
         <div class="row" style="gap:16px">
-          <label class="check"><input type="checkbox" id="f-active"> Solo cedola in pagamento (peggiore sopra il trigger)</label>
-          <label class="check"><input type="checkbox" id="f-mem"> Solo con effetto memoria</label>
-          <label class="check"><input type="checkbox" id="f-illiq"> Mostra anche senza mercato</label>
+          <label class="check"><input type="checkbox" id="f-active"> Solo cedola in pagamento</label>
+          <label class="check"><input type="checkbox" id="f-mem"> Solo con memoria</label>
+          <label class="check"><input type="checkbox" id="f-illiq"> Anche senza denaro/lettera</label>
+          <label class="check"><input type="checkbox" id="f-lev"> Includi certificati a leva</label>
+          <label class="check"><input type="checkbox" id="f-excl"> Solo panieri composti esclusivamente dai sottostanti cercati</label>
         </div>
         <div class="row chips" id="issuers"></div>
       </div>
     </details>
   </section>
 
-  <section style="display:grid;gap:10px;min-width:0">
-    <div class="toolbar">
-      <div><h2 style="margin:0" id="count">Certificati</h2><span class="note" id="excluded"></span></div>
-      <div class="row">
-        <div class="seg" id="view"><button data-v="table">Tabella</button><button data-v="cards">Schede</button></div>
-        <button id="export">Esporta Excel</button>
-      </div>
-    </div>
-    <div id="results"><div class="empty">I certificati compaiono qui appena il database risponde.</div></div>
+  <section id="isinbox" hidden></section>
+
+  <section class="panel" id="daily" hidden>
+    <h2>Scelte del giorno · regole del profilo selezionato</h2>
+    <div id="dailybody" style="display:grid;gap:8px"></div>
   </section>
 
+  <section id="results" style="min-width:0"><div class="empty">Caricamento dei certificati…</div></section>
 
-  <p class="note">Prob. tenuta = probabilità stimata che tutti i sottostanti restino sopra la barriera capitale fino a scadenza (Monte Carlo su volatilità storica, correlazioni a 1 anno, drift 0, senza richiamo anticipato). Verde ≥85%, arancio 70–85%, rosso &lt;70%. L'asterisco indica che è nota solo la distanza del peggiore: la stima è un limite superiore. Stime statistiche, non previsioni né consulenza. Dati anche via <a href="api/v1/meta.json">API JSON</a>.</p>
-  <p class="note">Distanze calcolate sul sottostante peggiore. Rend. a scadenza = cedole sul prezzo lettera + recupero verso 100, annualizzato, se tutte le cedole sono pagate. Rend. a richiamo = stesso calcolo alla prossima data di richiamo. Dati raccolti ogni mattina dai siti degli emittenti, indicativi. Non considera rischio emittente, fiscalità e cedole in memoria già maturate. Verifica sempre KID e term sheet dell'emittente.</p>
+  <details class="panel" id="updbox">
+    <summary>Aggiornamento per emittente</summary>
+    <div id="upd" style="margin-top:12px"></div>
+    <p class="note">In arancione i prezzi rilevati più di 2 giorni lavorativi fa: l'ultima run non ha trovato denaro e lettera e restano quelli precedenti.</p>
+  </details>
+
+  <p class="note">Prob. tenuta = probabilità stimata che tutti i sottostanti restino sopra la barriera capitale fino a scadenza (Monte Carlo su volatilità storica, correlazioni a 1 anno, drift 0, senza richiamo anticipato). Verde ≥85%, giallo 70–85%, rosso &lt;70%. L'asterisco indica che è nota solo la distanza del peggiore: la stima è un limite superiore. Rend. a scadenza = cedole sul prezzo lettera + recupero verso 100, annualizzato, se tutte le cedole sono pagate. Stime statistiche, non previsioni né consulenza: verificare sempre KID e term sheet. Dati anche via <a href="api/v1/meta.json">API JSON</a>.</p>
+</main>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-label="Scheda certificato"><div class="dbody" id="dbody"></div></div>
+<div class="drawer wide" id="cmp" hidden role="dialog" aria-modal="true" aria-label="Confronto"><div class="dbody" id="cmpbody"></div></div>
+<div class="cmpbar" id="cmpbar" hidden><span id="cmptxt"></span><button class="primary" id="cmpgo">Confronta</button><button id="cmpclr" aria-label="Svuota confronto">×</button></div>
+<div id="gloss" class="gloss" popover>
+  <b>Glossario</b>
+  <dl>
+    <dt>Worst-of</dt><dd>Certificato su più sottostanti: cedole e rimborso dipendono dal peggiore, cioè quello più vicino alla barriera.</dd>
+    <dt>Barriera</dt><dd>Livello (in % dello strike) sotto il quale il capitale non è più protetto. "A scadenza" conta solo l'ultimo giorno; "continua" ogni giorno.</dd>
+    <dt>Trigger cedola</dt><dd>Livello sopra il quale il peggiore deve trovarsi alla data di osservazione perché la cedola venga pagata.</dd>
+    <dt>Memoria</dt><dd>Le cedole non pagate si accumulano e vengono pagate alla prima data in cui il trigger è rispettato.</dd>
+    <dt>Autocall</dt><dd>Rimborso anticipato automatico se tutti i sottostanti sono sopra il livello di richiamo a una data di osservazione.</dd>
+    <dt>Softcallable</dt><dd>L'emittente può decidere di rimborsare in anticipo (callable emittente): di solito lo fa quando il certificato gli costa troppo.</dd>
+    <dt>Denaro / lettera</dt><dd>Prezzo a cui il market maker compra (denaro) e vende (lettera). Si compra alla lettera; la differenza è lo spread.</dd>
+    <dt>Prob. tenuta barriera</dt><dd>Stima statistica che la barriera non venga violata fino a scadenza, da volatilità storica. Non è una previsione.</dd>
+  </dl>
+  <button popovertarget="gloss" popovertargetaction="hide">Chiudi</button>
 </div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
 (function(){
+"use strict";
 const $=s=>document.querySelector(s);
-const state={certs:[],status:null,daily:null,requests:[],profile:"bilanciato",issuers:new Set(),aiPicks:null,db:null,view:null,sort:{key:"score",dir:-1},open:new Set(),sel:new Set(),limit:100};
-const W={prudente:{y:.2,b:.4,t:.2,s:.2},bilanciato:{y:.35,b:.3,t:.15,s:.2},aggressivo:{y:.55,b:.2,t:.1,s:.15}};
 const fmt=(v,d=2)=>v==null||isNaN(v)?"—":Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=(v,d=1)=>v==null||isNaN(v)?"—":fmt(v,d)+"%";
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2400)}
-const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-if(W[ls.get("rc-profile")])state.profile=ls.get("rc-profile");
-state.view=ls.get("rc-view")||(window.innerWidth>=820?"table":"cards");
+const norm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 
-function parseDate(s){if(s==null||s==="")return null;if(typeof s==="number"&&s>20000&&s<80000){return new Date(Math.round((s-25569)*864e5))}
-  if(s instanceof Date)return s;let m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return new Date(+m[1],m[2]-1,+m[3]);m=String(s).match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return new Date(y,m[2]-1,+m[1])}return null}
+/* ---------- date e calendario di borsa ---------- */
 const today=new Date();today.setHours(0,0,0,0);
-// giorni lavorativi (lun-ven) trascorsi da una data
-function bizDaysSince(d){if(!d)return null;const x=new Date(d);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;
-  for(const t=new Date(x);t<today;t.setDate(t.getDate()+1)){const w=t.getDay();if(w!==0&&w!==6)n++}return n}
-const dtime=d=>d?new Date(d).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
+function parseDate(s){if(!s)return null;const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);return m?new Date(+m[1],m[2]-1,+m[3]):null}
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=(h+l-7*m+114)%31+1;return new Date(y,mo-1,da)}
+const holi={};function isOpen(d){const w=d.getDay();if(w===0||w===6)return false;const y=d.getFullYear();
+  if(!holi[y]){const p=easter(y),f=(m,dd)=>new Date(y,m,dd).toDateString(),gf=new Date(p),em=new Date(p);gf.setDate(p.getDate()-2);em.setDate(p.getDate()+1);
+    holi[y]=new Set([f(0,1),gf.toDateString(),em.toDateString(),f(4,1),f(7,15),f(11,24),f(11,25),f(11,26),f(11,31)])}
+  return !holi[y].has(d.toDateString())}
+function tradingDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;const t=new Date(x);t.setDate(t.getDate()+1);for(;t<=today;t.setDate(t.getDate()+1))if(isOpen(t))n++;return n}
+function bizDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;for(const t=new Date(x);t<today;t.setDate(t.getDate()+1)){const w=t.getDay();if(w&&w!==6)n++}return n}
+const dshort=d=>d?d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"}):"—";
+const dtime=s=>s?new Date(s).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
 
+/* ---------- stato ---------- */
+const PRESETS={
+  prudente:{y:5,b:40,t:15,prob:85,mat:4,sp:1.5},
+  bilanciato:{y:8,b:30,t:10,prob:70,mat:5,sp:2},
+  aggressivo:{y:12,b:20,t:null,prob:50,mat:7,sp:3},
+};
+const W={prudente:{y:.2,b:.4,t:.2,s:.2},bilanciato:{y:.35,b:.3,t:.15,s:.2},aggressivo:{y:.55,b:.2,t:.1,s:.15}};
+const NUMF=["y","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["active","mem","illiq","lev","excl","fav"];
+const LABEL={y:v=>`Rend. ≥ ${fmt(v,1)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
+  n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
+  active:()=>"Cedola in pagamento",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
+const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sort:{key:"score",dir:-1},view:null};
+function neutral(){const f={};NUMF.forEach(k=>f[k]=null);SELF.forEach(k=>f[k]="");BOOLF.forEach(k=>f[k]=false);return f}
+function applyPreset(p){state.profile=p;Object.assign(state.f,PRESETS[p])}
+state.f=neutral();applyPreset("bilanciato");
+state.view=ls.get("rc-view",null)||(innerWidth>=820?"table":"cards");
+
+function toHash(){const p=new URLSearchParams();if(state.q)p.set("q",state.q);p.set("p",state.profile);
+  NUMF.forEach(k=>{if(state.f[k]!=null)p.set(k,state.f[k])});SELF.forEach(k=>{if(state.f[k])p.set(k,state.f[k])});BOOLF.forEach(k=>{if(state.f[k])p.set(k,"1")});
+  if(state.iss.size)p.set("iss",[...state.iss].join("|"));if(state.sort.key!=="score"||state.sort.dir!==-1)p.set("s",state.sort.key+":"+state.sort.dir);
+  const h="#"+p.toString();if(location.hash!==h)history.replaceState(null,"",h)}
+function fromHash(){const h=location.hash.slice(1);if(!h)return false;const p=new URLSearchParams(h);
+  state.q=p.get("q")||"";state.profile=W[p.get("p")]?p.get("p"):"bilanciato";state.f=neutral();
+  NUMF.forEach(k=>{const v=parseFloat(p.get(k));state.f[k]=isNaN(v)?null:v});SELF.forEach(k=>state.f[k]=p.get(k)||"");BOOLF.forEach(k=>state.f[k]=p.get(k)==="1");
+  state.iss=new Set((p.get("iss")||"").split("|").filter(Boolean));const s=(p.get("s")||"").split(":");if(s[0])state.sort={key:s[0],dir:+s[1]||-1};return true}
+
+/* ---------- dati ---------- */
+let CERTS=[],META={},INDEX=null,BYISIN=new Map();
+const DETAIL=new Map();
 function enrich(c){
-  const r={...c};
+  const r=c;
   const ask=+c.ask||null,bid=+c.bid||null;
   const nominal=+c.nominal||((ask||bid||0)>400?1000:100);
   r.nominal=nominal;r.ask=ask;r.bid=bid;
@@ -238,15 +358,13 @@ function enrich(c){
   r.matDate=parseDate(c.maturity);
   r.years=r.matDate?Math.max((r.matDate-today)/(365.25*864e5),.05):null;
   r.couponPa=c.couponPa==null||c.couponPa===""?null:+c.couponPa;
-  r.unds=Array.isArray(c.underlyings)?c.underlyings:String(c.underlyings||"").split("|").map(s=>s.trim()).filter(Boolean);
-  r.und=Array.isArray(c.underlyingsDetail)&&c.underlyingsDetail.length?c.underlyingsDetail:null;
-  r.n=r.und?r.und.length:r.unds.length;
+  r.unds=Array.isArray(c.underlyings)?c.underlyings.filter(u=>u&&!/^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$/.test(u)):String(c.underlyings||"").split("|").map(s=>s.trim()).filter(Boolean);
+  r.n=r.unds.length;
   r.dist=c.distBarrier==null||c.distBarrier===""?null:+c.distBarrier;
-  r.worst=c.worstName||(r.n===1?(r.und?r.und[0].name:r.unds[0]):null);
-  const bp=+c.barrierPct||null,tp=+c.triggerPct||null,ap=+c.autocallPct||null;
+  r.worst=c.worstName||(r.n===1?r.unds[0]:null);
+  const bp=+c.barrierPct||null,tp=+c.triggerPct||null;
   r.spotPct=(bp&&r.dist!=null&&r.dist<100)?bp/(1-r.dist/100):null;
   r.trigDist=(tp&&r.spotPct)?(r.spotPct-tp)/r.spotPct*100:null;
-  r.callDist=(ap&&r.spotPct)?(r.spotPct-ap)/r.spotPct*100:null;
   r.couponActive=r.trigDist==null?null:r.trigDist>=0;
   r.belowBarrier=r.dist!=null&&r.dist<0;
   r.cy=(r.pricePct&&r.couponPa!=null)?r.couponPa/r.pricePct*100:null;
@@ -260,11 +378,12 @@ function enrich(c){
   r.priceAt=c.priceAt||(ask&&bid?c.updatedAt:null);
   r.stale=!!(ask&&bid&&r.priceAt&&bizDaysSince(r.priceAt)>2);
   r.callKind=/autocall/i.test(c.callable||"")?"autocall":/callable|soft/i.test(c.callable||"")?"callable":null;
+  r.cat=c.category||"Altro";
+  r.lev=r.cat==="Leva";
+  r.liq=!!(ask&&bid);
   return r;
 }
-function liquid(c,maxSpread){return !!(c.ask&&c.bid&&c.spread!=null&&c.spread<=maxSpread)}
-function score(c){
-  const w=W[state.profile];
+function score(c,w){
   const ys=clamp((c.ytm??0)/25,0,1);
   const bs=c.dist==null?.3:c.belowBarrier?0:Math.min(c.dist/60,1);
   const ts=c.trigDist==null?bs*.8:clamp((c.trigDist+5)/45,0,1);
@@ -273,204 +392,436 @@ function score(c){
   if(c.belowBarrier)s*=.4;else if(c.couponActive===false)s*=.75;
   return Math.round(s);
 }
-const V=id=>{const v=parseFloat($(id).value);return isNaN(v)?null:v};
-function filters(){return{text:$("#f-text").value.trim().toLowerCase(),y:V("#f-yield"),b:V("#f-buf"),t:V("#f-trig"),mat:V("#f-mat"),price:V("#f-price"),sp:V("#f-spread")??2,prob:V("#f-prob"),n:$("#f-n").value,freq:$("#f-freq").value,call:$("#f-call").value,active:$("#f-active").checked,mem:$("#f-mem").checked,illiq:$("#f-illiq").checked}}
+function rescore(){const w=W[state.profile];for(const c of CERTS)c.score=score(c,w)}
 
-function all(){const f=filters();return state.certs.map(enrich).map(c=>{c.score=score(c);c.liq=liquid(c,f.sp);return c})}
-const SORT={prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
-function compute(){
-  const f=filters();const A=all();let excluded=0;
-  const rows=A.filter(c=>{
-    if(!c.liq&&!f.illiq){excluded++;return false}
-    if(f.text&&!(c.isin+" "+c.unds.join(" ")+" "+(c.und||[]).map(u=>u.name).join(" ")+" "+(c.issuer||"")).toLowerCase().includes(f.text))return false;
-    if(state.issuers.size&&!state.issuers.has(c.issuer))return false;
-    if(f.freq==="1m"&&c.freq!=="1m")return false;
-    if(f.n==="single"&&c.n!==1)return false;
-    if(f.n==="multi"&&c.n<2)return false;
-    if(f.call!=="all"&&c.callKind!==f.call)return false;
-    if(f.y!=null&&c.liq&&(c.ytm??-99)<f.y)return false;
-    if(f.b!=null&&c.dist!=null&&c.dist<f.b)return false;
-    if(f.t!=null&&c.trigDist!=null&&c.trigDist<f.t)return false;
-    if(f.active&&c.couponActive!==true)return false;
-    if(f.mem&&c.memory!==true)return false;
-    if(f.mat!=null&&c.years!=null&&c.years>f.mat)return false;
-    if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)return false;
-    if(f.prob!=null&&(c.prob==null||c.prob<f.prob))return false;
-    return true;
+/* ---------- indice di ricerca (costruito una volta) ---------- */
+const FREQW={"1m":["mensile","mensili"],"3m":["trimestrale","trimestrali"],"6m":["semestrale","semestrali"],"12m":["annuale","annuali"]};
+function buildIndex(){
+  const vocab=new Map();       // parola -> Set(indici certificati)
+  const sugg=new Map();        // norm(frase) -> {label,kind,n}
+  const add=(w,i)=>{if(w.length<2&&!/\d/.test(w))return;let s=vocab.get(w);if(!s)vocab.set(w,s=new Set());s.add(i)};
+  const addS=(label,kind)=>{const k=kind+"|"+norm(label);if(!norm(label))return;const e=sugg.get(k);if(e)e.n++;else sugg.set(k,{label,kind,key:norm(label),n:1})};
+  CERTS.forEach((c,i)=>{
+    c.undW=c.unds.map(u=>norm(u).split(" ").filter(Boolean));
+    c.undW.forEach(ws=>ws.forEach(w=>add(w,i)));
+    c.unds.forEach(u=>addS(u,"Sottostante"));
+    for(const s of [c.issuer,c.platform,c.type,c.cat])norm(s).split(" ").forEach(w=>w&&add(w,i));
+    if(c.issuer)addS(c.issuer,"Emittente");if(c.platform)addS(c.platform,"Emittente");if(c.type)addS(c.type,"Tipologia");addS(c.cat,"Categoria");
+    (FREQW[c.freq]||[]).forEach(w=>add(w,i));
+    if(c.memory)["memoria","memory"].forEach(w=>add(w,i));
+    if(c.callKind==="autocall")add("autocall",i);if(c.callKind==="callable")["softcallable","callable"].forEach(w=>add(w,i));
+    if(c.n>1)["worst","worstof"].forEach(w=>add(w,i));
+    add(c.isin.toLowerCase(),i);
   });
-  const g=SORT[state.sort.key]||SORT.score,d=state.sort.dir;
-  rows.sort((a,b)=>{const x=g(a),y=g(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return d*(x-y)});
-  return{A,rows,excluded};
+  ["mensile","trimestrale","semestrale","annuale","memoria","autocall","softcallable"].forEach(w=>{if(vocab.has(w))sugg.set("Caratteristica|"+w,{label:w,kind:"Caratteristica",key:w,n:vocab.get(w).size})});
+  INDEX={vocab,words:[...vocab.keys()],sugg:[...sugg.values()],cache:new Map()};
 }
-const cls=v=>v==null?"":v<0?"neg":v<20?"mid":"pos";
-const pcls=v=>v==null?"":v>=85?"pos":v>=70?"mid":"neg";
+function lev(a,b,max){if(Math.abs(a.length-b.length)>max)return max+1;let p=Array.from({length:b.length+1},(_,j)=>j);
+  for(let i=1;i<=a.length;i++){const q=[i];let mn=i;for(let j=1;j<=b.length;j++){q[j]=Math.min(p[j]+1,q[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));if(q[j]<mn)mn=q[j]}if(mn>max)return max+1;p=q}return p[b.length]}
+// parole del vocabolario che corrispondono a un termine: prefisso esatto o con 1-2 errori di battitura
+function matchWords(t){
+  const c=INDEX.cache.get(t);if(c)return c;
+  const max=t.length>=8?2:t.length>=4?1:0;const out=[];
+  for(const w of INDEX.words){
+    if(w.startsWith(t)){out.push(w);continue}
+    if(max&&w.length>=t.length-1&&(lev(t,w.slice(0,t.length),max)<=max||lev(t,w,max)<=max))out.push(w);
+  }
+  INDEX.cache.set(t,out);return out;
+}
+function searchSet(q){
+  const toks=norm(q).split(" ").filter(Boolean);if(!toks.length)return null;
+  let res=null;const matched=new Set();
+  for(const t of toks){const ws=matchWords(t);ws.forEach(w=>matched.add(w));const s=new Set();for(const w of ws)for(const i of INDEX.vocab.get(w))s.add(i);
+    res=res?new Set([...res].filter(i=>s.has(i))):s;if(!res.size)break}
+  return {set:res,matched,toks};
+}
+
+/* ---------- ISIN ---------- */
+const CC=new Set("IT DE CH XS LU NL FR JE GB IE AT ES BE GG KY US FI SE DK NO PT CZ PL HU IM CA AU JP AN BM SG HK".split(" "));
+function isinMode(q){const s=q.trim().toUpperCase().replace(/\s+/g,"");if(/^[A-Z]{2}[A-Z0-9]{9}\d$/.test(s))return s;
+  if(s.length>=4&&s.length<12&&/^[A-Z]{2}\d[A-Z0-9]*$/.test(s)&&CC.has(s.slice(0,2)))return s;return null}
+
+/* ---------- preferiti e confronto ---------- */
+let FAV=ls.get("rc-fav",{});const CMP=new Set();
+function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];else FAV[isin]={ask:c?.ask??null,at:new Date().toISOString()};ls.set("rc-fav",FAV);render()}
+function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){toast("Massimo 4 certificati nel confronto");return}CMP.add(isin)}renderCmpBar();render(false)}
+
+/* ---------- filtro e ordinamento ---------- */
+const SORT={prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
+let ROWS=[],ISIN=null;
+function compute(){
+  const f=state.f;ISIN=isinMode(state.q);
+  if(ISIN){ROWS=CERTS.filter(c=>c.isin.startsWith(ISIN));return}
+  const S=state.q?searchSet(state.q):null;
+  const out=[];
+  for(let i=0;i<CERTS.length;i++){const c=CERTS[i];
+    if(S&&!S.set.has(i))continue;
+    if(f.fav&&!FAV[c.isin])continue;
+    if(!f.illiq&&!c.liq)continue;
+    if(f.cat){if(c.cat!==f.cat)continue}else if(!f.lev&&c.lev)continue;
+    if(state.iss.size&&!state.iss.has(c.issuer))continue;
+    if(f.freq&&c.freq!==f.freq)continue;
+    if(f.n==="single"&&c.n!==1)continue;
+    if(f.n==="multi"&&c.n<2)continue;
+    if(f.call&&c.callKind!==f.call)continue;
+    if(f.y!=null&&c.liq&&(c.ytm??-99)<f.y)continue;
+    if(f.b!=null&&c.dist!=null&&c.dist<f.b)continue;
+    if(f.t!=null&&c.trigDist!=null&&c.trigDist<f.t)continue;
+    if(f.active&&c.couponActive!==true)continue;
+    if(f.mem&&c.memory!==true)continue;
+    if(f.mat!=null&&c.years!=null&&c.years>f.mat)continue;
+    if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)continue;
+    if(f.sp!=null&&c.spread!=null&&c.spread>f.sp)continue;
+    if(f.prob!=null&&(c.prob==null||c.prob<f.prob))continue;
+    if(f.excl&&S){ // ogni sottostante del paniere deve corrispondere a un termine cercato
+      if(!c.undW.length||!c.undW.every(ws=>ws.some(w=>S.matched.has(w))))continue}
+    out.push(c);
+  }
+  const g=SORT[state.sort.key]||SORT.score,d=state.sort.dir;
+  out.sort((a,b)=>{const x=g(a),y=g(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return d*(x-y)});
+  ROWS=out;
+}
+
+/* ---------- formattazione ---------- */
+const cls=v=>v==null?"":v<0?"neg":v<20?"ca":"pos";
+const pcls=v=>v==null?"":v>=85?"pos":v>=70?"ca":"neg";
 const probTxt=c=>c.prob==null?"—":fmt(c.prob,0)+"%"+(c.probUpper?"*":"");
 function probTitle(c){if(c.prob==null)return "Probabilità non calcolabile: mancano prezzo, distanza o volatilità dei sottostanti";
-  return `Probabilità stimata che la barriera tenga fino a scadenza (${c.probMethod==="mc_continua"?"barriera continua":c.probMethod==="mc_europea"?"barriera a scadenza":"solo il peggiore: limite superiore"}), orizzonte ${fmt(c.probHorizonYears,1)} anni${c.probNote?". "+c.probNote:""}`}
-function riskList(c){const r=c.underlyingsRisk||[];if(!r.length)return"";
-  return `<div class="ladder"><div class="ladder-cap">Volatilità storica dei sottostanti (annua)</div>${r.map(u=>`<div class="lad"><span class="n" title="${esc(u.name)}">${esc(u.name)}</span><span class="note">${u.ticker?esc(u.ticker):"ticker non trovato"}</span><span class="d">${u.vol1y!=null?pct(u.vol1y*100,0)+" 1a":"—"}${u.vol3m!=null?" · "+pct(u.vol3m*100,0)+" 3m":""}</span></div>`).join("")}</div>`}
-const pct=(v,d=1)=>v==null?"—":fmt(v,d)+"%";
-const dshort=d=>d?d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"}):"—";
-
-function ladder(c){
-  const list=c.und||c.unds.map(n=>({name:n,dist:c.n===1?c.dist:null}));
-  if(!list.length)return"";
-  const sorted=[...list].sort((a,b)=>(a.dist??999)-(b.dist??999));
-  const max=Math.max(60,...sorted.map(u=>u.dist??0));
-  return `<div class="ladder"><div class="ladder-cap">Distanza dalla barriera per sottostante${c.barrierPct?` · barriera ${fmt(c.barrierPct,0)}%`:""}${c.triggerPct?` · trigger cedola ${fmt(c.triggerPct,0)}%`:""}${c.barrierType?` · osservazione ${esc(c.barrierType==="scadenza"?"a scadenza":c.barrierType)}`:""}</div>`+
-    sorted.map(u=>{const d=u.dist;const w=c.worst&&u.name===c.worst||(c.n>1&&u===sorted[0]&&d!=null);const width=d==null?0:d<0?100:d/max*100;
-      return `<div class="lad ${w?"worst":""} ${d!=null&&d<0?"under":""}"><span class="n" title="${esc(u.name)}">${w?"▸ ":""}${esc(u.name)}</span><span class="bar"><i style="width:${width}%"></i></span><span class="d ${cls(d)}">${pct(d)}</span></div>`}).join("")+`</div>`;
-}
+  return `Probabilità stimata che la barriera tenga fino a scadenza (${c.probMethod==="mc_continua"?"barriera continua":c.probMethod==="mc_europea"?"barriera a scadenza":"solo il peggiore: limite superiore"})`}
+const freqTxt=f=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[f]||f||"—");
 function badges(c){
   const b=[];
   b.push(`<span class="b">${c.n>1?"Worst-of "+c.n:"Singolo"}</span>`);
-  if(c.freq)b.push(`<span class="b ${c.freq==="1m"?"pk":""}">${c.freq==="1m"?"Mensile":c.freq==="3m"?"Trimestrale":esc(c.freq)}</span>`);
+  b.push(`<span class="b">${esc(c.cat)}</span>`);
+  if(c.freq)b.push(`<span class="b ${c.freq==="1m"?"pk":""}">${freqTxt(c.freq)}</span>`);
   if(c.callable)b.push(`<span class="b pk">${esc(c.callable)}</span>`);
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
   if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
-  if(!c.ask)b.push(`<span class="b ko">Senza lettera</span>`);else if(!c.liq)b.push(`<span class="b wa">Spread ampio</span>`);
-  if(c.stale)b.push(`<span class="b wa">Prezzo del ${dtime(c.priceAt)}</span>`);
-  if(c.distAt&&bizDaysSince(c.distAt)>2)b.push(`<span class="b wa">Distanza del ${dshort(new Date(c.distAt))}</span>`);
   if(c.platform)b.push(`<span class="b">via ${esc(c.platform)}</span>`);
+  if(!c.ask)b.push(`<span class="b ko">Senza lettera</span>`);else if(c.spread!=null&&c.spread>2)b.push(`<span class="b ca">Spread ampio</span>`);
+  if(c.stale)b.push(`<span class="b st">Prezzo del ${dtime(c.priceAt)}</span>`);
+  if(c.distAt&&bizDaysSince(c.distAt)>2)b.push(`<span class="b ca">Distanza del ${dshort(new Date(c.distAt))}</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);
-  else if(c.couponActive===false)b.push(`<span class="b wa">Cedola sospesa</span>`);
+  else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
   else if(c.couponActive===true)b.push(`<span class="b ok">Cedola in pagamento</span>`);
   if(c.pricePct&&c.pricePct<97)b.push(`<span class="b ok">Sotto la pari</span>`);
   return b.join("");
 }
-function links(c){const own=c.url&&/borsaitaliana\.it/.test(c.url);const bi=own?c.url:`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-SEDX.html?lang=it`;return `<a href="${esc(bi)}" target="_blank" rel="noopener">Borsa Italiana</a>${c.url&&!own?` · <a href="${esc(c.url.includes(c.isin)?c.url:c.url+"/"+c.isin)}" target="_blank" rel="noopener">Emittente</a>`:""}`}
-function card(c,why){
-  return `<article class="card ${why!=null?"pick":""}">
-    <div class="card-top"><div class="who"><div class="eyebrow">${esc(c.issuer||"Emittente n.d.")}${c.type?" · "+esc(c.type):""}</div><div class="unds">${esc((c.und?c.und.map(u=>u.name):c.unds).join(" · ")||"Sottostanti n.d.")}</div></div>
-    <div class="score"><div class="v">${c.score}</div><div class="l">punteggio</div></div></div>
-    <div class="badges">${badges(c)}</div>
-    ${why?`<p class="why">${esc(why)}</p>`:""}
-    <div class="metrics">
-      <div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
-      <div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}" title="${probTitle(c)}">${probTxt(c)}</div></div>
-      <div class="m"><div class="k">Vol peggiore</div><div class="v">${pct(c.wvol,0)}</div></div>
-      <div class="m"><div class="k">Dist. trigger cedola</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
-      <div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
-      <div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
-      <div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div></div>
-      <div class="m"><div class="k">Lettera · prezzo</div><div class="v ${c.stale?"stale":""}" title="${c.priceAt?"Prezzo del "+dtime(c.priceAt):""}">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
-      <div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
-      <div class="m"><div class="k">Prossimo richiamo · scad.</div><div class="v">${dshort(c.callDate)} · ${dshort(c.matDate)}</div></div>
-    </div>
-    ${ladder(c)}
-    ${riskList(c)}
-    <div class="foot"><span><label class="check" style="display:inline-flex"><input type="checkbox" class="sel" data-sel="${esc(c.isin)}" ${state.sel.has(c.isin)?"checked":""}> </label><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${c.couponDate?` · prossima cedola ${dshort(c.couponDate)}`:""}</span><span>${links(c)}</span></div>
-  </article>`;
-}
-const COLS=[["","",null],["Pt.","score","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","dist","dist"],["Prob. tenuta","prob","prob"],["Vol pegg.","vol","vol"],["Dist. trigger","trig","trig"],["Barr.","",null],["Cedola","coupon","coupon"],["Lettera %","price","price"],["Spread","spread","spread"],["Rend. ced.","cy","cy"],["Rend. scad.","ytm","ytm"],["Rend. rich.","ytc","ytc"],["Richiamo","call","call"],["Scadenza","mat","mat"]];
-function table(rows,picks){
-  const pickMap=new Map(picks.map(p=>[p.c.isin,p.why]));
-  const head=COLS.map(([t,k,s])=>`<th class="${k==="l"?"l":""} ${s&&state.sort.key===s?"sorted":""}" ${s?`data-sort="${s}"`:""}>${t}${s&&state.sort.key===s?(state.sort.dir<0?" ↓":" ↑"):""}</th>`).join("");
-  const body=rows.map(c=>{const open=state.open.has(c.isin);const why=pickMap.get(c.isin);
-    return `<tr class="${why!=null?"pick":""}">
-      <td class="t"><input type="checkbox" class="sel" data-sel="${esc(c.isin)}" ${state.sel.has(c.isin)?"checked":""} aria-label="Seleziona ${esc(c.isin)}"><button class="expand" data-open="${esc(c.isin)}" aria-label="Dettaglio">${open?"▾":"▸"}</button></td>
-      <td class="hi">${c.score}</td>
-      <td class="l"><button class="isin" data-copy="${esc(c.isin)}">${esc(c.isin)}</button><div class="note">${esc(c.issuer||"")}</div></td>
-      <td class="l t unds-cell" title="${esc((c.und?c.und.map(u=>u.name):c.unds).join(", "))}">${esc((c.und?c.und.map(u=>u.name):c.unds).join(", "))}</td>
-      <td class="l t w">${esc(c.worst||"—")}</td>
-      <td class="${cls(c.dist)} w">${pct(c.dist)}</td>
-      <td class="${pcls(c.prob)} w" title="${probTitle(c)}">${probTxt(c)}</td>
-      <td>${pct(c.wvol,0)}</td>
-      <td class="${cls(c.trigDist)}">${pct(c.trigDist)}</td>
-      <td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
-      <td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
-      <td class="${c.stale?"stale":""}" title="${c.priceAt?"Prezzo del "+dtime(c.priceAt):""}">${c.pricePct?fmt(c.pricePct,2):"—"}</td>
-      <td>${pct(c.spread,2)}</td>
-      <td>${pct(c.cy)}</td>
-      <td class="hi">${pct(c.ytm)}</td>
-      <td>${pct(c.ytc)}</td>
-      <td class="t">${c.callKind==="callable"?"Soft ":c.callKind==="autocall"?"Auto ":""}${dshort(c.callDate)}</td>
-      <td>${dshort(c.matDate)}</td></tr>`+
-      (open||why?`<tr class="det"><td></td><td colspan="${COLS.length-1}"><div style="display:grid;gap:8px;padding:4px 0 8px">${why?`<p class="why">${esc(why)}</p>`:""}<div class="badges">${badges(c)}</div>${open?ladder(c)+riskList(c):""}${open?`<div class="note">${c.type?esc(c.type)+" · ":""}${c.couponDate?"prossima cedola "+dshort(c.couponDate)+" · ":""}${c.callDist!=null?"peggiore "+(c.callDist>=0?"sopra":"sotto")+" il livello di autocall di "+fmt(Math.abs(c.callDist),1)+"% · ":""}denaro ${fmt(c.bid)} / lettera ${fmt(c.ask)} · ${links(c)}</div>`:""}</div></td></tr>`:"");
-  }).join("");
-  return `<div class="tbl-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
-}
+const bi=c=>`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-${c.market==="Cert-X"?"ETLX":"SEDX"}.html?lang=it`;
+function links(c){const own=c.url&&/borsaitaliana\.it/.test(c.url);
+  return `<a href="${esc(own?c.url:bi(c))}" target="_blank" rel="noopener">Borsa Italiana</a>${c.url&&!own?` · <a href="${esc(c.url.includes(c.isin)?c.url:c.url.replace(/\/$/,"")+"/"+c.isin)}" target="_blank" rel="noopener">Emittente</a>`:""}${c.priceUrl?` · <a href="${esc(c.priceUrl)}" target="_blank" rel="noopener">Fonte prezzo</a>`:""}`}
+const starBtn=c=>`<button class="star" data-fav="${esc(c.isin)}" aria-pressed="${!!FAV[c.isin]}" title="${FAV[c.isin]?"Togli dai preferiti":"Aggiungi ai preferiti"}">${FAV[c.isin]?"★":"☆"}</button>`;
+const cmpBox=c=>`<label class="check" title="Confronta"><input type="checkbox" class="sel" data-cmp="${esc(c.isin)}" ${CMP.has(c.isin)?"checked":""}></label>`;
 
-function render(){
-  const {A,rows,excluded}=compute();
-  const iss=[...new Set(A.map(c=>c.issuer).filter(Boolean))].sort();
-  const html=iss.map(i=>`<button data-i="${esc(i)}" aria-pressed="${state.issuers.has(i)}">${esc(i)} <span class="note">${A.filter(c=>c.issuer===i).length}</span></button>`).join("");
-  if($("#issuers").innerHTML!==html)$("#issuers").innerHTML=html;
-  document.querySelectorAll("#profile button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
-  document.querySelectorAll("#view button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===state.view));
-  let picks=[];
-  if(state.aiPicks){const map=new Map(A.map(c=>[c.isin,c]));picks=state.aiPicks.items.map(p=>map.get(p.isin)&&{c:map.get(p.isin),why:p.why}).filter(Boolean)}
-  const pickSet=new Set(picks.map(p=>p.c.isin));
-  const ordered=[...picks.map(p=>p.c),...rows.filter(c=>!pickSet.has(c.isin))];
-  const shown=ordered.slice(0,state.limit);
+/* ---------- tabella virtualizzata ---------- */
+const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","","dist"],["Prob. tenuta","","prob"],["Vol pegg.","","vol"],["Dist. trigger","","trig"],["Barr.","",null],["Cedola","","coupon"],["Lettera %","","price"],["Spread","","spread"],["Rend. ced.","","cy"],["Rend. scad.","","ytm"],["Rend. rich.","","ytc"],["Richiamo","","call"],["Scadenza","","mat"]];
+function rowHtml(c){
+  return `<tr class="r" data-open="${esc(c.isin)}">
+<td class="t">${starBtn(c)}${cmpBox(c)}</td><td class="hi">${c.score}</td>
+<td class="l"><span class="num" style="font-size:.82rem">${esc(c.isin)}</span><span class="note"> ${esc(c.issuer||"")}</span></td>
+<td class="l t unds-cell" title="${esc(c.unds.join(", "))}">${esc(c.unds.join(", "))}</td>
+<td class="l t w" style="max-width:150px">${esc(c.worst||"—")}</td>
+<td class="${cls(c.dist)} w">${pct(c.dist)}</td>
+<td class="${pcls(c.prob)} w" title="${esc(probTitle(c))}">${probTxt(c)}</td>
+<td>${pct(c.wvol,0)}</td>
+<td class="${cls(c.trigDist)}">${pct(c.trigDist)}</td>
+<td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
+<td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
+<td class="${c.stale?"stale":""}" title="${c.priceAt?"Prezzo del "+dtime(c.priceAt):""}">${c.pricePct?fmt(c.pricePct,2):"—"}</td>
+<td>${pct(c.spread,2)}</td><td>${pct(c.cy)}</td><td class="hi">${pct(c.ytm)}</td><td>${pct(c.ytc)}</td>
+<td class="t">${c.callKind==="callable"?"Soft ":c.callKind==="autocall"?"Auto ":""}${dshort(c.callDate)}</td><td>${dshort(c.matDate)}</td></tr>`}
+let vt=null;
+function renderTable(){
   const res=$("#results");
-  if(!state.certs.length){res.innerHTML=`<div class="empty">${state.db===false?"Dati non disponibili: riprova tra poco.":"Nessun certificato ancora: il robot li carica ogni mattina."}</div>`}
-  else if(!ordered.length){res.innerHTML=`<div class="empty">Nessun certificato con questi filtri. Prova ad abbassare il rendimento minimo o la distanza dalla barriera.</div>`}
+  const head=COLS.map(([t,k,s])=>`<th class="${k} ${s&&state.sort.key===s?"sorted":""}" ${s?`data-sort="${s}"`:""}>${t}${s&&state.sort.key===s?(state.sort.dir<0?" ↓":" ↑"):""}</th>`).join("");
+  res.innerHTML=`<div class="vt" id="vt"><table><thead><tr>${head}</tr></thead><tbody id="vtb"></tbody></table></div>`;
+  vt=$("#vt");vt.addEventListener("scroll",paintRows,{passive:true});paintRows();
+}
+let lastPaint="";
+function paintRows(){
+  if(!vt)return;const H=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--row-h"))||44;
+  const top=Math.max(0,vt.scrollTop-38),vis=Math.ceil(vt.clientHeight/H)+10;
+  const a=Math.max(0,Math.floor(top/H)-5),b=Math.min(ROWS.length,a+vis);
+  const key=a+":"+b+":"+ROWS.length;if(key===lastPaint)return;lastPaint=key;
+  $("#vtb").innerHTML=`<tr class="sp"><td colspan="${COLS.length}" style="height:${a*H}px"></td></tr>`+ROWS.slice(a,b).map(rowHtml).join("")+`<tr class="sp"><td colspan="${COLS.length}" style="height:${(ROWS.length-b)*H}px"></td></tr>`;
+}
+
+/* ---------- schede (telefono) ---------- */
+let cardN=0,io=null;
+function cardHtml(c){
+  return `<article class="card" data-open="${esc(c.isin)}">
+<div class="card-top"><div class="who"><div class="eyebrow">${esc(c.issuer||"Emittente n.d.")}${c.type?" · "+esc(c.type):""}</div><div class="unds">${esc(c.unds.join(" · ")||"Sottostanti n.d.")}</div></div>
+<div class="score">${starBtn(c)}<div class="v">${c.score}</div><div class="l">punteggio</div></div></div>
+<div class="badges">${badges(c)}</div>
+<div class="metrics">
+<div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
+<div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}">${probTxt(c)}</div></div>
+<div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
+<div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div></div>
+<div class="m"><div class="k">Lettera · prezzo</div><div class="v ${c.stale?"stale":""}">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
+<div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
+<div class="m"><div class="k">Dist. trigger</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
+<div class="m"><div class="k">Scadenza</div><div class="v">${dshort(c.matDate)}</div></div>
+</div>
+<div class="row" style="justify-content:space-between;font-size:.8rem;color:var(--muted)"><span class="num">${esc(c.isin)}</span><span>${cmpBox(c)} confronta</span></div>
+</article>`}
+function renderCards(){
+  const res=$("#results");res.innerHTML=`<div class="list" id="clist"></div><div id="more" style="height:1px"></div>`;cardN=0;moreCards();
+  io?.disconnect();io=new IntersectionObserver(e=>{if(e[0].isIntersecting)moreCards()},{rootMargin:"600px"});io.observe($("#more"));
+}
+function moreCards(){if(cardN>=ROWS.length)return;const n=Math.min(ROWS.length,cardN+60);$("#clist").insertAdjacentHTML("beforeend",ROWS.slice(cardN,n).map(cardHtml).join(""));cardN=n}
+
+/* ---------- dettaglio ---------- */
+async function loadDetail(isin){
+  if(DETAIL.has(isin))return DETAIL.get(isin);
+  try{const r=await fetch(`api/v1/isin/${isin}.json`,{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();DETAIL.set(isin,j);return j}catch(e){return null}
+}
+function ladder(c,full){
+  const det=(full.underlyingsDetail||[]).filter(u=>u.name);
+  const list=det.length?det:c.unds.map(n=>({name:n,dist:c.n===1?c.dist:null}));
+  if(!list.length)return"";
+  const risk=new Map((full.underlyingsRisk||[]).map(u=>[u.name,u]));
+  const sorted=[...list].sort((a,b)=>(a.dist??999)-(b.dist??999));
+  const max=Math.max(60,...sorted.map(u=>u.dist??0));
+  return `<div class="ladder"><div class="cap">Distanza dalla barriera e volatilità per sottostante${c.barrierPct?` · barriera ${fmt(c.barrierPct,0)}%`:""}${c.triggerPct?` · trigger ${fmt(c.triggerPct,0)}%`:""}${full.barrierType?` · osservazione ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""}</div>`+
+    sorted.map(u=>{const d=u.dist;const w=c.worst&&u.name===c.worst;const width=d==null?0:d<0?100:d/max*100;const rk=risk.get(u.name)||{};
+      return `<div class="lad ${w?"worst":""} ${d!=null&&d<0?"under":""}"><span class="n" title="${esc(u.name)}">${w?"▸ ":""}${esc(u.name)}<span class="note"> ${rk.ticker?esc(rk.ticker):""}${rk.vol1y!=null?" · vol "+fmt(rk.vol1y*100,0)+"% 1a"+(rk.vol3m!=null?", "+fmt(rk.vol3m*100,0)+"% 3m":""):""}</span></span><span class="bar"><i style="width:${width}%"></i></span><span class="d ${cls(d)}">${d==null?"n.d.":pct(d)}</span></div>`}).join("")+
+    (det.length?"":`<p class="note">L'emittente non fornisce la distanza di ogni sottostante: è nota solo quella del peggiore.</p>`)+`</div>`;
+}
+function chart(hist){
+  if(!hist||hist.length<2)return `<div class="chart"><div class="cap">Storico prezzo</div><p class="note">Lo storico si costruisce un giorno alla volta: ${hist&&hist.length?"un solo giorno salvato finora":"nessun giorno salvato finora"}.</p></div>`;
+  const pts=hist.map(([d,b,a])=>({d,m:(b+a)/2,b,a}));const W2=600,H2=160,P=6;
+  const mn=Math.min(...pts.map(p=>p.m)),mx=Math.max(...pts.map(p=>p.m)),span=mx-mn||1;
+  const X=i=>P+i*(W2-2*P)/(pts.length-1),Y=v=>H2-P-(v-mn)/span*(H2-2*P-14);
+  const line=pts.map((p,i)=>`${X(i).toFixed(1)},${Y(p.m).toFixed(1)}`).join(" ");
+  return `<div class="chart" data-hist='${esc(JSON.stringify(pts))}'><div class="cap">Prezzo medio (denaro+lettera)/2 · ultimi ${pts.length} giorni · min ${fmt(mn)} · max ${fmt(mx)}</div>
+<svg viewBox="0 0 ${W2} ${H2}" preserveAspectRatio="none" role="img" aria-label="Storico del prezzo medio"><line x1="0" x2="${W2}" y1="${H2-P}" y2="${H2-P}" stroke="var(--line)" stroke-width="1"/>
+<polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+<line class="xh" x1="0" x2="0" y1="0" y2="${H2}" stroke="var(--muted)" stroke-width="1" vector-effect="non-scaling-stroke" visibility="hidden"/>
+<rect width="${W2}" height="${H2}" fill="transparent" class="hit"/></svg><div class="tip">Passa sul grafico per i valori del giorno</div></div>`;
+}
+function wireChart(root){const ch=root.querySelector(".chart[data-hist]");if(!ch)return;const pts=JSON.parse(ch.dataset.hist);const svg=ch.querySelector("svg"),xh=ch.querySelector(".xh"),tip=ch.querySelector(".tip");
+  const mv=e=>{const r=svg.getBoundingClientRect();const i=Math.round(clamp((e.clientX-r.left)/r.width,0,1)*(pts.length-1));const x=6+i*(600-12)/(pts.length-1);xh.setAttribute("x1",x);xh.setAttribute("x2",x);xh.setAttribute("visibility","visible");
+    const p=pts[i];tip.innerHTML=`<b>${new Date(p.d).toLocaleDateString("it-IT")}</b> · denaro ${fmt(p.b)} · lettera ${fmt(p.a)} · medio ${fmt(p.m)}`};
+  svg.addEventListener("pointermove",mv);svg.addEventListener("pointerleave",()=>xh.setAttribute("visibility","hidden"))}
+const KV=[["Emittente","issuer"],["Piattaforma","platform"],["Tipo","type"],["Categoria","category"],["Mercato","market"],["Valuta","currency"],["Nominale","nominal"],["Cedola p.a. %","couponPa"],["Frequenza","freq"],["Memoria","memory"],["Richiamo","callable"],["Barriera %","barrierPct"],["Tipo barriera","barrierType"],["Trigger cedola %","triggerPct"],["Livello autocall %","autocallPct"],["Dist. barriera peggiore %","distBarrier"],["Distanza del","distAt"],["Peggiore","worstName"],["Denaro","bid"],["Lettera","ask"],["Prezzo del","priceAt"],["Fonte prezzo","priceSource"],["Prossima cedola","nextCouponDate"],["Prossimo richiamo","nextCallDate"],["Scadenza","maturity"],["Prob. tenuta barriera","probBarrierHold"],["Metodo","probMethod"],["Nota calcolo","probNote"],["Orizzonte (anni)","probHorizonYears"],["Vol peggiore","worstVol"],["Rischio calcolato il","riskAt"],["Aggiornato","updatedAt"]];
+function kvVal(k,v){if(v==null||v==="")return "—";if(k==="memory")return v?"Sì":"No";if(k==="freq")return freqTxt(v);if(k==="probBarrierHold")return pct(v*100,1);if(k==="worstVol")return pct(v*100,1);
+  if(/At$/.test(k))return dtime(v);if(/Date$|maturity/.test(k))return dshort(parseDate(v));if(typeof v==="number")return fmt(v,/Pct|couponPa|dist/.test(k)?2:2);return esc(v)}
+async function detailHtml(c){
+  const j=await loadDetail(c.isin);const full=j?.certificate||c;
+  return `<div class="dhead"><div style="min-width:0"><div class="eyebrow">${esc(c.issuer||"")}${c.type?" · "+esc(c.type):""}</div>
+<div class="unds" style="font-size:1.15rem">${esc(c.unds.join(" · ")||"Sottostanti n.d.")}</div>
+<div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}">${esc(c.isin)}</button>${starBtn(c)}<label class="check">${cmpBox(c)} confronta</label></div></div>
+<button data-close aria-label="Chiudi">✕</button></div>
+<div class="badges">${badges(c)}</div>
+<div class="metrics">
+<div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div></div>
+<div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
+<div class="m"><div class="k">Dist. trigger cedola</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
+<div class="m"><div class="k">Vol peggiore</div><div class="v">${pct(c.wvol,0)}</div></div>
+<div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
+<div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
+<div class="m"><div class="k">Denaro / lettera</div><div class="v ${c.stale?"stale":""}">${fmt(c.bid)} / ${fmt(c.ask)}</div></div>
+<div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
+<div class="m"><div class="k">Prossima cedola</div><div class="v">${dshort(c.couponDate)}</div></div>
+<div class="m"><div class="k">Prossimo richiamo</div><div class="v">${dshort(c.callDate)}</div></div>
+<div class="m"><div class="k">Scadenza</div><div class="v">${dshort(c.matDate)}</div></div>
+<div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)} ${c.freq?`<span class="note">${freqTxt(c.freq)}</span>`:""}</div></div>
+</div>
+${ladder(c,full)}
+${chart(j?.history)}
+<div class="row" style="font-size:.88rem">${links(full)}</div>
+<details><summary>Tutti i dati</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>`;
+}
+async function openDetail(isin){
+  const c=BYISIN.get(isin);if(!c)return;
+  const d=$("#drawer"),b=$("#dbody");d.hidden=false;document.body.style.overflow="hidden";b.innerHTML=`<p class="note">Caricamento ${esc(isin)}…</p>`;
+  b.innerHTML=await detailHtml(c);wireChart(b);b.querySelector("[data-close]").focus();
+}
+function closeDrawers(){$("#drawer").hidden=true;$("#cmp").hidden=true;document.body.style.overflow=""}
+
+/* ---------- confronto ---------- */
+function renderCmpBar(){$("#cmpbar").hidden=!CMP.size;$("#cmptxt").textContent=`${CMP.size} da confrontare (max 4)`}
+async function openCmp(){
+  const cs=[...CMP].map(i=>BYISIN.get(i)).filter(Boolean);if(cs.length<2){toast("Seleziona almeno 2 certificati");return}
+  const js=await Promise.all(cs.map(c=>loadDetail(c.isin)));
+  const R=[["Emittente",c=>esc(c.issuer)],["Sottostanti",c=>esc(c.unds.join(", "))],["Categoria",c=>esc(c.cat)],["Prob. tenuta",c=>`<span class="${pcls(c.prob)}">${probTxt(c)}</span>`],["Dist. barriera peggiore",c=>`<span class="${cls(c.dist)}">${pct(c.dist)}</span>`],["Dist. trigger",c=>pct(c.trigDist)],["Barriera / trigger",c=>`${pct(c.barrierPct,0)} / ${pct(c.triggerPct,0)}`],["Cedola p.a.",c=>pct(c.couponPa,2)+" "+freqTxt(c.freq)],["Memoria",c=>c.memory?"Sì":"No"],["Richiamo",c=>esc(c.callable||"—")],["Denaro / lettera",c=>`${fmt(c.bid)} / ${fmt(c.ask)}`],["Prezzo %",c=>pct(c.pricePct,2)],["Spread",c=>pct(c.spread,2)],["Rend. a scadenza",c=>pct(c.ytm)],["Rend. a richiamo",c=>pct(c.ytc)],["Vol peggiore",c=>pct(c.wvol,0)],["Prossima cedola",c=>dshort(c.couponDate)],["Prossimo richiamo",c=>dshort(c.callDate)],["Scadenza",c=>dshort(c.matDate)],["Punteggio",c=>c.score]];
+  $("#cmpbody").innerHTML=`<div class="dhead"><b>Confronto</b><button data-close aria-label="Chiudi">✕</button></div><div class="tbl-wrap" style="overflow:auto"><table class="cmp-table"><thead><tr><th></th>${cs.map(c=>`<th><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button></th>`).join("")}</tr></thead><tbody>${R.map(([l,f])=>`<tr><td>${l}</td>${cs.map(c=>`<td>${f(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  $("#cmp").hidden=false;document.body.style.overflow="hidden";
+}
+
+/* ---------- filtri: controlli, chip, profilo ---------- */
+const IDS={y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
+function syncControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")el.checked=!!state.f[k];else el.value=state.f[k]??""}
+  $("#q").value=state.q;$("#q-clear").hidden=!state.q;$("#b-fav").setAttribute("aria-pressed",state.f.fav);
+  document.querySelectorAll("#profile button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
+  const P=PRESETS[state.profile],mod=Object.keys(P).some(k=>state.f[k]!==P[k]);$("#prof-note").textContent=mod?"profilo modificato a mano":"imposta i filtri qui sotto; puoi modificarli dopo";
+  document.querySelectorAll("#view button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===state.view))}
+function readControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")state.f[k]=el.checked;else if(el.type==="number"){const v=parseFloat(el.value);state.f[k]=isNaN(v)?null:v}else state.f[k]=el.value}}
+function chips(){
+  const out=[];
+  if(ISIN)out.push(`<span class="chip">Ricerca ISIN: filtri ignorati</span>`);
   else{
-    const pickWhy=new Map(picks.map(p=>[p.c.isin,p.why]));
-    res.innerHTML=(state.view==="table"?table(shown,picks):`<div class="list">${shown.map(c=>card(c,pickWhy.get(c.isin))).join("")}</div>`)+
-      (ordered.length>shown.length?`<div style="display:grid;margin-top:12px"><button class="more" id="more">Mostra altri ${Math.min(100,ordered.length-shown.length)} di ${ordered.length-shown.length}</button></div>`:"");
+    if(!state.f.illiq)out.push(chip("illiq-off","Con denaro e lettera"));
+    if(!state.f.lev&&!state.f.cat)out.push(chip("lev-off","Senza leva"));
+    NUMF.forEach(k=>{if(state.f[k]!=null)out.push(chip(k,LABEL[k](state.f[k])))});
+    SELF.forEach(k=>{if(state.f[k])out.push(chip(k,LABEL[k](state.f[k])))});
+    BOOLF.forEach(k=>{if(state.f[k]&&k!=="illiq"&&k!=="lev")out.push(chip(k,LABEL[k]()))});
+    state.iss.forEach(i=>out.push(chip("iss:"+i,i)));
   }
-  $("#count").textContent=`${rows.length} certificati${picks.length?" · "+picks.length+" scelti dall'IA in cima":""}`;
-  $("#excluded").textContent=(excluded?` · ${excluded} esclusi perché senza mercato`:"")+(state.sel.size?` · ${state.sel.size} selezionati`:"");
-  $("#export").textContent=state.sel.size?`Esporta selezione (${state.sel.size})`:"Esporta Excel";
-  const s=state.status;const liqN=A.filter(c=>c.liq).length;
-  $("#status").innerHTML=state.db===false?"Dati non disponibili":`<b>${A.length}</b> in archivio · <b>${liqN}</b> con mercato${s&&s.lastRun?` · aggiornato <b>${new Date(s.lastRun).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}</b>`:""}`;
-  renderUpd(A);
-  const d=state.daily;
-  if(d&&d.picks&&d.picks.length){$("#daily").hidden=false;$("#dailybody").innerHTML=(d.summary?`<p>${esc(d.summary)}</p>`:"")+d.picks.map(p=>`<p><button class="isin" data-copy="${esc(p.isin)}">${esc(p.isin)}</button> — ${esc(p.why)}</p>`).join("")+(d.date?`<p class="note">Aggiornata il ${new Date(d.date).toLocaleDateString("it-IT")}</p>`:"")}
-  }
-
-function renderUpd(A){
-  const g=new Map();
-  for(const c of A){const k=c.issuer||"n.d.";const e=g.get(k)||{n:0,p:0,st:0,last:null,plat:c.platform};e.n++;
-    if(c.ask&&c.bid){e.p++;if(c.stale)e.st++}
-    if(c.updatedAt&&(!e.last||c.updatedAt>e.last))e.last=c.updatedAt;g.set(k,e)}
-  const rows=[...g.entries()].sort((a,b)=>b[1].n-a[1].n);
-  const html=`<div class="tbl-wrap"><table class="upd"><thead><tr><th class="l">Emittente</th><th>Ultimo aggiornamento</th><th>Certificati</th><th>Con prezzo</th><th>Prezzi vecchi</th></tr></thead><tbody>${
-    rows.map(([k,e])=>{const old=e.last&&bizDaysSince(e.last)>2;return `<tr><td class="l t">${esc(k)}${e.plat?` <span class="note">via ${esc(e.plat)}</span>`:""}</td><td class="${old?"stale":""}">${dtime(e.last)}</td><td>${e.n}</td><td>${e.p}</td><td class="${e.st?"stale":""}">${e.st||"—"}</td></tr>`}).join("")
-  }</tbody></table></div>`;
-  if($("#upd").innerHTML!==html)$("#upd").innerHTML=html;
+  const any=state.q||out.length;
+  $("#chips").innerHTML=out.join("")+(any?`<button class="linkbtn" id="reset">Azzera tutto</button>`:"");
+  $("#n-filt").textContent=out.length?`(${out.length})`:"";
 }
+const chip=(k,t)=>`<span class="chip">${esc(t)}<button data-rm="${esc(k)}" aria-label="Rimuovi filtro ${esc(t)}">×</button></span>`;
+function rmChip(k){if(k==="illiq-off")state.f.illiq=true;else if(k==="lev-off")state.f.lev=true;else if(k.startsWith("iss:"))state.iss.delete(k.slice(4));
+  else if(NUMF.includes(k))state.f[k]=null;else if(SELF.includes(k))state.f[k]="";else state.f[k]=false;update()}
+function resetAll(){state.q="";state.f=neutral();state.f.illiq=true;state.f.lev=true;state.iss.clear();update()}
 
-// events
-["#f-text","#f-yield","#f-buf","#f-trig","#f-mat","#f-price","#f-spread","#f-prob","#f-n","#f-freq","#f-call","#f-active","#f-mem","#f-illiq"].forEach(s=>$(s).addEventListener("input",()=>{state.limit=100;render()}));
-$("#profile").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.profile=b.dataset.p;ls.set("rc-profile",state.profile);state.daily=pickDaily();render()});
-$("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render()});
-$("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.issuers.has(i)?state.issuers.delete(i):state.issuers.add(i);render()});
-$("#results").addEventListener("click",e=>{
-  const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};render();return}
-  const o=e.target.closest("[data-open]");if(o){const i=o.dataset.open;state.open.has(i)?state.open.delete(i):state.open.add(i);render();return}
-  if(e.target.id==="more"){state.limit+=100;render();return}
-});
-$("#results").addEventListener("change",e=>{const s=e.target.closest("[data-sel]");if(!s)return;s.checked?state.sel.add(s.dataset.sel):state.sel.delete(s.dataset.sel);render()});
-document.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if(!b)return;const t=b.dataset.copy;navigator.clipboard?.writeText(t).then(()=>toast("ISIN copiato: "+t)).catch(()=>toast(t))});
+/* ---------- render ---------- */
+function render(recompute=true){
+  if(recompute)compute();
+  chips();syncControls();toHash();
+  $("#count").textContent=ISIN?`${ROWS.length} ${ROWS.length===1?"certificato":"certificati"} con ISIN ${ISIN}…`:`${ROWS.length.toLocaleString("it-IT")} certificati`;
+  $("#export").textContent=`Esporta ${ROWS.length.toLocaleString("it-IT")} risultati (Excel)`;$("#export").disabled=!ROWS.length;
+  $("#n-fav").textContent=Object.keys(FAV).length;
+  renderIsinBox();
+  $("#daily").hidden=!!ISIN||!!state.q||!DAILY;
+  lastPaint="";
+  if(!CERTS.length)return;
+  if(!ROWS.length&&!ISIN){$("#results").innerHTML=`<div class="empty">Nessun certificato con questa ricerca e questi filtri. Togli qualche filtro dai chip in alto o usa "Azzera tutto".</div>`;vt=null;return}
+  if(ISIN&&ROWS.length<=1){$("#results").innerHTML="";vt=null;return}
+  if(state.view==="table"&&innerWidth>=820)renderTable();else{vt=null;renderCards()}
+}
+async function renderIsinBox(){
+  const box=$("#isinbox");
+  if(!ISIN){box.hidden=true;box.innerHTML="";return}
+  box.hidden=false;
+  const exact=ISIN.length===12?BYISIN.get(ISIN):(ROWS.length===1?ROWS[0]:null);
+  if(exact){if(box.dataset.isin===exact.isin)return;box.dataset.isin=exact.isin;box.innerHTML=`<div class="inline-detail">${await detailHtml(exact)}</div>`;box.querySelector("[data-close]")?.remove();wireChart(box);return}
+  box.dataset.isin="";
+  if(ISIN.length===12)box.innerHTML=`<div class="panel"><b>ISIN non presente</b> nell'archivio: <span class="num">${esc(ISIN)}</span>. <a href="https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${esc(ISIN)}-SEDX.html?lang=it" target="_blank" rel="noopener">Cercalo su Borsa Italiana</a>.</div>`;
+  else box.innerHTML=ROWS.length?`<p class="note">${ROWS.length} certificati iniziano con ${esc(ISIN)}: tutti i filtri sono ignorati. Completa l'ISIN o apri una riga.</p>`:`<div class="panel">Nessun ISIN in archivio inizia con <span class="num">${esc(ISIN)}</span>.</div>`;
+}
+function update(){render();}
 
-// export
-$("#export").addEventListener("click",async()=>{
-  const {rows}=compute();const A=all();
-  const list=state.sel.size?A.filter(c=>state.sel.has(c.isin)):rows;
-  if(!list.length){toast("Niente da esportare");return}
-  if(!window.XLSX){toast("Esportazione non disponibile");return}
-  const data=list.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Sottostanti:(c.und?c.und.map(u=>u.name):c.unds).join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger cedola %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:c.freq||"",Memoria:c.memory?"Sì":"",Richiamo:c.callable||"","Prossimo richiamo":c.callDate?c.callDate.toLocaleDateString("it-IT"):"",Scadenza:c.matDate?c.matDate.toLocaleDateString("it-IT"):"",Denaro:c.bid,Lettera:c.ask,"Prezzo % nominale":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. cedolare %":c.cy==null?null:+c.cy.toFixed(2),"Rend. scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),Punteggio:c.score}));
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
-  const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`radar-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
-});
+/* ---------- suggerimenti ---------- */
+let SG=[],sgi=-1;
+function suggest(){
+  const raw=$("#q").value,ul=$("#sugg");
+  const toks=norm(raw).split(" ").filter(Boolean),last=toks[toks.length-1]||"";
+  if(!INDEX||!last||/\s$/.test(raw)){ul.hidden=true;SG=[];return}
+  const out=[];const up=raw.trim().toUpperCase();
+  if(/^[A-Z]{2}\d?[A-Z0-9]*$/.test(up)&&up.length>=3&&CC.has(up.slice(0,2)))for(const c of CERTS){if(c.isin.startsWith(up)){out.push({label:c.isin,kind:"ISIN · "+(c.issuer||""),rep:c.isin,whole:true});if(out.length>=8)break}}
+  if(out.length<8){
+    const max=last.length>=8?2:last.length>=4?1:0;const sc=[];
+    for(const s of INDEX.sugg){const ws=s.key.split(" ");let best=9;
+      for(const w of ws){if(w.startsWith(last)){best=0;break}if(max){const d=lev(last,w.slice(0,last.length),max);if(d<=max&&d+1<best)best=d+1}}
+      if(best<9)sc.push([best,-s.n,s])}
+    sc.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+    for(const[, ,s]of sc.slice(0,8-out.length))out.push({label:s.label,kind:`${s.kind} · ${s.n}`,rep:s.key});
+  }
+  SG=out;sgi=-1;
+  ul.innerHTML=out.map((s,i)=>`<li role="option" id="sg${i}" data-i="${i}"><span class="v">${esc(s.label)}</span><span class="k">${esc(s.kind)}</span></li>`).join("");
+  ul.hidden=!out.length;$(".search").setAttribute("aria-expanded",!!out.length);
+}
+function pickSugg(i){const s=SG[i];if(!s)return;
+  if(s.whole)state.q=s.rep;else{const toks=$("#q").value.trim().split(/\s+/);toks.pop();state.q=[...toks,s.rep].join(" ")+" "}
+  $("#q").value=state.q;$("#sugg").hidden=true;state.q=state.q.trim();update();$("#q").focus()}
 
-// boot
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});
-render();
-fetch("data/certs.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(j=>{state.certs=j.certs||[];state.status={lastRun:j.updatedAt};state.db=true;state.daily=pickDaily();render()}).catch(()=>{state.db=false;render()});
+/* ---------- scelte del giorno, avvisi, stato ---------- */
+let DAILY=null;
 function pickDaily(){
-  const A=state.certs.map(enrich).map(c=>{c.score=score(c);c.liq=liquid(c,1.5);return c});
-  const ok=A.filter(c=>c.liq&&c.freq==="1m"&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=30&&!c.belowBarrier).sort((a,b)=>b.score-a.score).slice(0,3);
-  const susp=A.filter(c=>c.liq&&c.couponActive===false&&!c.belowBarrier).length;
-  return{summary:`Migliori 3 per il profilo ${state.profile}: cedola mensile in pagamento, peggiore ad almeno 30% dalla barriera, spread entro 1,5%.${susp?` ${susp} certificati con mercato hanno oggi la cedola sospesa.`:""}`,
-    picks:ok.map(c=>({isin:c.isin,why:`${c.issuer||""} su ${(c.und?c.und.map(u=>u.name):c.unds).join(", ")}: cedola ${fmt(c.couponPa,2)}% annua, peggiore${c.worst?" ("+c.worst+")":""} a ${fmt(c.dist,1)}% dalla barriera${c.trigDist!=null?" e "+fmt(c.trigDist,1)+"% sopra il trigger":""}, lettera ${fmt(c.pricePct,1)}%, rendimento a scadenza ${fmt(c.ytm,1)}%.`}))};
+  const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.spread<=1.5&&c.freq==="1m"&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=30&&(c.prob==null||c.prob>=70)).sort((a,b)=>b.score-a.score).slice(0,3);
+  if(!ok.length){DAILY=null;return}
+  DAILY=ok;$("#dailybody").innerHTML=ok.map(c=>`<p style="margin:0"><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button> — ${esc(c.issuer)} su ${esc(c.unds.join(", "))}: cedola ${pct(c.couponPa,2)} ${freqTxt(c.freq).toLowerCase()}, peggiore a ${pct(c.dist)} dalla barriera${c.prob!=null?`, prob. tenuta ${probTxt(c)}`:""}, lettera ${pct(c.pricePct,1)}, rend. a scadenza ${pct(c.ytm)}.</p>`).join("");
 }
+function renderAlerts(){
+  const out=[];
+  for(const[isin,f]of Object.entries(FAV)){const c=BYISIN.get(isin);if(!c){out.push(`<p>☆ <span class="num">${esc(isin)}</span> non è più in archivio (scaduto o rimborsato?).</p>`);continue}
+    const why=[];if(c.belowBarrier)why.push("sotto barriera");else if(c.couponActive===false)why.push("cedola sospesa (peggiore sotto il trigger)");
+    if(f.ask&&c.ask&&c.ask<f.ask*0.97)why.push(`prezzo sceso del ${fmt((1-c.ask/f.ask)*100,1)}% da quando l'hai salvato (${fmt(f.ask)} → ${fmt(c.ask)})`);
+    if(why.length)out.push(`<p>★ <button class="isin" data-open="${esc(isin)}">${esc(isin)}</button> ${esc(c.unds.join(", "))}: <b>${why.join("; ")}</b></p>`)}
+  $("#alerts").hidden=!out.length;$("#alerts").innerHTML=out.length?`<h2>Avvisi sui preferiti</h2>${out.join("")}`:"";
+}
+function renderStatus(){
+  const liq=CERTS.filter(c=>c.liq).length,up=META.updatedAt;
+  $("#status").innerHTML=`<b>${CERTS.length.toLocaleString("it-IT")}</b> in archivio · <b>${liq.toLocaleString("it-IT")}</b> con denaro e lettera${up?` · aggiornato <b>${dtime(up)}</b>`:""}`;
+  const n=up?tradingDaysSince(up):null;const bn=$("#banner");
+  if(n!=null&&n>1){bn.hidden=false;bn.textContent=`Dati non aggiornati: l'ultimo aggiornamento è del ${dtime(up)}, ${n} giorni di borsa fa. Prezzi e distanze potrebbero non essere attuali.`}else bn.hidden=true;
+  const g=new Map();
+  for(const c of CERTS){const k=c.issuer||"n.d.";const e=g.get(k)||{n:0,p:0,st:0,last:null,plat:c.platform};e.n++;if(c.liq){e.p++;if(c.stale)e.st++}if(c.updatedAt&&(!e.last||c.updatedAt>e.last))e.last=c.updatedAt;g.set(k,e)}
+  const rows=[...g.entries()].sort((a,b)=>b[1].n-a[1].n);
+  $("#upd").innerHTML=`<div style="overflow:auto"><table class="upd"><thead><tr><th class="l">Emittente</th><th>Ultimo aggiornamento</th><th>Certificati</th><th>Con prezzo</th><th>Prezzi vecchi</th></tr></thead><tbody>${rows.map(([k,e])=>{const old=e.last&&bizDaysSince(e.last)>2;return `<tr><td class="l t">${esc(k)}${e.plat?` <span class="note">via ${esc(e.plat)}</span>`:""}</td><td class="${old?"stale":""}">${dtime(e.last)}</td><td>${e.n}</td><td>${e.p}</td><td class="${e.st?"stale":""}">${e.st||"—"}</td></tr>`}).join("")}</tbody></table></div>`;
+  const bad=(META.sources||[]).filter(s=>s.status&&s.status!=="ok");
+  if(bad.length)$("#upd").insertAdjacentHTML("beforeend",`<p class="note">${bad.map(s=>`<b>${esc(s.name)}</b>: ${esc(s.status)}; restano i ${s.certs} certificati dell'ultimo aggiornamento riuscito (${dtime(s.updatedAt)})`).join("<br>")}</p>`);
+  $("#issuers").innerHTML=rows.map(([k,e])=>`<button data-i="${esc(k)}" aria-pressed="${state.iss.has(k)}">${esc(k)} <span class="note">${e.n}</span></button>`).join("");
+  const cats=[...new Set(CERTS.map(c=>c.cat))].sort();$("#f-cat").innerHTML=`<option value="">Tutte (senza leva)</option>`+cats.map(c=>`<option>${esc(c)}</option>`).join("");
+}
+
+/* ---------- esporta ---------- */
+$("#export").addEventListener("click",()=>{
+  if(!ROWS.length){toast("Niente da esportare");return}
+  if(!window.XLSX){toast("Esportazione non disponibile (libreria non caricata)");return}
+  const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"",Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
+  const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`radar-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  toast(`Esportati ${ROWS.length} certificati`);
+});
+
+/* ---------- eventi ---------- */
+let qT=null;
+$("#q").addEventListener("input",()=>{suggest();clearTimeout(qT);qT=setTimeout(()=>{state.q=$("#q").value.trim();update()},140)});
+$("#q").addEventListener("keydown",e=>{const ul=$("#sugg");
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){if(ul.hidden)return;e.preventDefault();sgi=(sgi+(e.key==="ArrowDown"?1:-1)+SG.length)%SG.length;ul.querySelectorAll("li").forEach((li,i)=>li.setAttribute("aria-selected",i===sgi));$("#q").setAttribute("aria-activedescendant","sg"+sgi)}
+  else if(e.key==="Enter"){if(!ul.hidden&&sgi>=0){e.preventDefault();pickSugg(sgi)}else{clearTimeout(qT);state.q=$("#q").value.trim();ul.hidden=true;update()}}
+  else if(e.key==="Escape"){ul.hidden=true}});
+$("#q").addEventListener("blur",()=>setTimeout(()=>$("#sugg").hidden=true,150));
+$("#sugg").addEventListener("mousedown",e=>{const li=e.target.closest("li");if(li){e.preventDefault();pickSugg(+li.dataset.i)}});
+$("#q-clear").addEventListener("click",()=>{state.q="";update();$("#q").focus()});
+Object.values(IDS).forEach(s=>$(s).addEventListener("input",()=>{readControls();update()}));
+$("#profile").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;applyPreset(b.dataset.p);rescore();pickDaily();update();toast(`Profilo ${b.textContent}: filtri impostati`)});
+$("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render(false)});
+$("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.iss.has(i)?state.iss.delete(i):state.iss.add(i);update()});
+$("#chips").addEventListener("click",e=>{const r=e.target.closest("[data-rm]");if(r){rmChip(r.dataset.rm);return}if(e.target.id==="reset")resetAll()});
+$("#b-fav").addEventListener("click",()=>{state.f.fav=!state.f.fav;update()});
+const openSheet=o=>{if(innerWidth>=820){$("#fbox").open=o;if(o)$("#fpanel").scrollIntoView({block:"start"});}else{$("#fbox").open=true;$("#fpanel").classList.toggle("open",o);$("#scrim").hidden=!o}$("#b-filters").setAttribute("aria-expanded",o)};
+$("#b-filters").addEventListener("click",()=>openSheet(innerWidth>=820?!$("#fbox").open:true));$("#sheet-close").addEventListener("click",()=>openSheet(false));
+$("#scrim").addEventListener("click",()=>openSheet(false));
+document.addEventListener("click",e=>{
+  const st=e.target.closest("[data-fav]");if(st){e.stopPropagation();toggleFav(st.dataset.fav);return}
+  const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};update();return}
+  const cl=e.target.closest("[data-close]");if(cl){closeDrawers();return}
+  const cy=e.target.closest("[data-copy]");if(cy){navigator.clipboard?.writeText(cy.dataset.copy).then(()=>toast("ISIN copiato: "+cy.dataset.copy)).catch(()=>toast(cy.dataset.copy));return}
+  if(e.target.closest("a,input,label,select"))return;
+  const op=e.target.closest("[data-open]");if(op){$("#cmp").hidden=true;openDetail(op.dataset.open)}
+});
+document.addEventListener("change",e=>{const cp=e.target.closest("[data-cmp]");if(cp)toggleCmp(cp.dataset.cmp)});
+$("#drawer").addEventListener("click",e=>{if(e.target.id==="drawer")closeDrawers()});
+$("#cmp").addEventListener("click",e=>{if(e.target.id==="cmp")closeDrawers()});
+$("#cmpgo").addEventListener("click",openCmp);$("#cmpclr").addEventListener("click",()=>{CMP.clear();renderCmpBar();render(false)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawers();openSheet(false)}});
+addEventListener("hashchange",()=>{if(fromHash()){rescore();render()}});
+let rT=null;addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>{setTopH();render(false)},200)});
+function setTopH(){document.documentElement.style.setProperty("--top-h",$("#top").offsetHeight+"px")}
+new ResizeObserver(setTopH).observe($("#top"));
+
+/* ---------- avvio ---------- */
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});
+fromHash();setTopH();syncControls();
+async function load(){
+  let j;
+  try{const r=await fetch("data/list.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;j=await r.json();
+    CERTS=j.rows.map(row=>{const o={};j.cols.forEach((k,i)=>{if(row[i]!=null)o[k]=row[i]});return o})}
+  catch(e){ // ripiego: archivio completo
+    try{const r=await fetch("data/certs.json?t="+Date.now(),{cache:"no-store"});j=await r.json();CERTS=j.certs||[]}
+    catch(e2){$("#results").innerHTML=`<div class="empty">Dati non disponibili: riprova tra poco.</div>`;$("#status").textContent="Dati non disponibili";return}}
+  META=j;CERTS.forEach(enrich);BYISIN=new Map(CERTS.map(c=>[c.isin,c]));
+  rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();
+}
+load();
 })();
 </script>
-
 </body>
 </html>

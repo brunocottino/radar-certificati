@@ -9,6 +9,7 @@ docs/data/certs.json.
 """
 import json
 import os
+import random
 import re
 from pathlib import Path
 
@@ -490,7 +491,30 @@ def leonteq_cert(p, src, NOW):
     })
 
 
+LAST_STATUS = {}  # esito non numerico per sorgente (es. "saltata: già fatta oggi"), letto da run.py
+LEONTEQ_STATE = Path(__file__).resolve().parent / "leonteq_state.json"
+
+
 async def leonteq_api(DISC, src, NOW, ctx):
+    """Leonteq è protetta da Incapsula: al massimo una ricerca completa al giorno, con pause tra le pagine."""
+    from datetime import date as _date
+    st = json.loads(LEONTEQ_STATE.read_text()) if LEONTEQ_STATE.exists() else {}
+    today = _date.today().isoformat()
+    if st.get("lastSuccess", "")[:10] == today and not os.environ.get("LEONTEQ_FORCE"):
+        LAST_STATUS[src["name"]] = "saltata: ricerca completa già fatta oggi"
+        return []
+    out = await _leonteq_search(DISC, src, NOW, ctx)
+    st["lastAttempt"] = NOW
+    if out:
+        st["lastSuccess"] = NOW
+        st["lastCount"] = len(out)
+    else:
+        LAST_STATUS[src["name"]] = "bloccata dal firewall del sito (Incapsula)"
+    LEONTEQ_STATE.write_text(json.dumps(st, indent=1))
+    return out
+
+
+async def _leonteq_search(DISC, src, NOW, ctx):
     base = "https://certificati.leonteq.com"
     api = base + "/api/product-model/search"
     page = await ctx.new_page()
@@ -516,6 +540,7 @@ async def leonteq_api(DISC, src, NOW, ctx):
         pno, total = 1, None
         while total is None or (pno - 1) * 100 < total:
             # fetch dalla pagina (cookie/stato Incapsula del browser); se bloccata ricarica e riprova
+            await page.wait_for_timeout(2500 + random.randint(0, 2500))  # pausa tra le pagine
             for attempt in range(3):
                 try:
                     st, txt = await fetch(page, api, "POST", json.dumps({**body, "pageNumber": pno}),

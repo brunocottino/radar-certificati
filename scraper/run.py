@@ -251,6 +251,16 @@ def has_price(c):
     return bool(c.get("bid")) and bool(c.get("ask"))
 
 
+JUNK_UND = re.compile(r"^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$")
+
+
+def clean_underlyings(c):
+    """Toglie dai sottostanti le voci spurie lette dalle tabelle (es. "ISIN DE000…")."""
+    if isinstance(c.get("underlyings"), list):
+        c["underlyings"] = [u for u in c["underlyings"] if u and not JUNK_UND.match(str(u).strip())]
+    return c
+
+
 def merge(old, new):
     """Unisce i certificati nuovi all'archivio.
 
@@ -272,7 +282,7 @@ def merge(old, new):
             c.pop("ask", None)
         by[c["isin"]] = {**by.get(c["isin"], {}), **c}
     today = date.today().isoformat()
-    return [c for c in by.values() if not c.get("maturity") or c["maturity"] >= today]
+    return [clean_underlyings(c) for c in by.values() if not c.get("maturity") or c["maturity"] >= today]
 
 
 async def main():
@@ -307,6 +317,8 @@ async def main():
                     if inspect.isawaitable(extra):
                         extra = await extra
                     info["from_parser"] = len(extra)
+                    if getattr(mod, "LAST_STATUS", {}).get(src["name"]):
+                        info["status"] = mod.LAST_STATUS[src["name"]]
                     certs += extra
                 except Exception:
                     info["parser_error"] = traceback.format_exc()[-800:]
@@ -320,8 +332,13 @@ async def main():
     # stato per sorgente: quelle non eseguite in questa run mantengono i dati precedenti
     srcs = {s["name"]: s for s in old_meta.get("sources", [])}
     for r in report:
-        srcs[r["name"]] = {"name": r["name"], "certs": r.get("certs", 0), "updatedAt": NOW,
-                           "withPrice": r.get("withPrice", 0)}
+        prev = srcs.get(r["name"], {})
+        if r.get("certs", 0) == 0 and prev.get("certs"):
+            # sorgente bloccata o saltata: resta l'ultimo esito buono, con la sua data, e lo si segnala
+            srcs[r["name"]] = {**prev, "status": r.get("status") or "bloccata", "lastAttempt": NOW}
+        else:
+            srcs[r["name"]] = {"name": r["name"], "certs": r.get("certs", 0), "updatedAt": NOW,
+                               "withPrice": r.get("withPrice", 0), "status": "ok"}
     DATA.parent.mkdir(parents=True, exist_ok=True)
     DATA.write_text(json.dumps({"updatedAt": NOW, "count": len(certs),
                                 "sources": list(srcs.values()),

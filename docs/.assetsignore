@@ -1,0 +1,3 @@
+# storico per ISIN: resta nel repository (fonte), il sito lo legge da api/v1/isin/<ISIN>.json
+data/history
+_headers.bak

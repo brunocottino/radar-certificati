@@ -1,0 +1,41 @@
+name: Esplora elenchi ISIN
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script da eseguire (in scraper/)"
+        required: false
+        default: "explore_lists.py"
+      args:
+        description: "Argomenti"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installa Playwright
+        run: |
+          pip install playwright==1.47.0
+          python -m playwright install --with-deps chromium
+      - name: Esplora
+        run: python scraper/${{ github.event.inputs.script }} ${{ github.event.inputs.args }}
+      - name: Pubblica sul branch explore
+        if: always()
+        run: |
+          mkdir -p explore && cp -r explore /tmp/exp && cd /tmp/exp
+          git init -q -b explore
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git add -A && git commit -q -m "Esplorazione ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" explore
