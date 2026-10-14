@@ -1020,8 +1020,8 @@ def citi_cert(item, src, NOW):
 
 async def citi_api(DISC, src, NOW, ctx):
     log, out = {"pages": []}, {}
-    for page in range(0, 20):
-        r = await ctx.request.get(CITI_API + f"&page={page}&size=1000", headers={"accept": "application/json"}, timeout=60000)
+    for page in range(0, 1):  # senza parametri l'API restituisce già tutti i prodotti (pageSize massimo)
+        r = await ctx.request.get(CITI_API, headers={"accept": "application/json"}, timeout=90000)
         if r.status != 200:
             log["pages"].append({"page": page, "status": r.status})
             break
