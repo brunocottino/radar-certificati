@@ -340,6 +340,10 @@ def refresh_distance(c, m, st):
         v = U.get(ticker_of(m, u.get("name")) or "")
         if not v or not v.get("lastClose"):
             return False
+        # strike e chiusura devono essere confrontabili (stessa quotazione e valuta): altrimenti niente distanza
+        if not 0.2 <= v["lastClose"] / u["strike"] <= 5:
+            c["distNote"] = f"strike di {u.get('name')} non confrontabile con la chiusura di {ticker_of(m, u.get('name'))}"
+            return False
         rows.append((u, v))
     for u, v in rows:
         u["dist"] = round((1 - u["strike"] * bp / 100 / v["lastClose"]) * 100, 2)
