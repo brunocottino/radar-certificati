@@ -317,6 +317,8 @@ async def main():
                     if inspect.isawaitable(extra):
                         extra = await extra
                     info["from_parser"] = len(extra)
+                    if getattr(mod, "LAST_STATUS", {}).get(src["name"]):
+                        info["status"] = mod.LAST_STATUS[src["name"]]
                     certs += extra
                 except Exception:
                     info["parser_error"] = traceback.format_exc()[-800:]
@@ -330,8 +332,13 @@ async def main():
     # stato per sorgente: quelle non eseguite in questa run mantengono i dati precedenti
     srcs = {s["name"]: s for s in old_meta.get("sources", [])}
     for r in report:
-        srcs[r["name"]] = {"name": r["name"], "certs": r.get("certs", 0), "updatedAt": NOW,
-                           "withPrice": r.get("withPrice", 0)}
+        prev = srcs.get(r["name"], {})
+        if r.get("certs", 0) == 0 and prev.get("certs"):
+            # sorgente bloccata o saltata: resta l'ultimo esito buono, con la sua data, e lo si segnala
+            srcs[r["name"]] = {**prev, "status": r.get("status") or "bloccata", "lastAttempt": NOW}
+        else:
+            srcs[r["name"]] = {"name": r["name"], "certs": r.get("certs", 0), "updatedAt": NOW,
+                               "withPrice": r.get("withPrice", 0), "status": "ok"}
     DATA.parent.mkdir(parents=True, exist_ok=True)
     DATA.write_text(json.dumps({"updatedAt": NOW, "count": len(certs),
                                 "sources": list(srcs.values()),

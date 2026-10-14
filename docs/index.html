@@ -753,6 +753,8 @@ function renderStatus(){
   for(const c of CERTS){const k=c.issuer||"n.d.";const e=g.get(k)||{n:0,p:0,st:0,last:null,plat:c.platform};e.n++;if(c.liq){e.p++;if(c.stale)e.st++}if(c.updatedAt&&(!e.last||c.updatedAt>e.last))e.last=c.updatedAt;g.set(k,e)}
   const rows=[...g.entries()].sort((a,b)=>b[1].n-a[1].n);
   $("#upd").innerHTML=`<div style="overflow:auto"><table class="upd"><thead><tr><th class="l">Emittente</th><th>Ultimo aggiornamento</th><th>Certificati</th><th>Con prezzo</th><th>Prezzi vecchi</th></tr></thead><tbody>${rows.map(([k,e])=>{const old=e.last&&bizDaysSince(e.last)>2;return `<tr><td class="l t">${esc(k)}${e.plat?` <span class="note">via ${esc(e.plat)}</span>`:""}</td><td class="${old?"stale":""}">${dtime(e.last)}</td><td>${e.n}</td><td>${e.p}</td><td class="${e.st?"stale":""}">${e.st||"—"}</td></tr>`}).join("")}</tbody></table></div>`;
+  const bad=(META.sources||[]).filter(s=>s.status&&s.status!=="ok");
+  if(bad.length)$("#upd").insertAdjacentHTML("beforeend",`<p class="note">${bad.map(s=>`<b>${esc(s.name)}</b>: ${esc(s.status)}; restano i ${s.certs} certificati dell'ultimo aggiornamento riuscito (${dtime(s.updatedAt)})`).join("<br>")}</p>`);
   $("#issuers").innerHTML=rows.map(([k,e])=>`<button data-i="${esc(k)}" aria-pressed="${state.iss.has(k)}">${esc(k)} <span class="note">${e.n}</span></button>`).join("");
   const cats=[...new Set(CERTS.map(c=>c.cat))].sort();$("#f-cat").innerHTML=`<option value="">Tutte (senza leva)</option>`+cats.map(c=>`<option>${esc(c)}</option>`).join("");
 }
