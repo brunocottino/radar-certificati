@@ -12,4 +12,7 @@ SOURCES = [
     {"name": "socgen", "issuer": "Société Générale", "url": "https://www.prodotti.societegenerale.it/product-search", "max_clicks": 0, "parser": "socgen_api"},
     {"name": "marex", "issuer": "Marex", "url": "https://fp.marex.com/", "max_clicks": 0, "parser": "marex_probe"},
     {"name": "unicredit", "issuer": "UniCredit", "url": "https://www.onemarkets.it/it/search-page.investment.html", "max_clicks": 0, "parser": "unicredit_pages", "categories": [129830054, 1050]},
+    {"name": "citi", "issuer": "Citigroup", "url": "https://www.citivelocity.com/citifirst/it/products/tutti", "skip_page": True, "parser": "citi_api"},
+    # per ultimo: schede di Borsa Italiana a rotazione per i certificati ancora senza barriera
+    {"name": "borsa_scheda", "issuer": None, "url": "https://www.borsaitaliana.it/", "skip_page": True, "parser": "borsa_scheda"},
 ]

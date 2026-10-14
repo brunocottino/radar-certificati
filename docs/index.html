@@ -509,7 +509,7 @@ function badges(c){
   if(c.pricePct&&c.pricePct<97)b.push(`<span class="b ok">Sotto la pari</span>`);
   return b.join("");
 }
-const bi=c=>`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-${c.market==="Cert-X"?"ETLX":"SEDX"}.html?lang=it`;
+const bi=c=>c.market==="Cert-X"?`https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/${c.isin}-ETLX.html?lang=it`:`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-SEDX.html?lang=it`;
 function links(c){const own=c.url&&/borsaitaliana\.it/.test(c.url);
   return `<a href="${esc(own?c.url:bi(c))}" target="_blank" rel="noopener">Borsa Italiana</a>${c.url&&!own?` · <a href="${esc(c.url.includes(c.isin)?c.url:c.url.replace(/\/$/,"")+"/"+c.isin)}" target="_blank" rel="noopener">Emittente</a>`:""}${c.priceUrl?` · <a href="${esc(c.priceUrl)}" target="_blank" rel="noopener">Fonte prezzo</a>`:""}`}
 const starBtn=c=>`<button class="star" data-fav="${esc(c.isin)}" aria-pressed="${!!FAV[c.isin]}" title="${FAV[c.isin]?"Togli dai preferiti":"Aggiungi ai preferiti"}">${FAV[c.isin]?"★":"☆"}</button>`;

@@ -7,6 +7,7 @@ da dentro una pagina del sito (fetch same-origin), così hanno gli stessi header
 e cookie del browser. Restituisce una lista di certificati nello schema di
 docs/data/certs.json.
 """
+import asyncio
 import json
 import os
 import random
@@ -958,3 +959,184 @@ async def euronext_list(DISC, src, NOW, ctx):
             ensure_ascii=False, separators=(",", ":")))
     LAST_STATUS[src["name"]] = f"ok: {len(inv)} d'investimento, {len(lev)} a leva (file separato)"
     return inv
+
+
+# ---------------------------------------------------------------- Citi (CitiFirst Italia)
+# API pubblica JSON con tutti i prodotti attivi: barriera, strike dei sottostanti, calendario dei
+# richiami, scadenza, denaro e cedola (campo "manualField" o nel nome: "Cpn: 12.00%").
+
+CITI_API = "https://www.citivelocity.com/rcs/eppublic/v1/content/citifirst/product?content_json.status=Active&content_json.country=it"
+
+
+def citi_freq(dates):
+    ds = sorted(d for d in dates if d)
+    if len(ds) < 2:
+        return None
+    from datetime import date as _d
+    gaps = sorted((_d.fromisoformat(b) - _d.fromisoformat(a)).days for a, b in zip(ds, ds[1:]))
+    g = gaps[len(gaps) // 2]
+    return "1m" if g < 45 else "3m" if g < 120 else "6m" if g < 240 else "12m"
+
+
+def citi_cert(item, src, NOW):
+    j = item.get("content_json") or {}
+    isin = (j.get("ISIN") or item.get("businessId") or "").upper()
+    if not ISIN_RE.fullmatch(isin):
+        return None
+    name = j.get("productName") or j.get("productHeader") or ""
+    calls = j.get("periodAutoCall") or []
+    freq = citi_freq([p.get("endDate") for p in calls])
+    cpa, mf = None, j.get("manualField") or {}
+    for k, v in mf.items():
+        m = re.search(r"([\d.,]+)\s*%", str(v))
+        if m and re.search(r"coupon|cedola|premio", k, re.I):
+            per = num(m.group(1))
+            f = next((v for rx, v in ((r"mensil|month", "1m"), (r"trimestr|quarter", "3m"), (r"semestr|semi", "6m"), (r"annual|annu", "12m"))
+                      if re.search(rx, k, re.I)), None) or freq
+            cpa = per * {"1m": 12, "3m": 4, "6m": 2, "12m": 1}.get(f, 1) if per is not None else None
+            freq = f or freq
+            break
+    if cpa is None:
+        m = re.search(r"Cpn:\s*([\d.,]+)\s*%", name)
+        cpa = num(m.group(1)) if m else None  # nel nome è la cedola annua
+    from datetime import date as _d
+    today = _d.today().isoformat()
+    nxt = next((p for p in sorted(calls, key=lambda p: p.get("endDate") or "") if (p.get("endDate") or "") >= today), None)
+    unds = j.get("underlyingFields") or []
+    return clean({
+        "isin": isin, "issuer": "Citigroup", "source": src["name"], "type": j.get("productType"),
+        "underlyings": [u.get("name") for u in unds if u.get("name")],
+        "underlyingsDetail": [clean({"name": u.get("name"), "isin": u.get("isin"), "strike": u.get("initialPriceLevel")}) for u in unds] or None,
+        "barrierPct": j.get("downsideKnockInBar"), "barrierType": "scadenza" if "Maturity" in (j.get("downsideStyle") or "") else None,
+        "couponPa": round(cpa, 4) if cpa else None, "freq": freq,
+        "memory": True if re.search(r"memory", name, re.I) else None,
+        "callable": "Autocall" if calls else None,
+        "autocallPct": nxt.get("autocallLevel") if nxt else None, "nextCallDate": nxt.get("endDate") if nxt else None,
+        "maturity": pdate(j.get("maturity")), "nominal": j.get("denomination"),
+        "currency": j.get("issueCurrency"), "url": j.get("url") or f"https://www.citivelocity.com/citifirst/it/{isin.lower()}",
+        "updatedAt": NOW,
+    })
+
+
+async def citi_api(DISC, src, NOW, ctx):
+    log, out = {"pages": []}, {}
+    for page in range(0, 20):
+        r = await ctx.request.get(CITI_API + f"&page={page}&size=1000", headers={"accept": "application/json"}, timeout=60000)
+        if r.status != 200:
+            log["pages"].append({"page": page, "status": r.status})
+            break
+        d = await r.json()
+        data = d.get("data") or {}
+        items = data.get("content") or []
+        n0 = len(out)
+        for it in items:
+            c = citi_cert(it, src, NOW)
+            if c:
+                out[c["isin"]] = c
+        log["pages"].append({"page": page, "items": len(items), "new": len(out) - n0,
+                             "meta": {k: v for k, v in data.items() if k != "content"}})
+        if page == 0:
+            log["sample"] = items[:1]
+        if not items or len(out) == n0 or data.get("last") is True:
+            break
+    save(DISC, f"{src['name']}_parser.json", log)
+    return list(out.values())
+
+
+# ---------------------------------------------------------------- Borsa Italiana: scheda per ISIN
+# Per i certificati ancora senza barriera (in genere quelli arrivati solo dall'elenco Euronext): barriera
+# capitale %, emittente (ragione sociale), nome commerciale (memoria), sottostanti, categoria di Borsa.
+# A rotazione: 1 richiesta al secondo, al massimo SCHEDA_BUDGET_MIN minuti per run, prima le cedole;
+# la run successiva riparte dagli ISIN non ancora visitati (scraper/scheda_state.json).
+
+SCHEDA_STATE = Path(__file__).resolve().parent / "scheda_state.json"
+SCHEDA_BUDGET_S = int(os.environ.get("SCHEDA_BUDGET_MIN", "12")) * 60
+SCHEDA_URL = {"SeDeX": "https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/{}-SEDX.html?lang=it",
+              "Cert-X": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/{}-ETLX.html?lang=it"}
+LEGAL_NAMES = [(r"vontobel", "Vontobel"), (r"bnp", "BNP Paribas"), (r"unicredit|hvb|hypovereins", "UniCredit"),
+               (r"soci[eé]t[eé] g[eé]n[eé]rale|sg issuer", "Société Générale"), (r"intesa", "Intesa Sanpaolo"),
+               (r"barclays", "Barclays"), (r"mediobanca", "Mediobanca"), (r"leonteq", "Leonteq Securities"),
+               (r"goldman", "Goldman Sachs"), (r"marex", "Marex"), (r"citi", "Citigroup"), (r"\bubs\b", "UBS"),
+               (r"deutsche bank", "Deutsche Bank"), (r"cr[eé]dit agricole", "Crédit Agricole"), (r"banco bpm|aletti", "Banco BPM"),
+               (r"santander", "Santander"), (r"natixis", "Natixis"), (r"nomura", "Nomura"), (r"morgan stanley", "Morgan Stanley"),
+               (r"bper", "BPER Banca"), (r"j\.?p\.? ?morgan", "J.P. Morgan"), (r"bbva|bilbao", "BBVA"), (r"akros", "Banca Akros"),
+               (r"smart etn", "Smart ETN"), (r"\bbil\b|internationale [aà] luxembourg", "BIL"), (r"efg", "EFG International"),
+               (r"amundi", "Amundi"), (r"exane", "Exane"), (r"ubs", "UBS")]
+
+
+def legal_to_issuer(s):
+    for rx, name in LEGAL_NAMES:
+        if re.search(rx, s or "", re.I):
+            return name
+    return (s or "").title() or None
+
+
+def scheda_pairs(html):
+    pairs = {}
+    for row in re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.S):
+        cells = [re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", c)).strip() for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", row, re.S)]
+        cells = [c for c in cells if c]
+        if len(cells) >= 2:
+            pairs.setdefault(cells[0], cells[1])
+    return pairs
+
+
+async def borsa_scheda(DISC, src, NOW, ctx):
+    import html as _html
+    import time as _time
+    from datetime import date as _date
+    from run import DATA
+    certs = json.loads(DATA.read_text()).get("certs", []) if DATA.exists() else []
+    st = json.loads(SCHEDA_STATE.read_text()) if SCHEDA_STATE.exists() else {}
+    today = _date.today().isoformat()
+    lev = re.compile(r"turbo|mini ?future|leva|leverage|warrant", re.I)
+    live = [c for c in certs if not c.get("barrierPct") and c.get("market") in SCHEDA_URL
+            and not lev.search(c.get("typeMarket") or c.get("type") or "") and (not c.get("maturity") or c["maturity"] >= today)]
+    done = set(st.get("done", []))
+    todo = [c for c in live if c["isin"] not in done]
+    if not todo:
+        st = {"cycleStart": today, "done": []}
+        todo = live
+    prio = lambda c: (0 if re.search(r"cash collect|phoenix|coupon|cedol", c.get("typeMarket") or c.get("type") or "", re.I)
+                      else 1 if re.search(r"express", c.get("typeMarket") or "", re.I) else 2, c["isin"])
+    todo.sort(key=prio)
+    log = {"queue": len(todo), "visited": 0, "withBarrier": 0, "errors": 0, "samples": []}
+    out, t0 = [], _time.time()
+    for c in todo:
+        if _time.time() - t0 > SCHEDA_BUDGET_S:
+            log["stopped"] = "tempo esaurito"
+            break
+        t1 = _time.time()
+        try:
+            r = await ctx.request.get(SCHEDA_URL[c["market"]].format(c["isin"]), timeout=30000)
+            html = _html.unescape(await r.text()) if r.status == 200 else ""
+        except Exception:
+            html = ""
+        st.setdefault("done", []).append(c["isin"])
+        log["visited"] += 1
+        p = scheda_pairs(html) if c["isin"] in html else {}
+        if not p:
+            log["errors"] += 1
+        else:
+            if len(log["samples"]) < 3:
+                log["samples"].append({"isin": c["isin"], "pairs": p})
+            bar = num((p.get("Barriera Capitale %") or "").replace("+", ""))
+            name = p.get("Nome Commerciale") or ""
+            legal = legal_to_issuer(p.get("Emittente"))
+            und = [u.strip() for u in (p.get("Sottostante") or "").split("/") if u.strip()]
+            cert = {"isin": c["isin"], "commercialName": name or None, "issuerLegal": p.get("Emittente"),
+                    "_fallback": clean({"barrierPct": bar, "underlyings": und or None,
+                                        "memory": True if re.search(r"memory|memoria", name, re.I) else None,
+                                        "maturity": pdate(p.get("Scadenza"))})}
+            if legal and (not c.get("issuer") or str(c.get("issuer")).startswith("codice ")):
+                cert["issuer"] = legal
+            if bar:
+                log["withBarrier"] += 1
+            out.append(clean(cert))
+        await asyncio.sleep(max(0, 1.0 - (_time.time() - t1)))  # 1 richiesta al secondo
+    st["lastRun"] = NOW
+    st["remaining"] = max(0, len(todo) - log["visited"])
+    SCHEDA_STATE.write_text(json.dumps(st))
+    save(DISC, f"{src['name']}_parser.json", log)
+    LAST_STATUS[src["name"]] = f"ok: {log['visited']} schede lette, {log['withBarrier']} con barriera, {st['remaining']} in coda"
+    return out

@@ -103,7 +103,8 @@ def parse_row(r):
         "maturity": text(r[4]) if re.match(r"\d{4}-\d{2}-\d{2}", text(r[4])) else None,
         "bid": bid or None, "ask": ask or None, "currency": cur.group(1) if cur else None,
         "lastPrice": num(text(r[6]).split()[-1]) if text(r[6]) else None, "lastTradeTime": text(r[7]),
-        "url": f"https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/{isin}-{mic}.html?lang=it",
+        "url": (f"https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/{isin}-ETLX.html?lang=it" if mic == "ETLX"
+                else f"https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/{isin}-SEDX.html?lang=it"),
     }
 
 

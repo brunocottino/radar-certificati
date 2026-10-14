@@ -328,9 +328,10 @@ def refresh_distance(c, m, st):
     """Per i certificati con distanza non aggiornata dall'emittente (distAt valorizzato): se sono noti
     strike di ogni sottostante e barriera %, ricalcola le distanze dalle ultime chiusure.
     Altrimenti resta l'ultima distanza nota con la sua data (distAt)."""
-    if not c.get("distAt"):
-        return False
     det, bp = c.get("underlyingsDetail") or [], c.get("barrierPct")
+    # solo se la distanza non arriva fresca dall'emittente: distanza vecchia (distAt) o strike senza distanze (es. Citi)
+    if not c.get("distAt") and any(u.get("dist") is not None for u in det):
+        return False
     if not det or not bp or not all(u.get("strike") for u in det):
         return False
     U = st.get("underlyings", {})
