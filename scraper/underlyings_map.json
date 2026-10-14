@@ -3260,6 +3260,12 @@
   "type": "EQUITY",
   "yahooName": "Ford Motor Company"
  },
+ "fortinet": {
+  "isin": "US34959E1091",
+  "manual": null,
+  "name": "Fortinet",
+  "ticker": null
+ },
  "fortum": {
   "checkedAt": "2026-10-09",
   "exchange": "HEL",
