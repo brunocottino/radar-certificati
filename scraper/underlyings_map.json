@@ -1199,6 +1199,17 @@
   "type": "EQUITY",
   "yahooName": "Bending Spoons S.p.A."
  },
+ "bending spoons s p a": {
+  "checkedAt": "2026-10-14",
+  "exchange": "NMS",
+  "isin": null,
+  "manual": null,
+  "name": "Bending Spoons S.P.A.",
+  "score": 1.0,
+  "ticker": "BSP",
+  "type": "EQUITY",
+  "yahooName": "Bending Spoons S.p.A."
+ },
  "berkshire hathaway": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -3723,6 +3734,17 @@
   "ticker": "8YO.SG",
   "type": "EQUITY",
   "yahooName": "Horizon Robotics"
+ },
+ "hsbc": {
+  "checkedAt": "2026-10-14",
+  "exchange": "NYQ",
+  "isin": null,
+  "manual": null,
+  "name": "HSBC Holdings PLC",
+  "score": 1.0,
+  "ticker": "HSBC",
+  "type": "EQUITY",
+  "yahooName": "HSBC Holdings plc"
  },
  "hugo boss": {
   "checkedAt": "2026-10-09",
