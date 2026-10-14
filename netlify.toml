@@ -1,10 +1,16 @@
-# Netlify: sito statico in docs/, nessuna build.
-# Lo storico per ISIN (docs/data/history) resta nel repository ma non viene pubblicato: il sito lo legge
-# da api/v1/isin/<ISIN>.json. Header (CORS, noindex, cache) in docs/_headers, che Netlify applica.
+# Netlify pubblica solo l'applicazione (pagina, codice, icone): i dati li produce il robot GitHub e restano
+# su https://radar-certificati.cottinob.workers.dev (meta "data-base" in index.html, CORS aperto in _headers).
+# Nessun token, nessun deploy dal workflow.
 [build]
   publish = "docs"
-  command = "rm -rf docs/data/history"
+  command = "rm -rf docs/data docs/api"
+  # salta la build (e il consumo di crediti) se il push non tocca l'applicazione: i commit dati del robot
+  # cambiano solo docs/data, docs/api e scraper/*_state.json
+  # (al primo deploy CACHED_COMMIT_REF = COMMIT_REF: in quel caso si costruisce sempre)
+  ignore = "[ \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" ] && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- docs netlify.toml ':(exclude)docs/data' ':(exclude)docs/api'"
 
 # niente deploy di anteprima per i branch tecnici (discovery, explore, smoke)
 [context.branch-deploy]
-  command = "exit 0"
+  ignore = "exit 0"
+[context.deploy-preview]
+  ignore = "exit 0"
