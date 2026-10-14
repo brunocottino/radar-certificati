@@ -77,6 +77,13 @@ async def main():
         b = await p.chromium.launch(headless=True)
         ctx = await b.new_context(locale="it-IT", user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36")
         for t in targets:
+            if "=" in t:  # nome=URL qualsiasi
+                name, url = t.split("=", 1)
+                info = await visit(ctx, name, url)
+                print(f"[{name}] status={info.get('status')} righe={len(info.get('key_lines', []))} coppie={len(info.get('pairs', []))} xhr={len(info['xhr'])} err={info.get('error', '-')}", flush=True)
+                rep.append(info)
+                await asyncio.sleep(1.5)
+                continue
             isin, mic = t.split("-")
             for src, url in (("euronext", f"https://live.euronext.com/it/product/structured-products/{isin}-{mic}"),
                              ("borsa", f"https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/{isin}-{mic}.html?lang=it")):
