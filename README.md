@@ -27,13 +27,22 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 
 | Sorgente | Come |
 |---|---|
-| Vontobel | tabelle HTML delle liste prodotti |
-| Leonteq | API `product-model/search` paginata; `issuer` = emittente reale, `platform` = "Leonteq" |
-| BNP Paribas | API `productlist` paginata |
+| **Euronext** (elenco completo) | `scraper/euronext.py`: la directory prodotti di live.euronext.com (Euronext è proprietaria di Borsa Italiana) espone in JSON paginato tutti gli strumenti di SeDeX e Cert-X: `POST /it/product_directory/data/warrants-milan?mics=ETLX,SEDX` (parametri DataTables `start`/`length`, 500 righe per pagina, 1 s di pausa). Ogni riga ha ISIN, mercato, simbolo, codice emittente, sottostante, tipologia di borsa, strike, scadenza, **denaro/lettera**. A ottobre 2026: 42.394 strumenti, di cui 29.031 a leva (in `docs/data/leva.json`, caricati dal sito solo su richiesta) e 13.363 d'investimento. Emittente, sottostanti, scadenza e link valgono solo dove l'archivio non ha già i dati più ricchi delle API degli emittenti. Funziona; la ricerca avanzata di Borsa Italiana invece non espone un elenco interrogabile (moduli senza risultati JSON) |
+| Vontobel | tabelle HTML delle liste prodotti (cash collect, multi cash collect, express, bonus cap, fixed cash collect, phoenix) |
+| Leonteq | API `product-model/search` paginata; `issuer` = emittente reale, `platform` = "Leonteq". Il sito è protetto da Incapsula, che blocca spesso i runner GitHub: al massimo una ricerca completa al giorno (`scraper/leonteq_state.json`), pause di 2,5-5 s tra le pagine; se bloccata restano i dati dell'ultima ricerca riuscita e la sorgente risulta "bloccata" |
+| BNP Paribas | API `productlist` paginata, tutto il gruppo investimento (cash collect, phoenix, express, bonus cap, protetti) |
 | UniCredit (onemarkets) | tabella paginata |
-| Borsa Italiana (`borsa_isin`) | complemento prezzi: per gli ISIN UniCredit in archivio ancora senza denaro e lettera, scheda pubblica di Borsa Italiana (`<ISIN>-SEDX`, poi `-ETLX`; ripiego Teleborsa). Playwright, 1 richiesta al secondo, prima le cedole mensili, al massimo 20 minuti per run; la run successiva riprende da dove si è fermata (`scraper/borsa_state.json`). Aggiorna solo denaro/lettera (`priceSource`, `priceUrl`) |
 | Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
 | Marex | sonda, nessuna API trovata |
+
+### Orari e verifica
+
+Il workflow parte ogni ora nei giorni feriali e `scraper/slot.py` decide se lavorare: solo a borsa aperta e una volta per fascia
+(mattina 9:30-13:00, pomeriggio 14:30-17:20, ora di Roma). GitHub ritarda o salta spesso i cron: con questo schema una fascia
+saltata viene recuperata all'ora successiva. L'ultimo step controlla che entro 5 minuti dal push il sito
+(`radar-certificati.cottinob.workers.dev`, deploy di Cloudflare dal repository) serva il nuovo `updatedAt`, altrimenti la run fallisce.
+
+Il repository è privato: GitHub Actions ha 2.000 minuti gratuiti al mese e ogni run ne usa 15-45.
 
 ## API
 

@@ -705,7 +705,19 @@ async function renderIsinBox(){
   if(ISIN.length===12)box.innerHTML=`<div class="panel"><b>ISIN non presente</b> nell'archivio: <span class="num">${esc(ISIN)}</span>. <a href="https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${esc(ISIN)}-SEDX.html?lang=it" target="_blank" rel="noopener">Cercalo su Borsa Italiana</a>.</div>`;
   else box.innerHTML=ROWS.length?`<p class="note">${ROWS.length} certificati iniziano con ${esc(ISIN)}: tutti i filtri sono ignorati. Completa l'ISIN o apri una riga.</p>`:`<div class="panel">Nessun ISIN in archivio inizia con <span class="num">${esc(ISIN)}</span>.</div>`;
 }
-function update(){render();}
+// certificati a leva: file separato (docs/data/leva.json), scaricato solo quando servono
+let LEVA=null;
+async function ensureLeva(){
+  if(LEVA||!(state.f.lev||state.f.cat==="Leva"))return;
+  LEVA="loading";$("#count").textContent="Carico i certificati a leva…";
+  try{const r=await fetch("data/leva.json?t="+Date.now(),{cache:"no-store"});const j=await r.json();
+    const add=j.rows.map(row=>{const o={};j.cols.forEach((k,i)=>{if(row[i]!=null)o[k]=row[i]});o.category="Leva";o.type=o.typeMarket;return o}).filter(o=>!BYISIN.has(o.isin));
+    add.forEach(enrich);const w=W[state.profile];add.forEach(c=>c.score=score(c,w));CERTS=CERTS.concat(add);add.forEach(c=>BYISIN.set(c.isin,c));buildIndex();LEVA=add.length;
+    toast(`Aggiunti ${add.length.toLocaleString("it-IT")} certificati a leva`);
+  }catch(e){LEVA=null;toast("Certificati a leva non disponibili")}
+  render();
+}
+function update(){render();ensureLeva();}
 
 /* ---------- suggerimenti ---------- */
 let SG=[],sgi=-1;
@@ -820,7 +832,7 @@ async function load(){
     try{const r=await fetch("data/certs.json?t="+Date.now(),{cache:"no-store"});j=await r.json();CERTS=j.certs||[]}
     catch(e2){$("#results").innerHTML=`<div class="empty">Dati non disponibili: riprova tra poco.</div>`;$("#status").textContent="Dati non disponibili";return}}
   META=j;CERTS.forEach(enrich);BYISIN=new Map(CERTS.map(c=>[c.isin,c]));
-  rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();
+  rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();ensureLeva();
 }
 load();
 })();

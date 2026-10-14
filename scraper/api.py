@@ -57,6 +57,8 @@ SCHEMA = {
     "nextCallDate": "Prossima data di possibile richiamo.",
     "url": "Pagina del prodotto sul sito dell'emittente.",
     "category": "Categoria: Cash Collect/Phoenix, Express, Bonus Cap, Protetto, Leva, Altro.",
+    "typeMarket": "Tipologia secondo Borsa Italiana/Euronext.",
+    "issuerCode": "Codice emittente nella directory Euronext.",
     "updatedAt": "Data e ora (UTC) dell'ultima rilevazione del certificato.",
     "probBarrierHold": "Probabilità stimata (0-1) che tutti i sottostanti restino sopra la barriera capitale fino a scadenza. Ignora il richiamo anticipato. null se mancano dati.",
     "probMethod": "Metodo: 'mc_europea' (barriera a scadenza, 20.000 scenari), 'mc_continua' (barriera continua, 5.000 scenari a passi giornalieri), 'solo_peggiore' (nota solo la distanza del peggiore: limite superiore della probabilità reale).",
@@ -89,7 +91,7 @@ LIST = ROOT / "docs" / "data" / "list.json"
 HIST_DAYS = 250
 
 # colonne del file leggero per la lista del sito (docs/data/list.json): il dettaglio è in api/v1/isin/<ISIN>.json
-LIST_COLS = ["isin", "issuer", "platform", "type", "category", "underlyings", "worstName", "distBarrier", "distAt",
+LIST_COLS = ["isin", "issuer", "platform", "type", "typeMarket", "category", "underlyings", "worstName", "distBarrier", "distAt",
              "barrierPct", "barrierType", "triggerPct", "autocallPct", "couponPa", "freq", "memory", "callable",
              "maturity", "bid", "ask", "nominal", "priceAt", "nextCouponDate", "nextCallDate", "market", "currency",
              "probBarrierHold", "probMethod", "worstVol", "updatedAt"]
@@ -98,16 +100,14 @@ CATEGORIES = [  # (categoria, regex sul testo tipo/nome/richiamo) - il primo che
     ("Leva", r"turbo|mini ?future|leva fissa|leverage|factor|warrant|knock.?out|\bcw\b"),
     ("Protetto", r"protet|protection|garantit|capital ?prot|benchmark"),
     ("Bonus Cap", r"bonus"),
-    ("Cash Collect/Phoenix", r"cash ?collect|phoenix|premi|coupon|cedol|memory|income|step ?down|softcall"),
+    ("Cash Collect/Phoenix", r"cash ?collect|phoenix|premi|coupon|cedol|memory|income|step ?down|softcall|reverse conv"),
     ("Express", r"express|athena|autocall"),
 ]
 
 
 def category(c):
     """Categoria del certificato dal tipo dichiarato (se non già assegnata dalla sorgente)."""
-    if c.get("category"):
-        return c["category"]
-    txt = " ".join(str(c.get(k) or "") for k in ("type", "name", "callable")).lower()
+    txt = " ".join(str(c.get(k) or "") for k in ("type", "name", "callable", "typeMarket")).lower()
     for cat, rx in CATEGORIES:
         if re.search(rx, txt):
             return cat

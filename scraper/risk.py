@@ -472,7 +472,8 @@ def main():
     force = "--force" in sys.argv
     meta = json.loads(DATA.read_text())
     certs = meta["certs"]
-    unds = all_underlyings(certs)
+    # solo i sottostanti dei certificati con distanza dalla barriera: per gli altri la probabilità non si calcola
+    unds = all_underlyings([c for c in certs if c.get("distBarrier") is not None or c.get("underlyingsDetail")])
     log(f"{len(certs)} certificati, {len(unds)} sottostanti distinti")
     first_today = load(STATE, {}).get("date") != TODAY.isoformat() or force
     m = update_map(unds, offline or not first_today)

@@ -38,6 +38,11 @@ ISSUERS = {
     "SPK": "Spark", "IXIS": "Natixis", "CA": "Crédit Agricole", "CACIB": "Crédit Agricole", "HSBC": "HSBC",
     "ING": "ING", "COM": "Commerzbank", "CBK": "Commerzbank", "DZ": "DZ Bank", "SWQ": "Swissquote", "WIS": "WisdomTree",
     "SMA": "Smart ETN", "IG": "IG", "BKB": "Basler Kantonalbank",
+    # codici visti nella directory Euronext (ottobre 2026), dedotti da prefissi ISIN e simboli
+    "BPA": "BNP Paribas", "UCH": "UniCredit", "GSF": "Goldman Sachs", "GSE": "Goldman Sachs", "GSG": "Goldman Sachs",
+    "CFS": "Crédit Agricole", "CAG": "Crédit Agricole", "SAN": "Santander", "NSI": "Natixis", "NOM": "Nomura",
+    "BPE": "BPER Banca", "JPS": "J.P. Morgan", "BVA": "BBVA", "MSI": "Morgan Stanley", "MBI": "Mediobanca",
+    "AMU": "Amundi", "BP": "Banco BPM", "EXS": "Exane", "EXF": "Exane",
 }
 
 LEVA_RX = re.compile(r"turbo|mini ?future|leva fissa|leverage|factor|covered warrant|\bwarrant|knock.?out|\bcall\b|\bput\b|stayhigh|stay high", re.I)
@@ -73,7 +78,7 @@ def category(ptype):
 
 def issuer_of(hover):
     code = (hover or "").split(" ")[0].upper()
-    return ISSUERS.get(code), code
+    return ISSUERS.get(code) or (f"codice {code}" if code else None), code
 
 
 def parse_row(r):

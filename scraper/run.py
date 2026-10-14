@@ -274,6 +274,10 @@ def merge(old, new):
             c["priceAt"] = c.get("updatedAt")
         by[c["isin"]] = c
     for c in new:
+        fb = c.pop("_fallback", None) or {}
+        prev = by.get(c["isin"], {})
+        # campi di ripiego (es. da Euronext): solo se l'archivio non li ha già da una fonte più ricca
+        c = {**{k: v for k, v in fb.items() if v not in (None, "", []) and prev.get(k) in (None, "", [])}, **c}
         c = {k: v for k, v in c.items() if v not in (None, "", [])}
         if has_price(c):
             c["priceAt"] = NOW

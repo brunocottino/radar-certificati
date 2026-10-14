@@ -170,8 +170,8 @@ async def bnp_api(DISC, src, NOW, ctx):
     finally:
         save(DISC, f"{src['name']}_parser.json", log)
         await page.close()
-    # solo prodotti a cedola/barriera (il gruppo 6 contiene anche protetti, tracker…)
-    return [c for c in out.values() if c.get("couponPa") is not None or c.get("barrierPct") is not None]
+    # tutto il gruppo 6 (investimento): cash collect, phoenix, express, bonus cap, protetti, fixed cash collect
+    return list(out.values())
 
 
 # ---------------------------------------------------------------- UniCredit (onemarkets)
@@ -921,140 +921,40 @@ async def socgen_api(DISC, src, NOW, ctx):
     return list(found.values())
 
 
-# ---------------------------------------------------------------- Borsa Italiana per ISIN
-# Complemento di onemarkets: per i certificati UniCredit in archivio ancora senza denaro e
-# lettera, i prezzi dalla scheda pubblica di Borsa Italiana (SeDeX, poi Cert-X), con ripiego
-# su Teleborsa. 1 richiesta al secondo, prima le cedole mensili; se il tempo della run
-# finisce, la run successiva riparte dagli ISIN non ancora visitati (scraper/borsa_state.json).
+# ---------------------------------------------------------------- Euronext: elenco completo SeDeX e Cert-X
+# Elenco neutro di tutti gli strumenti quotati con denaro/lettera (vedi scraper/euronext.py). Per i
+# certificati d'investimento i dati di mercato (mercato, denaro, lettera, tipologia di borsa) vengono
+# aggiornati a ogni run; emittente, sottostanti, scadenza e link valgono solo dove l'archivio non ha
+# già i dati più ricchi delle API degli emittenti (chiave "_fallback", gestita da run.merge).
+# I certificati a leva vanno in docs/data/leva.json, caricato dal sito solo su richiesta.
 
-BI = "https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/{isin}-{mkt}.html?lang=it"
-BI_MARKETS = (("SEDX", "SeDeX"), ("ETLX", "Cert-X"))
-TELEBORSA = "https://www.teleborsa.it/Ricerca?q={isin}"
-BORSA_STATE = Path(__file__).resolve().parent / "borsa_state.json"
-BORSA_BUDGET_S = int(os.environ.get("BORSA_BUDGET_MIN", "20")) * 60
-BID_RX = re.compile(r"^(prezzo )?(denaro|bid)( \(?eur\)?)?$")
-ASK_RX = re.compile(r"^(prezzo )?(lettera|ask|offer)( \(?eur\)?)?$")
-
-LABEL_PAIRS_JS = """() => {
-  const out = [];
-  for (const tr of document.querySelectorAll('tr')) {
-    const cells = [...tr.children].map(td => td.innerText.trim()).filter(Boolean);
-    for (let i = 0; i + 1 < cells.length; i += 2) out.push([cells[i], cells[i + 1]]);
-  }
-  for (const dt of document.querySelectorAll('dt')) {
-    const dd = dt.nextElementSibling; if (dd) out.push([dt.innerText.trim(), dd.innerText.trim()]);
-  }
-  // etichetta e valore in elementi fratelli (layout a griglia)
-  for (const el of document.querySelectorAll('span,div,strong,label,th')) {
-    if (el.children.length) continue;
-    const t = el.innerText.trim();
-    if (/^(prezzo )?(denaro|lettera|bid|ask)$/i.test(t)) {
-      const sib = el.nextElementSibling || el.parentElement?.nextElementSibling;
-      if (sib) out.push([t, sib.innerText.trim()]);
-    }
-  }
-  return out.slice(0, 400);
-}"""
+LEVA_COLS = ["isin", "issuer", "typeMarket", "underlyings", "maturity", "bid", "ask", "market", "strike", "currency"]
 
 
-def borsa_prices(pairs):
-    bid = ask = None
-    for k, v in pairs:
-        n = norm(k)
-        val = num(v.split("\n")[0]) if v else None
-        if bid is None and BID_RX.search(n):
-            bid = val
-        elif ask is None and ASK_RX.search(n):
-            ask = val
-    return bid or None, ask or None
-
-
-def borsa_queue(certs, state, today):
-    """ISIN UniCredit non scaduti e senza prezzo, prima le cedole mensili, esclusi quelli già fatti nel ciclo."""
-    live = [c for c in certs if c.get("issuer") == "UniCredit" and not (c.get("bid") and c.get("ask"))
-            and (not c.get("maturity") or c["maturity"] >= today)]
-    done = set(state.get("done", []))
-    todo = [c for c in live if c["isin"] not in done]
-    if not todo:  # ciclo completo: ne inizia uno nuovo
-        state.update({"cycleStart": today, "done": []})
-        todo = live
-    todo.sort(key=lambda c: (c.get("freq") != "1m", c.get("freq") is None, c["isin"]))
-    return todo
-
-
-async def borsa_isin(DISC, src, NOW, ctx):
-    from datetime import date as _date
-    import time as _time
+async def euronext_list(DISC, src, NOW, ctx):
+    import euronext
     from run import DATA
-    certs = json.loads(DATA.read_text()).get("certs", []) if DATA.exists() else []
-    state = json.loads(BORSA_STATE.read_text()) if BORSA_STATE.exists() else {}
-    today = _date.today().isoformat()
-    todo = borsa_queue(certs, state, today)
-    log = {"queue": len(todo), "cycleStart": state.get("cycleStart"), "samples": [], "fails": 0}
-    page = await ctx.new_page()
-    await page.route("**/*", lambda r: r.abort() if r.request.resource_type in ("image", "font", "media") else r.continue_())
-    out, t_start, t_last = [], _time.time(), 0.0
-
-    async def visit(url):
-        nonlocal t_last
-        wait = 1.0 - (_time.time() - t_last)  # al massimo 1 richiesta al secondo
-        if wait > 0:
-            await page.wait_for_timeout(int(wait * 1000))
-        t_last = _time.time()
-        resp = await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-        return resp.status if resp else 0
-
-    try:
-        for c in todo:
-            if _time.time() - t_start > BORSA_BUDGET_S:
-                log["stopped"] = "tempo esaurito"
-                break
-            isin, got = c["isin"], None
-            for code, label in BI_MARKETS:
-                url = BI.format(isin=isin, mkt=code)
-                try:
-                    st = await visit(url)
-                except Exception as e:
-                    st = repr(e)[:80]
-                if st != 200 or isin not in page.url:
-                    continue
-                if not log.get("cookies"):
-                    await accept_cookies(page)
-                    log["cookies"] = True
-                pairs = await page.evaluate(LABEL_PAIRS_JS)
-                bid, ask = borsa_prices(pairs)
-                if len(log["samples"]) < 3:
-                    log["samples"].append({"url": url, "pairs": pairs[:80]})
-                    (DISC / f"borsa_{isin}_{code}.html").write_text((await page.content())[:1_500_000])
-                if bid or ask or ISIN_RE.search(await page.inner_text("body")):
-                    got = {"url": url.replace("?lang=it", ""), "market": label, "bid": bid, "ask": ask}
-                    break
-            if got is None:  # ripiego: Teleborsa
-                try:
-                    st = await visit(TELEBORSA.format(isin=isin))
-                    if st == 200:
-                        bid, ask = borsa_prices(await page.evaluate(LABEL_PAIRS_JS))
-                        if bid or ask:
-                            got = {"url": page.url, "market": None, "bid": bid, "ask": ask}
-                        if len(log["samples"]) < 5 and not log.get("teleborsa_sample"):
-                            log["teleborsa_sample"] = {"url": page.url, "status": st}
-                            (DISC / f"teleborsa_{isin}.html").write_text((await page.content())[:1_500_000])
-                except Exception:
-                    pass
-            state.setdefault("done", []).append(isin)
-            if got is None:
-                log["fails"] += 1
-                continue
-            # solo prezzi: dati contrattuali, url e sorgente restano quelli di onemarkets
-            out.append(clean({"isin": isin, "market": got["market"], "bid": got["bid"], "ask": got["ask"],
-                              "priceSource": "Borsa Italiana" if "borsaitaliana" in got["url"] else "Teleborsa",
-                              "priceUrl": got["url"]}))
-    finally:
-        await page.close()
-        state.update({"lastRun": NOW, "lastVisited": len(out) + log["fails"],
-                      "remaining": len([c for c in todo if c["isin"] not in set(state.get("done", []))])})
-        BORSA_STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1))
-        log.update({k: state[k] for k in ("lastVisited", "remaining")})
-        log["withPrice"] = sum(1 for c in out if c.get("bid") and c.get("ask"))
-        save(DISC, f"{src['name']}_parser.json", log)
-    return out
+    log = {}
+    rows = await euronext.fetch_all(ctx, log)
+    save(DISC, f"{src['name']}_parser.json", log)
+    inv, lev = [], []
+    for c in rows:
+        und = c.get("underlyings") or []
+        if len(und) == 1 and "/" in und[0]:
+            und = [u.strip() for u in und[0].split("/") if u.strip()]
+        base = {"isin": c["isin"], "market": c["market"], "bid": c["bid"], "ask": c["ask"], "currency": c["currency"],
+                "typeMarket": c["type"], "issuerCode": c["issuerCode"],
+                "updatedAt": NOW}
+        fb = {"issuer": c["issuer"], "underlyings": und or None, "maturity": c["maturity"], "type": c["type"],
+              "url": c["url"], "source": "euronext"}
+        if euronext.category(c["type"]) == "Leva":
+            lev.append({**base, **fb})
+        else:
+            inv.append(clean({**base, "_fallback": clean(fb)}))
+    if lev:
+        (DATA.parent / "leva.json").write_text(json.dumps({
+            "version": 1, "updatedAt": NOW, "count": len(lev), "cols": LEVA_COLS,
+            "rows": [[c.get(k) for k in LEVA_COLS] for c in sorted(lev, key=lambda x: x["isin"])]},
+            ensure_ascii=False, separators=(",", ":")))
+    LAST_STATUS[src["name"]] = f"ok: {len(inv)} d'investimento, {len(lev)} a leva (file separato)"
+    return inv
