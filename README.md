@@ -33,6 +33,8 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | BNP Paribas | API `productlist` paginata, tutto il gruppo investimento (cash collect, phoenix, express, bonus cap, protetti) |
 | UniCredit (onemarkets) | tabella paginata |
 | Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
+| Citigroup | API pubblica CitiFirst (`citivelocity.com/rcs/eppublic/v1/content/citifirst/product?...country=it`, senza parametri di paginazione): cedola (campo `manualField` o "Cpn: x%" nel nome), frequenza dal calendario dei richiami, barriera, strike dei sottostanti, prossimo richiamo, memoria. Le distanze si ricalcolano da strike e chiusure (`risk.py`), solo se strike e chiusura sono confrontabili |
+| Borsa Italiana (`borsa_scheda`) | schede per ISIN (`/scheda/<ISIN>-SEDX.html`, Cert-X `/eurotlx/scheda/<ISIN>-ETLX.html`) per i certificati ancora senza barriera: barriera capitale %, emittente (sostituisce i codici Euronext ignoti), nome commerciale (memoria), sottostanti. Niente cedola: le schede non la riportano. A rotazione, 1 richiesta/s, 12 minuti per run (~650 schede), prima cash collect/phoenix poi express; ripresa da `scraper/scheda_state.json` |
 | Marex | sonda, nessuna API trovata |
 
 ### Orari e verifica
@@ -83,6 +85,13 @@ Cache: 5 minuti (`Cache-Control: public, max-age=300`). Gli header CORS sono in 
 anticipato (se il certificato viene richiamato prima, la barriera conta meno), nessun rischio emittente né effetto cambio.
 Barriera di tipo non dichiarato trattata come barriera a scadenza. Con barriera continua i passi giornalieri guardano solo le
 chiusure. Correlazione non disponibile = 0. Le probabilità sono stime statistiche, non previsioni né consulenza.
+
+## Netlify
+
+`netlify.toml` pubblica `docs/` senza build (esclude lo storico per ISIN). Due modi:
+1. sito Netlify collegato al repository: deploy a ogni push;
+2. deploy dal workflow (`netlify-cli deploy --prod`), attivo solo se esistono i segreti `NETLIFY_AUTH_TOKEN` e `NETLIFY_SITE_ID`.
+La verifica dopo il push usa la variabile del repository `SITE_URL` (se assente: l'indirizzo Cloudflare).
 
 ## Note
 
