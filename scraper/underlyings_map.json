@@ -145,6 +145,12 @@
   "type": "EQUITY",
   "yahooName": "ABN AMRO Bank N.V."
  },
+ "abn amro bank cva": {
+  "isin": "NL0011540547",
+  "manual": null,
+  "name": "ABN AMRO BANK NV-CVA",
+  "ticker": null
+ },
  "abn amro bank n v": {
   "checkedAt": "2026-10-09",
   "exchange": "AMS",
@@ -201,9 +207,8 @@
   "yahooName": "Adobe Inc."
  },
  "advanced micro devices": {
-  "checkedAt": "2026-10-09",
   "exchange": "NMS",
-  "isin": null,
+  "isin": "US0079031078",
   "manual": null,
   "name": "Advanced Micro Devices Inc.",
   "score": 1.0,
@@ -735,9 +740,8 @@
   "yahooName": "ASML Holding N.V."
  },
  "assicurazioni generali": {
-  "checkedAt": "2026-10-09",
   "exchange": "VIE",
-  "isin": null,
+  "isin": "IT0000062072",
   "manual": null,
   "name": "Assicurazioni Generali SpA",
   "score": 1.0,
@@ -1027,9 +1031,8 @@
   "yahooName": null
  },
  "banco bilbao vizcaya argentaria": {
-  "checkedAt": "2026-10-09",
   "exchange": "HAM",
-  "isin": null,
+  "isin": "ES0113211835",
   "manual": null,
   "name": "Banco Bilbao Vizcaya Argentaria SA",
   "score": 1.0,
@@ -1169,6 +1172,18 @@
   "type": null,
   "yahooName": null
  },
+ "basket ric cgholnca s": {
+  "isin": null,
+  "manual": null,
+  "name": "BASKET RIC CGHOLNCA.S",
+  "ticker": null
+ },
+ "basket ric cgnovnca s": {
+  "isin": null,
+  "manual": null,
+  "name": "BASKET RIC CGNOVNCA.S",
+  "ticker": null
+ },
  "bayer": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -1181,9 +1196,8 @@
   "yahooName": "Bayer Aktiengesellschaft"
  },
  "bayerische motoren werke": {
-  "checkedAt": "2026-10-09",
   "exchange": "GER",
-  "isin": null,
+  "isin": "DE0005190003",
   "manual": null,
   "name": "Bayerische Motoren Werke AG",
   "score": 0.96,
@@ -1212,6 +1226,12 @@
   "ticker": "BBVA.MC",
   "type": "EQUITY",
   "yahooName": "Banco Bilbao Vizcaya Argentaria, S.A."
+ },
+ "be semiconductor industries": {
+  "isin": "NL0012866412",
+  "manual": null,
+  "name": "BE Semiconductor Industries NV",
+  "ticker": null
  },
  "be semiconductor industries n v": {
   "checkedAt": "2026-10-09",
@@ -1579,6 +1599,12 @@
   "type": "EQUITY",
   "yahooName": "Broadcom Inc."
  },
+ "brookfield": {
+  "isin": "CA11271J1075",
+  "manual": null,
+  "name": "Brookfield Corp",
+  "ticker": null
+ },
  "brunello cucinelli": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -1718,9 +1744,8 @@
   "yahooName": "CAC 40 ESG Decrement 5%"
  },
  "cameco": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "CA13321L1085",
   "manual": null,
   "name": "Cameco Corp.",
   "score": 1.0,
@@ -1762,9 +1787,8 @@
   "yahooName": "Carnival Corporation Ltd."
  },
  "carrefour": {
-  "checkedAt": "2026-10-09",
   "exchange": "PAR",
-  "isin": null,
+  "isin": "FR0000120172",
   "manual": null,
   "name": "Carrefour SA",
   "score": 1.0,
@@ -1837,6 +1861,18 @@
   "ticker": "4519.T",
   "type": "EQUITY",
   "yahooName": "Chugai Pharmaceutical Co., Ltd."
+ },
+ "cie financiere richemont": {
+  "isin": "CH0210483332",
+  "manual": null,
+  "name": "Cie Financiere Richemont SA",
+  "ticker": null
+ },
+ "cie saint gobain": {
+  "isin": "FR0000125007",
+  "manual": null,
+  "name": "Cie de Saint-Gobain SA",
+  "ticker": null
  },
  "cigna": {
   "checkedAt": "2026-10-09",
@@ -2558,9 +2594,8 @@
   "yahooName": "easyJet plc"
  },
  "eaton": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "IE00B8KQN827",
   "manual": null,
   "name": "Eaton Corp PLC",
   "score": 1.0,
@@ -2910,6 +2945,24 @@
   "type": null,
   "yahooName": null
  },
+ "euro 10y irs swap rate": {
+  "isin": null,
+  "manual": null,
+  "name": "EURO 10Y IRS Swap Rate",
+  "ticker": null
+ },
+ "euro 20y irs swap rate": {
+  "isin": null,
+  "manual": null,
+  "name": "EURO 20Y IRS Swap Rate",
+  "ticker": null
+ },
+ "euro 3 month euribor": {
+  "isin": null,
+  "manual": null,
+  "name": "EURO 3 MONTH EURIBOR",
+  "ticker": null
+ },
  "euro istoxx 50 carbon adaptation gr decrement 5": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -2966,6 +3019,12 @@
   "name": "Euro Stoxx 50 Index",
   "ticker": null
  },
+ "euro stoxx 50 price eur": {
+  "isin": "EU0009658145",
+  "manual": null,
+  "name": "EURO STOXX 50 Price EUR",
+  "ticker": null
+ },
  "euro stoxx automobiles parts index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -2989,6 +3048,12 @@
   "name": "Euro Stoxx Banks Index",
   "ticker": null
  },
+ "euro stoxx banks price eur": {
+  "isin": "EU0009658426",
+  "manual": null,
+  "name": "EURO STOXX Banks Price EUR",
+  "ticker": null
+ },
  "euro stoxx basic resources index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -2999,6 +3064,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "euro stoxx esg x select dividend 30 price eur": {
+  "isin": "CH0581652788",
+  "manual": null,
+  "name": "EURO STOXX ESG-X Select Dividend 30 Price EUR",
+  "ticker": null
  },
  "euro stoxx industrial good service": {
   "checkedAt": "2026-10-09",
@@ -3044,6 +3115,12 @@
   "type": null,
   "yahooName": null
  },
+ "euro stoxx select dividend 30 price eur": {
+  "isin": "CH0020751589",
+  "manual": null,
+  "name": "EURO STOXX Select Dividend 30 Price EUR",
+  "ticker": null
+ },
  "euro stoxx technology index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -3076,6 +3153,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "euro stoxx utilities price eur": {
+  "isin": "EU0009658582",
+  "manual": null,
+  "name": "EURO STOXX Utilities Price EUR",
+  "ticker": null
  },
  "european biotech index": {
   "checkedAt": "2026-10-09",
@@ -3287,9 +3370,8 @@
   "yahooName": "FinecoBank Banca Fineco S.p.A."
  },
  "finecobank banca fineco": {
-  "checkedAt": "2026-10-09",
   "exchange": "DXE",
-  "isin": null,
+  "isin": "IT0000072170",
   "manual": null,
   "name": "FinecoBank Banca Fineco SpA",
   "score": 1.0,
@@ -3481,7 +3563,7 @@
   "ticker": null
  },
  "ftse mib index": {
-  "isin": null,
+  "isin": "GB00BNNLHW18",
   "manual": "FTSEMIB.MI",
   "name": "FTSE MIB Index",
   "ticker": null
@@ -3856,6 +3938,18 @@
   "type": "EQUITY",
   "yahooName": "Hermès International Société en commandite par actions"
  },
+ "hermes international sca": {
+  "isin": "FR0000052292",
+  "manual": null,
+  "name": "Hermes International SCA",
+  "ticker": null
+ },
+ "holcim": {
+  "isin": "CH0012214059",
+  "manual": null,
+  "name": "Holcim AG",
+  "ticker": null
+ },
  "horizon robotics": {
   "checkedAt": "2026-10-09",
   "exchange": "STU",
@@ -3948,6 +4042,12 @@
   "isin": null,
   "manual": "^IBEX",
   "name": "IBEX 35",
+  "ticker": null
+ },
+ "ibex 35 index": {
+  "isin": "ES0SI0000005",
+  "manual": null,
+  "name": "IBEX 35 Index",
   "ticker": null
  },
  "ibm": {
@@ -4173,9 +4273,8 @@
   "yahooName": "Invesco Solar ETF"
  },
  "ionq": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US46222L1089",
   "manual": null,
   "name": "IonQ Inc.",
   "score": 1.0,
@@ -9837,6 +9936,198 @@
   "type": null,
   "yahooName": null
  },
+ "istoxx alv gr decrement 9 60 price eur": {
+  "isin": "CH1105447382",
+  "manual": null,
+  "name": "iSTOXX ALV GR Decrement 9.60 Price EUR",
+  "ticker": null
+ },
+ "istoxx bats gr decrement 215 price gbp": {
+  "isin": "CH1124145249",
+  "manual": null,
+  "name": "iSTOXX BATS GR Decrement 215 Price GBP",
+  "ticker": null
+ },
+ "istoxx bp gr decrement 37 price gbp": {
+  "isin": "CH1105672435",
+  "manual": null,
+  "name": "iSTOXX BP GR Decrement 37 Price GBP",
+  "ticker": null
+ },
+ "istoxx dpw gr decrement 1 35 price eur": {
+  "isin": "CH1105447366",
+  "manual": null,
+  "name": "iSTOXX DPW GR Decrement 1.35 Price EUR",
+  "ticker": null
+ },
+ "istoxx eni gr decrement 0 55 price eur": {
+  "isin": "CH1105672062",
+  "manual": null,
+  "name": "iSTOXX ENI GR Decrement 0.55 Price EUR",
+  "ticker": null
+ },
+ "istoxx fp gr decrement 2 64 price eur": {
+  "isin": "CH1105671965",
+  "manual": null,
+  "name": "iSTOXX FP GR Decrement 2.64 Price EUR",
+  "ticker": null
+ },
+ "istoxx isp gr decrement 0 197 price eur": {
+  "isin": "CH1105672039",
+  "manual": null,
+  "name": "iSTOXX ISP GR Decrement 0.197 Price EUR",
+  "ticker": null
+ },
+ "istoxx rep gr decrement 0 83 price eur": {
+  "isin": "CH1124145165",
+  "manual": null,
+  "name": "iSTOXX REP GR Decrement 0.83 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on allianz gr decrement 10 44 price eur": {
+  "isin": "CH1123123981",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Allianz GR Decrement 10.44 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on axa gr decrement 1 69 price eur": {
+  "isin": "CH1123124054",
+  "manual": null,
+  "name": "iSTOXX Single Stock on AXA GR Decrement 1.69 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on bayer gr decrement 2 32 price eur": {
+  "isin": "CH1123124112",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Bayer GR Decrement 2.32 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on bbva gr decrement 0 34 price eur": {
+  "isin": "CH1123124070",
+  "manual": null,
+  "name": "iSTOXX Single Stock on BBVA GR Decrement 0.34 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on bmw gr decrement 4 68 price eur": {
+  "isin": "CH1123123882",
+  "manual": null,
+  "name": "iSTOXX Single Stock on BMW GR Decrement 4.68 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on bnp paribas gr decrement 3 85 price eur": {
+  "isin": "CH1123123841",
+  "manual": null,
+  "name": "iSTOXX Single Stock on BNP Paribas GR Decrement 3.85 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on credit agricole gr decrement 0 86 price eur": {
+  "isin": "CH1123123858",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Credit Agricole GR Decrement 0.86 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on credit agricole gr decrement 1 05 price eur": {
+  "isin": "CH1213356160",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Credit Agricole GR Decrement 1.05 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on daimler gr decrement 4 43 price eur": {
+  "isin": "CH1123123908",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Daimler GR Decrement 4.43 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on enel gr decrement 0 38 price eur": {
+  "isin": "CH1169653123",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Enel GR Decrement 0.38 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on eni gr decrement 0 88 price eur": {
+  "isin": "CH1123123999",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Eni GR Decrement 0.88 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on mercedes benz gr decrement 5 price eur": {
+  "isin": "CH1169653255",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Mercedes-Benz Group GR Decrement 5 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on societe generale gr decrement 2 08 price eur": {
+  "isin": "CH1123124146",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Societe Generale GR Decrement 2.08 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on stellantis gr decrement 0 9 price eur": {
+  "isin": "CH1169653081",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Stellantis GR Decrement 0.9 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on stellantis gr decrement 1 34 price eur": {
+  "isin": "CH1213355667",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Stellantis GR Decrement 1.34 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on stellantis gr decrement 1 price eur": {
+  "isin": "CH1169653099",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Stellantis GR Decrement 1 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on total gr decrement 2 76 price eur": {
+  "isin": "CH1123123940",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Total GR Decrement 2.76 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on unicredit gr decrement 0 99 price eur": {
+  "isin": "CH1213356178",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Unicredit GR Decrement 0.99 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on vinci gr decrement 3 28 price eur": {
+  "isin": "CH1123123874",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Vinci GR Decrement 3.28 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on volkswagen gr decrement 7 17 price eur": {
+  "isin": "CH1123123890",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Volkswagen GR Decrement 7.17 Price EUR",
+  "ticker": null
+ },
+ "istoxx single stock on volkswagen gr decrement 8 76 eur price": {
+  "isin": "CH1213355709",
+  "manual": null,
+  "name": "iSTOXX Single Stock on Volkswagen GR Decrement 8.76 EUR Price",
+  "ticker": null
+ },
+ "istoxx tef gr decrement 0 45 price eur": {
+  "isin": "CH1124145207",
+  "manual": null,
+  "name": "iSTOXX TEF GR Decrement 0.45 Price EUR",
+  "ticker": null
+ },
+ "istoxx ubsg gr decrement 0 55 price chf": {
+  "isin": "CH1103543638",
+  "manual": null,
+  "name": "iSTOXX UBSG GR Decrement 0.55 Price CHF",
+  "ticker": null
+ },
+ "istoxx ucg gr decrement 0 48 price eur": {
+  "isin": "CH1103543737",
+  "manual": null,
+  "name": "iSTOXX UCG GR Decrement 0.48 Price EUR",
+  "ticker": null
+ },
  "italgas": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -9902,6 +10193,12 @@
   "ticker": "JEF",
   "type": "EQUITY",
   "yahooName": "Jefferies Financial Group Inc."
+ },
+ "johnson johnson": {
+  "isin": "US4781601046",
+  "manual": null,
+  "name": "Johnson & Johnson",
+  "ticker": null
  },
  "jpmorgan chase": {
   "checkedAt": "2026-10-09",
@@ -9990,6 +10287,12 @@
   "ticker": "PHG",
   "type": "EQUITY",
   "yahooName": "Koninklijke Philips N.V."
+ },
+ "korea stock exchange kospi 200 index": {
+  "isin": "KRD020020016",
+  "manual": null,
+  "name": "Korea Stock Exchange KOSPI 200 Index",
+  "ticker": null
  },
  "kospi 200 index": {
   "checkedAt": "2026-10-09",
@@ -11323,9 +11626,15 @@
   "ticker": null
  },
  "nasdaq 100 index": {
-  "isin": null,
+  "isin": "US6311011026",
   "manual": "^NDX",
   "name": "Nasdaq 100 Index",
+  "ticker": null
+ },
+ "nasdaq 100 stock index": {
+  "isin": "US6311011026",
+  "manual": null,
+  "name": "NASDAQ 100 Stock Index",
   "ticker": null
  },
  "nasdaq 100 total return index": {
@@ -11605,9 +11914,8 @@
   "yahooName": "Novo Nordisk A/S"
  },
  "novo nordisk a s": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "DK0062498333",
   "manual": null,
   "name": "Novo Nordisk A/S",
   "score": 1.0,
@@ -12017,6 +12325,12 @@
   "type": "EQUITY",
   "yahooName": "Dr. Ing. h.c. F. Porsche AG"
  },
+ "porsche automobil": {
+  "isin": "DE000PAH0038",
+  "manual": null,
+  "name": "Porsche Automobil Holding SE",
+  "ticker": null
+ },
  "porsche automobil vz": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -12073,9 +12387,8 @@
   "yahooName": "Prada S.p.A."
  },
  "procter gamble": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US7427181091",
   "manual": null,
   "name": "The Procter & Gamble Company",
   "score": 1.0,
@@ -12564,9 +12877,8 @@
   "ticker": null
  },
  "russell 2000 index": {
-  "checkedAt": "2026-10-09",
   "exchange": "WCB",
-  "isin": null,
+  "isin": "US7827001089",
   "manual": null,
   "name": "Russell 2000 Index",
   "score": 1.0,
@@ -12609,7 +12921,7 @@
   "ticker": null
  },
  "s p 500 index": {
-  "isin": null,
+  "isin": "US78378X1072",
   "manual": "^GSPC",
   "name": "S&P 500 Index",
   "ticker": null
@@ -12626,9 +12938,8 @@
   "yahooName": "S&P Global Inc."
  },
  "saab": {
-  "checkedAt": "2026-10-09",
   "exchange": "STO",
-  "isin": null,
+  "isin": "SE0021921269",
   "manual": null,
   "name": "Saab AB",
   "score": 1.0,
@@ -12852,9 +13163,8 @@
   "yahooName": "Shake Shack Inc."
  },
  "shell": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "GB00BP6MXD84",
   "manual": null,
   "name": "Shell plc",
   "score": 1.0,
@@ -13033,6 +13343,12 @@
   "type": "INDEX",
   "yahooName": "Solactive BRIC E-Commerce Performance Index"
  },
+ "solactive btp 10 annual comp yield index": {
+  "isin": "DE000SL0PQT8",
+  "manual": null,
+  "name": "Solactive BTP 10 Annual Comp. Yield Index",
+  "ticker": null
+ },
  "solactive btp 10y annual comp 11am yield index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -13151,9 +13467,8 @@
   "yahooName": "SoundHound AI, Inc."
  },
  "space exploration technologies": {
-  "checkedAt": "2026-10-09",
   "exchange": null,
-  "isin": null,
+  "isin": "US84615Q1031",
   "manual": null,
   "name": "Space Exploration Technologies Corporation",
   "score": null,
@@ -13376,6 +13691,12 @@
   "type": null,
   "yahooName": null
  },
+ "stoxx europe 600 health care price eur": {
+  "isin": "EU0009658723",
+  "manual": null,
+  "name": "STOXX Europe 600 Health Care Price EUR",
+  "ticker": null
+ },
  "stoxx europe 600 index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -13441,6 +13762,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "stoxx europe 600 utilities price eur": {
+  "isin": "EU0009658962",
+  "manual": null,
+  "name": "STOXX Europe 600 Utilities Price EUR",
+  "ticker": null
  },
  "stoxx europe esg environmental leaders select 30 index": {
   "checkedAt": "2026-10-09",
@@ -13584,6 +13911,12 @@
   "ticker": "UHR.SW",
   "type": "EQUITY",
   "yahooName": "The Swatch Group AG"
+ },
+ "swiss market index": {
+  "isin": "CH0009980894",
+  "manual": null,
+  "name": "Swiss Market Index",
+  "ticker": null
  },
  "swiss re": {
   "checkedAt": "2026-10-09",
@@ -13795,9 +14128,8 @@
   "yahooName": "Terna S.p.A."
  },
  "terna rete elettrica nazionale": {
-  "checkedAt": "2026-10-09",
   "exchange": null,
-  "isin": null,
+  "isin": "IT0003242622",
   "manual": null,
   "name": "Terna Rete Elettrica Nazionale SpA",
   "score": null,
@@ -14235,6 +14567,12 @@
   "type": "EQUITY",
   "yahooName": "Unipol Assicurazioni S.p.A."
  },
+ "unipol assicurazioni": {
+  "isin": "IT0004810054",
+  "manual": null,
+  "name": "Unipol Assicurazioni SpA",
+  "ticker": null
+ },
  "united airlines": {
   "checkedAt": "2026-10-09",
   "exchange": "NMS",
@@ -14616,9 +14954,8 @@
   "yahooName": "Wells Fargo & Company"
  },
  "western digital": {
-  "checkedAt": "2026-10-09",
   "exchange": "NMS",
-  "isin": null,
+  "isin": "US9581021055",
   "manual": null,
   "name": "Western Digital Corporation",
   "score": 1.0,
@@ -14707,6 +15044,12 @@
   "isin": null,
   "manual": null,
   "name": "World Bank Sustainable Bond",
+  "ticker": null
+ },
+ "worldline france": {
+  "isin": "FR0011981968",
+  "manual": null,
+  "name": "Worldline SA/France",
   "ticker": null
  },
  "xiaomi": {
