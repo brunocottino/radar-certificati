@@ -32,6 +32,7 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | Leonteq | API `product-model/search` paginata; `issuer` = emittente reale, `platform` = "Leonteq". Il sito è protetto da Incapsula, che blocca spesso i runner GitHub: al massimo una ricerca completa al giorno (`scraper/leonteq_state.json`), pause di 2,5-5 s tra le pagine; se bloccata restano i dati dell'ultima ricerca riuscita e la sorgente risulta "bloccata" |
 | BNP Paribas | API `productlist` paginata, tutto il gruppo investimento (cash collect, phoenix, express, bonus cap, protetti) |
 | UniCredit (onemarkets) | tabella paginata |
+| BNP Paribas (`bnp_dettaglio`) | per i certificati BNP che arrivano solo da Euronext: GET pubbliche per ISIN `apiv2/api/v1/product/keyvaluerow/<ISIN>` (cedola p.a., barriera, trigger, memoria, frequenza) e `underlyingbasket/<ISIN>` (sottostanti con strike e distanze). A rotazione, 4 richieste in parallelo, 8 minuti per run, prima i certificati senza cedola; ogni ISIN si rilegge dopo 7 giorni (`scraper/bnp_detail_state.json`) |
 | Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
 | Citigroup | API pubblica CitiFirst (`citivelocity.com/rcs/eppublic/v1/content/citifirst/product?...country=it`, senza parametri di paginazione): cedola (campo `manualField` o "Cpn: x%" nel nome), frequenza dal calendario dei richiami, barriera, strike dei sottostanti, prossimo richiamo, memoria. Le distanze si ricalcolano da strike e chiusure (`risk.py`), solo se strike e chiusura sono confrontabili |
 | Borsa Italiana (`borsa_scheda`) | schede per ISIN (`/scheda/<ISIN>-SEDX.html`, Cert-X `/eurotlx/scheda/<ISIN>-ETLX.html`) per i certificati ancora senza barriera: barriera capitale %, emittente (sostituisce i codici Euronext ignoti), nome commerciale (memoria), sottostanti. Niente cedola: le schede non la riportano. A rotazione, 1 richiesta/s, 12 minuti per run (~650 schede), prima cash collect/phoenix poi express; ripresa da `scraper/scheda_state.json` |
@@ -90,17 +91,26 @@ chiusure. Correlazione non disponibile = 0. Le probabilità sono stime statistic
 
 Il sito calcola nel browser, per ogni certificato:
 
-- **Rendimento atteso**: `P(tenuta) × rendimento a scadenza + (1 − P) × rendimento nello scenario negativo`
-  (rimborso al livello del peggiore, circa l'80% della barriera, e cedole ridotte). Senza probabilità si usa il rendimento
-  a scadenza (al massimo 25%) scontato in base alla distanza dalla barriera. Rendimenti oltre il 30% sono segnalati come sospetti.
+- **Rendimento annuo** (la soglia dei profili): cedole annue più la differenza tra rimborso (100) e prezzo lettera,
+  divisa per gli anni residui (almeno 3 mesi), il tutto sul prezzo lettera. Sotto barriera il rimborso è stimato al livello
+  attuale del peggiore (o nessun recupero, se il livello non è noto). Oltre il 40% è segnalato con "!": il mercato prezza una
+  perdita probabile.
+- **Rendimento atteso**: `P(tenuta) × rendimento se tiene + (1 − P) × rendimento se si rompe` (rimborso ≈ 85% del livello
+  barriera, metà delle cedole, perdita spalmata su almeno un anno). Informativo, non filtra di default.
 - **Margine in dev. std**: distanza del worst-of dalla barriera divisa per volatilità × √anni residui.
-- **Punteggio 0-100**: media pesata di Rendimento, Sicurezza (probabilità/distanza), Trigger, Liquidità (spread, prezzi
-  aggiornati) e Qualità (classe dell'emittente A/B/C indicativa, memoria, completezza dei dati). I pesi dipendono dal profilo
-  (prudente, bilanciato, aggressivo); sotto barriera ×0,35, cedola non attiva ×0,8.
-- **Profili iniziali**: prudente (rend. atteso ≥ 4%, distanza ≥ 40%, trigger ≥ 15%, prob ≥ 85%, ≤ 4 anni, spread ≤ 1,5%),
-  bilanciato (6%, 30%, 10%, 75%, 5 anni, 2%), aggressivo (8%, 20%, 60%, 7 anni, 3%); tutti richiedono la cedola nota.
-- **Obiettivi rapidi**: cedola mensile, sotto la pari, scadenza breve, memoria, cedola attiva, barriera lontana.
-- I prezzi anomali (< 1 o > 300% del nominale) sono esclusi dai calcoli di rendimento.
+- **Punteggio 0-100**: media pesata di Rendimento annuo (pieno a 14% prudente, 20% bilanciato, 28% aggressivo),
+  Sicurezza del peggiore (probabilità e distanza), Affidabilità cedola (distanza dal trigger), Liquidità (spread, prezzo
+  aggiornato) e Qualità (classe A/B/C indicativa dell'emittente, memoria, dati completi). Sotto barriera ×0,35, cedola sospesa ×0,8.
+- **Profili** (i dati mancanti non escludono, salvo la cedola, necessaria per il rendimento):
+
+| Profilo | Rend. annuo | Dist. barriera | Prob. tenuta | Trigger | Scadenza | Spread |
+|---|---|---|---|---|---|---|
+| Prudente | 8-25% | ≥ 35% | ≥ 80% | ≥ 5% | ≤ 5 anni | ≤ 2,5% |
+| Bilanciato | 12-35% | ≥ 25% | ≥ 60% | — | ≤ 6 anni | ≤ 3% |
+| Aggressivo | 16-50% | ≥ 15% | — | — | ≤ 8 anni | ≤ 4% |
+
+- **Obiettivi rapidi**: rendita mensile, sotto la pari, scadenza breve, memoria, cedola in pagamento, peggiore lontano.
+- I prezzi anomali (< 1 o > 300% del nominale) sono esclusi; il robot scarta anche le lettere oltre 5 volte il nominale.
 
 ## Note
 

@@ -222,7 +222,7 @@ tr.sp td{height:auto;border:none;padding:0}
       <div class="row">
         <span class="count" id="count" aria-live="polite"></span>
         <label class="note" style="display:flex;gap:6px;align-items:center">Ordina<select id="sortsel" style="width:auto;padding:5px 8px">
-          <option value="score">Punteggio</option><option value="er">Rendimento atteso</option><option value="ytm">Rend. a scadenza</option>
+          <option value="score">Punteggio</option><option value="ytm">Rendimento annuo</option><option value="er">Rendimento atteso</option>
           <option value="prob">Prob. tenuta barriera</option><option value="dist">Distanza del peggiore</option><option value="sigma">Margine in dev. std</option>
           <option value="coupon">Cedola</option><option value="price">Prezzo (più basso)</option><option value="mat">Scadenza (più vicina)</option><option value="spread">Spread (più stretto)</option></select></label>
         <button id="export" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
@@ -249,8 +249,9 @@ tr.sp td{height:auto;border:none;padding:0}
           <span class="note" id="prof-note">imposta i filtri qui sotto; puoi modificarli dopo</span>
         </div>
         <div class="grid-f">
-          <label>Rend. atteso min % annuo (pesato con la probabilità)<input id="f-er" type="number" step="0.5"></label>
-          <label>Rend. a scadenza min % annuo (se tutto va bene)<input id="f-y" type="number" step="0.5"></label>
+          <label>Rendimento annuo min % (cedole + rimborso, al prezzo lettera)<input id="f-y" type="number" step="0.5"></label>
+          <label>Rendimento annuo max % (oltre: perdita probabile già nel prezzo)<input id="f-ym" type="number" step="1"></label>
+          <label>Rend. atteso min % (pesato con la probabilità)<input id="f-er" type="number" step="0.5"></label>
           <label>Peggiore: distanza barriera min %<input id="f-b" type="number" step="5"></label>
           <label>Peggiore: distanza trigger cedola min %<input id="f-t" type="number" step="5"></label>
           <label>Prob. minima % tenuta barriera<input id="f-prob" type="number" step="5" min="0" max="100"></label>
@@ -308,8 +309,9 @@ tr.sp td{height:auto;border:none;padding:0}
     <dt>Autocall</dt><dd>Rimborso anticipato automatico se tutti i sottostanti sono sopra il livello di richiamo a una data di osservazione.</dd>
     <dt>Softcallable</dt><dd>L'emittente può decidere di rimborsare in anticipo (callable emittente): di solito lo fa quando il certificato gli costa troppo.</dd>
     <dt>Denaro / lettera</dt><dd>Prezzo a cui il market maker compra (denaro) e vende (lettera). Si compra alla lettera; la differenza è lo spread.</dd>
-    <dt>Rendimento atteso</dt><dd>Media, pesata con la probabilità di tenuta, tra il rendimento se la barriera tiene e una stima se viene rotta (rimborso ≈ 80% del livello barriera). Con "~" la probabilità non è nota: si usa il rendimento a scadenza (al massimo 25%) scontato in base alla distanza del peggiore.</dd>
-    <dt>Punteggio</dt><dd>0-100, somma pesata secondo il profilo di rendimento atteso, sicurezza del peggiore, affidabilità della cedola, liquidità e qualità (classe dell'emittente, memoria, dati completi). Apri la scheda per vedere il dettaglio.</dd>
+    <dt>Rendimento annuo</dt><dd>Rendimento annuo a scadenza al prezzo lettera: cedole più differenza tra rimborso (100) e prezzo, divisa per gli anni residui (almeno 3 mesi). Sotto barriera il rimborso è stimato al livello attuale del peggiore. "!" = oltre il 40%: il mercato prezza una perdita probabile. È la soglia dei profili: prudente 8%, bilanciato 12%, aggressivo 16%.</dd>
+    <dt>Rendimento atteso</dt><dd>Media, pesata con la probabilità di tenuta, tra il rendimento se la barriera tiene e una stima se viene rotta (rimborso ≈ 85% del livello barriera, metà delle cedole). Con "~" la probabilità non è nota: si usa il rendimento a scadenza (al massimo 25%) scontato in base alla distanza del peggiore.</dd>
+    <dt>Punteggio</dt><dd>0-100, somma pesata secondo il profilo di rendimento annuo (pieno a 14% prudente, 20% bilanciato, 28% aggressivo), sicurezza del peggiore, affidabilità della cedola, liquidità e qualità (classe dell'emittente, memoria, dati completi). Apri la scheda per vedere il dettaglio.</dd>
     <dt>Classe emittente</dt><dd>A, B, C: classe indicativa ricavata dai rating pubblici della capogruppo. Non è un rating ufficiale: verificare sempre.</dd>
     <dt>Margine in dev. std</dt><dd>Quante "oscillazioni tipiche" fino a scadenza separano il peggiore dalla barriera. Sotto 1 il margine è sottile, sopra 2 è ampio.</dd>
     <dt>Prob. tenuta barriera</dt><dd>Stima statistica che la barriera non venga violata fino a scadenza, da volatilità storica. Non è una previsione.</dd>
@@ -345,23 +347,26 @@ const dtime=s=>s?new Date(s).toLocaleString("it-IT",{day:"2-digit",month:"2-digi
 
 /* ---------- stato ---------- */
 // profili = preset dei filtri (modificabili) + pesi del punteggio
+// soglia principale = rendimento annuo a scadenza (cedole + rimborso, al prezzo di lettera); i dati mancanti non escludono
 const PRESETS={
-  prudente:{er:4,y:null,b:40,t:15,prob:85,mat:4,sp:1.5,cpn:true},
-  bilanciato:{er:6,y:null,b:30,t:10,prob:75,mat:5,sp:2,cpn:true},
-  aggressivo:{er:8,y:null,b:20,t:null,prob:60,mat:7,sp:3,cpn:true},
+  prudente:{er:null,y:8,ym:25,b:35,t:5,prob:80,mat:5,sp:2.5,cpn:true},
+  bilanciato:{er:null,y:12,ym:35,b:25,t:null,prob:60,mat:6,sp:3,cpn:true},
+  aggressivo:{er:null,y:16,ym:50,b:15,t:null,prob:null,mat:8,sp:4,cpn:true},
 };
 // R rendimento atteso, S sicurezza (probabilità e distanza del peggiore), T affidabilità cedola, L liquidità, Q qualità
-const W={prudente:{R:.18,S:.40,T:.14,L:.14,Q:.14},bilanciato:{R:.32,S:.30,T:.12,L:.13,Q:.13},aggressivo:{R:.50,S:.20,T:.08,L:.12,Q:.10}};
-const COMP={R:"Rendimento atteso",S:"Sicurezza del peggiore",T:"Affidabilità cedola",L:"Liquidità",Q:"Qualità"};
+const W={prudente:{R:.25,S:.38,T:.13,L:.12,Q:.12},bilanciato:{R:.38,S:.30,T:.10,L:.11,Q:.11},aggressivo:{R:.50,S:.22,T:.08,L:.10,Q:.10}};
+// rendimento annuo che vale il massimo del punteggio, per profilo
+const RTOP={prudente:14,bilanciato:20,aggressivo:28};
+const COMP={R:"Rendimento annuo",S:"Sicurezza del peggiore",T:"Affidabilità cedola",L:"Liquidità",Q:"Qualità"};
 // classe indicativa dell'emittente (dai rating pubblici delle capogruppo, approssimata: non è un rating ufficiale)
 const TIER={"BNP Paribas":"A","Crédit Agricole":"A","Santander":"A","UBS":"A","J.P. Morgan":"A","Barclays":"A","Vontobel":"A","Natixis":"A","Amundi":"A",
   "Société Générale":"B","Citigroup":"B","Deutsche Bank":"B","BBVA":"B","Morgan Stanley":"B","BIL":"B","Goldman Sachs":"B","UniCredit":"B","Intesa Sanpaolo":"B","Mediobanca":"B","EFG International":"B","Exane":"B",
   "Banco BPM":"C","BPER Banca":"C","Nomura":"C","Leonteq Securities":"C","Marex":"C","Banca Akros":"C"};
 const TIERV={A:1,B:.8,C:.55};
-const NUMF=["er","y","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav"];
+const NUMF=["er","y","ym","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav"];
 // obiettivi rapidi: un clic imposta (o toglie) un gruppo di filtri
 const OBJ={mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
-const LABEL={er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. scadenza ≥ ${fmt(v,1)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
+const LABEL={er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
   active:()=>"Cedola in pagamento",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
 const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sort:{key:"score",dir:-1},view:null};
@@ -406,9 +411,12 @@ function enrich(c){
   r.belowBarrier=r.dist!=null&&r.dist<0;
   r.cy=(r.pricePct&&r.couponPa!=null)?r.couponPa/r.pricePct*100:null;
   // rendimento se la barriera tiene (cedole + rimborso a 100) e, sotto barriera, rimborso al livello del peggiore
-  r.ytmGood=(r.pricePct&&r.couponPa!=null&&r.years)?(r.couponPa+(100-r.pricePct)/r.years)/r.pricePct*100:null;
+  // anni per annualizzare: almeno 3 mesi, altrimenti pochi centesimi di sconto diventano rendimenti enormi
+  const ya=r.years?Math.max(r.years,.25):null;
+  r.ytmGood=(r.pricePct&&r.couponPa!=null&&ya)?(r.couponPa+(100-r.pricePct)/ya)/r.pricePct*100:null;
   r.ytm=r.ytmGood;
-  if(r.ytm!=null&&r.belowBarrier&&r.spotPct){r.ytm=((r.couponActive?r.couponPa:0)+(r.spotPct-r.pricePct)/r.years)/r.pricePct*100;r.ytmNote="sotto barriera: rimborso stimato al livello attuale del peggiore"}
+  if(r.ytm!=null&&r.belowBarrier){if(r.spotPct){r.ytm=((r.couponActive?r.couponPa:0)+(r.spotPct-r.pricePct)/ya)/r.pricePct*100;r.ytmNote="sotto barriera: rimborso stimato al livello attuale del peggiore"}
+    else{r.ytm=(r.couponActive?r.couponPa:0)/r.pricePct*100;r.ytmNote="sotto barriera: nessun recupero del prezzo considerato"}}
   const cd=parseDate(c.nextCallDate);r.callDate=cd&&cd>=today?cd:null;
   if(r.callDate&&r.pricePct&&r.couponPa!=null){const t=Math.max((r.callDate-today)/(365.25*864e5),1/12);r.ytc=(r.couponPa+(100-r.pricePct)/t)/r.pricePct*100}else r.ytc=null;
   const nc=parseDate(c.nextCouponDate);r.couponDate=nc&&nc>=today?nc:null;
@@ -417,10 +425,10 @@ function enrich(c){
   r.wvol=c.worstVol==null?null:c.worstVol*100;
   // rendimento atteso: media pesata con la probabilità tra "la barriera tiene" e "la barriera viene rotta"
   // (rotta: rimborso ≈ 80% del livello barriera, incassato ≈ 40% delle cedole residue)
-  if(r.prob!=null&&r.ytmGood!=null){const P=r.prob/100,red=(bp||60)*.8;r.ytmBad=(r.couponPa*.4+(red-r.pricePct)/r.years)/r.pricePct*100;r.expRet=P*r.ytmGood+(1-P)*r.ytmBad}else{r.ytmBad=null;r.expRet=null}
+  if(r.prob!=null&&r.ytmGood!=null){const P=r.prob/100,red=(bp||60)*.85;r.ytmBad=(r.couponPa*.5+(red-r.pricePct)/Math.max(ya,1))/r.pricePct*100; // perdita spalmata su almeno un annor.expRet=P*r.ytmGood+(1-P)*r.ytmBad}else{r.ytmBad=null;r.expRet=null}
   // senza probabilità: rendimento a scadenza limitato al 25% e scontato secondo quanto è lontano il peggiore
   r.retProxy=r.expRet??(r.ytm!=null?Math.min(r.ytm,25)*(r.dist==null?.5:r.dist>=30?.85:r.dist>=15?.65:.4):null);
-  r.ytmHigh=r.ytmGood!=null&&r.ytmGood>30; // rendimento "troppo bello": il mercato prezza una perdita probabile
+  r.ytmHigh=r.ytm!=null&&r.ytm>40; // rendimento "troppo bello": il mercato prezza una perdita probabile
   // margine del peggiore in deviazioni standard fino a scadenza
   r.sigma=(r.wvol&&r.dist!=null&&r.dist<100&&r.years)?Math.log(1/(1-r.dist/100))/(r.wvol/100*Math.sqrt(r.years)):null;
   r.tier=TIER[c.issuer]||null;
@@ -434,7 +442,8 @@ function enrich(c){
 }
 function score(c,w){
   if(c.priceBad){c.sc=null;return 0}
-  const R=c.retProxy==null?0:clamp(c.retProxy/15,0,1)*(c.ytmHigh?.5:1); // 15% annuo atteso = pieno; rendimento sospetto dimezzato
+  const top=RTOP[state.profile]||20;
+  const R=c.ytm==null?0:clamp(c.ytm/top,0,1)*(c.ytmHigh?.6:1); // rendimento annuo rispetto all'obiettivo del profilo; oltre il 40% è sospetto
   let S;
   if(c.belowBarrier)S=0;
   else if(c.prob!=null)S=.65*clamp((c.prob-40)/55,0,1)+.35*clamp((c.dist??0)/50,0,1)-(c.probUpper?.05:0);
@@ -505,7 +514,7 @@ function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];
 function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){toast("Massimo 4 certificati nel confronto");return}CMP.add(isin)}renderCmpBar();render(false)}
 
 /* ---------- filtro e ordinamento ---------- */
-const SORT={er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
+const SORT={er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
 let ROWS=[],ISIN=null;
 function compute(){
   const f=state.f;ISIN=isinMode(state.q);
@@ -525,6 +534,7 @@ function compute(){
     if(f.cpn&&c.couponPa==null)continue;
     if(f.er!=null&&(c.retProxy??-99)<f.er)continue;
     if(f.y!=null&&c.liq&&(c.ytm??-99)<f.y)continue;
+    if(f.ym!=null&&c.ytm!=null&&c.ytm>f.ym)continue; // oltre: il mercato prezza una perdita probabile
     if(f.b!=null&&c.dist!=null&&c.dist<f.b)continue;
     if(f.t!=null&&c.trigDist!=null&&c.trigDist<f.t)continue;
     if(f.active&&c.couponActive!==true)continue;
@@ -556,7 +566,7 @@ function scoreBars(c){if(!c.sc)return "";const w=W[state.profile];
 function scenarios(c){if(c.ytmGood==null)return "";
   return `<div><div class="cap" style="margin-bottom:6px">Scenari di rendimento annuo sul prezzo lettera</div><div class="scen">
   <div>Se la barriera tiene<b class="pos">${pct(c.ytmGood)}</b><span class="note">cedole + rimborso a 100</span></div>
-  ${c.ytmBad!=null?`<div>Se la barriera viene rotta<b class="neg">${pct(c.ytmBad)}</b><span class="note">stima: rimborso ≈ 80% del livello barriera</span></div>`:""}
+  ${c.ytmBad!=null?`<div>Se la barriera viene rotta<b class="neg">${pct(c.ytmBad)}</b><span class="note">stima: rimborso ≈ 85% del livello barriera, metà delle cedole</span></div>`:""}
   <div>Rendimento atteso<b class="hi">${pct(c.retProxy)}</b><span class="note">${c.expRet!=null?`pesato con prob. ${probTxt(c)}`:"probabilità ignota: rend. a scadenza (max 25%) scontato in base alla distanza del peggiore"}</span></div>
   ${c.sigma!=null?`<div>Margine del peggiore<b>${fmt(c.sigma,1)} dev. std</b><span class="note">distanza / (volatilità × √anni)</span></div>`:""}
   </div>${c.ytmNote?`<p class="note">${esc(c.ytmNote)}.</p>`:""}</div>`}
@@ -588,7 +598,7 @@ const starBtn=c=>`<button class="star" data-fav="${esc(c.isin)}" aria-pressed="$
 const cmpBox=c=>`<label class="check" title="Confronta"><input type="checkbox" class="sel" data-cmp="${esc(c.isin)}" ${CMP.has(c.isin)?"checked":""}></label>`;
 
 /* ---------- tabella virtualizzata ---------- */
-const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","","dist"],["Prob. tenuta","","prob"],["Rend. atteso","","er"],["Vol pegg.","","vol"],["Dist. trigger","","trig"],["Barr.","",null],["Cedola","","coupon"],["Lettera %","","price"],["Spread","","spread"],["Rend. ced.","","cy"],["Rend. scad.","","ytm"],["Rend. rich.","","ytc"],["Richiamo","","call"],["Scadenza","","mat"]];
+const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","","dist"],["Rend. annuo","","ytm"],["Cedola","","coupon"],["Prob. tenuta","","prob"],["Rend. atteso","","er"],["Vol pegg.","","vol"],["Dist. trigger","","trig"],["Barr.","",null],["Lettera %","","price"],["Spread","","spread"],["Rend. ced.","","cy"],["Rend. rich.","","ytc"],["Richiamo","","call"],["Scadenza","","mat"]];
 function rowHtml(c){
   return `<tr class="r" data-open="${esc(c.isin)}">
 <td class="t">${starBtn(c)}${cmpBox(c)}</td><td class="pt ${c.score>=70?"pos":c.score>=50?"ca":"neg"}" title="${esc(scoreTitle(c))}">${c.score}</td>
@@ -596,14 +606,15 @@ function rowHtml(c){
 <td class="l t unds-cell" title="${esc(c.unds.join(", "))}">${esc(c.unds.join(", "))}</td>
 <td class="l t w" style="max-width:150px">${esc(c.worst||"—")}</td>
 <td class="${cls(c.dist)} w">${pct(c.dist)}</td>
+<td class="hi w" title="${esc(c.ytmNote||"Cedole + rimborso a 100 a scadenza, sul prezzo lettera, annuo")}">${pct(c.ytm)}${c.ytmHigh?"!":""}</td>
+<td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
 <td class="${pcls(c.prob)} w" title="${esc(probTitle(c))}">${probTxt(c)}</td>
-<td class="hi" title="${c.expRet!=null?"Media tra barriera che tiene ("+pct(c.ytmGood)+") e barriera rotta ("+pct(c.ytmBad)+")":"Senza probabilità: rendimento a scadenza (max 25%) scontato in base alla distanza del peggiore"}">${pct(c.retProxy)}${c.expRet==null&&c.retProxy!=null?"~":""}</td>
+<td title="${c.expRet!=null?"Media tra barriera che tiene ("+pct(c.ytmGood)+") e barriera rotta ("+pct(c.ytmBad)+")":"Senza probabilità: rendimento a scadenza (max 25%) scontato in base alla distanza del peggiore"}">${pct(c.retProxy)}${c.expRet==null&&c.retProxy!=null?"~":""}</td>
 <td>${pct(c.wvol,0)}</td>
 <td class="${cls(c.trigDist)}">${pct(c.trigDist)}</td>
 <td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
-<td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
 <td class="${c.stale?"stale":""}" title="${c.priceAt?"Prezzo del "+dtime(c.priceAt):""}">${c.pricePct?fmt(c.pricePct,2):"—"}</td>
-<td>${pct(c.spread,2)}</td><td>${pct(c.cy)}</td><td class="hi">${pct(c.ytm)}</td><td>${pct(c.ytc)}</td>
+<td>${pct(c.spread,2)}</td><td>${pct(c.cy)}</td><td>${pct(c.ytc)}</td>
 <td class="t">${c.callKind==="callable"?"Soft ":c.callKind==="autocall"?"Auto ":""}${dshort(c.callDate)}</td><td>${dshort(c.matDate)}</td></tr>`}
 let vt=null;
 function renderTable(){
@@ -631,7 +642,7 @@ function cardHtml(c){
 <div class="metrics">
 <div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
 <div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}">${probTxt(c)}</div></div>
-<div class="m"><div class="k">Rend. atteso</div><div class="v hi">${pct(c.retProxy)}</div></div>
+<div class="m"><div class="k">Rend. annuo</div><div class="v hi">${pct(c.ytm)}</div></div>
 <div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div></div>
 <div class="m"><div class="k">Lettera · prezzo</div><div class="v ${c.stale?"stale":""}">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
 <div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
@@ -694,8 +705,8 @@ async function detailHtml(c){
 <div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
 <div class="m"><div class="k">Dist. trigger cedola</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
 <div class="m"><div class="k">Vol peggiore</div><div class="v">${pct(c.wvol,0)}</div></div>
-<div class="m"><div class="k">Rend. atteso</div><div class="v hi">${pct(c.retProxy)}</div></div>
-<div class="m"><div class="k">Rend. a scadenza</div><div class="v">${pct(c.ytm)}</div></div>
+<div class="m"><div class="k">Rend. annuo (a scadenza)</div><div class="v hi">${pct(c.ytm)}</div></div>
+<div class="m"><div class="k">Rend. atteso</div><div class="v">${pct(c.retProxy)}</div></div>
 <div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
 <div class="m"><div class="k">Emittente (classe)</div><div class="v">${c.tier?c.tier:"n.d."}</div></div>
 <div class="m"><div class="k">Denaro / lettera</div><div class="v ${c.stale?"stale":""}">${fmt(c.bid)} / ${fmt(c.ask)}</div></div>
@@ -730,7 +741,7 @@ async function openCmp(){
 }
 
 /* ---------- filtri: controlli, chip, profilo ---------- */
-const IDS={er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
+const IDS={ym:"#f-ym",er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
 function syncControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")el.checked=!!state.f[k];else el.value=state.f[k]??""}
   $("#q").value=state.q;$("#q-clear").hidden=!state.q;$("#b-fav").setAttribute("aria-pressed",state.f.fav);
   document.querySelectorAll("#profile button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
@@ -830,9 +841,9 @@ function pickSugg(i){const s=SG[i];if(!s)return;
 let DAILY=null;
 function pickDaily(){
   const P=PRESETS[state.profile];
-  const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.couponPa!=null&&c.spread<=1.5&&!c.stale&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=P.b&&c.prob!=null&&c.prob>=P.prob&&(c.expRet??-99)>=P.er&&(c.years??99)<=P.mat).sort((a,b)=>b.score-a.score).slice(0,3);
+  const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.couponPa!=null&&c.spread<=2&&!c.stale&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=P.b&&c.prob!=null&&c.prob>=(P.prob??50)&&(c.ytm??-99)>=P.y&&!c.ytmHigh&&(c.years??99)<=P.mat).sort((a,b)=>b.score-a.score).slice(0,3);
   if(!ok.length){DAILY=null;return}
-  DAILY=ok;$("#dailybody").innerHTML=ok.map(c=>`<p style="margin:0"><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button> — ${esc(c.issuer)} su ${esc(c.unds.join(", "))}: cedola ${pct(c.couponPa,2)} ${freqTxt(c.freq).toLowerCase()}, peggiore a ${pct(c.dist)} dalla barriera${c.prob!=null?`, prob. tenuta ${probTxt(c)}`:""}, lettera ${pct(c.pricePct,1)}, rend. atteso ${pct(c.expRet)} (${pct(c.ytmGood)} se la barriera tiene), punteggio ${c.score}.</p>`).join("");
+  DAILY=ok;$("#dailybody").innerHTML=ok.map(c=>`<p style="margin:0"><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button> — ${esc(c.issuer)} su ${esc(c.unds.join(", "))}: cedola ${pct(c.couponPa,2)} ${freqTxt(c.freq).toLowerCase()}, peggiore a ${pct(c.dist)} dalla barriera${c.prob!=null?`, prob. tenuta ${probTxt(c)}`:""}, lettera ${pct(c.pricePct,1)}, rend. annuo ${pct(c.ytm)} (atteso ${pct(c.expRet)}), punteggio ${c.score}.</p>`).join("");
 }
 function renderAlerts(){
   const out=[];

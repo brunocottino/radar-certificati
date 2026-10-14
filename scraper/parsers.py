@@ -175,6 +175,186 @@ async def bnp_api(DISC, src, NOW, ctx):
     return list(out.values())
 
 
+# ---------------------------------------------------------------- BNP Paribas: dettaglio per ISIN
+# L'elenco productlist non restituisce tutti i certificati BNP quotati (molti arrivano solo da Euronext,
+# senza cedola né barriera). La pagina prodotto usa due GET pubbliche per ISIN: keyvaluerow (cedola p.a.,
+# barriera, trigger, memoria, frequenza, scadenza) e underlyingbasket (sottostanti con strike e distanze).
+# A rotazione: 4 richieste in parallelo, al massimo BNP_DETAIL_BUDGET_MIN minuti per run, prima i certificati
+# senza cedola (cash collect/phoenix, poi express, poi il resto); ogni ISIN si rilegge dopo 7 giorni.
+
+BNP_DETAIL_STATE = Path(__file__).resolve().parent / "bnp_detail_state.json"
+BNP_DETAIL_BUDGET_S = int(os.environ.get("BNP_DETAIL_BUDGET_MIN", "8")) * 60
+BNP_V1 = "https://investimenti.bnpparibas.it/apiv2/api/v1/product/"
+BNP_HDR = {"accept": "application/json", "content-type": "application/json", "clientid": "1", "languageid": "it", "countryid": ""}
+
+
+def detail_queue(certs, issuer, state, days=7):
+    """ISIN dell'emittente da (ri)leggere: prima quelli senza cedola, per tipo; poi i più vecchi."""
+    from datetime import date as _date, timedelta
+    today = _date.today()
+    lev = re.compile(r"turbo|mini ?future|leva|leverage|warrant|tracker", re.I)
+    old = (today - timedelta(days=days)).isoformat()
+    q = [c for c in certs if c.get("issuer") == issuer and not lev.search(c.get("typeMarket") or c.get("type") or "")
+         and (not c.get("maturity") or c["maturity"] >= today.isoformat()) and state.get(c["isin"], "") < old]
+    kind = lambda c: (0 if re.search(r"cash collect|phoenix|coupon|cedol", c.get("typeMarket") or c.get("type") or "", re.I)
+                      else 1 if re.search(r"express|autocall", c.get("typeMarket") or c.get("type") or "", re.I) else 2)
+    q.sort(key=lambda c: (c.get("couponPa") is not None, kind(c), state.get(c["isin"], ""), c["isin"]))
+    return q
+
+
+async def rotate(DISC, src, issuer, state_path, budget_s, one, log):
+    """Rotazione delle schede per ISIN di un emittente: 4 richieste in parallelo entro il budget di tempo.
+    one(c) restituisce il certificato arricchito, None se la scheda non c'è, o solleva un'eccezione."""
+    import time as _time
+    from datetime import date as _date
+    from run import DATA
+    certs = json.loads(DATA.read_text()).get("certs", []) if DATA.exists() else []
+    st = json.loads(state_path.read_text()) if state_path.exists() else {}
+    todo = detail_queue(certs, issuer, st)
+    log.update({"queue": len(todo), "read": 0, "withCoupon": 0, "missing": 0, "errors": 0, "samples": []})
+    out, t0 = [], _time.time()
+
+    async def wrap(c):
+        try:
+            cert = await one(c)
+            st[c["isin"]] = _date.today().isoformat()
+            if not cert:
+                log["missing"] += 1
+                return
+            cert.pop("bid", None)
+            cert.pop("ask", None)  # i prezzi restano quelli di Euronext
+            cert.update(isin=c["isin"], issuer=issuer, source=src["name"], updatedAt=NOW_OF(src))
+            out.append(clean(cert))
+            log["read"] += 1
+            log["withCoupon"] += cert.get("couponPa") is not None
+            if len(log["samples"]) < 3:
+                log["samples"].append(cert)
+        except Exception as e:
+            log["errors"] += 1
+            if len(log["samples"]) < 6:
+                log["samples"].append({"isin": c["isin"], "err": repr(e)[:300]})
+
+    try:
+        for k in range(0, len(todo), 4):
+            if _time.time() - t0 > budget_s:
+                log["stopped"] = "tempo esaurito"
+                break
+            await asyncio.gather(*(wrap(c) for c in todo[k:k + 4]))
+            await asyncio.sleep(0.3)
+            if log["errors"] > 40 and log["read"] < 5:
+                log["stopped"] = "troppi errori"
+                break
+    finally:
+        state_path.write_text(json.dumps(st, separators=(",", ":"), sort_keys=True))
+        save(DISC, f"{src['name']}_parser.json", log)
+    LAST_STATUS[src["name"]] = f"ok: {log['read']} schede lette ({log['withCoupon']} con cedola), {max(len(todo) - log['read'] - log['missing'] - log['errors'], 0)} in coda"
+    return out
+
+
+def NOW_OF(src):
+    return src.get("_now")
+
+
+async def bnp_details(DISC, src, NOW, ctx):
+    src = {**src, "_now": NOW}
+    page = await ctx.new_page()
+    log = {}
+    try:
+        await page.goto(src["url"], wait_until="domcontentloaded", timeout=60000)
+        await page.wait_for_timeout(2500)
+        await accept_cookies(page)
+
+        async def one(c):
+            isin = c["isin"]
+            s1, t1 = await fetch(page, BNP_V1 + "keyvaluerow/" + isin, "GET", None, BNP_HDR)
+            if s1 == 404:
+                return None
+            if s1 != 200:
+                raise RuntimeError(f"keyvaluerow HTTP {s1}: {t1[:150]}")
+            r = json.loads(t1).get("result") or {}
+            if not r:
+                return None
+            s2, t2 = await fetch(page, BNP_V1 + "underlyingbasket/" + isin, "GET", None, BNP_HDR)
+            items = (json.loads(t2).get("result") or {}).get("underlyingItems") if s2 == 200 else None
+            f = r.get("first") or {}
+            if items:
+                r["underlyingItems"] = items
+            elif f.get("underlyingName") and "," in f["underlyingName"]:  # paniere senza dettaglio: solo i nomi
+                r["underlyingItems"] = [{"underlyingName": n.strip()} for n in f["underlyingName"].split(",") if n.strip()]
+            r["isin"] = isin
+            cert = bnp_cert(r, src, NOW)
+            cert["market"] = c.get("market") or cert.get("market")
+            if r.get("derivativeTypeName"):
+                cert["type"] = r["derivativeTypeName"]
+            return cert
+
+        return await rotate(DISC, src, "BNP Paribas", BNP_DETAIL_STATE, BNP_DETAIL_BUDGET_S, one, log)
+    finally:
+        await page.close()
+
+
+# ---------------------------------------------------------------- Intesa Sanpaolo: dettaglio per ISIN
+# Il sito prodottiequotazioni usa una GET pubblica per ISIN (rest/public/title/dossierbystock): premio
+# condizionato per periodo e frequenza (-> cedola p.a. sul prezzo di emissione), barriera %, sottostanti con
+# strike e distanza dalla barriera, autocall, scadenza. Stessa rotazione di BNP (scraper/intesa_detail_state.json).
+
+INTESA_DETAIL_STATE = Path(__file__).resolve().parent / "intesa_detail_state.json"
+INTESA_API = "https://prodottiequotazioni.intesasanpaolo.com/rest/public/title/dossierbystock?isin={}&language=it"
+INTESA_SITE = "https://www.intesasanpaolo.prodottiequotazioni.com"
+PER_YEAR = {"MENSILE": ("1m", 12), "BIMESTRALE": ("2m", 6), "TRIMESTRALE": ("3m", 4), "QUADRIMESTRALE": ("4m", 3),
+            "SEMESTRALE": ("6m", 2), "ANNUALE": ("12m", 1)}
+
+
+def intesa_cert(d, c):
+    from datetime import datetime, timezone
+    ci = (d.get("content") or {}).get("commonInfo") or {}
+    if not ci:
+        return None
+    ug = ci.get("underlyingGroup") or {}
+    unds = [u for u in ug.get("underlying") or [] if u.get("name")]
+    dists = [u for u in unds if u.get("distanceToBarrierPct") is not None]
+    worst = min(dists, key=lambda u: u["distanceToBarrierPct"]) if dists else None
+    prem = num(re.sub(r"[^\d,.\-]", "", ci.get("conditionalPremium") or ci.get("fixedPremiumS") or "") or None)
+    fr = PER_YEAR.get((ci.get("premiumFrequency") or "").upper().strip())
+    issue = num(ci.get("issuePrice"))
+    cpa = round(prem * fr[1] / issue * 100, 4) if prem and fr and issue else None
+    ep = lambda v: datetime.fromtimestamp(v, timezone.utc).date().isoformat() if isinstance(v, (int, float)) and v > 0 else None
+    name = ci.get("name") or ""
+    return {
+        "type": ci.get("typeProduct") or ci.get("certificateType"),
+        "underlyings": [u["name"] for u in unds] or None,
+        "underlyingsDetail": [clean({"name": u["name"], "strike": u.get("strike") or u.get("initialReferenceValue"),
+                                     "dist": u.get("distanceToBarrierPct"),
+                                     "isin": u.get("isin") if ISIN_RE.fullmatch(u.get("isin") or "") else None}) for u in unds] or None,
+        "worstName": worst["name"] if worst else None,
+        "distBarrier": worst["distanceToBarrierPct"] if worst else None,
+        "barrierPct": num(ci.get("barrier")),
+        "couponPa": cpa,
+        "freq": fr[0] if fr else None,
+        "nominal": issue,
+        "maturity": ep(ci.get("maturity")),
+        "memory": True if re.search(r"memory|memoria", name, re.I) else None,
+        "callable": "Autocall" if ci.get("autocallable") else None,
+        "currency": ci.get("curSymbol"),
+        "url": f"{INTESA_SITE}/detail/{c['isin']}",
+    }
+
+
+async def intesa_details(DISC, src, NOW, ctx):
+    src = {**src, "_now": NOW}
+    hdr = {"accept": "application/json", "origin": INTESA_SITE, "referer": INTESA_SITE + "/"}
+
+    async def one(c):
+        r = await ctx.request.get(INTESA_API.format(c["isin"]), headers=hdr, timeout=30000)
+        if r.status == 404:
+            return None
+        if r.status != 200:
+            raise RuntimeError(f"HTTP {r.status}: {(await r.text())[:150]}")
+        return intesa_cert(json.loads(await r.text()), c)
+
+    return await rotate(DISC, src, "Intesa Sanpaolo", INTESA_DETAIL_STATE, int(os.environ.get("INTESA_DETAIL_BUDGET_MIN", "5")) * 60, one, {})
+
+
 # ---------------------------------------------------------------- UniCredit (onemarkets)
 # L'elenco prodotti è un frammento HTML (/it.omr-search.html) paginato via JS:
 # lo sfogliamo cliccando "Pagina successiva" e leggendo la tabella a ogni pagina.
