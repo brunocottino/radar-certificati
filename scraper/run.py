@@ -334,7 +334,8 @@ async def main():
         await browser.close()
     certs = merge(old, found)
     # stato per sorgente: quelle non eseguite in questa run mantengono i dati precedenti
-    srcs = {s["name"]: s for s in old_meta.get("sources", [])}
+    names = {s["name"] for s in SOURCES}
+    srcs = {s["name"]: s for s in old_meta.get("sources", []) if s["name"] in names}
     for r in report:
         prev = srcs.get(r["name"], {})
         if r.get("certs", 0) == 0 and prev.get("certs"):

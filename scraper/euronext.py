@@ -123,8 +123,18 @@ async def fetch_all(ctx, log, max_pages=None, pause_ms=1000):
     page = await ctx.new_page()
     out = {}
     try:
-        await page.goto(LIST_PAGE, wait_until="domcontentloaded", timeout=60000)
-        await page.wait_for_timeout(4000)
+        api = API
+        for i, url in enumerate([LIST_PAGE, LIST_PAGE.replace("/it/", "/en/"), LIST_PAGE]):
+            try:  # basta l'origine del sito per le chiamate: non serve aspettare il caricamento completo
+                await page.goto(url, wait_until="commit", timeout=90000)
+                await page.wait_for_timeout(6000)
+                api = API if "/it/" in url else API.replace("/it/", "/en/")
+                break
+            except Exception as e:
+                log.setdefault("goto_errors", []).append(repr(e)[:200])
+                await page.wait_for_timeout(10000 * (i + 1))
+        else:
+            raise RuntimeError("pagina Euronext non raggiungibile")
         for name in ("Accetta tutti", "Accept all", "Accetta", "Accept"):
             b = page.get_by_role("button", name=re.compile(name, re.I))
             if await b.count():
@@ -139,7 +149,7 @@ async def fetch_all(ctx, log, max_pages=None, pause_ms=1000):
                 const r = await fetch(url, {method: 'POST', body, credentials: 'include',
                   headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-requested-with': 'XMLHttpRequest'}});
                 return [r.status, await r.text()];
-            }""", [API, form(start, PAGE, draw)])
+            }""", [api, form(start, PAGE, draw)])
             st, txt = res
             if st != 200:
                 log.setdefault("errors", []).append({"start": start, "status": st, "body": txt[:300]})
