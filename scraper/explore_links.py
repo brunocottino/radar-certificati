@@ -41,6 +41,9 @@ async def visit(ctx, name, url):
                 except Exception:
                     pass
         await page.wait_for_timeout(5000)
+        for _ in range(3):
+            await page.mouse.wheel(0, 1500)
+            await page.wait_for_timeout(1500)
         info["final_url"] = page.url
         info["title"] = await page.title()
         links = await page.evaluate("() => [...document.querySelectorAll('a[href]')].map(a => [a.innerText.trim().slice(0,60), a.href])")
