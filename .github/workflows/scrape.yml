@@ -2,8 +2,9 @@ name: Aggiornamento certificati
 
 on:
   schedule:
-    # a borsa aperta (SeDeX/Cert-X 9:00-17:30): 11:20 e 16:20 con l'ora legale, 10:20 e 15:20 con l'ora solare
-    - cron: "20 9,14 * * 1-5"
+    # ogni ora nei giorni feriali: GitHub ritarda o salta i cron, quindi è scraper/slot.py a decidere
+    # se partire (borsa aperta e fascia mattina 9:30-13:00 o pomeriggio 14:30-17:20 ancora da coprire)
+    - cron: "7 7-15 * * 1-5"
   workflow_dispatch:
     inputs:
       sources:
@@ -29,16 +30,14 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - name: Calendario di borsa
+        with:
+          fetch-depth: 50
+      - name: Calendario di borsa e fascia oraria
         id: cal
-        # le run programmate saltano i giorni di chiusura di Borsa Italiana; quelle manuali girano sempre
+        # le run programmate partono solo a borsa aperta e una volta per fascia; quelle manuali girano sempre
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            python3 scraper/borsa.py
-          else
-            python3 scraper/borsa.py || true
-            echo "open=true" >> "$GITHUB_OUTPUT"
-          fi
+          LAST=$(git log -1 --format=%ct --grep='^Dati certificati' || echo 0)
+          python3 scraper/slot.py "${{ github.event_name }}" "${LAST:-0}"
       - uses: actions/setup-python@v5
         if: steps.cal.outputs.open == 'true'
         with:
@@ -90,15 +89,27 @@ jobs:
           git diff --cached --quiet || git commit -m "Dati certificati $(date -u +%F)"
           git pull --rebase -q origin "${GITHUB_REF_NAME}"
           git push
-      - name: Verifica API e CORS
+      - name: Verifica che il sito mostri i nuovi dati
         if: steps.cal.outputs.open == 'true'
-        continue-on-error: true
+        # fallisce la run se entro 5 minuti dal push il sito non serve l'updatedAt appena pubblicato
         run: |
-          sleep 180
-          URL=https://radar-certificati.cottinob.workers.dev/api/v1/meta.json
-          H=$(curl -sI "$URL" || true)
-          echo "$H" | head -1
-          echo "status: $(echo "$H" | head -1 | awk '{print $2}')"
-          echo "access-control-allow-origin: $(echo "$H" | grep -i '^access-control-allow-origin' | cut -d' ' -f2- | tr -d '\r')"
-          echo "content-type: $(echo "$H" | grep -i '^content-type' | cut -d' ' -f2- | tr -d '\r')"
-          { echo "### Verifica API"; echo '```'; echo "$URL"; echo "$H" | grep -iE '^(HTTP|access-control|content-type|cache-control)'; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          SITE=https://radar-certificati.cottinob.workers.dev
+          WANT=$(python3 -c "import json;print(json.load(open('docs/data/certs.json'))['updatedAt'])")
+          echo "updatedAt atteso: $WANT"
+          for i in $(seq 1 15); do
+            GOT=$(curl -s -m 30 "$SITE/data/certs.json?t=$(date +%s)" | python3 -c "import json,sys;print(json.load(sys.stdin).get('updatedAt'))" 2>/dev/null || echo "errore")
+            echo "tentativo $i: sito=$GOT"
+            if [ "$GOT" = "$WANT" ]; then break; fi
+            sleep 20
+          done
+          H=$(curl -sI "$SITE/api/v1/meta.json" || true)
+          {
+            echo "### Verifica sito"
+            echo "- updatedAt atteso: \`$WANT\`"
+            echo "- updatedAt sul sito: \`$GOT\`"
+            echo '```'; echo "$H" | grep -iE '^(HTTP|access-control-allow-origin|content-type)'; echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$GOT" != "$WANT" ]; then
+            echo "::error title=Sito non aggiornato::dopo 5 minuti il sito mostra updatedAt=$GOT invece di $WANT (deploy Cloudflare non avvenuto?)"
+            exit 1
+          fi

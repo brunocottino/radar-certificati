@@ -459,9 +459,9 @@ $("#export").addEventListener("click",async()=>{
 });
 
 // boot
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});
 render();
-fetch("data/certs.json?t="+Date.now()).then(r=>r.json()).then(j=>{state.certs=j.certs||[];state.status={lastRun:j.updatedAt};state.db=true;state.daily=pickDaily();render()}).catch(()=>{state.db=false;render()});
+fetch("data/certs.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(j=>{state.certs=j.certs||[];state.status={lastRun:j.updatedAt};state.db=true;state.daily=pickDaily();render()}).catch(()=>{state.db=false;render()});
 function pickDaily(){
   const A=state.certs.map(enrich).map(c=>{c.score=score(c);c.liq=liquid(c,1.5);return c});
   const ok=A.filter(c=>c.liq&&c.freq==="1m"&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=30&&!c.belowBarrier).sort((a,b)=>b.score-a.score).slice(0,3);
