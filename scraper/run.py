@@ -255,9 +255,11 @@ JUNK_UND = re.compile(r"^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$")
 
 
 def clean_underlyings(c):
-    """Toglie dai sottostanti le voci spurie lette dalle tabelle (es. "ISIN DE000…")."""
+    """Toglie dai sottostanti le voci spurie lette dalle tabelle (es. "ISIN DE000…") e normalizza il nominale."""
     if isinstance(c.get("underlyings"), list):
         c["underlyings"] = [u for u in c["underlyings"] if u and not JUNK_UND.match(str(u).strip())]
+    if isinstance(c.get("nominal"), str):
+        c["nominal"] = num(c["nominal"])
     return c
 
 

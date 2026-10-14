@@ -76,6 +76,16 @@ button:disabled{opacity:.55;cursor:default}
 .chip{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;padding:3px 4px 3px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);border:1px solid transparent}
 .chip button{border:none;background:none;color:inherit;padding:0 6px;font-size:.95rem;line-height:1}
 .count{font-weight:700;font-size:.92rem}
+.objs button{font-size:.78rem;padding:3px 10px;border-radius:99px;border:1px dashed var(--line);background:none;color:var(--muted)}
+.objs button[aria-pressed="true"]{border-style:solid;border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.objs .lab{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:819px){.objs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.objs button{flex:none}}
+.sbar{display:grid;grid-template-columns:150px 1fr 44px;gap:8px;align-items:center;font-size:.82rem}
+.sbar .bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.sbar .bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.scen div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface)}
+.scen b{display:block;font-family:var(--f-num);font-size:1.05rem}
+td.pt{font-weight:700}
 .linkbtn{border:none;background:none;color:var(--accent);padding:2px 4px;font-size:.8rem;text-decoration:underline}
 .banner{background:var(--bad);color:#fff;padding:8px 16px;font-size:.88rem;text-align:center;font-weight:600}
 /* filtri */
@@ -206,10 +216,15 @@ tr.sp td{height:auto;border:none;padding:0}
       <button class="clear" id="q-clear" aria-label="Svuota ricerca" hidden>×</button>
       <ul id="sugg" class="sugg" role="listbox" hidden></ul>
     </div>
+    <div class="chiprow objs" id="objs" aria-label="Obiettivi rapidi"></div>
     <div class="row" style="justify-content:space-between">
       <div class="chiprow" id="chips"></div>
       <div class="row">
         <span class="count" id="count" aria-live="polite"></span>
+        <label class="note" style="display:flex;gap:6px;align-items:center">Ordina<select id="sortsel" style="width:auto;padding:5px 8px">
+          <option value="score">Punteggio</option><option value="er">Rendimento atteso</option><option value="ytm">Rend. a scadenza</option>
+          <option value="prob">Prob. tenuta barriera</option><option value="dist">Distanza del peggiore</option><option value="sigma">Margine in dev. std</option>
+          <option value="coupon">Cedola</option><option value="price">Prezzo (più basso)</option><option value="mat">Scadenza (più vicina)</option><option value="spread">Spread (più stretto)</option></select></label>
         <button id="export" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
       </div>
     </div>
@@ -234,7 +249,8 @@ tr.sp td{height:auto;border:none;padding:0}
           <span class="note" id="prof-note">imposta i filtri qui sotto; puoi modificarli dopo</span>
         </div>
         <div class="grid-f">
-          <label>Rend. a scadenza min % annuo<input id="f-y" type="number" step="0.5"></label>
+          <label>Rend. atteso min % annuo (pesato con la probabilità)<input id="f-er" type="number" step="0.5"></label>
+          <label>Rend. a scadenza min % annuo (se tutto va bene)<input id="f-y" type="number" step="0.5"></label>
           <label>Peggiore: distanza barriera min %<input id="f-b" type="number" step="5"></label>
           <label>Peggiore: distanza trigger cedola min %<input id="f-t" type="number" step="5"></label>
           <label>Prob. minima % tenuta barriera<input id="f-prob" type="number" step="5" min="0" max="100"></label>
@@ -247,6 +263,8 @@ tr.sp td{height:auto;border:none;padding:0}
           <label>Categoria<select id="f-cat"><option value="">Tutte (senza leva)</option></select></label>
         </div>
         <div class="row" style="gap:16px">
+          <label class="check"><input type="checkbox" id="f-cpn"> Solo con cedola nota</label>
+          <label class="check"><input type="checkbox" id="f-probx"> Solo con probabilità calcolata</label>
           <label class="check"><input type="checkbox" id="f-active"> Solo cedola in pagamento</label>
           <label class="check"><input type="checkbox" id="f-mem"> Solo con memoria</label>
           <label class="check"><input type="checkbox" id="f-illiq"> Anche senza denaro/lettera</label>
@@ -290,6 +308,10 @@ tr.sp td{height:auto;border:none;padding:0}
     <dt>Autocall</dt><dd>Rimborso anticipato automatico se tutti i sottostanti sono sopra il livello di richiamo a una data di osservazione.</dd>
     <dt>Softcallable</dt><dd>L'emittente può decidere di rimborsare in anticipo (callable emittente): di solito lo fa quando il certificato gli costa troppo.</dd>
     <dt>Denaro / lettera</dt><dd>Prezzo a cui il market maker compra (denaro) e vende (lettera). Si compra alla lettera; la differenza è lo spread.</dd>
+    <dt>Rendimento atteso</dt><dd>Media, pesata con la probabilità di tenuta, tra il rendimento se la barriera tiene e una stima se viene rotta (rimborso ≈ 80% del livello barriera). Con "~" la probabilità non è nota: si usa il rendimento a scadenza (al massimo 25%) scontato in base alla distanza del peggiore.</dd>
+    <dt>Punteggio</dt><dd>0-100, somma pesata secondo il profilo di rendimento atteso, sicurezza del peggiore, affidabilità della cedola, liquidità e qualità (classe dell'emittente, memoria, dati completi). Apri la scheda per vedere il dettaglio.</dd>
+    <dt>Classe emittente</dt><dd>A, B, C: classe indicativa ricavata dai rating pubblici della capogruppo. Non è un rating ufficiale: verificare sempre.</dd>
+    <dt>Margine in dev. std</dt><dd>Quante "oscillazioni tipiche" fino a scadenza separano il peggiore dalla barriera. Sotto 1 il margine è sottile, sopra 2 è ampio.</dd>
     <dt>Prob. tenuta barriera</dt><dd>Stima statistica che la barriera non venga violata fino a scadenza, da volatilità storica. Non è una previsione.</dd>
   </dl>
   <button popovertarget="gloss" popovertargetaction="hide">Chiudi</button>
@@ -322,14 +344,24 @@ const dshort=d=>d?d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",ye
 const dtime=s=>s?new Date(s).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
 
 /* ---------- stato ---------- */
+// profili = preset dei filtri (modificabili) + pesi del punteggio
 const PRESETS={
-  prudente:{y:5,b:40,t:15,prob:85,mat:4,sp:1.5},
-  bilanciato:{y:8,b:30,t:10,prob:70,mat:5,sp:2},
-  aggressivo:{y:12,b:20,t:null,prob:50,mat:7,sp:3},
+  prudente:{er:4,y:null,b:40,t:15,prob:85,mat:4,sp:1.5,cpn:true},
+  bilanciato:{er:6,y:null,b:30,t:10,prob:75,mat:5,sp:2,cpn:true},
+  aggressivo:{er:8,y:null,b:20,t:null,prob:60,mat:7,sp:3,cpn:true},
 };
-const W={prudente:{y:.2,b:.4,t:.2,s:.2},bilanciato:{y:.35,b:.3,t:.15,s:.2},aggressivo:{y:.55,b:.2,t:.1,s:.15}};
-const NUMF=["y","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["active","mem","illiq","lev","excl","fav"];
-const LABEL={y:v=>`Rend. ≥ ${fmt(v,1)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
+// R rendimento atteso, S sicurezza (probabilità e distanza del peggiore), T affidabilità cedola, L liquidità, Q qualità
+const W={prudente:{R:.18,S:.40,T:.14,L:.14,Q:.14},bilanciato:{R:.32,S:.30,T:.12,L:.13,Q:.13},aggressivo:{R:.50,S:.20,T:.08,L:.12,Q:.10}};
+const COMP={R:"Rendimento atteso",S:"Sicurezza del peggiore",T:"Affidabilità cedola",L:"Liquidità",Q:"Qualità"};
+// classe indicativa dell'emittente (dai rating pubblici delle capogruppo, approssimata: non è un rating ufficiale)
+const TIER={"BNP Paribas":"A","Crédit Agricole":"A","Santander":"A","UBS":"A","J.P. Morgan":"A","Barclays":"A","Vontobel":"A","Natixis":"A","Amundi":"A",
+  "Société Générale":"B","Citigroup":"B","Deutsche Bank":"B","BBVA":"B","Morgan Stanley":"B","BIL":"B","Goldman Sachs":"B","UniCredit":"B","Intesa Sanpaolo":"B","Mediobanca":"B","EFG International":"B","Exane":"B",
+  "Banco BPM":"C","BPER Banca":"C","Nomura":"C","Leonteq Securities":"C","Marex":"C","Banca Akros":"C"};
+const TIERV={A:1,B:.8,C:.55};
+const NUMF=["er","y","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav"];
+// obiettivi rapidi: un clic imposta (o toglie) un gruppo di filtri
+const OBJ={mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
+const LABEL={er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. scadenza ≥ ${fmt(v,1)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
   active:()=>"Cedola in pagamento",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
 const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sort:{key:"score",dir:-1},view:null};
@@ -356,6 +388,9 @@ function enrich(c){
   const nominal=+c.nominal||((ask||bid||0)>400?1000:100);
   r.nominal=nominal;r.ask=ask;r.bid=bid;
   r.pricePct=ask?ask/nominal*100:null;
+  if(ask&&nominal>=500&&ask<250)r.pricePct=ask; // quotato in % del nominale (es. 98,50 su nominale 1.000)
+  r.priceBad=r.pricePct!=null&&(r.pricePct<1||r.pricePct>300); // prezzo impossibile: dato errato
+  if(r.priceBad)r.pricePct=null;
   r.spread=(ask&&bid)?(ask-bid)/ask*100:null;
   r.matDate=parseDate(c.maturity);
   r.years=r.matDate?Math.max((r.matDate-today)/(365.25*864e5),.05):null;
@@ -370,28 +405,49 @@ function enrich(c){
   r.couponActive=r.trigDist==null?null:r.trigDist>=0;
   r.belowBarrier=r.dist!=null&&r.dist<0;
   r.cy=(r.pricePct&&r.couponPa!=null)?r.couponPa/r.pricePct*100:null;
-  r.ytm=(r.pricePct&&r.couponPa!=null&&r.years)?(r.couponPa+(100-r.pricePct)/r.years)/r.pricePct*100:null;
+  // rendimento se la barriera tiene (cedole + rimborso a 100) e, sotto barriera, rimborso al livello del peggiore
+  r.ytmGood=(r.pricePct&&r.couponPa!=null&&r.years)?(r.couponPa+(100-r.pricePct)/r.years)/r.pricePct*100:null;
+  r.ytm=r.ytmGood;
+  if(r.ytm!=null&&r.belowBarrier&&r.spotPct){r.ytm=((r.couponActive?r.couponPa:0)+(r.spotPct-r.pricePct)/r.years)/r.pricePct*100;r.ytmNote="sotto barriera: rimborso stimato al livello attuale del peggiore"}
   const cd=parseDate(c.nextCallDate);r.callDate=cd&&cd>=today?cd:null;
   if(r.callDate&&r.pricePct&&r.couponPa!=null){const t=Math.max((r.callDate-today)/(365.25*864e5),1/12);r.ytc=(r.couponPa+(100-r.pricePct)/t)/r.pricePct*100}else r.ytc=null;
   const nc=parseDate(c.nextCouponDate);r.couponDate=nc&&nc>=today?nc:null;
   r.prob=c.probBarrierHold==null?null:c.probBarrierHold*100;
   r.probUpper=c.probMethod==="solo_peggiore";
   r.wvol=c.worstVol==null?null:c.worstVol*100;
+  // rendimento atteso: media pesata con la probabilità tra "la barriera tiene" e "la barriera viene rotta"
+  // (rotta: rimborso ≈ 80% del livello barriera, incassato ≈ 40% delle cedole residue)
+  if(r.prob!=null&&r.ytmGood!=null){const P=r.prob/100,red=(bp||60)*.8;r.ytmBad=(r.couponPa*.4+(red-r.pricePct)/r.years)/r.pricePct*100;r.expRet=P*r.ytmGood+(1-P)*r.ytmBad}else{r.ytmBad=null;r.expRet=null}
+  // senza probabilità: rendimento a scadenza limitato al 25% e scontato secondo quanto è lontano il peggiore
+  r.retProxy=r.expRet??(r.ytm!=null?Math.min(r.ytm,25)*(r.dist==null?.5:r.dist>=30?.85:r.dist>=15?.65:.4):null);
+  r.ytmHigh=r.ytmGood!=null&&r.ytmGood>30; // rendimento "troppo bello": il mercato prezza una perdita probabile
+  // margine del peggiore in deviazioni standard fino a scadenza
+  r.sigma=(r.wvol&&r.dist!=null&&r.dist<100&&r.years)?Math.log(1/(1-r.dist/100))/(r.wvol/100*Math.sqrt(r.years)):null;
+  r.tier=TIER[c.issuer]||null;
   r.priceAt=c.priceAt||(ask&&bid?c.updatedAt:null);
   r.stale=!!(ask&&bid&&r.priceAt&&bizDaysSince(r.priceAt)>2);
   r.callKind=/autocall/i.test(c.callable||"")?"autocall":/callable|soft/i.test(c.callable||"")?"callable":null;
   r.cat=c.category||"Altro";
   r.lev=r.cat==="Leva";
-  r.liq=!!(ask&&bid);
+  r.liq=!!(ask&&bid)&&!r.priceBad;
   return r;
 }
 function score(c,w){
-  const ys=clamp((c.ytm??0)/25,0,1);
-  const bs=c.dist==null?.3:c.belowBarrier?0:Math.min(c.dist/60,1);
-  const ts=c.trigDist==null?bs*.8:clamp((c.trigDist+5)/45,0,1);
-  const ss=c.spread==null?0:Math.max(0,1-c.spread/3);
-  let s=(w.y*ys+w.b*bs+w.t*ts+w.s*ss)*100;
-  if(c.belowBarrier)s*=.4;else if(c.couponActive===false)s*=.75;
+  if(c.priceBad){c.sc=null;return 0}
+  const R=c.retProxy==null?0:clamp(c.retProxy/15,0,1)*(c.ytmHigh?.5:1); // 15% annuo atteso = pieno; rendimento sospetto dimezzato
+  let S;
+  if(c.belowBarrier)S=0;
+  else if(c.prob!=null)S=.65*clamp((c.prob-40)/55,0,1)+.35*clamp((c.dist??0)/50,0,1)-(c.probUpper?.05:0);
+  else if(c.dist!=null)S=.8*clamp(c.dist/50,0,1); // probabilità ignota: sconto per incertezza
+  else S=.15;
+  S=clamp(S,0,1);
+  const T=c.couponPa==null?0:c.trigDist!=null?clamp((c.trigDist+5)/40,0,1):S*.7;
+  const L=!c.liq?0:clamp(1-(c.spread??3)/3,0,1)*(c.stale?.6:1);
+  const known=[c.prob,c.trigDist,c.freq,c.barrierPct].filter(v=>v!=null&&v!=="").length/4;
+  const Q=clamp((c.tier?TIERV[c.tier]:.5)*.7+(c.memory?.15:0)+known*.15,0,1);
+  c.sc={R,S,T,L,Q};
+  let s=(w.R*R+w.S*S+w.T*T+w.L*L+w.Q*Q)*100;
+  if(c.belowBarrier)s*=.35;else if(c.couponActive===false)s*=.8;
   return Math.round(s);
 }
 function rescore(){const w=W[state.profile];for(const c of CERTS)c.score=score(c,w)}
@@ -449,7 +505,7 @@ function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];
 function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){toast("Massimo 4 certificati nel confronto");return}CMP.add(isin)}renderCmpBar();render(false)}
 
 /* ---------- filtro e ordinamento ---------- */
-const SORT={prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
+const SORT={er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
 let ROWS=[],ISIN=null;
 function compute(){
   const f=state.f;ISIN=isinMode(state.q);
@@ -466,6 +522,8 @@ function compute(){
     if(f.n==="single"&&c.n!==1)continue;
     if(f.n==="multi"&&c.n<2)continue;
     if(f.call&&c.callKind!==f.call)continue;
+    if(f.cpn&&c.couponPa==null)continue;
+    if(f.er!=null&&(c.retProxy??-99)<f.er)continue;
     if(f.y!=null&&c.liq&&(c.ytm??-99)<f.y)continue;
     if(f.b!=null&&c.dist!=null&&c.dist<f.b)continue;
     if(f.t!=null&&c.trigDist!=null&&c.trigDist<f.t)continue;
@@ -474,7 +532,8 @@ function compute(){
     if(f.mat!=null&&c.years!=null&&c.years>f.mat)continue;
     if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)continue;
     if(f.sp!=null&&c.spread!=null&&c.spread>f.sp)continue;
-    if(f.prob!=null&&(c.prob==null||c.prob<f.prob))continue;
+    if(f.prob!=null&&(c.prob==null?f.probx:c.prob<f.prob))continue; // probabilità ignota: passa, salvo "solo con probabilità"
+    if(f.probx&&c.prob==null)continue;
     if(f.excl&&S){ // ogni sottostante del paniere deve corrispondere a un termine cercato
       if(!c.undW.length||!c.undW.every(ws=>ws.some(w=>S.matched.has(w))))continue}
     out.push(c);
@@ -490,6 +549,17 @@ const pcls=v=>v==null?"":v>=85?"pos":v>=70?"ca":"neg";
 const probTxt=c=>c.prob==null?"—":fmt(c.prob,0)+"%"+(c.probUpper?"*":"");
 function probTitle(c){if(c.prob==null)return "Probabilità non calcolabile: mancano prezzo, distanza o volatilità dei sottostanti";
   return `Probabilità stimata che la barriera tenga fino a scadenza (${c.probMethod==="mc_continua"?"barriera continua":c.probMethod==="mc_europea"?"barriera a scadenza":"solo il peggiore: limite superiore"})`}
+function scoreTitle(c){if(!c.sc)return "Punteggio non calcolabile (prezzo anomalo)";return Object.entries(c.sc).map(([k,v])=>`${COMP[k]}: ${Math.round(v*100)}/100`).join(" · ")+` · profilo ${state.profile}`}
+function scoreBars(c){if(!c.sc)return "";const w=W[state.profile];
+  return `<div class="ladder"><div class="cap">Perché ${c.score} punti (profilo ${esc(state.profile)}, peso tra parentesi)</div>${Object.entries(c.sc).map(([k,v])=>`<div class="sbar"><span>${COMP[k]} <span class="note">(${Math.round(w[k]*100)}%)</span></span><span class="bar"><i style="width:${Math.round(v*100)}%"></i></span><span class="num">${Math.round(v*100)}</span></div>`).join("")}
+  ${c.belowBarrier?`<p class="note">Sotto barriera: punteggio ridotto al 35%.</p>`:c.couponActive===false?`<p class="note">Cedola sospesa: punteggio ridotto all'80%.</p>`:""}</div>`}
+function scenarios(c){if(c.ytmGood==null)return "";
+  return `<div><div class="cap" style="margin-bottom:6px">Scenari di rendimento annuo sul prezzo lettera</div><div class="scen">
+  <div>Se la barriera tiene<b class="pos">${pct(c.ytmGood)}</b><span class="note">cedole + rimborso a 100</span></div>
+  ${c.ytmBad!=null?`<div>Se la barriera viene rotta<b class="neg">${pct(c.ytmBad)}</b><span class="note">stima: rimborso ≈ 80% del livello barriera</span></div>`:""}
+  <div>Rendimento atteso<b class="hi">${pct(c.retProxy)}</b><span class="note">${c.expRet!=null?`pesato con prob. ${probTxt(c)}`:"probabilità ignota: rend. a scadenza (max 25%) scontato in base alla distanza del peggiore"}</span></div>
+  ${c.sigma!=null?`<div>Margine del peggiore<b>${fmt(c.sigma,1)} dev. std</b><span class="note">distanza / (volatilità × √anni)</span></div>`:""}
+  </div>${c.ytmNote?`<p class="note">${esc(c.ytmNote)}.</p>`:""}</div>`}
 const freqTxt=f=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[f]||f||"—");
 function badges(c){
   const b=[];
@@ -500,13 +570,15 @@ function badges(c){
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
   if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
   if(c.platform)b.push(`<span class="b">via ${esc(c.platform)}</span>`);
+  if(c.priceBad)b.push(`<span class="b ko">Prezzo anomalo (dato da verificare)</span>`);
   if(!c.ask)b.push(`<span class="b ko">Senza lettera</span>`);else if(c.spread!=null&&c.spread>2)b.push(`<span class="b ca">Spread ampio</span>`);
   if(c.stale)b.push(`<span class="b st">Prezzo del ${dtime(c.priceAt)}</span>`);
   if(c.distAt&&bizDaysSince(c.distAt)>2)b.push(`<span class="b ca">Distanza del ${dshort(new Date(c.distAt))}</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);
   else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
   else if(c.couponActive===true)b.push(`<span class="b ok">Cedola in pagamento</span>`);
-  if(c.pricePct&&c.pricePct<97)b.push(`<span class="b ok">Sotto la pari</span>`);
+  if(c.ytmHigh)b.push(`<span class="b ca" title="Un rendimento così alto di solito significa che il mercato prezza una perdita probabile">Rendimento sospetto (&gt;30%)</span>`);
+  if(c.pricePct&&c.pricePct<97&&!c.ytmHigh)b.push(`<span class="b ok">Sotto la pari</span>`);
   return b.join("");
 }
 const bi=c=>c.market==="Cert-X"?`https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/${c.isin}-ETLX.html?lang=it`:`https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${c.isin}-SEDX.html?lang=it`;
@@ -516,15 +588,16 @@ const starBtn=c=>`<button class="star" data-fav="${esc(c.isin)}" aria-pressed="$
 const cmpBox=c=>`<label class="check" title="Confronta"><input type="checkbox" class="sel" data-cmp="${esc(c.isin)}" ${CMP.has(c.isin)?"checked":""}></label>`;
 
 /* ---------- tabella virtualizzata ---------- */
-const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","","dist"],["Prob. tenuta","","prob"],["Vol pegg.","","vol"],["Dist. trigger","","trig"],["Barr.","",null],["Cedola","","coupon"],["Lettera %","","price"],["Spread","","spread"],["Rend. ced.","","cy"],["Rend. scad.","","ytm"],["Rend. rich.","","ytc"],["Richiamo","","call"],["Scadenza","","mat"]];
+const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Peggiore","l",null],["Dist. barr.","","dist"],["Prob. tenuta","","prob"],["Rend. atteso","","er"],["Vol pegg.","","vol"],["Dist. trigger","","trig"],["Barr.","",null],["Cedola","","coupon"],["Lettera %","","price"],["Spread","","spread"],["Rend. ced.","","cy"],["Rend. scad.","","ytm"],["Rend. rich.","","ytc"],["Richiamo","","call"],["Scadenza","","mat"]];
 function rowHtml(c){
   return `<tr class="r" data-open="${esc(c.isin)}">
-<td class="t">${starBtn(c)}${cmpBox(c)}</td><td class="hi">${c.score}</td>
+<td class="t">${starBtn(c)}${cmpBox(c)}</td><td class="pt ${c.score>=70?"pos":c.score>=50?"ca":"neg"}" title="${esc(scoreTitle(c))}">${c.score}</td>
 <td class="l"><span class="num" style="font-size:.82rem">${esc(c.isin)}</span><span class="note"> ${esc(c.issuer||"")}</span></td>
 <td class="l t unds-cell" title="${esc(c.unds.join(", "))}">${esc(c.unds.join(", "))}</td>
 <td class="l t w" style="max-width:150px">${esc(c.worst||"—")}</td>
 <td class="${cls(c.dist)} w">${pct(c.dist)}</td>
 <td class="${pcls(c.prob)} w" title="${esc(probTitle(c))}">${probTxt(c)}</td>
+<td class="hi" title="${c.expRet!=null?"Media tra barriera che tiene ("+pct(c.ytmGood)+") e barriera rotta ("+pct(c.ytmBad)+")":"Senza probabilità: rendimento a scadenza (max 25%) scontato in base alla distanza del peggiore"}">${pct(c.retProxy)}${c.expRet==null&&c.retProxy!=null?"~":""}</td>
 <td>${pct(c.wvol,0)}</td>
 <td class="${cls(c.trigDist)}">${pct(c.trigDist)}</td>
 <td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
@@ -558,7 +631,7 @@ function cardHtml(c){
 <div class="metrics">
 <div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
 <div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}">${probTxt(c)}</div></div>
-<div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
+<div class="m"><div class="k">Rend. atteso</div><div class="v hi">${pct(c.retProxy)}</div></div>
 <div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div></div>
 <div class="m"><div class="k">Lettera · prezzo</div><div class="v ${c.stale?"stale":""}">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
 <div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
@@ -621,8 +694,10 @@ async function detailHtml(c){
 <div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
 <div class="m"><div class="k">Dist. trigger cedola</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
 <div class="m"><div class="k">Vol peggiore</div><div class="v">${pct(c.wvol,0)}</div></div>
-<div class="m"><div class="k">Rend. a scadenza</div><div class="v hi">${pct(c.ytm)}</div></div>
+<div class="m"><div class="k">Rend. atteso</div><div class="v hi">${pct(c.retProxy)}</div></div>
+<div class="m"><div class="k">Rend. a scadenza</div><div class="v">${pct(c.ytm)}</div></div>
 <div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
+<div class="m"><div class="k">Emittente (classe)</div><div class="v">${c.tier?c.tier:"n.d."}</div></div>
 <div class="m"><div class="k">Denaro / lettera</div><div class="v ${c.stale?"stale":""}">${fmt(c.bid)} / ${fmt(c.ask)}</div></div>
 <div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
 <div class="m"><div class="k">Prossima cedola</div><div class="v">${dshort(c.couponDate)}</div></div>
@@ -630,6 +705,8 @@ async function detailHtml(c){
 <div class="m"><div class="k">Scadenza</div><div class="v">${dshort(c.matDate)}</div></div>
 <div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)} ${c.freq?`<span class="note">${freqTxt(c.freq)}</span>`:""}</div></div>
 </div>
+${scenarios(c)}
+${scoreBars(c)}
 ${ladder(c,full)}
 ${chart(j?.history)}
 <div class="row" style="font-size:.88rem">${links(full)}</div>
@@ -653,13 +730,19 @@ async function openCmp(){
 }
 
 /* ---------- filtri: controlli, chip, profilo ---------- */
-const IDS={y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
+const IDS={er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
 function syncControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")el.checked=!!state.f[k];else el.value=state.f[k]??""}
   $("#q").value=state.q;$("#q-clear").hidden=!state.q;$("#b-fav").setAttribute("aria-pressed",state.f.fav);
   document.querySelectorAll("#profile button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
   const P=PRESETS[state.profile],mod=Object.keys(P).some(k=>state.f[k]!==P[k]);$("#prof-note").textContent=mod?"profilo modificato a mano":"imposta i filtri qui sotto; puoi modificarli dopo";
   document.querySelectorAll("#view button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===state.view))}
 function readControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")state.f[k]=el.checked;else if(el.type==="number"){const v=parseFloat(el.value);state.f[k]=isNaN(v)?null:v}else state.f[k]=el.value}}
+function objs(){
+  $("#objs").innerHTML=`<span class="lab">Obiettivi</span>`+Object.entries(OBJ).map(([k,[t,set]])=>`<button data-obj="${k}" aria-pressed="${Object.entries(set).every(([f,v])=>state.f[f]===v)}">${esc(t)}</button>`).join("");
+  $("#sortsel").value=SORT[state.sort.key]?state.sort.key:"score";
+}
+function toggleObj(k){const set=OBJ[k][1];const on=Object.entries(set).every(([f,v])=>state.f[f]===v);
+  for(const[f,v]of Object.entries(set))state.f[f]=on?(typeof v==="boolean"?false:NUMF.includes(f)?null:""):v;update()}
 function chips(){
   const out=[];
   if(ISIN)out.push(`<span class="chip">Ricerca ISIN: filtri ignorati</span>`);
@@ -683,7 +766,7 @@ function resetAll(){state.q="";state.f=neutral();state.f.illiq=true;state.f.lev=
 /* ---------- render ---------- */
 function render(recompute=true){
   if(recompute)compute();
-  chips();syncControls();toHash();
+  chips();objs();syncControls();toHash();
   $("#count").textContent=ISIN?`${ROWS.length} ${ROWS.length===1?"certificato":"certificati"} con ISIN ${ISIN}…`:`${ROWS.length.toLocaleString("it-IT")} certificati`;
   $("#export").textContent=`Esporta ${ROWS.length.toLocaleString("it-IT")} risultati (Excel)`;$("#export").disabled=!ROWS.length;
   $("#n-fav").textContent=Object.keys(FAV).length;
@@ -746,9 +829,10 @@ function pickSugg(i){const s=SG[i];if(!s)return;
 /* ---------- scelte del giorno, avvisi, stato ---------- */
 let DAILY=null;
 function pickDaily(){
-  const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.spread<=1.5&&c.freq==="1m"&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=30&&(c.prob==null||c.prob>=70)).sort((a,b)=>b.score-a.score).slice(0,3);
+  const P=PRESETS[state.profile];
+  const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.couponPa!=null&&c.spread<=1.5&&!c.stale&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=P.b&&c.prob!=null&&c.prob>=P.prob&&(c.expRet??-99)>=P.er&&(c.years??99)<=P.mat).sort((a,b)=>b.score-a.score).slice(0,3);
   if(!ok.length){DAILY=null;return}
-  DAILY=ok;$("#dailybody").innerHTML=ok.map(c=>`<p style="margin:0"><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button> — ${esc(c.issuer)} su ${esc(c.unds.join(", "))}: cedola ${pct(c.couponPa,2)} ${freqTxt(c.freq).toLowerCase()}, peggiore a ${pct(c.dist)} dalla barriera${c.prob!=null?`, prob. tenuta ${probTxt(c)}`:""}, lettera ${pct(c.pricePct,1)}, rend. a scadenza ${pct(c.ytm)}.</p>`).join("");
+  DAILY=ok;$("#dailybody").innerHTML=ok.map(c=>`<p style="margin:0"><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button> — ${esc(c.issuer)} su ${esc(c.unds.join(", "))}: cedola ${pct(c.couponPa,2)} ${freqTxt(c.freq).toLowerCase()}, peggiore a ${pct(c.dist)} dalla barriera${c.prob!=null?`, prob. tenuta ${probTxt(c)}`:""}, lettera ${pct(c.pricePct,1)}, rend. atteso ${pct(c.expRet)} (${pct(c.ytmGood)} se la barriera tiene), punteggio ${c.score}.</p>`).join("");
 }
 function renderAlerts(){
   const out=[];
@@ -777,7 +861,7 @@ function renderStatus(){
 $("#export").addEventListener("click",()=>{
   if(!ROWS.length){toast("Niente da esportare");return}
   if(!window.XLSX){toast("Esportazione non disponibile (libreria non caricata)");return}
-  const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"",Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
+  const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Rend. atteso %":c.retProxy==null?null:+c.retProxy.toFixed(2),"Classe emittente":c.tier||"","Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"",Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`radar-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
@@ -799,6 +883,8 @@ $("#profile").addEventListener("click",e=>{const b=e.target.closest("button");if
 $("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render(false)});
 $("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.iss.has(i)?state.iss.delete(i):state.iss.add(i);update()});
 $("#chips").addEventListener("click",e=>{const r=e.target.closest("[data-rm]");if(r){rmChip(r.dataset.rm);return}if(e.target.id==="reset")resetAll()});
+$("#objs").addEventListener("click",e=>{const b=e.target.closest("[data-obj]");if(b)toggleObj(b.dataset.obj)});
+$("#sortsel").addEventListener("change",e=>{state.sort={key:e.target.value,dir:["price","mat","spread"].includes(e.target.value)?-1:-1};update()});
 $("#b-fav").addEventListener("click",()=>{state.f.fav=!state.f.fav;update()});
 const openSheet=o=>{if(innerWidth>=820){$("#fbox").open=o;if(o)$("#fpanel").scrollIntoView({block:"start"});}else{$("#fbox").open=true;$("#fpanel").classList.toggle("open",o);$("#scrim").hidden=!o}$("#b-filters").setAttribute("aria-expanded",o)};
 $("#b-filters").addEventListener("click",()=>openSheet(innerWidth>=820?!$("#fbox").open:true));$("#sheet-close").addEventListener("click",()=>openSheet(false));

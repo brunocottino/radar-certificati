@@ -62,7 +62,16 @@ def text(s):
 
 
 def num(s):
-    s = (s or "").strip().replace(",", "")
+    """Numero dal testo Euronext: la pagina italiana usa "1.234,56", quella inglese "1,234.56"."""
+    s = re.sub(r"[^\d,.\-]", "", s or "")
+    if not s or s in "-.,":
+        return None
+    if "," in s and "." in s:  # il separatore che compare per ultimo è quello dei decimali
+        s = s.replace(".", "").replace(",", ".") if s.rfind(",") > s.rfind(".") else s.replace(",", "")
+    elif "," in s:  # solo virgole: decimali all'italiana, oppure migliaia all'inglese ("1,234,567")
+        s = s.replace(",", "") if re.fullmatch(r"-?\d{1,3}(,\d{3}){2,}", s) else s.replace(",", ".")
+    elif s.count(".") > 1:  # "1.234.567" = migliaia all'italiana
+        s = s.replace(".", "")
     try:
         return float(s)
     except ValueError:

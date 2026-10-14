@@ -86,6 +86,22 @@ anticipato (se il certificato viene richiamato prima, la barriera conta meno), n
 Barriera di tipo non dichiarato trattata come barriera a scadenza. Con barriera continua i passi giornalieri guardano solo le
 chiusure. Correlazione non disponibile = 0. Le probabilità sono stime statistiche, non previsioni né consulenza.
 
+## Punteggio e ricerca (sito)
+
+Il sito calcola nel browser, per ogni certificato:
+
+- **Rendimento atteso**: `P(tenuta) × rendimento a scadenza + (1 − P) × rendimento nello scenario negativo`
+  (rimborso al livello del peggiore, circa l'80% della barriera, e cedole ridotte). Senza probabilità si usa il rendimento
+  a scadenza (al massimo 25%) scontato in base alla distanza dalla barriera. Rendimenti oltre il 30% sono segnalati come sospetti.
+- **Margine in dev. std**: distanza del worst-of dalla barriera divisa per volatilità × √anni residui.
+- **Punteggio 0-100**: media pesata di Rendimento, Sicurezza (probabilità/distanza), Trigger, Liquidità (spread, prezzi
+  aggiornati) e Qualità (classe dell'emittente A/B/C indicativa, memoria, completezza dei dati). I pesi dipendono dal profilo
+  (prudente, bilanciato, aggressivo); sotto barriera ×0,35, cedola non attiva ×0,8.
+- **Profili iniziali**: prudente (rend. atteso ≥ 4%, distanza ≥ 40%, trigger ≥ 15%, prob ≥ 85%, ≤ 4 anni, spread ≤ 1,5%),
+  bilanciato (6%, 30%, 10%, 75%, 5 anni, 2%), aggressivo (8%, 20%, 60%, 7 anni, 3%); tutti richiedono la cedola nota.
+- **Obiettivi rapidi**: cedola mensile, sotto la pari, scadenza breve, memoria, cedola attiva, barriera lontana.
+- I prezzi anomali (< 1 o > 300% del nominale) sono esclusi dai calcoli di rendimento.
+
 ## Note
 
 - `docs/_headers` (noindex, cache breve dei dati) vale su Cloudflare, che ospita il sito.
