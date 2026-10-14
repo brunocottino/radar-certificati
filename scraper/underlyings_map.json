@@ -162,6 +162,12 @@
   "type": "EQUITY",
   "yahooName": "ABN AMRO Bank N.V."
  },
+ "accenture": {
+  "isin": null,
+  "manual": null,
+  "name": "Accenture PLC",
+  "ticker": null
+ },
  "acomea ai europe top 10 large cap index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -172,6 +178,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "adecco": {
+  "isin": null,
+  "manual": null,
+  "name": "Adecco Group AG",
+  "ticker": null
  },
  "adidas": {
   "checkedAt": "2026-10-09",
@@ -12587,6 +12599,12 @@
   "isin": null,
   "manual": null,
   "name": "RAME JUL. 26",
+  "ticker": null
+ },
+ "randstad": {
+  "isin": null,
+  "manual": null,
+  "name": "Randstad NV",
   "ticker": null
  },
  "recordati": {
