@@ -251,6 +251,15 @@ def has_price(c):
     return bool(c.get("bid")) and bool(c.get("ask"))
 
 
+def price_ok(c):
+    """Scarta coppie denaro/lettera impossibili: oltre 5 volte il nominale (es. prezzi letti ×100)."""
+    n, a = c.get("nominal"), c.get("ask")
+    return not (isinstance(n, (int, float)) and n > 0 and isinstance(a, (int, float)) and a > 5 * n)
+
+
+# run con i prezzi Euronext letti ×100 (separatore decimale italiano): quei prezzi si scartano
+BAD_PRICE_RUN = "2026-10-14T13:19"
+
 JUNK_UND = re.compile(r"^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$")
 
 
@@ -274,6 +283,9 @@ def merge(old, new):
         c = dict(c)
         if has_price(c) and not c.get("priceAt"):
             c["priceAt"] = c.get("updatedAt")
+        if (c.get("priceAt") or "").startswith(BAD_PRICE_RUN) or not price_ok(c):
+            for k in ("bid", "ask", "priceAt"):
+                c.pop(k, None)
         by[c["isin"]] = c
     for c in new:
         fb = c.pop("_fallback", None) or {}
@@ -281,7 +293,7 @@ def merge(old, new):
         # campi di ripiego (es. da Euronext): solo se l'archivio non li ha già da una fonte più ricca
         c = {**{k: v for k, v in fb.items() if v not in (None, "", []) and prev.get(k) in (None, "", [])}, **c}
         c = {k: v for k, v in c.items() if v not in (None, "", [])}
-        if has_price(c):
+        if has_price(c) and price_ok({**prev, **c}):
             c["priceAt"] = NOW
         else:
             c.pop("bid", None)
