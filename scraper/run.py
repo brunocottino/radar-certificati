@@ -251,6 +251,16 @@ def has_price(c):
     return bool(c.get("bid")) and bool(c.get("ask"))
 
 
+JUNK_UND = re.compile(r"^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$")
+
+
+def clean_underlyings(c):
+    """Toglie dai sottostanti le voci spurie lette dalle tabelle (es. "ISIN DE000…")."""
+    if isinstance(c.get("underlyings"), list):
+        c["underlyings"] = [u for u in c["underlyings"] if u and not JUNK_UND.match(str(u).strip())]
+    return c
+
+
 def merge(old, new):
     """Unisce i certificati nuovi all'archivio.
 
@@ -272,7 +282,7 @@ def merge(old, new):
             c.pop("ask", None)
         by[c["isin"]] = {**by.get(c["isin"], {}), **c}
     today = date.today().isoformat()
-    return [c for c in by.values() if not c.get("maturity") or c["maturity"] >= today]
+    return [clean_underlyings(c) for c in by.values() if not c.get("maturity") or c["maturity"] >= today]
 
 
 async def main():

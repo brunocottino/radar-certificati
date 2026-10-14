@@ -56,6 +56,7 @@ SCHEMA = {
     "nextCouponDate": "Prossima data di osservazione della cedola.",
     "nextCallDate": "Prossima data di possibile richiamo.",
     "url": "Pagina del prodotto sul sito dell'emittente.",
+    "category": "Categoria: Cash Collect/Phoenix, Express, Bonus Cap, Protetto, Leva, Altro.",
     "updatedAt": "Data e ora (UTC) dell'ultima rilevazione del certificato.",
     "probBarrierHold": "Probabilità stimata (0-1) che tutti i sottostanti restino sopra la barriera capitale fino a scadenza. Ignora il richiamo anticipato. null se mancano dati.",
     "probMethod": "Metodo: 'mc_europea' (barriera a scadenza, 20.000 scenari), 'mc_continua' (barriera continua, 5.000 scenari a passi giornalieri), 'solo_peggiore' (nota solo la distanza del peggiore: limite superiore della probabilità reale).",
@@ -83,6 +84,49 @@ METHOD = {
 }
 
 
+HIST = ROOT / "docs" / "data" / "history"
+LIST = ROOT / "docs" / "data" / "list.json"
+HIST_DAYS = 250
+
+# colonne del file leggero per la lista del sito (docs/data/list.json): il dettaglio è in api/v1/isin/<ISIN>.json
+LIST_COLS = ["isin", "issuer", "platform", "type", "category", "underlyings", "worstName", "distBarrier", "distAt",
+             "barrierPct", "barrierType", "triggerPct", "autocallPct", "couponPa", "freq", "memory", "callable",
+             "maturity", "bid", "ask", "nominal", "priceAt", "nextCouponDate", "nextCallDate", "market", "currency",
+             "probBarrierHold", "probMethod", "worstVol", "updatedAt"]
+
+CATEGORIES = [  # (categoria, regex sul testo tipo/nome/richiamo) - il primo che corrisponde vince
+    ("Leva", r"turbo|mini ?future|leva fissa|leverage|factor|warrant|knock.?out|\bcw\b"),
+    ("Protetto", r"protet|protection|garantit|capital ?prot|benchmark"),
+    ("Bonus Cap", r"bonus"),
+    ("Cash Collect/Phoenix", r"cash ?collect|phoenix|premi|coupon|cedol|memory|income|step ?down|softcall"),
+    ("Express", r"express|athena|autocall"),
+]
+
+
+def category(c):
+    """Categoria del certificato dal tipo dichiarato (se non già assegnata dalla sorgente)."""
+    if c.get("category"):
+        return c["category"]
+    txt = " ".join(str(c.get(k) or "") for k in ("type", "name", "callable")).lower()
+    for cat, rx in CATEGORIES:
+        if re.search(rx, txt):
+            return cat
+    if c.get("couponPa") and c.get("barrierPct"):
+        return "Cash Collect/Phoenix"
+    return "Altro"
+
+
+def update_history(c, day):
+    """Storico giornaliero denaro/lettera per ISIN (ultimi 250 giorni): una riga per giorno, l'ultima run vince."""
+    f = HIST / f"{c['isin']}.json"
+    h = load(f, [])
+    if c.get("bid") and c.get("ask") and (c.get("priceAt") or "")[:10] == day:
+        h = [r for r in h if r[0] != day] + [[day, c["bid"], c["ask"]]]
+        h = sorted(h)[-HIST_DAYS:]
+        dump(f, h)
+    return h
+
+
 def dump(p, obj):
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(obj, ensure_ascii=False, separators=(",", ":")))
@@ -101,13 +145,21 @@ def main():
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     updated = meta.get("updatedAt") or now
 
+    for c in certs:
+        c["category"] = category(c)
     shutil.rmtree(OUT, ignore_errors=True)
     dump(OUT / "certificates.json", {"version": 1, "updatedAt": updated, "count": len(certs),
                                      "disclaimer": DISCLAIMER, "certificates": certs})
+    day = updated[:10]
     for c in certs:
         if ISIN_RE.match(c["isin"]):
+            hist = update_history(c, day)
             dump(OUT / "isin" / f"{c['isin']}.json", {"version": 1, "updatedAt": updated, "disclaimer": DISCLAIMER,
-                                                      "certificate": c})
+                                                      "certificate": c, "history": hist})
+    # file leggero per la lista del sito: colonne + righe (niente chiavi ripetute)
+    dump(LIST, {"version": 1, "updatedAt": updated, "riskAt": meta.get("riskAt"), "count": len(certs),
+                "sources": meta.get("sources", []), "cols": LIST_COLS,
+                "rows": [[c.get(k) for k in LIST_COLS] for c in certs]})
 
     m, st = load(MAP, {}), load(STATE, {})
     vols = st.get("underlyings", {})
