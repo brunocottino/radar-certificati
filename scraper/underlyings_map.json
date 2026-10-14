@@ -10,6 +10,30 @@
   "type": null,
   "yahooName": null
  },
+ "10 year constant maturity yield rate of u s treasury securities": {
+  "isin": null,
+  "manual": null,
+  "name": "10-year Constant Maturity Yield rate of U.S. Treasury Securities",
+  "ticker": null
+ },
+ "10 year tec": {
+  "isin": null,
+  "manual": null,
+  "name": "10-year TEC",
+  "ticker": null
+ },
+ "10y eur tasso misto callable notes": {
+  "isin": null,
+  "manual": null,
+  "name": "10Y EUR Tasso Misto Callable Notes",
+  "ticker": null
+ },
+ "10y usd sofr callable notes": {
+  "isin": null,
+  "manual": null,
+  "name": "10Y USD SOFR Callable Notes",
+  "ticker": null
+ },
  "2 15 btps italia": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -351,6 +375,12 @@
   "ticker": "ALV.DE",
   "type": "EQUITY",
   "yahooName": "Allianz SE"
+ },
+ "alluminio": {
+  "isin": null,
+  "manual": null,
+  "name": "ALLUMINIO",
+  "ticker": null
  },
  "alphabet": {
   "checkedAt": "2026-10-09",
@@ -968,6 +998,12 @@
   "type": "EQUITY",
   "yahooName": "Banca Monte dei Paschi di Siena S.p.A."
  },
+ "banca monte dei paschi di siena unicredit intesa sanpaolo": {
+  "isin": null,
+  "manual": null,
+  "name": "Banca Monte dei Paschi di Siena, Unicredit, Intesa Sanpaolo",
+  "ticker": null
+ },
  "banca monte dei paschi siena": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -1364,6 +1400,12 @@
   "type": null,
   "yahooName": null
  },
+ "bloomberg metaverse net return index": {
+  "isin": "EUBMETANE000",
+  "manual": null,
+  "name": "Bloomberg Metaverse Net Return Index",
+  "ticker": null
+ },
  "bmw": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -1385,6 +1427,36 @@
   "ticker": "BNP.PA",
   "type": "EQUITY",
   "yahooName": "BNP Paribas SA"
+ },
+ "bnp paribas exane clean energy opportunities": {
+  "isin": null,
+  "manual": null,
+  "name": "BNP Paribas Exane Clean Energy Opportunities",
+  "ticker": null
+ },
+ "bnp paribas global renewable energies total return": {
+  "isin": "DE000SLA3UK4",
+  "manual": null,
+  "name": "BNP Paribas Global Renewable Energies Total Return",
+  "ticker": null
+ },
+ "bnp paribas global waste management total return": {
+  "isin": "DE000A0V7576",
+  "manual": null,
+  "name": "BNP Paribas Global Waste Management Total Return",
+  "ticker": null
+ },
+ "bnp paribas global water total return": {
+  "isin": "DE000A0V7550",
+  "manual": null,
+  "name": "BNP Paribas Global Water Total Return",
+  "ticker": null
+ },
+ "bnp paribas new technology total return": {
+  "isin": "FRBNPIDX0UP3",
+  "manual": null,
+  "name": "BNP Paribas New Technology Total Return",
+  "ticker": null
  },
  "bnp paribas s a": {
   "checkedAt": "2026-10-09",
@@ -1953,6 +2025,12 @@
   "type": "EQUITY",
   "yahooName": "Compass Group PLC"
  },
+ "compounded daily sofr": {
+  "isin": null,
+  "manual": null,
+  "name": "Compounded Daily SOFR",
+  "ticker": null
+ },
  "conocophillips": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -2095,6 +2173,18 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "csi 1000 index": {
+  "isin": "CNT1000000Y3",
+  "manual": null,
+  "name": "CSI 1000 Index",
+  "ticker": null
+ },
+ "csi 300 index": {
+  "isin": null,
+  "manual": null,
+  "name": "CSI 300 Index",
+  "ticker": null
  },
  "cvs health": {
   "checkedAt": "2026-10-09",
@@ -2305,6 +2395,18 @@
   "ticker": "DVN",
   "type": "EQUITY",
   "yahooName": "Devon Energy Corporation"
+ },
+ "diaman equity trend following tr eur index": {
+  "isin": null,
+  "manual": null,
+  "name": "Diaman Equity Trend Following TR EUR Index",
+  "ticker": null
+ },
+ "diaman factor rotation tr eur index in eur": {
+  "isin": null,
+  "manual": null,
+  "name": "Diaman Factor Rotation TR EUR Index in EUR",
+  "ticker": null
  },
  "diasorin": {
   "checkedAt": "2026-10-09",
@@ -2653,6 +2755,12 @@
   "type": "EQUITY",
   "yahooName": "Equinor ASA"
  },
+ "equity europe select climate care ntr index": {
+  "isin": null,
+  "manual": null,
+  "name": "Equity Europe Select Climate Care NTR Index",
+  "ticker": null
+ },
  "erg": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -2784,6 +2892,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "euribor 3m": {
+  "isin": null,
+  "manual": null,
+  "name": "EURIBOR 3M",
+  "ticker": null
  },
  "euro 10 year euribor interest rate swap": {
   "checkedAt": "2026-10-09",
@@ -3581,6 +3695,12 @@
   "type": "EQUITY",
   "yahooName": "GLOBALFOUNDRIES Inc."
  },
+ "glodman sachs morgan stanley": {
+  "isin": null,
+  "manual": null,
+  "name": "Glodman Sachs, Morgan Stanley",
+  "ticker": null
+ },
  "gold fields": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -3675,6 +3795,12 @@
   "type": "EQUITY",
   "yahooName": "Heidelberg Materials AG"
  },
+ "heineken": {
+  "isin": "NL0000009165",
+  "manual": null,
+  "name": "HEINEKEN",
+  "ticker": null
+ },
  "hellofresh": {
   "checkedAt": "2026-10-09",
   "exchange": "FRA",
@@ -3741,16 +3867,27 @@
   "type": "EQUITY",
   "yahooName": "Horizon Robotics"
  },
- "hsbc": {
-  "checkedAt": "2026-10-14",
-  "exchange": "NYQ",
+ "hp dell meta": {
   "isin": null,
+  "manual": null,
+  "name": "HP, Dell, Meta",
+  "ticker": null
+ },
+ "hsbc": {
+  "exchange": "NYQ",
+  "isin": "GB0005405286",
   "manual": null,
   "name": "HSBC Holdings PLC",
   "score": 1.0,
   "ticker": "HSBC",
   "type": "EQUITY",
   "yahooName": "HSBC Holdings plc"
+ },
+ "hscei": {
+  "isin": "HK0000004330",
+  "manual": null,
+  "name": "HSCEI",
+  "ticker": null
  },
  "hugo boss": {
   "checkedAt": "2026-10-09",
@@ -3901,6 +4038,12 @@
   "type": "EQUITY",
   "yahooName": "ING Groep N.V."
  },
+ "ing groep": {
+  "isin": "NL0011821202",
+  "manual": null,
+  "name": "ING GROEP",
+  "ticker": null
+ },
  "ing groep n v": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -3934,6 +4077,18 @@
   "type": "EQUITY",
   "yahooName": "Interactive Brokers Group, Inc."
  },
+ "intermonte global brands flex tr eur index": {
+  "isin": null,
+  "manual": null,
+  "name": "Intermonte Global Brands Flex TR EUR Index",
+  "ticker": null
+ },
+ "intermonte global geopolitical trends tr eur index": {
+  "isin": null,
+  "manual": null,
+  "name": "Intermonte Global Geopolitical Trends TR EUR Index",
+  "ticker": null
+ },
  "intesa sanpaolo": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -3955,6 +4110,12 @@
   "ticker": "ISP.MI",
   "type": "EQUITY",
   "yahooName": "Intesa Sanpaolo S.p.A."
+ },
+ "intesa sanpaolo unicredit mediobanca": {
+  "isin": null,
+  "manual": null,
+  "name": "INTESA SANPAOLO, UNICREDIT, MEDIOBANCA",
+  "ticker": null
  },
  "intuit": {
   "checkedAt": "2026-10-09",
@@ -10006,6 +10167,12 @@
   "type": "EQUITY",
   "yahooName": "Leonardo S.p.a."
  },
+ "leonardo eni enel": {
+  "isin": null,
+  "manual": null,
+  "name": "Leonardo, Eni, Enel",
+  "ticker": null
+ },
  "leonardo s p a": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -11107,9 +11274,8 @@
   "yahooName": null
  },
  "msci world index": {
-  "checkedAt": "2026-10-09",
   "exchange": "TOR",
-  "isin": null,
+  "isin": "GB00BMY0G899",
   "manual": null,
   "name": "MSCI World Index",
   "score": 0.727,
@@ -11160,6 +11326,12 @@
   "isin": null,
   "manual": "^NDX",
   "name": "Nasdaq 100 Index",
+  "ticker": null
+ },
+ "nasdaq 100 total return index": {
+  "isin": "US6329960545",
+  "manual": null,
+  "name": "NASDAQ-100 TOTAL RETURN INDEX",
   "ticker": null
  },
  "national grid": {
@@ -11508,6 +11680,12 @@
   "ticker": "ORLY",
   "type": "EQUITY",
   "yahooName": "O'Reilly Automotive, Inc."
+ },
+ "obbligazione tasso fisso illimity": {
+  "isin": null,
+  "manual": null,
+  "name": "Obbligazione Tasso Fisso Illimity",
+  "ticker": null
  },
  "oklo registered": {
   "checkedAt": "2026-10-09",
@@ -12092,6 +12270,12 @@
   "type": null,
   "yahooName": null
  },
+ "rame jul 26": {
+  "isin": null,
+  "manual": null,
+  "name": "RAME JUL. 26",
+  "ticker": null
+ },
  "recordati": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -12201,6 +12385,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "republic of italy": {
+  "isin": "XS2509390949",
+  "manual": null,
+  "name": "Republic of Italy",
+  "ticker": null
  },
  "rh": {
   "checkedAt": "2026-10-09",
@@ -12589,6 +12779,12 @@
   "type": "EQUITY",
   "yahooName": "Sanofi SA"
  },
+ "santander barclays deutsche bank": {
+  "isin": null,
+  "manual": null,
+  "name": "Santander, Barclays, Deutsche Bank",
+  "ticker": null
+ },
  "sap": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -12848,6 +13044,18 @@
   "type": null,
   "yahooName": null
  },
+ "solactive btp 10y index eur": {
+  "isin": "DE000SL0PQT8",
+  "manual": null,
+  "name": "Solactive BTP 10Y Index EUR",
+  "ticker": null
+ },
+ "solactive constant maturity eu nxg 10y 11am yield index": {
+  "isin": null,
+  "manual": null,
+  "name": "Solactive Constant Maturity EU NXG 10Y 11am Yield Index",
+  "ticker": null
+ },
  "solactive defensive funds 3 rc index": {
   "checkedAt": "2026-10-09",
   "exchange": "STU",
@@ -12913,6 +13121,12 @@
   "ticker": "SEDG",
   "type": "EQUITY",
   "yahooName": "SolarEdge Technologies, Inc."
+ },
+ "solde 10y": {
+  "isin": null,
+  "manual": null,
+  "name": "SOLDE 10Y",
+  "ticker": null
  },
  "sony sony financial basket": {
   "checkedAt": "2026-10-09",
@@ -13089,6 +13303,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "stoxx europe 50": {
+  "isin": "EU0009658152",
+  "manual": null,
+  "name": "STOXX EUROPE 50",
+  "ticker": null
  },
  "stoxx europe 600 automobiles parts": {
   "checkedAt": "2026-10-09",
@@ -13684,6 +13904,12 @@
   "type": "EQUITY",
   "yahooName": "Toyota Motor Corporation"
  },
+ "transition metals er 8": {
+  "isin": null,
+  "manual": null,
+  "name": "Transition Metals ER 8%",
+  "ticker": null
+ },
  "trip": {
   "checkedAt": "2026-10-09",
   "exchange": "STU",
@@ -13981,6 +14207,12 @@
   "type": "EQUITY",
   "yahooName": "UniCredit S.p.A."
  },
+ "unicredit societa per azioni": {
+  "isin": null,
+  "manual": null,
+  "name": "UNICREDIT, SOCIETA PER AZIONI",
+  "ticker": null
+ },
  "unilever": {
   "checkedAt": "2026-10-13",
   "exchange": "LSE",
@@ -14057,6 +14289,12 @@
   "ticker": "DE000SL0L060.SG",
   "type": "INDEX",
   "yahooName": null
+ },
+ "usd sofr floater to fix notes": {
+  "isin": null,
+  "manual": null,
+  "name": "USD SOFR FLOATER TO FIX NOTES",
+  "ticker": null
  },
  "usd versus chf": {
   "checkedAt": "2026-10-09",
@@ -14464,6 +14702,12 @@
   "ticker": "WOLF",
   "type": "EQUITY",
   "yahooName": "Wolfspeed, Inc."
+ },
+ "world bank sustainable bond": {
+  "isin": null,
+  "manual": null,
+  "name": "World Bank Sustainable Bond",
+  "ticker": null
  },
  "xiaomi": {
   "checkedAt": "2026-10-09",
