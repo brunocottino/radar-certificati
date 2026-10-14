@@ -1,0 +1,23 @@
+name: Diagnosi sito
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnosi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Header e contenuto del sito
+        run: |
+          for u in https://radar-certificati.cottinob.workers.dev/ \
+                   https://radar-certificati.cottinob.workers.dev/data/certs.json \
+                   https://radar-certificati.cottinob.workers.dev/api/v1/meta.json \
+                   https://radar-certificati.cottinob.workers.dev/questo-non-esiste.json \
+                   https://brunocottino.github.io/radar-certificati/data/certs.json; do
+            echo "=== $u"
+            curl -s -D - -o body.txt -m 30 "$u" | grep -ivE '^(report-to|nel|alt-svc|server-timing):' || true
+            echo "--- primi byte:"; head -c 300 body.txt; echo
+          done
+      - name: Riepilogo updatedAt
+        run: |
+          curl -s -m 30 "https://radar-certificati.cottinob.workers.dev/data/certs.json?t=$(date +%s)" | python3 -c "import json,sys;d=json.load(sys.stdin);print('updatedAt sito:',d.get('updatedAt'),'count:',d.get('count'),'sources:',d.get('sources'))" || echo "certs.json non leggibile"
