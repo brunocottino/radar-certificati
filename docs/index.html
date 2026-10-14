@@ -4,8 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<!-- dove stanno i dati (pubblicati dal robot GitHub): se la pagina è servita da un altro dominio (es. Netlify) li legge da qui -->
-<meta name="data-base" content="https://radar-certificati.cottinob.workers.dev/">
 <title>Radar Certificati</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -275,7 +273,7 @@ tr.sp td{height:auto;border:none;padding:0}
     <p class="note">In arancione i prezzi rilevati più di 2 giorni lavorativi fa: l'ultima run non ha trovato denaro e lettera e restano quelli precedenti.</p>
   </details>
 
-  <p class="note">Prob. tenuta = probabilità stimata che tutti i sottostanti restino sopra la barriera capitale fino a scadenza (Monte Carlo su volatilità storica, correlazioni a 1 anno, drift 0, senza richiamo anticipato). Verde ≥85%, giallo 70–85%, rosso &lt;70%. L'asterisco indica che è nota solo la distanza del peggiore: la stima è un limite superiore. Rend. a scadenza = cedole sul prezzo lettera + recupero verso 100, annualizzato, se tutte le cedole sono pagate. Stime statistiche, non previsioni né consulenza: verificare sempre KID e term sheet. Dati anche via <a href="https://radar-certificati.cottinob.workers.dev/api/v1/meta.json">API JSON</a>.</p>
+  <p class="note">Prob. tenuta = probabilità stimata che tutti i sottostanti restino sopra la barriera capitale fino a scadenza (Monte Carlo su volatilità storica, correlazioni a 1 anno, drift 0, senza richiamo anticipato). Verde ≥85%, giallo 70–85%, rosso &lt;70%. L'asterisco indica che è nota solo la distanza del peggiore: la stima è un limite superiore. Rend. a scadenza = cedole sul prezzo lettera + recupero verso 100, annualizzato, se tutte le cedole sono pagate. Stime statistiche, non previsioni né consulenza: verificare sempre KID e term sheet. Dati anche via <a href="api/v1/meta.json">API JSON</a>.</p>
 </main>
 
 <div class="scrim" id="scrim" hidden></div>
@@ -308,8 +306,6 @@ const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2400)}
-// base dei dati: stesso sito se è quello indicato nel meta, altrimenti l'indirizzo assoluto (CORS aperto)
-const DATA_BASE=(()=>{const m=document.querySelector('meta[name="data-base"]')?.content;try{return m&&new URL(m).origin!==location.origin?m.replace(/\/?$/,"/"):""}catch(e){return ""}})();
 const norm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 
 /* ---------- date e calendario di borsa ---------- */
@@ -580,7 +576,7 @@ function moreCards(){if(cardN>=ROWS.length)return;const n=Math.min(ROWS.length,c
 /* ---------- dettaglio ---------- */
 async function loadDetail(isin){
   if(DETAIL.has(isin))return DETAIL.get(isin);
-  try{const r=await fetch(`${DATA_BASE}api/v1/isin/${isin}.json`,{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();DETAIL.set(isin,j);return j}catch(e){return null}
+  try{const r=await fetch(`api/v1/isin/${isin}.json`,{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();DETAIL.set(isin,j);return j}catch(e){return null}
 }
 function ladder(c,full){
   const det=(full.underlyingsDetail||[]).filter(u=>u.name);
@@ -714,7 +710,7 @@ let LEVA=null;
 async function ensureLeva(){
   if(LEVA||!(state.f.lev||state.f.cat==="Leva"))return;
   LEVA="loading";$("#count").textContent="Carico i certificati a leva…";
-  try{const r=await fetch(DATA_BASE+"data/leva.json?t="+Date.now(),{cache:"no-store"});const j=await r.json();
+  try{const r=await fetch("data/leva.json?t="+Date.now(),{cache:"no-store"});const j=await r.json();
     const add=j.rows.map(row=>{const o={};j.cols.forEach((k,i)=>{if(row[i]!=null)o[k]=row[i]});o.category="Leva";o.type=o.typeMarket;return o}).filter(o=>!BYISIN.has(o.isin));
     add.forEach(enrich);const w=W[state.profile];add.forEach(c=>c.score=score(c,w));CERTS=CERTS.concat(add);add.forEach(c=>BYISIN.set(c.isin,c));buildIndex();LEVA=add.length;
     toast(`Aggiunti ${add.length.toLocaleString("it-IT")} certificati a leva`);
@@ -830,10 +826,10 @@ if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js",{update
 fromHash();setTopH();syncControls();
 async function load(){
   let j;
-  try{const r=await fetch(DATA_BASE+"data/list.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;j=await r.json();
+  try{const r=await fetch("data/list.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;j=await r.json();
     CERTS=j.rows.map(row=>{const o={};j.cols.forEach((k,i)=>{if(row[i]!=null)o[k]=row[i]});return o})}
   catch(e){ // ripiego: archivio completo
-    try{const r=await fetch(DATA_BASE+"data/certs.json?t="+Date.now(),{cache:"no-store"});j=await r.json();CERTS=j.certs||[]}
+    try{const r=await fetch("data/certs.json?t="+Date.now(),{cache:"no-store"});j=await r.json();CERTS=j.certs||[]}
     catch(e2){$("#results").innerHTML=`<div class="empty">Dati non disponibili: riprova tra poco.</div>`;$("#status").textContent="Dati non disponibili";return}}
   META=j;CERTS.forEach(enrich);BYISIN=new Map(CERTS.map(c=>[c.isin,c]));
   rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();ensureLeva();

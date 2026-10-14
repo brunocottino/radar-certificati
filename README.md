@@ -86,19 +86,9 @@ anticipato (se il certificato viene richiamato prima, la barriera conta meno), n
 Barriera di tipo non dichiarato trattata come barriera a scadenza. Con barriera continua i passi giornalieri guardano solo le
 chiusure. Correlazione non disponibile = 0. Le probabilità sono stime statistiche, non previsioni né consulenza.
 
-## Netlify (solo l'applicazione)
-
-I dati li produce sempre il robot GitHub (workflow "Aggiornamento certificati") e restano pubblicati su
-`https://radar-certificati.cottinob.workers.dev` (Cloudflare, ripubblica a ogni push senza limiti di deploy).
-Su Netlify va solo l'applicazione: `netlify.toml` pubblica `docs/` senza `data/` e `api/`, e la regola `ignore`
-salta la build quando un push non tocca l'applicazione (cioè per tutti i commit dati del robot), quindi Netlify
-consuma un deploy solo quando cambia il codice del sito. La pagina legge i dati dall'indirizzo nel
-`<meta name="data-base">` di `docs/index.html` (CORS aperto su `/data/*` e `/api/*` in `docs/_headers`).
-Nessun token né deploy dal workflow.
-
 ## Note
 
-- `docs/_headers` (noindex, cache breve dei dati) vale su hosting che lo supporta (Netlify, Cloudflare Pages).
+- `docs/_headers` (noindex, cache breve dei dati) vale su Cloudflare, che ospita il sito.
   GitHub Pages lo ignora: lì valgono il `<meta name="robots" content="noindex">` della pagina e la cache
   fissa di 10 minuti, aggirata dal sito con `?t=` sulla richiesta dei dati.
 
