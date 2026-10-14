@@ -97,7 +97,12 @@ async def explore(ctx, name, url):
 
 
 async def main():
-    only = set(sys.argv[1:])
+    # argomenti "nome=url" sostituiscono l'elenco predefinito; altrimenti filtrano per nome
+    custom = [a.split("=", 1) for a in sys.argv[1:] if "=" in a]
+    global CANDIDATES
+    if custom:
+        CANDIDATES = [(n, u) for n, u in custom]
+    only = set(a for a in sys.argv[1:] if "=" not in a)
     report = []
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled"])
