@@ -12,11 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Header e updatedAt
+        env:
+          SITE: ${{ vars.SITE_URL || 'https://radar-certificati.cottinob.workers.dev' }}
         run: |
           for u in data/certs.json data/list.json api/v1/meta.json; do
-            echo "=== $u"; curl -s -D - -o /dev/null -m 30 "https://radar-certificati.cottinob.workers.dev/$u?t=$(date +%s)" | grep -iE '^(HTTP|content-type|content-length|access-control-allow-origin)' || true
+            echo "=== $u"; curl -s -D - -o /dev/null -m 30 "${SITE%/}/$u?t=$(date +%s)" | grep -iE '^(HTTP|content-type|content-length|access-control-allow-origin)' || true
           done
-          curl -s -m 30 "https://radar-certificati.cottinob.workers.dev/data/list.json?t=$(date +%s)" | python3 -c "import json,sys;d=json.load(sys.stdin);print('list.json updatedAt',d['updatedAt'],'righe',len(d['rows']))" || echo "list.json non leggibile"
+          curl -s -m 30 "${SITE%/}/data/list.json?t=$(date +%s)" | python3 -c "import json,sys;d=json.load(sys.stdin);print('list.json updatedAt',d['updatedAt'],'righe',len(d['rows']))" || echo "list.json non leggibile"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -24,7 +26,7 @@ jobs:
         run: |
           pip install -q playwright==1.47.0
           python -m playwright install --with-deps chromium > /dev/null
-          python scraper/smoke_site.py
+          python scraper/smoke_site.py "${{ vars.SITE_URL || 'https://radar-certificati.cottinob.workers.dev/' }}"
       - name: Pubblica schermate sul branch smoke
         if: always()
         run: |

@@ -28,6 +28,10 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    env:
+      # deploy diretto su Netlify: si attiva solo se questi segreti esistono (Settings > Secrets and variables > Actions)
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -89,11 +93,17 @@ jobs:
           git diff --cached --quiet || git commit -m "Dati certificati $(date -u +%F)"
           git pull --rebase -q origin "${GITHUB_REF_NAME}"
           git push
+      - name: Deploy diretto su Netlify (solo se configurato)
+        if: steps.cal.outputs.open == 'true' && env.NETLIFY_AUTH_TOKEN != ''
+        run: |
+          rm -rf /tmp/site && cp -r docs /tmp/site && rm -rf /tmp/site/data/history
+          npx --yes netlify-cli@17 deploy --prod --dir /tmp/site --site "$NETLIFY_SITE_ID" --message "Dati $(date -u +%FT%H:%M)"
       - name: Verifica che il sito mostri i nuovi dati
         if: steps.cal.outputs.open == 'true'
         # fallisce la run se entro 5 minuti dal push il sito non serve l'updatedAt appena pubblicato
         run: |
-          SITE=https://radar-certificati.cottinob.workers.dev
+          SITE="${{ vars.SITE_URL || 'https://radar-certificati.cottinob.workers.dev' }}"
+          SITE="${SITE%/}"
           WANT=$(python3 -c "import json;print(json.load(open('docs/data/certs.json'))['updatedAt'])")
           echo "updatedAt atteso: $WANT"
           for i in $(seq 1 15); do
@@ -110,6 +120,6 @@ jobs:
             echo '```'; echo "$H" | grep -iE '^(HTTP|access-control-allow-origin|content-type)'; echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "$GOT" != "$WANT" ]; then
-            echo "::error title=Sito non aggiornato::dopo 5 minuti il sito mostra updatedAt=$GOT invece di $WANT (deploy Cloudflare non avvenuto?)"
+            echo "::error title=Sito non aggiornato::dopo 5 minuti $SITE mostra updatedAt=$GOT invece di $WANT (deploy non avvenuto?)"
             exit 1
           fi

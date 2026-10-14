@@ -1,0 +1,10 @@
+# Netlify: sito statico in docs/, nessuna build.
+# Lo storico per ISIN (docs/data/history) resta nel repository ma non viene pubblicato: il sito lo legge
+# da api/v1/isin/<ISIN>.json. Header (CORS, noindex, cache) in docs/_headers, che Netlify applica.
+[build]
+  publish = "docs"
+  command = "rm -rf docs/data/history"
+
+# niente deploy di anteprima per i branch tecnici (discovery, explore, smoke)
+[context.branch-deploy]
+  command = "exit 0"
