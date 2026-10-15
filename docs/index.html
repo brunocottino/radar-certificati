@@ -890,7 +890,7 @@ function drawMap(pts,fr,bg=[]){
   box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mappa: distanza del peggiore dalla barriera in orizzontale, rendimento annuo in verticale">${g.join("")}${zone}
 <text class="axl" x="${(m.l+W-m.r)/2}" y="${H-4}" text-anchor="middle">Distanza del peggiore dalla barriera →</text>
 <text class="axl" transform="translate(11 ${(m.t+H-m.b)/2}) rotate(-90)" text-anchor="middle">Rendimento annuo →</text>
-<g fill="var(--line)">${bg.map(c=>`<circle cx="${X(c.dist).toFixed(1)}" cy="${Y(c.ytm).toFixed(1)}" r="${narrow?2.2:2.6}"/>`).join("")}</g>${line}${dots}
+<g fill="var(--line)">${bg.filter(c=>c.dist>=xmin&&c.dist<=xmax&&c.ytm>=ymin&&c.ytm<=ymax).map(c=>`<circle cx="${X(c.dist).toFixed(1)}" cy="${Y(c.ytm).toFixed(1)}" r="${narrow?2.2:2.6}"/>`).join("")}</g>${line}${dots}
 <circle id="mhl" r="${r+5}" fill="none" stroke="var(--ink)" stroke-width="2" visibility="hidden"/></svg>`;
   MAP={pts:pts.map(c=>({c,x:X(c.dist),y:Y(c.ytm)})),W,H};
 }
