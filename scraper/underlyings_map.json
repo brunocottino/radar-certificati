@@ -16995,6 +16995,17 @@
   "type": "EQUITY",
   "yahooName": "Snowflake Inc."
  },
+ "societe": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
+  "isin": null,
+  "manual": null,
+  "name": "Societe",
+  "score": 0.8,
+  "ticker": "GLE.PA",
+  "type": "EQUITY",
+  "yahooName": "Société Générale Société anonyme"
+ },
  "societe generale": {
   "checkedAt": "2026-10-09",
   "exchange": "PAR",
