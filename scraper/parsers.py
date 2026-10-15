@@ -441,7 +441,9 @@ def marex_ts(text, title=""):
         bar = float(pcts[-1]) if len(pcts) >= 2 and float(pcts[-1]) < 100 else None
         cur = None
         for l in lines[hi + 1:hi + 60]:
-            if l.lstrip().startswith("*") or re.match(r"\s*[A-Z ]{6,}$", l) and "UNDERLYING" not in l and cur:
+            # fine tabella: la nota "* as determined…" o un titolo di sezione (solo maiuscole, es. GENERAL INFORMATION);
+            # non "NV" o "SA" che sono il seguito del nome di un sottostante
+            if l.lstrip().startswith("*") or (cur and re.fullmatch(r"[A-Z][A-Z &]{5,}", l.strip().lstrip("\x0c"))):
                 break
             mi = re.match(r"\s*(\d+)\s", l)
             if mi and len(l) > c1 and re.search(r"[A-Z]{3} [\d,.]+", l):
