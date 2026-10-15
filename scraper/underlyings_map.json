@@ -100,14 +100,15 @@
   "yahooName": "A.P. Møller - Mærsk A/S"
  },
  "a p moller maersk a s": {
-  "exchange": "STU",
+  "checkedAt": "2026-10-15",
+  "exchange": "CPH",
   "isin": "DK0010244508",
   "manual": null,
   "name": "A.P. Moller Maersk A/S",
-  "score": 1.0,
-  "ticker": "DP4A.SG",
+  "score": 0.923,
+  "ticker": "MAERSK-B.CO",
   "type": "EQUITY",
-  "yahooName": "A. P. Moller Maersk A/S"
+  "yahooName": "A.P. Møller - Mærsk A/S"
  },
  "a2a": {
   "checkedAt": "2026-10-09",
@@ -131,7 +132,19 @@
   "type": "EQUITY",
   "yahooName": "A2A S.p.A."
  },
+ "abb": {
+  "checkedAt": "2026-10-15",
+  "exchange": "EBS",
+  "isin": null,
+  "manual": null,
+  "name": "ABB Ltd",
+  "score": 1.0,
+  "ticker": "ABBN.SW",
+  "type": "EQUITY",
+  "yahooName": "ABB Ltd"
+ },
  "abbott laboratories": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US0028241000",
   "manual": null,
@@ -175,6 +188,7 @@
   "yahooName": "ABN AMRO Bank N.V."
  },
  "abn amro bank n v": {
+  "checkedAt": "2026-10-15",
   "exchange": "AMS",
   "isin": "NL0011540547",
   "manual": null,
@@ -229,6 +243,7 @@
   "yahooName": "ACS, Actividades de Construcción y Servicios, S.A."
  },
  "adecco": {
+  "checkedAt": "2026-10-15",
   "exchange": "EBS",
   "isin": "CH0012138605",
   "manual": null,
@@ -283,10 +298,15 @@
   "yahooName": "Adobe Inc."
  },
  "advanced": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": null,
   "manual": null,
   "name": "Advanced",
-  "ticker": null
+  "score": 0.8,
+  "ticker": "AMD",
+  "type": "EQUITY",
+  "yahooName": "Advanced Micro Devices, Inc."
  },
  "advanced micro devices": {
   "checkedAt": "2026-10-15",
@@ -322,6 +342,7 @@
   "yahooName": "Adyen N.V."
  },
  "adyen n v": {
+  "checkedAt": "2026-10-15",
   "exchange": "AMS",
   "isin": "NL0012969182",
   "manual": null,
@@ -343,6 +364,7 @@
   "yahooName": "Aegon Ltd."
  },
  "affirm": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US00827B1061",
   "manual": null,
@@ -408,16 +430,26 @@
   "yahooName": "Air France-KLM S.A. (ADRs)"
  },
  "air liquide": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0000120073",
   "manual": null,
   "name": "Air Liquide SA",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "AI.PA",
+  "type": "EQUITY",
+  "yahooName": "L'Air Liquide S.A."
  },
  "air products and chemicals": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": null,
   "manual": null,
   "name": "Air Products and Chemicals Inc",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "APD",
+  "type": "EQUITY",
+  "yahooName": "Air Products and Chemicals, Inc."
  },
  "airbnb": {
   "checkedAt": "2026-10-09",
@@ -464,10 +496,15 @@
   "yahooName": "Alcoa Corporation"
  },
  "alcon": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "CH0432492467",
   "manual": null,
   "name": "Alcon Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "ALC",
+  "type": "EQUITY",
+  "yahooName": "Alcon Inc."
  },
  "alibaba": {
   "checkedAt": "2026-10-09",
@@ -481,6 +518,7 @@
   "yahooName": "Alibaba Group Holding Limited"
  },
  "align technology": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US0162551016",
   "manual": null,
@@ -645,6 +683,7 @@
   "yahooName": "American Airlines Group Inc."
  },
  "american electric power": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US0255371017",
   "manual": null,
@@ -677,10 +716,15 @@
   "yahooName": "American International Group, Inc."
  },
  "american international i": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": null,
   "manual": null,
   "name": "American International Group I",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "AIG",
+  "type": "EQUITY",
+  "yahooName": "American International Group, Inc."
  },
  "amgen": {
   "checkedAt": "2026-10-15",
@@ -727,6 +771,7 @@
   "yahooName": "Amplifon S.p.A."
  },
  "amplify cybersecurity etf": {
+  "checkedAt": "2026-10-15",
   "exchange": "PCX",
   "isin": "US0321086649",
   "manual": null,
@@ -737,10 +782,15 @@
   "yahooName": "Amplify Cybersecurity ETF"
  },
  "amplify junior silver miners etf": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": "US0321086490",
   "manual": null,
   "name": "Amplify Junior Silver Miners ETF",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "SILJ",
+  "type": "ETF",
+  "yahooName": "Amplify Junior Silver Miners ETF"
  },
  "ams osram": {
   "checkedAt": "2026-10-09",
@@ -820,6 +870,7 @@
   "yahooName": "Apollo Global Management, Inc."
  },
  "apollo global management": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US03769M1062",
   "manual": null,
@@ -852,6 +903,7 @@
   "yahooName": "Apple Inc."
  },
  "applied optoelectronics": {
+  "checkedAt": "2026-10-15",
   "exchange": "NGM",
   "isin": "US03823U1025",
   "manual": null,
@@ -862,6 +914,7 @@
   "yahooName": "Applied Optoelectronics, Inc."
  },
  "applovin": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US03831W1080",
   "manual": null,
@@ -883,12 +936,13 @@
   "yahooName": "ArcelorMittal S.A."
  },
  "arcelormittal s a": {
-  "exchange": "NYQ",
+  "checkedAt": "2026-10-15",
+  "exchange": "AMS",
   "isin": "LU1598757687",
   "manual": null,
   "name": "ArcelorMittal S.A.",
   "score": 1.0,
-  "ticker": "MT",
+  "ticker": "MT.AS",
   "type": "EQUITY",
   "yahooName": "ArcelorMittal S.A."
  },
@@ -915,6 +969,7 @@
   "yahooName": "Arista Networks, Inc."
  },
  "ark innovation etf": {
+  "checkedAt": "2026-10-15",
   "exchange": "BTS",
   "isin": "US00214Q1040",
   "manual": null,
@@ -936,10 +991,15 @@
   "yahooName": "Arm Holdings plc"
  },
  "array technologies": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NGM",
   "isin": "US04271T1007",
   "manual": null,
   "name": "Array Technologies Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "ARRY",
+  "type": "EQUITY",
+  "yahooName": "Array Technologies, Inc."
  },
  "asm international": {
   "checkedAt": "2026-10-09",
@@ -1030,6 +1090,7 @@
   "yahooName": "AT&T Inc."
  },
  "autodesk": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US0527691069",
   "manual": null,
@@ -1040,6 +1101,7 @@
   "yahooName": "Autodesk, Inc."
  },
  "autozone": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US0533321024",
   "manual": null,
@@ -1061,6 +1123,7 @@
   "yahooName": "Avio S.p.A."
  },
  "avio s p a": {
+  "checkedAt": "2026-10-15",
   "exchange": "MIL",
   "isin": "IT0005119810",
   "manual": null,
@@ -1214,10 +1277,15 @@
   "yahooName": "Banca Mediolanum S.p.A."
  },
  "banca monte dei paschi di sien": {
+  "checkedAt": "2026-10-15",
+  "exchange": "CXE",
   "isin": null,
   "manual": null,
   "name": "Banca Monte dei Paschi di Sien",
-  "ticker": null
+  "score": 0.984,
+  "ticker": "BMPSM.XC",
+  "type": "EQUITY",
+  "yahooName": "Banca Monte dei Paschi di Siena S.p.A."
  },
  "banca monte dei paschi di siena": {
   "checkedAt": "2026-10-09",
@@ -1275,20 +1343,26 @@
   "yahooName": "Banca Monte dei Paschi di Siena S.p.A."
  },
  "banca popolare dell emilia romagna": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "MIL",
   "isin": "IT0000066123",
   "manual": null,
   "name": "Banca Popolare dell'Emilia Romagna",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.227,
+  "ticker": "BPE.MI",
+  "type": "EQUITY",
+  "yahooName": "BPER Banca SpA"
  },
  "banco bilbao vizcaya argentari": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": null,
   "manual": null,
   "name": "Banco Bilbao Vizcaya Argentari",
-  "ticker": null
+  "score": 0.984,
+  "ticker": "BBVA",
+  "type": "EQUITY",
+  "yahooName": "Banco Bilbao Vizcaya Argentaria, S.A."
  },
  "banco bilbao vizcaya argentaria": {
   "checkedAt": "2026-10-15",
@@ -1324,6 +1398,7 @@
   "yahooName": "Banco BPM S.p.A."
  },
  "banco bpm s p a": {
+  "checkedAt": "2026-10-15",
   "exchange": "MIL",
   "isin": "IT0005218380",
   "manual": null,
@@ -1334,6 +1409,7 @@
   "yahooName": "Banco BPM S.p.A."
  },
  "banco bradesco": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US0594603039",
   "manual": null,
@@ -1586,6 +1662,7 @@
   "yahooName": "Best Buy Co., Inc."
  },
  "beyond meat": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US08862E3071",
   "manual": null,
@@ -1596,6 +1673,7 @@
   "yahooName": "Beyond Meat, Inc."
  },
  "bff bank s p a": {
+  "checkedAt": "2026-10-15",
   "exchange": "MIL",
   "isin": "IT0005244402",
   "manual": null,
@@ -1628,26 +1706,29 @@
   "yahooName": "Biogen Inc."
  },
  "biontech": {
-  "exchange": "NMS",
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
   "isin": "US09075V1026",
   "manual": null,
   "name": "BioNTech SE",
   "score": 1.0,
-  "ticker": "BNTX",
+  "ticker": "22UA.DE",
   "type": "EQUITY",
   "yahooName": "BioNTech SE"
  },
  "birkenstock": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "JE00BS44BN30",
   "manual": null,
   "name": "Birkenstock Holdings PLC",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 1.0,
+  "ticker": "BIRK",
+  "type": "EQUITY",
+  "yahooName": "Birkenstock Holding plc"
  },
  "bitmine immersion technologies": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US09175A2069",
   "manual": null,
@@ -2263,10 +2344,15 @@
   "yahooName": "Brunello Cucinelli S.p.A."
  },
  "bt": {
+  "checkedAt": "2026-10-15",
+  "exchange": "LSE",
   "isin": "GB0030913577",
   "manual": null,
   "name": "BT Group PLC",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "BT-A.L",
+  "type": "EQUITY",
+  "yahooName": "BT Group plc"
  },
  "btps 0 95 06 01 32": {
   "checkedAt": "2026-10-09",
@@ -2313,14 +2399,15 @@
   "yahooName": null
  },
  "budweiser brewing apac": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "HKG",
   "isin": "KYG1674K1013",
   "manual": null,
   "name": "Budweiser Brewing Company APAC Ltd",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 1.0,
+  "ticker": "1876.HK",
+  "type": "EQUITY",
+  "yahooName": "Budweiser Brewing Company APAC Limited"
  },
  "burberry": {
   "checkedAt": "2026-10-09",
@@ -2356,14 +2443,15 @@
   "yahooName": "Buzzi S.p.A."
  },
  "buzzi unicem": {
-  "exchange": "MUN",
+  "checkedAt": "2026-10-15",
+  "exchange": "MIL",
   "isin": "IT0001347308",
   "manual": null,
   "name": "Buzzi Unicem SpA",
-  "score": 1.0,
-  "ticker": "UCM.MU",
+  "score": 0.8,
+  "ticker": "BZU.MI",
   "type": "EQUITY",
-  "yahooName": "Buzzi Unicem SpA"
+  "yahooName": "Buzzi S.p.A."
  },
  "byd": {
   "checkedAt": "2026-10-09",
@@ -2438,10 +2526,15 @@
   "yahooName": "Capri Holdings Limited"
  },
  "carlsberg a s": {
+  "checkedAt": "2026-10-15",
+  "exchange": "CPH",
   "isin": "DK0010181759",
   "manual": null,
   "name": "Carlsberg A/S",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "CARL-B.CO",
+  "type": "EQUITY",
+  "yahooName": "Carlsberg A/S"
  },
  "carlsberg b": {
   "checkedAt": "2026-10-15",
@@ -2510,12 +2603,18 @@
   "yahooName": "Centene Corporation"
  },
  "cerebras systems": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US15675D1037",
   "manual": null,
   "name": "Cerebras Systems Inc",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "CBRS",
+  "type": "EQUITY",
+  "yahooName": "Cerebras Systems Inc."
  },
  "charles schwab": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US8085131055",
   "manual": null,
@@ -2526,6 +2625,7 @@
   "yahooName": "The Charles Schwab Corporation"
  },
  "charter communications": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US16119P1084",
   "manual": null,
@@ -2547,10 +2647,15 @@
   "yahooName": "Chevron Corporation"
  },
  "chocoladefabriken lindt spruengli": {
+  "checkedAt": "2026-10-15",
+  "exchange": "MUN",
   "isin": null,
   "manual": null,
   "name": "Chocoladefabriken Lindt & Spruengli",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "LSPN.MU",
+  "type": "EQUITY",
+  "yahooName": "Chocoladefabriken Lindt & Spruengli AG"
  },
  "chugai pharmaceutical": {
   "checkedAt": "2026-10-09",
@@ -2608,6 +2713,7 @@
   "yahooName": "The Cigna Group"
  },
  "circle internet": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US1725731079",
   "manual": null,
@@ -2640,10 +2746,15 @@
   "yahooName": "Citigroup Inc."
  },
  "cleanspark": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NCM",
   "isin": "US18452B2097",
   "manual": null,
   "name": "Cleanspark Inc",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "CLSK",
+  "type": "EQUITY",
+  "yahooName": "CleanSpark, Inc."
  },
  "cloudflare": {
   "checkedAt": "2026-10-09",
@@ -2657,10 +2768,15 @@
   "yahooName": "Cloudflare, Inc."
  },
  "cme": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US12572Q1058",
   "manual": null,
   "name": "CME Group Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "CME",
+  "type": "EQUITY",
+  "yahooName": "CME Group Inc."
  },
  "cnh industrial": {
   "checkedAt": "2026-10-09",
@@ -2674,6 +2790,7 @@
   "yahooName": "CNH Industrial N.V."
  },
  "cnh industrial n v": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "NL0010545661",
   "manual": null,
@@ -2695,10 +2812,15 @@
   "yahooName": "The Coca-Cola Company"
  },
  "coeur dalene mines": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US1921085049",
   "manual": null,
   "name": "Coeur dAlene Mines Corp",
-  "ticker": null
+  "score": 0.6,
+  "ticker": "CDE",
+  "type": "EQUITY",
+  "yahooName": "Coeur Mining, Inc."
  },
  "coherent": {
   "checkedAt": "2026-10-09",
@@ -2723,6 +2845,7 @@
   "yahooName": "Coinbase Global, Inc."
  },
  "coinbase global": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US19260Q1076",
   "manual": null,
@@ -2865,6 +2988,7 @@
   "yahooName": "Continental Aktiengesellschaft"
  },
  "continental aumovio basket": {
+  "checkedAt": "2026-10-15",
   "exchange": null,
   "isin": "DE000A4APUF5",
   "manual": null,
@@ -2897,10 +3021,15 @@
   "yahooName": "Corning Incorporated"
  },
  "costco wholesale": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US22160K1051",
   "manual": null,
   "name": "Costco Wholesale Corp.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "COST",
+  "type": "EQUITY",
+  "yahooName": "Costco Wholesale Corporation"
  },
  "credit agricole": {
   "checkedAt": "2026-10-09",
@@ -2958,10 +3087,15 @@
   "yahooName": null
  },
  "credo technology": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "KYG254571055",
   "manual": null,
   "name": "Credo Technology Group Holding Limited",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "CRDO",
+  "type": "EQUITY",
+  "yahooName": "Credo Technology Group Holding Ltd"
  },
  "crispr therapeutics": {
   "checkedAt": "2026-10-09",
@@ -3063,6 +3197,7 @@
   "yahooName": null
  },
  "cvs health": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US1266501006",
   "manual": null,
@@ -3106,6 +3241,7 @@
   "yahooName": null
  },
  "daimler truck": {
+  "checkedAt": "2026-10-15",
   "exchange": "GER",
   "isin": "DE000DTR0CK8",
   "manual": null,
@@ -3116,10 +3252,15 @@
   "yahooName": "Daimler Truck Holding AG"
  },
  "danone": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0000120644",
   "manual": null,
   "name": "Danone SA",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "BN.PA",
+  "type": "EQUITY",
+  "yahooName": "Danone S.A."
  },
  "danone s a": {
   "checkedAt": "2026-10-09",
@@ -3166,10 +3307,15 @@
   "yahooName": "Dassault Systèmes SE"
  },
  "dassault systemes s a": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0014003TT8",
   "manual": null,
   "name": "Dassault Systèmes S.A.",
-  "ticker": null
+  "score": 0.895,
+  "ticker": "DSY.PA",
+  "type": "EQUITY",
+  "yahooName": "Dassault Systèmes SE"
  },
  "davide campari milano": {
   "checkedAt": "2026-10-09",
@@ -3183,6 +3329,7 @@
   "yahooName": "Davide Campari-Milano N.V."
  },
  "davide campari milano n v": {
+  "checkedAt": "2026-10-15",
   "exchange": "MIL",
   "isin": "NL0015435975",
   "manual": null,
@@ -3199,10 +3346,15 @@
   "ticker": null
  },
  "dax eur index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "DAX EUR INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "dax index": {
   "isin": null,
@@ -3222,6 +3374,7 @@
   "yahooName": "Deere & Company"
  },
  "delivery hero": {
+  "checkedAt": "2026-10-15",
   "exchange": "GER",
   "isin": "DE000A2E4K43",
   "manual": null,
@@ -3441,10 +3594,15 @@
   "yahooName": null
  },
  "dollar general": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US2566771059",
   "manual": null,
   "name": "Dollar General Corp.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "DG",
+  "type": "EQUITY",
+  "yahooName": "Dollar General Corporation"
  },
  "dominion energy": {
   "checkedAt": "2026-10-09",
@@ -3458,14 +3616,15 @@
   "yahooName": "Dominion Energy, Inc."
  },
  "dominion ressources va": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US25746U1097",
   "manual": null,
   "name": "Dominion Ressources Inc./VA",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.541,
+  "ticker": "D",
+  "type": "EQUITY",
+  "yahooName": "Dominion Energy, Inc."
  },
  "dow jones industrial average": {
   "isin": null,
@@ -3485,6 +3644,7 @@
   "yahooName": null
  },
  "dr ing h c f porsche": {
+  "checkedAt": "2026-10-15",
   "exchange": "GER",
   "isin": "DE000PAG9113",
   "manual": null,
@@ -3682,10 +3842,15 @@
   "yahooName": "Enel SpA"
  },
  "energy fuels": {
+  "checkedAt": "2026-10-15",
+  "exchange": "ASE",
   "isin": "CA2926717083",
   "manual": null,
   "name": "Energy Fuels Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "UUUU",
+  "type": "EQUITY",
+  "yahooName": "Energy Fuels Inc."
  },
  "energy select sector spdr etf": {
   "checkedAt": "2026-10-09",
@@ -3754,6 +3919,7 @@
   "yahooName": "Enphase Energy, Inc."
  },
  "eos energy enterprises": {
+  "checkedAt": "2026-10-15",
   "exchange": "NCM",
   "isin": "US29415C1018",
   "manual": null,
@@ -3764,6 +3930,7 @@
   "yahooName": "Eos Energy Enterprises, Inc."
  },
  "eqt": {
+  "checkedAt": "2026-10-15",
   "exchange": "STO",
   "isin": "SE0012853455",
   "manual": null,
@@ -4280,10 +4447,15 @@
   "yahooName": null
  },
  "euro istoxx megatrends select 30 nr decrement 3 index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "EURO ISTOXX MEGATRENDS SELECT 30 NR DECREMENT 3% INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "euro istoxx responsibility screened select 30 index": {
   "checkedAt": "2026-10-09",
@@ -4364,6 +4536,7 @@
   "yahooName": null
  },
  "euro stoxx automobiles parts index": {
+  "checkedAt": "2026-10-15",
   "exchange": null,
   "isin": "EU0009658301",
   "manual": null,
@@ -4408,6 +4581,7 @@
   "yahooName": null
  },
  "euro stoxx basic resources index": {
+  "checkedAt": "2026-10-15",
   "exchange": null,
   "isin": "EU0009658244",
   "manual": null,
@@ -4418,10 +4592,15 @@
   "yahooName": null
  },
  "euro stoxx esg leaders 50 index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "EURO STOXX ESG LEADERS 50 INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "euro stoxx esg x select dividend 30 price eur": {
   "checkedAt": "2026-10-15",
@@ -4610,6 +4789,17 @@
   "type": null,
   "yahooName": null
  },
+ "euronext transatlantic select 40 climate resilient vol target decrement 0 5": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Euronext Transatlantic Select 40 Climate Resilient Vol Target Decrement 0.5%",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "european biotech index": {
   "checkedAt": "2026-10-09",
   "exchange": "STU",
@@ -4710,10 +4900,15 @@
   "yahooName": null
  },
  "eurozone hicp ex tobacco unrevised": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "EUROZONE HICP EX TOBACCO UNREVISED",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "excess return": {
   "checkedAt": "2026-10-15",
@@ -4793,6 +4988,7 @@
   "yahooName": "ExxonMobil Holdings Corporation"
  },
  "fair isaac": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US3032501047",
   "manual": null,
@@ -4836,12 +5032,13 @@
   "yahooName": "Ferrari N.V."
  },
  "ferrari n v": {
-  "exchange": "NYQ",
+  "checkedAt": "2026-10-15",
+  "exchange": "MIL",
   "isin": "NL0011585146",
   "manual": null,
   "name": "Ferrari N.V.",
   "score": 1.0,
-  "ticker": "RACE",
+  "ticker": "RACE.MI",
   "type": "EQUITY",
   "yahooName": "Ferrari N.V."
  },
@@ -4874,6 +5071,7 @@
   "yahooName": "Fincantieri S.p.A."
  },
  "fincantieri s p a": {
+  "checkedAt": "2026-10-15",
   "exchange": "MIL",
   "isin": "IT0005599938",
   "manual": null,
@@ -4917,14 +5115,15 @@
   "yahooName": "FinecoBank Banca Fineco S.p.A."
  },
  "finecobank s p a": {
-  "exchange": "STU",
+  "checkedAt": "2026-10-15",
+  "exchange": "MIL",
   "isin": "IT0000072170",
   "manual": null,
   "name": "FinecoBank S.p.A.",
-  "score": 1.0,
-  "ticker": "ZS3.SG",
+  "score": 0.8,
+  "ticker": "FBK.MI",
   "type": "EQUITY",
-  "yahooName": "FinecoBank SpA"
+  "yahooName": "FinecoBank Banca Fineco S.p.A."
  },
  "first majestic silver": {
   "checkedAt": "2026-10-09",
@@ -4949,6 +5148,7 @@
   "yahooName": "First Solar, Inc."
  },
  "first trust cloud computing etf": {
+  "checkedAt": "2026-10-15",
   "exchange": "NGM",
   "isin": "US33734X1928",
   "manual": null,
@@ -4959,6 +5159,7 @@
   "yahooName": "First Trust Cloud Computing ETF"
  },
  "fiserv": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US3377381088",
   "manual": null,
@@ -5035,10 +5236,15 @@
   "yahooName": "Fortum Oyj"
  },
  "forvia": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0000121147",
   "manual": null,
   "name": "Forvia SE",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "FRVIA.PA",
+  "type": "EQUITY",
+  "yahooName": "Forvia SE"
  },
  "framont global total return index": {
   "checkedAt": "2026-10-09",
@@ -5130,10 +5336,15 @@
   "ticker": null
  },
  "ftse mib idx": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": "GB00BNNLHW18",
   "manual": null,
   "name": "FTSE MIB IDX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "ftse mib index": {
   "isin": "GB00BNNLHW18",
@@ -5153,6 +5364,7 @@
   "yahooName": "Galderma Group AG"
  },
  "gamestop": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US36467W1099",
   "manual": null,
@@ -5163,6 +5375,7 @@
   "yahooName": "GameStop Corp."
  },
  "gap": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US3647601083",
   "manual": null,
@@ -5217,6 +5430,7 @@
   "yahooName": null
  },
  "general mills": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US3703341046",
   "manual": null,
@@ -5271,10 +5485,15 @@
   "yahooName": "Gilead Sciences, Inc."
  },
  "givaudan": {
+  "checkedAt": "2026-10-15",
+  "exchange": "EBS",
   "isin": null,
   "manual": null,
   "name": "Givaudan SA",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "GIVN.SW",
+  "type": "EQUITY",
+  "yahooName": "Givaudan SA"
  },
  "glaxosmithkline nwe": {
   "checkedAt": "2026-10-15",
@@ -5332,6 +5551,7 @@
   "yahooName": null
  },
  "global x artificial intelligence technology etf": {
+  "checkedAt": "2026-10-15",
   "exchange": "NGM",
   "isin": "US37954Y6326",
   "manual": null,
@@ -5441,16 +5661,26 @@
   "yahooName": "The Goodyear Tire & Rubber Company"
  },
  "gopro": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US38268T1034",
   "manual": null,
   "name": "GoPro Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "GPRO",
+  "type": "EQUITY",
+  "yahooName": "GoPro, Inc."
  },
  "gsk": {
+  "checkedAt": "2026-10-15",
+  "exchange": "LSE",
   "isin": "GB00BN7SWP63",
   "manual": null,
   "name": "GSK PLC",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "GSK.L",
+  "type": "EQUITY",
+  "yahooName": "GSK plc"
  },
  "halliburton": {
   "checkedAt": "2026-10-09",
@@ -5492,14 +5722,15 @@
   "yahooName": "Hang Seng TECH Index"
  },
  "hapag lloyd": {
-  "exchange": "DUS",
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
   "isin": "DE000HLAG475",
   "manual": null,
   "name": "Hapag-Lloyd AG",
-  "score": 1.0,
-  "ticker": "HLAG.DU",
+  "score": 0.917,
+  "ticker": "HLAG.DE",
   "type": "EQUITY",
-  "yahooName": "Hapag-Lloyd AG"
+  "yahooName": "Hapag-Lloyd Aktiengesellschaft"
  },
  "harley davidson": {
   "checkedAt": "2026-10-09",
@@ -5524,10 +5755,15 @@
   "yahooName": "Harmony Gold Mining Company Limited"
  },
  "hecla mining": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US4227041062",
   "manual": null,
   "name": "Hecla Mining Co",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "HL",
+  "type": "EQUITY",
+  "yahooName": "Hecla Mining Company"
  },
  "heidelberg materials": {
   "checkedAt": "2026-10-15",
@@ -5562,15 +5798,27 @@
   "type": "EQUITY",
   "yahooName": "HelloFresh SE"
  },
+ "henkel": {
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
+  "isin": null,
+  "manual": null,
+  "name": "Henkel AG & Co KGaA",
+  "score": 1.0,
+  "ticker": "HEN3.DE",
+  "type": "EQUITY",
+  "yahooName": "Henkel AG & Co. KGaA"
+ },
  "hennes mauritz": {
-  "exchange": "HAM",
+  "checkedAt": "2026-10-15",
+  "exchange": "STO",
   "isin": "SE0000106270",
   "manual": null,
   "name": "Hennes & Mauritz AB",
-  "score": 1.0,
-  "ticker": "HMSB.HM",
+  "score": 0.875,
+  "ticker": "HM-B.ST",
   "type": "EQUITY",
-  "yahooName": "Hennes & Mauritz AB"
+  "yahooName": "H & M Hennes & Mauritz AB (publ)"
  },
  "hensoldt": {
   "checkedAt": "2026-10-09",
@@ -5617,10 +5865,15 @@
   "yahooName": "Hermès International Société en commandite par actions"
  },
  "hertz global": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US42806J7000",
   "manual": null,
   "name": "Hertz Global Holdings Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "HTZ",
+  "type": "EQUITY",
+  "yahooName": "Hertz Global Holdings, Inc."
  },
  "hitachi": {
   "checkedAt": "2026-10-15",
@@ -5656,14 +5909,26 @@
   "yahooName": "Honeywell International Inc."
  },
  "horizon robotics": {
-  "exchange": "STU",
+  "checkedAt": "2026-10-15",
+  "exchange": "HKG",
   "isin": "KYG4602S1057",
   "manual": null,
   "name": "Horizon Robotics Inc.",
   "score": 1.0,
-  "ticker": "8YO.SG",
+  "ticker": "9660.HK",
   "type": "EQUITY",
   "yahooName": "Horizon Robotics"
+ },
+ "howmet aerospace": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
+  "isin": null,
+  "manual": null,
+  "name": "Howmet Aerospace Inc",
+  "score": 1.0,
+  "ticker": "HWM",
+  "type": "EQUITY",
+  "yahooName": "Howmet Aerospace Inc."
  },
  "hp dell meta": {
   "checkedAt": "2026-10-15",
@@ -5710,10 +5975,15 @@
   "yahooName": "Hang Seng TECH Index"
  },
  "hubspot": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": null,
   "manual": null,
   "name": "HubSpot Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "HUBS",
+  "type": "EQUITY",
+  "yahooName": "HubSpot, Inc."
  },
  "hugo boss": {
   "checkedAt": "2026-10-09",
@@ -5727,6 +5997,7 @@
   "yahooName": "Hugo Boss AG"
  },
  "humana": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US4448591028",
   "manual": null,
@@ -5798,10 +6069,15 @@
   "yahooName": "International Business Machines Corporation"
  },
  "ihi": {
+  "checkedAt": "2026-10-15",
+  "exchange": "JPX",
   "isin": "JP3134800006",
   "manual": null,
   "name": "IHI Corp.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "7013.T",
+  "type": "EQUITY",
+  "yahooName": "IHI Corporation"
  },
  "iliad": {
   "checkedAt": "2026-10-15",
@@ -5859,6 +6135,7 @@
   "yahooName": "Industria De Diseno Textil SA"
  },
  "industrie nora s p a": {
+  "checkedAt": "2026-10-15",
   "exchange": "MIL",
   "isin": "IT0005186371",
   "manual": null,
@@ -5935,6 +6212,7 @@
   "yahooName": "Intel Corporation"
  },
  "interactive brokers": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US45841N1072",
   "manual": null,
@@ -5978,10 +6256,15 @@
   "yahooName": "International Business Machines Corporation"
  },
  "international flavors fragra": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": null,
   "manual": null,
   "name": "International Flavors & Fragra",
-  "ticker": null
+  "score": 0.982,
+  "ticker": "IFF",
+  "type": "EQUITY",
+  "yahooName": "International Flavors & Fragrances Inc."
  },
  "intesa sanpaolo": {
   "checkedAt": "2026-10-09",
@@ -6083,10 +6366,15 @@
   "yahooName": "Invesco S&P 500 Equal Weight ETF"
  },
  "invesco solar etf": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": "US46138G7060",
   "manual": null,
   "name": "Invesco Solar ETF",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "TAN",
+  "type": "ETF",
+  "yahooName": "Invesco Solar ETF"
  },
  "invesco solar etf ishares global clean energy etf": {
   "checkedAt": "2026-10-09",
@@ -6111,10 +6399,15 @@
   "yahooName": "IonQ, Inc."
  },
  "iqiyi": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US46267X1081",
   "manual": null,
   "name": "iQIYI Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "IQ",
+  "type": "EQUITY",
+  "yahooName": "iQIYI, Inc."
  },
  "ishares 20 year treasury bond etf": {
   "checkedAt": "2026-10-09",
@@ -6139,28 +6432,48 @@
   "yahooName": "iShares Bitcoin Trust ETF"
  },
  "ishares china": {
+  "checkedAt": "2026-10-15",
+  "exchange": "HKG",
   "isin": null,
   "manual": null,
   "name": "iShares China",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "2801.HK",
+  "type": "ETF",
+  "yahooName": "iShares Asia Trust - iShares Core MSCI China Index ETF"
  },
  "ishares china large cap etf": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": null,
   "manual": null,
   "name": "iShares China Large-Cap ETF",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "FXI",
+  "type": "ETF",
+  "yahooName": "iShares China Large-Cap ETF"
  },
  "ishares china large cap etf 600 utilities pri": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "iShares China Large-Cap ETF 600 Utilities Pri",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "ishares china large cap etf select dividend 30": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "iShares China Large-Cap ETF Select Dividend 30",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "ishares china large cap ucits etf": {
   "checkedAt": "2026-10-09",
@@ -6174,10 +6487,26 @@
   "yahooName": "iShares China Large-Cap ETF"
  },
  "ishares global clean energy etf": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NGM",
   "isin": "US4642882249",
   "manual": null,
   "name": "iShares Global Clean Energy ETF",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "ICLN",
+  "type": "ETF",
+  "yahooName": "iShares Global Clean Energy ETF"
+ },
+ "ishares msci brazil": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
+  "isin": null,
+  "manual": null,
+  "name": "iShares MSCI Brazil",
+  "score": 0.905,
+  "ticker": "EWZ",
+  "type": "ETF",
+  "yahooName": "iShares MSCI Brazil ETF"
  },
  "ishares msci brazil etf": {
   "checkedAt": "2026-10-09",
@@ -6224,10 +6553,15 @@
   "yahooName": "iShares MSCI Emerging Markets ETF"
  },
  "ishares msci emerging markets index fund": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": "US4642872349",
   "manual": null,
   "name": "iShares MSCI Emerging Markets Index Fund",
-  "ticker": null
+  "score": 0.877,
+  "ticker": "EEM",
+  "type": "ETF",
+  "yahooName": "iShares MSCI Emerging Markets ETF"
  },
  "ishares msci india etf": {
   "checkedAt": "2026-10-09",
@@ -6263,10 +6597,15 @@
   "yahooName": "iShares MSCI Japan ETF"
  },
  "ishares msci japan index fund": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": "US46434G8226",
   "manual": null,
   "name": "iShares MSCI Japan Index Fund",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "EWJ",
+  "type": "ETF",
+  "yahooName": "iShares MSCI Japan ETF"
  },
  "ishares msci mexico etf": {
   "checkedAt": "2026-10-09",
@@ -6278,6 +6617,17 @@
   "ticker": "EWW",
   "type": "ETF",
   "yahooName": "iShares MSCI Mexico ETF"
+ },
+ "ishares msci south korea": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
+  "isin": null,
+  "manual": null,
+  "name": "iShares MSCI South Korea",
+  "score": 0.923,
+  "ticker": "EWY",
+  "type": "ETF",
+  "yahooName": "iShares MSCI South Korea ETF"
  },
  "ishares msci south korea etf": {
   "checkedAt": "2026-10-09",
@@ -6302,14 +6652,15 @@
   "yahooName": "iShares MSCI South Korea ETF"
  },
  "ishares msci south korea index fund": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": "US4642867729",
   "manual": null,
   "name": "iShares MSCI South Korea Index Fund",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.857,
+  "ticker": "EWY",
+  "type": "ETF",
+  "yahooName": "iShares MSCI South Korea ETF"
  },
  "ishares msci taiwan index etf": {
   "checkedAt": "2026-10-09",
@@ -6323,16 +6674,18 @@
   "yahooName": "iShares MSCI Taiwan ETF"
  },
  "ishares msci taiwan index fund": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": "US46434G7723",
   "manual": null,
   "name": "iShares MSCI Taiwan Index Fund",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.83,
+  "ticker": "EWT",
+  "type": "ETF",
+  "yahooName": "iShares MSCI Taiwan ETF"
  },
  "ishares silver trust": {
+  "checkedAt": "2026-10-15",
   "exchange": "PCX",
   "isin": "US46428Q1094",
   "manual": null,
@@ -12371,10 +12724,15 @@
   "yahooName": "Julius Bär Gruppe AG"
  },
  "k s": {
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
   "isin": "DE000KSAG888",
   "manual": null,
   "name": "K+S AG",
-  "ticker": null
+  "score": 0.8,
+  "ticker": "SDF.DE",
+  "type": "EQUITY",
+  "yahooName": "K+S Aktiengesellschaft"
  },
  "kering": {
   "checkedAt": "2026-10-09",
@@ -12432,6 +12790,7 @@
   "yahooName": "KLA Corporation"
  },
  "klarna": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "GB00BMHVL512",
   "manual": null,
@@ -12442,12 +12801,13 @@
   "yahooName": "Klarna Group plc"
  },
  "koninklijke philips n v": {
-  "exchange": "NYQ",
+  "checkedAt": "2026-10-15",
+  "exchange": "AMS",
   "isin": "NL0000009538",
   "manual": null,
   "name": "Koninklijke Philips N.V.",
   "score": 1.0,
-  "ticker": "PHG",
+  "ticker": "PHIA.AS",
   "type": "EQUITY",
   "yahooName": "Koninklijke Philips N.V."
  },
@@ -12474,10 +12834,15 @@
   "yahooName": "KOSPI 200 Index"
  },
  "kraft": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": null,
   "manual": null,
   "name": "The Kraft",
-  "ticker": null
+  "score": 0.8,
+  "ticker": "KHC",
+  "type": "EQUITY",
+  "yahooName": "The Kraft Heinz Company"
  },
  "kraft heinz": {
   "checkedAt": "2026-10-09",
@@ -12579,6 +12944,7 @@
   "yahooName": null
  },
  "kuehne nagel international": {
+  "checkedAt": "2026-10-15",
   "exchange": "EBS",
   "isin": "CH0025238863",
   "manual": null,
@@ -12600,10 +12966,15 @@
   "yahooName": "L'Oréal S.A."
  },
  "l oreal american tobacco": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "L'Oreal SA American Tobacco PLC",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "l oreal s a": {
   "checkedAt": "2026-10-09",
@@ -12639,16 +13010,26 @@
   "yahooName": null
  },
  "legal general": {
+  "checkedAt": "2026-10-15",
+  "exchange": "LSE",
   "isin": "GB0005603997",
   "manual": null,
   "name": "Legal & General Group PLC",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "LGEN.L",
+  "type": "EQUITY",
+  "yahooName": "Legal & General Group Plc"
  },
  "legrand": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0010307819",
   "manual": null,
   "name": "Legrand SA",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "LR.PA",
+  "type": "EQUITY",
+  "yahooName": "Legrand SA"
  },
  "lenovo": {
   "checkedAt": "2026-10-15",
@@ -13311,6 +13692,7 @@
   "yahooName": "Levi Strauss & Co."
  },
  "li auto": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US50202M1027",
   "manual": null,
@@ -13321,6 +13703,7 @@
   "yahooName": "Li Auto Inc."
  },
  "li ning": {
+  "checkedAt": "2026-10-15",
   "exchange": "HKG",
   "isin": "KYG5496K1242",
   "manual": null,
@@ -13375,10 +13758,15 @@
   "yahooName": null
  },
  "lucid": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US5494982029",
   "manual": null,
   "name": "Lucid Group Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "LCID",
+  "type": "EQUITY",
+  "yahooName": "Lucid Group, Inc."
  },
  "lufthansa": {
   "checkedAt": "2026-10-09",
@@ -13436,10 +13824,15 @@
   "yahooName": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne"
  },
  "lvmh moet hennessy louis vuitt": {
+  "checkedAt": "2026-10-15",
+  "exchange": "HAM",
   "isin": null,
   "manual": null,
   "name": "LVMH Moet Hennessy Louis Vuitt",
-  "ticker": null
+  "score": 0.968,
+  "ticker": "MOH.HM",
+  "type": "EQUITY",
+  "yahooName": "LVMH Moet Hennessy Louis Vuitton SE"
  },
  "lvmh moet hennessy louis vuitton": {
   "checkedAt": "2026-10-09",
@@ -13453,6 +13846,7 @@
   "yahooName": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne"
  },
  "lyft": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US55087P1049",
   "manual": null,
@@ -13463,12 +13857,18 @@
   "yahooName": "Lyft, Inc."
  },
  "maire tecnimont": {
+  "checkedAt": "2026-10-15",
+  "exchange": "MIL",
   "isin": "IT0004931058",
   "manual": null,
   "name": "Maire Tecnimont SpA",
-  "ticker": null
+  "score": 0.8,
+  "ticker": "MAIRE.MI",
+  "type": "EQUITY",
+  "yahooName": "Maire S.p.A."
  },
  "mara": {
+  "checkedAt": "2026-10-15",
   "exchange": "NCM",
   "isin": "US5657881067",
   "manual": null,
@@ -13589,6 +13989,7 @@
   "yahooName": "Mediobanca Banca di Credito Finanziario S.p.A."
  },
  "meituan": {
+  "checkedAt": "2026-10-15",
   "exchange": "HKG",
   "isin": "KYG596691041",
   "manual": null,
@@ -13599,16 +14000,26 @@
   "yahooName": "Meituan"
  },
  "mercadolibre": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US58733R1023",
   "manual": null,
   "name": "MercadoLibre Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "MELI",
+  "type": "EQUITY",
+  "yahooName": "MercadoLibre, Inc."
  },
  "mercedes": {
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
   "isin": null,
   "manual": null,
   "name": "Mercedes-",
-  "ticker": null
+  "score": 0.8,
+  "ticker": "MBG.DE",
+  "type": "EQUITY",
+  "yahooName": "Mercedes-Benz Group AG"
  },
  "mercedes benz": {
   "checkedAt": "2026-10-09",
@@ -13743,6 +14154,7 @@
   "yahooName": "Mitsubishi UFJ Financial Group, Inc."
  },
  "mobileye global": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US60741F1049",
   "manual": null,
@@ -13764,6 +14176,7 @@
   "yahooName": "Moderna, Inc."
  },
  "molina healthcare": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US60855R1005",
   "manual": null,
@@ -13884,10 +14297,15 @@
   "yahooName": "MP Materials Corp."
  },
  "msci acwi investable market innovation quality sustainable 100 select 10 risk control 3 decrement index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "MSCI ACWI INVESTABLE MARKET INNOVATION QUALITY SUSTAINABLE 100 SELECT 10% RISK CONTROL 3% DECREMENT INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "msci daily ntr world eur": {
   "checkedAt": "2026-10-15",
@@ -13912,10 +14330,15 @@
   "yahooName": "iShares MSCI Emerging Markets ETF"
  },
  "msci emerging markets 9 risk control 2 decrement": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "MSCI EMERGING MARKETS 9% RISK CONTROL 2% DECREMENT",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "msci emerging markets index": {
   "checkedAt": "2026-10-09",
@@ -14204,10 +14627,15 @@
   "yahooName": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München"
  },
  "munchener ruckversicherungs": {
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
   "isin": "DE0008430026",
   "manual": null,
   "name": "Münchener Rückversicherungs AG",
-  "ticker": null
+  "score": 0.8,
+  "ticker": "MUV2.DE",
+  "type": "EQUITY",
+  "yahooName": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München"
  },
  "munchener ruckversicherungs gesellschaft": {
   "checkedAt": "2026-10-09",
@@ -14288,12 +14716,18 @@
   "yahooName": "National Grid plc"
  },
  "natwest": {
+  "checkedAt": "2026-10-15",
+  "exchange": "LSE",
   "isin": "GB00BM8PJY71",
   "manual": null,
   "name": "NatWest Group plc",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "NWG.L",
+  "type": "EQUITY",
+  "yahooName": "NatWest Group plc"
  },
  "nebius n v": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "NL0009805522",
   "manual": null,
@@ -14431,6 +14865,7 @@
   "ticker": null
  },
  "nikkei 225 index": {
+  "checkedAt": "2026-10-15",
   "exchange": "HKG",
   "isin": "JP9010C00002",
   "manual": null,
@@ -14573,6 +15008,7 @@
   "yahooName": "Novartis AG"
  },
  "novavax": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US6700024010",
   "manual": null,
@@ -14594,10 +15030,15 @@
   "yahooName": "Novo Nordisk A/S"
  },
  "novo nordisk a": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": null,
   "manual": null,
   "name": "Novo Nordisk A",
-  "ticker": null
+  "score": 0.933,
+  "ticker": "NVO",
+  "type": "EQUITY",
+  "yahooName": "Novo Nordisk A/S"
  },
  "novo nordisk a s": {
   "checkedAt": "2026-10-15",
@@ -14611,10 +15052,15 @@
   "yahooName": "Novo Nordisk A/S"
  },
  "novo nordisk a s american tobacco": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "Novo Nordisk A/S American Tobacco PLC",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "novo nordisk a s b": {
   "checkedAt": "2026-10-09",
@@ -14672,6 +15118,7 @@
   "yahooName": "NXP Semiconductors N.V."
  },
  "o reilly automotive": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US67103H1077",
   "manual": null,
@@ -14715,14 +15162,15 @@
   "yahooName": "Oklo Inc."
  },
  "oklo registered": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US02156V1098",
   "manual": null,
   "name": "Oklo Inc Registered",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.8,
+  "ticker": "OKLO",
+  "type": "EQUITY",
+  "yahooName": "Oklo Inc."
  },
  "old mutual dublin funds equity absolute return fund": {
   "checkedAt": "2026-10-15",
@@ -14747,14 +15195,15 @@
   "yahooName": "OMX Stockholm 30 Index"
  },
  "on": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "CH1134540470",
   "manual": null,
   "name": "On Holding Ltd",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 1.0,
+  "ticker": "ONON",
+  "type": "EQUITY",
+  "yahooName": "On Holding AG"
  },
  "onemarkets fidelity world equity income fund c": {
   "checkedAt": "2026-10-09",
@@ -14801,6 +15250,7 @@
   "yahooName": "Orange S.A."
  },
  "orange s a": {
+  "checkedAt": "2026-10-15",
   "exchange": "PAR",
   "isin": "FR0000133308",
   "manual": null,
@@ -14899,6 +15349,7 @@
   "yahooName": "Panasonic Holdings Corporation"
  },
  "pandora a s": {
+  "checkedAt": "2026-10-15",
   "exchange": "CPH",
   "isin": "DK0060252690",
   "manual": null,
@@ -14931,20 +15382,26 @@
   "yahooName": "PayPal Holdings, Inc."
  },
  "pdd": {
-  "exchange": "NMS",
+  "checkedAt": "2026-10-15",
+  "exchange": "STU",
   "isin": "US7223041028",
   "manual": null,
   "name": "PDD Holdings Inc.",
   "score": 1.0,
-  "ticker": "PDD",
+  "ticker": "9PDA.SG",
   "type": "EQUITY",
-  "yahooName": "PDD Holdings Inc."
+  "yahooName": "Pinduoduo Inc"
  },
  "peloton interactive": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US70614W1009",
   "manual": null,
   "name": "Peloton Interactive Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "PTON",
+  "type": "EQUITY",
+  "yahooName": "Peloton Interactive, Inc."
  },
  "pepsico": {
   "checkedAt": "2026-10-09",
@@ -15002,10 +15459,15 @@
   "yahooName": "Pfizer Inc."
  },
  "philip morris international": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US7181721090",
   "manual": null,
   "name": "Philip Morris International",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "PM",
+  "type": "EQUITY",
+  "yahooName": "Philip Morris International Inc."
  },
  "philips": {
   "checkedAt": "2026-10-09",
@@ -15019,10 +15481,15 @@
   "yahooName": "Koninklijke Philips N.V."
  },
  "phillips 66": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US7185461040",
   "manual": null,
   "name": "Phillips 66 Company",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "PSX",
+  "type": "EQUITY",
+  "yahooName": "Phillips 66"
  },
  "pimco global investors income fund": {
   "checkedAt": "2026-10-09",
@@ -15201,6 +15668,7 @@
   "yahooName": "ProShares Ultra 20+ Year Treasury"
  },
  "prosiebensat 1 media": {
+  "checkedAt": "2026-10-15",
   "exchange": "GER",
   "isin": "DE000PSM7770",
   "manual": null,
@@ -15387,12 +15855,13 @@
   "yahooName": null
  },
  "randstad": {
-  "exchange": "VIE",
+  "checkedAt": "2026-10-15",
+  "exchange": "AMS",
   "isin": "NL0000379121",
   "manual": null,
   "name": "Randstad NV",
-  "score": 1.0,
-  "ticker": "RAND.VI",
+  "score": 0.8,
+  "ticker": "RAND.AS",
   "type": "EQUITY",
   "yahooName": "Randstad N.V."
  },
@@ -15441,12 +15910,13 @@
   "yahooName": null
  },
  "remy cointreau": {
-  "exchange": "IOB",
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0000130395",
   "manual": null,
   "name": "Remy Cointreau SA",
   "score": 1.0,
-  "ticker": "0MGU.IL",
+  "ticker": "RCO.PA",
   "type": "EQUITY",
   "yahooName": "Rémy Cointreau SA"
  },
@@ -15495,14 +15965,15 @@
   "yahooName": "Repsol, S.A."
  },
  "repsol ypf": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "MCE",
   "isin": "ES0173516115",
   "manual": null,
   "name": "Repsol YPF SA",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.7,
+  "ticker": "REP.MC",
+  "type": "EQUITY",
+  "yahooName": "Repsol, S.A."
  },
  "repsol ypf s a": {
   "checkedAt": "2026-10-09",
@@ -15582,6 +16053,7 @@
   "yahooName": "Rio Tinto Group"
  },
  "riot platforms": {
+  "checkedAt": "2026-10-15",
   "exchange": "NCM",
   "isin": "US7672921050",
   "manual": null,
@@ -15614,10 +16086,15 @@
   "yahooName": "Robinhood Markets, Inc."
  },
  "roblox": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US7710491033",
   "manual": null,
   "name": "Roblox Corporation",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "RBLX",
+  "type": "EQUITY",
+  "yahooName": "Roblox Corporation"
  },
  "roche": {
   "checkedAt": "2026-10-09",
@@ -15631,6 +16108,7 @@
   "yahooName": "Roche Holding AG"
  },
  "rocket lab": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US7731211089",
   "manual": null,
@@ -15652,10 +16130,15 @@
   "yahooName": "Rocket Lab Corporation"
  },
  "roku": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US77543R1023",
   "manual": null,
   "name": "Roku Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "ROKU",
+  "type": "EQUITY",
+  "yahooName": "Roku, Inc."
  },
  "rolls royce": {
   "checkedAt": "2026-10-09",
@@ -15702,10 +16185,15 @@
   "yahooName": "Ørsted A/S"
  },
  "rsted a s": {
+  "checkedAt": "2026-10-15",
+  "exchange": "CPH",
   "isin": "DK0060094928",
   "manual": null,
   "name": "Ørsted A/S",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "ORSTED.CO",
+  "type": "EQUITY",
+  "yahooName": "Ørsted A/S"
  },
  "rtx": {
   "checkedAt": "2026-10-15",
@@ -15792,10 +16280,15 @@
   "ticker": null
  },
  "s p 500 dynamic rebalancing risk control 10 ntr 2 decrement index tr": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "S&P 500 DYNAMIC REBALANCING RISK CONTROL 10% NTR 2% DECREMENT INDEX TR",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "s p 500 futures excess return index": {
   "checkedAt": "2026-10-15",
@@ -15859,6 +16352,7 @@
   "yahooName": null
  },
  "s p global": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US78409V1044",
   "manual": null,
@@ -15880,10 +16374,15 @@
   "yahooName": null
  },
  "s p gsci gold excess return": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "S&P GSCI GOLD EXCESS RETURN",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "s p gsci gold excess return index": {
   "checkedAt": "2026-10-15",
@@ -15897,10 +16396,15 @@
   "yahooName": null
  },
  "s p gsci industrial metals excess return": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "S&P GSCI INDUSTRIAL METALS EXCESS RETURN",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "s p nextgenerationeu recovery equity 5 decrement index ntr": {
   "checkedAt": "2026-10-15",
@@ -16101,16 +16605,18 @@
   "yahooName": "Sandisk Corporation"
  },
  "sandisk registered": {
-  "exchange": null,
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US80004C2008",
   "manual": null,
   "name": "SanDisk Corp Registered",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.8,
+  "ticker": "SNDK",
+  "type": "EQUITY",
+  "yahooName": "Sandisk Corporation"
  },
  "sandoz": {
+  "checkedAt": "2026-10-15",
   "exchange": "EBS",
   "isin": "CH1243598427",
   "manual": null,
@@ -16198,12 +16704,18 @@
   "yahooName": "SCOR SE"
  },
  "sea": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US81141R1005",
   "manual": null,
   "name": "Sea Ltd",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "SE",
+  "type": "EQUITY",
+  "yahooName": "Sea Limited"
  },
  "seagate technology": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "IE00BKVD2N49",
   "manual": null,
@@ -16225,6 +16737,7 @@
   "yahooName": "ServiceNow, Inc."
  },
  "shake shack": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US8190471016",
   "manual": null,
@@ -16268,6 +16781,7 @@
   "yahooName": "Shopify Inc."
  },
  "siegfried": {
+  "checkedAt": "2026-10-15",
   "exchange": "EBS",
   "isin": "CH1429326825",
   "manual": null,
@@ -16311,6 +16825,7 @@
   "yahooName": "SK hynix Inc."
  },
  "skechers u s a": {
+  "checkedAt": "2026-10-15",
   "exchange": null,
   "isin": "US8305661055",
   "manual": null,
@@ -16321,10 +16836,15 @@
   "yahooName": null
  },
  "skydance": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US69932A2042",
   "manual": null,
   "name": "Skydance Corp.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "SKYD",
+  "type": "EQUITY",
+  "yahooName": "Skydance Corporation"
  },
  "slb": {
   "checkedAt": "2026-10-09",
@@ -16421,16 +16941,26 @@
   "yahooName": "SoftBank Group Corp."
  },
  "solactive 5g 14 risk control 5 decrement net index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE 5G 14% RISK CONTROL 5% DECREMENT NET INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "solactive bioengineering 14 risk control 5 decrement net": {
+  "checkedAt": "2026-10-15",
+  "exchange": "STU",
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE BIOENGINEERING 14% RISK CONTROL 5% DECREMENT NET",
-  "ticker": null
+  "score": 0.949,
+  "ticker": "DE000SL0CGH2.SG",
+  "type": "INDEX",
+  "yahooName": "SOLACTIVE BIOENGINEERING 14% RISK CONTROL 5% DECREMENT NET (EUR) Index"
  },
  "solactive bric e commerce performance index": {
   "checkedAt": "2026-10-09",
@@ -16477,10 +17007,15 @@
   "yahooName": null
  },
  "solactive cloud computing 14 risk control 5 decrement net index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE CLOUD COMPUTING 14% RISK CONTROL 5% DECREMENT NET INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "solactive constant maturity eu nxg 10y 11am yield index": {
   "checkedAt": "2026-10-15",
@@ -16494,10 +17029,15 @@
   "yahooName": null
  },
  "solactive cyber security select 15 risk control 4 decrement net index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE CYBER SECURITY SELECT 15% RISK CONTROL 4% DECREMENT NET INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "solactive defensive funds 3 rc index": {
   "checkedAt": "2026-10-09",
@@ -16522,10 +17062,15 @@
   "yahooName": null
  },
  "solactive digital entertainment 14 risk control 5 decrement net index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE DIGITAL ENTERTAINMENT 14% RISK CONTROL 5% DECREMENT NET INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "solactive eastern europe 12 rc index": {
   "checkedAt": "2026-10-09",
@@ -16605,10 +17150,15 @@
   "yahooName": "Solactive Luxury 2021 Decrement 5% Index"
  },
  "solactive new mobility 16 risk control 5 decrement net": {
+  "checkedAt": "2026-10-15",
+  "exchange": "STU",
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE NEW MOBILITY 16% RISK CONTROL 5% DECREMENT NET",
-  "ticker": null
+  "score": 0.947,
+  "ticker": "DE000SL0CY28.SG",
+  "type": "INDEX",
+  "yahooName": "SOLACTIVE NEW MOBILITY 16% RISK CONTROL 5% DECREMENT NET (EUR) Index"
  },
  "solactive north america gold miners top 20 index 5 decrement": {
   "checkedAt": "2026-10-15",
@@ -16633,10 +17183,15 @@
   "yahooName": "SOLACTIVE SEMICONDUCTOR 16% RISK CONTROL 4% DECREMENT NET (EUR) Index"
  },
  "solactive space economy 14 risk control 5 decrement net index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE SPACE ECONOMY 14% RISK CONTROL 5% DECREMENT NET INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "solactive subordinated bond select index": {
   "checkedAt": "2026-10-09",
@@ -16650,10 +17205,15 @@
   "yahooName": null
  },
  "solactive us pharma 10 risk control 3 decrement net index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "SOLACTIVE US PHARMA 10% RISK CONTROL 3% DECREMENT NET INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "solaredge": {
   "checkedAt": "2026-10-09",
@@ -16711,6 +17271,7 @@
   "yahooName": null
  },
  "soundhound ai": {
+  "checkedAt": "2026-10-15",
   "exchange": "NGM",
   "isin": "US8361001071",
   "manual": null,
@@ -16721,10 +17282,15 @@
   "yahooName": "SoundHound AI, Inc."
  },
  "southern copper": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US84265V1052",
   "manual": null,
   "name": "Southern Copper Corp",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "SCCO",
+  "type": "EQUITY",
+  "yahooName": "Southern Copper Corporation"
  },
  "space exploration technologies": {
   "checkedAt": "2026-10-15",
@@ -16748,13 +17314,25 @@
   "type": "EQUITY",
   "yahooName": "Space Exploration Technologies Corp."
  },
+ "spdr gold": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
+  "isin": null,
+  "manual": null,
+  "name": "SPDR Gold Shares",
+  "score": 1.0,
+  "ticker": "GLD",
+  "type": "ETF",
+  "yahooName": "SPDR Gold Shares"
+ },
  "spdr gold trust": {
-  "exchange": "MUN",
+  "checkedAt": "2026-10-15",
+  "exchange": "PCX",
   "isin": "US78463V1070",
   "manual": null,
   "name": "SPDR Gold Trust",
-  "score": 0.938,
-  "ticker": "GQ9.MU",
+  "score": 0.8,
+  "ticker": "GLD",
   "type": "ETF",
   "yahooName": "SPDR Gold Shares"
  },
@@ -16770,6 +17348,7 @@
   "yahooName": "SPDR Gold Shares"
  },
  "sportradar": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "CH1134239669",
   "manual": null,
@@ -16835,12 +17414,13 @@
   "yahooName": "Stellantis N.V."
  },
  "stellantis n v": {
-  "exchange": "NYQ",
+  "checkedAt": "2026-10-15",
+  "exchange": "MIL",
   "isin": "NL00150001Q9",
   "manual": null,
   "name": "Stellantis N.V.",
   "score": 1.0,
-  "ticker": "STLA",
+  "ticker": "STLAM.MI",
   "type": "EQUITY",
   "yahooName": "Stellantis N.V."
  },
@@ -16922,6 +17502,7 @@
   "yahooName": "iShares STOXX Europe 600 Automobiles & Parts UCITS ETF (DE) EUR acc"
  },
  "stoxx europe 600 automobiles parts index": {
+  "checkedAt": "2026-10-15",
   "exchange": null,
   "isin": "EU0009658681",
   "manual": null,
@@ -16943,6 +17524,7 @@
   "yahooName": "iShares STOXX Europe 600 Basic Resources UCITS ETF (DE)"
  },
  "stoxx europe 600 basic resources index": {
+  "checkedAt": "2026-10-15",
   "exchange": null,
   "isin": "EU0009658624",
   "manual": null,
@@ -16964,10 +17546,15 @@
   "yahooName": null
  },
  "stoxx europe 600 esg x index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "STOXX EUROPE 600 ESG-X INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "stoxx europe 600 esg x nr decrement 4 75 index": {
   "checkedAt": "2026-10-15",
@@ -17014,10 +17601,15 @@
   "yahooName": null
  },
  "stoxx europe 600 insurance index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "STOXX EUROPE 600 INSURANCE INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "stoxx europe 600 oil gas": {
   "checkedAt": "2026-10-09",
@@ -17031,6 +17623,7 @@
   "yahooName": "iShares STOXX Europe 600 Oil & Gas UCITS ETF (DE)"
  },
  "stoxx europe 600 oil gas index": {
+  "checkedAt": "2026-10-15",
   "exchange": null,
   "isin": "EU0009658780",
   "manual": null,
@@ -17063,10 +17656,15 @@
   "yahooName": null
  },
  "stoxx europe 600 technology": {
+  "checkedAt": "2026-10-15",
+  "exchange": "IOB",
   "isin": null,
   "manual": null,
   "name": "STOXX EUROPE 600 TECHNOLOGY",
-  "ticker": null
+  "score": 0.793,
+  "ticker": "0MOL.IL",
+  "type": "ETF",
+  "yahooName": "iShares STOXX Europe 600 Technology UCITS ETF (DE) EUR dis"
  },
  "stoxx europe 600 technology index": {
   "checkedAt": "2026-10-09",
@@ -17135,10 +17733,15 @@
   "yahooName": null
  },
  "stoxx europe esg leaders select 30 index": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "STOXX EUROPE ESG LEADERS SELECT 30 INDEX",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "stoxx europe esg leaders select 30 price eur index": {
   "checkedAt": "2026-10-09",
@@ -17196,10 +17799,15 @@
   "yahooName": null
  },
  "stoxx global infrastructure select 30": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": null,
   "manual": null,
   "name": "STOXX GLOBAL INFRASTRUCTURE SELECT 30",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "stoxx global select dividend 100": {
   "checkedAt": "2026-10-09",
@@ -17389,10 +17997,15 @@
   "yahooName": "Take-Two Interactive Software, Inc."
  },
  "take two interactive software": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US8740541094",
   "manual": null,
   "name": "Take-Two Interactive Software Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "TTWO",
+  "type": "EQUITY",
+  "yahooName": "Take-Two Interactive Software, Inc."
  },
  "tapestry": {
   "checkedAt": "2026-10-09",
@@ -17406,12 +18019,18 @@
   "yahooName": "Tapestry, Inc."
  },
  "target": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US87612E1064",
   "manual": null,
   "name": "Target Corp.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "TGT",
+  "type": "EQUITY",
+  "yahooName": "Target Corporation"
  },
  "tate lyle": {
+  "checkedAt": "2026-10-15",
   "exchange": "LSE",
   "isin": "GB00BP92CJ43",
   "manual": null,
@@ -17433,6 +18052,7 @@
   "yahooName": null
  },
  "technip energies n v": {
+  "checkedAt": "2026-10-15",
   "exchange": "PAR",
   "isin": "NL0014559478",
   "manual": null,
@@ -17652,10 +18272,15 @@
   "yahooName": null
  },
  "thermo fisher scientific": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US8835561023",
   "manual": null,
   "name": "Thermo Fisher Scientific Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "TMO",
+  "type": "EQUITY",
+  "yahooName": "Thermo Fisher Scientific Inc."
  },
  "thyssenkrupp": {
   "checkedAt": "2026-10-09",
@@ -17680,10 +18305,15 @@
   "yahooName": null
  },
  "tka tkms basket": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": "DE000A4APUH1",
   "manual": null,
   "name": "TKA/TKMS Basket",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "tokyo electron": {
   "checkedAt": "2026-10-15",
@@ -17730,12 +18360,13 @@
   "yahooName": "Toyota Motor Corporation"
  },
  "toyota motor": {
-  "exchange": "NYQ",
+  "checkedAt": "2026-10-15",
+  "exchange": "JPX",
   "isin": "JP3633400001",
   "manual": null,
   "name": "Toyota Motor Corp.",
   "score": 1.0,
-  "ticker": "TM",
+  "ticker": "7203.T",
   "type": "EQUITY",
   "yahooName": "Toyota Motor Corporation"
  },
@@ -17773,6 +18404,7 @@
   "yahooName": "Tripadvisor, Inc."
  },
  "trump media technology": {
+  "checkedAt": "2026-10-15",
   "exchange": "NGM",
   "isin": "US25400Q1058",
   "manual": null,
@@ -17838,10 +18470,15 @@
   "yahooName": "Ubisoft Entertainment SA"
  },
  "ubisoft entertainment": {
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0000054470",
   "manual": null,
   "name": "UBISOFT Entertainment",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "UBI.PA",
+  "type": "EQUITY",
+  "yahooName": "Ubisoft Entertainment SA"
  },
  "ubs": {
   "checkedAt": "2026-10-09",
@@ -18240,14 +18877,15 @@
   "yahooName": "Valero Energy Corporation"
  },
  "vallourec": {
-  "exchange": "DUS",
+  "checkedAt": "2026-10-15",
+  "exchange": "PAR",
   "isin": "FR0013506730",
   "manual": null,
   "name": "Vallourec SA",
   "score": 1.0,
-  "ticker": "VACD.DU",
+  "ticker": "VK.PA",
   "type": "EQUITY",
-  "yahooName": "Vallourec SA"
+  "yahooName": "Vallourec S.A."
  },
  "valore index": {
   "checkedAt": "2026-10-09",
@@ -18255,6 +18893,17 @@
   "isin": null,
   "manual": null,
   "name": "VALORE Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "vaneck gold miners etf usa": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "VanEck Gold Miners ETF/USA",
   "score": null,
   "ticker": null,
   "type": null,
@@ -18327,6 +18976,7 @@
   "yahooName": "Veolia Environnement SA"
  },
  "verbund": {
+  "checkedAt": "2026-10-15",
   "exchange": "VIE",
   "isin": "AT0000746409",
   "manual": null,
@@ -18370,6 +19020,7 @@
   "yahooName": "Vestas Wind Systems AS"
  },
  "vestas wind systems a s": {
+  "checkedAt": "2026-10-15",
   "exchange": "CPH",
   "isin": "DK0061539921",
   "manual": null,
@@ -18457,20 +19108,26 @@
   "yahooName": "Vistra Corp."
  },
  "vistra energy": {
-  "exchange": "STU",
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
   "isin": "US92840M1027",
   "manual": null,
   "name": "Vistra Energy Corp.",
-  "score": 1.0,
-  "ticker": "0V6.SG",
+  "score": 0.8,
+  "ticker": "VST",
   "type": "EQUITY",
-  "yahooName": "Vistra Corp"
+  "yahooName": "Vistra Corp."
  },
  "vistry": {
+  "checkedAt": "2026-10-15",
+  "exchange": "LSE",
   "isin": "GB0001859296",
   "manual": null,
   "name": "Vistry Group PLC",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "VTY.L",
+  "type": "EQUITY",
+  "yahooName": "Vistry Group PLC"
  },
  "vodafone": {
   "checkedAt": "2026-10-09",
@@ -18506,16 +19163,26 @@
   "yahooName": "Volkswagen AG"
  },
  "volvo": {
+  "checkedAt": "2026-10-15",
+  "exchange": "STO",
   "isin": "SE0000115446",
   "manual": null,
   "name": "Volvo AB",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "VOLV-B.ST",
+  "type": "EQUITY",
+  "yahooName": "AB Volvo (publ)"
  },
  "vonovia": {
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
   "isin": "DE000A1ML7J1",
   "manual": null,
   "name": "Vonovia SE",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "VNA.DE",
+  "type": "EQUITY",
+  "yahooName": "Vonovia SE"
  },
  "walmart": {
   "checkedAt": "2026-10-15",
@@ -18551,6 +19218,7 @@
   "yahooName": "Warner Bros. Discovery, Inc."
  },
  "webuild s p a": {
+  "checkedAt": "2026-10-15",
   "exchange": "MIL",
   "isin": "IT0003865570",
   "manual": null,
@@ -18649,6 +19317,7 @@
   "yahooName": null
  },
  "wolfspeed": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US9778521024",
   "manual": null,
@@ -18681,10 +19350,15 @@
   "yahooName": "Worldline SA"
  },
  "worldline s a basket 1": {
+  "checkedAt": "2026-10-15",
+  "exchange": null,
   "isin": "DE000A4ATUS0",
   "manual": null,
   "name": "Worldline S.A. Basket 1",
-  "ticker": null
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "wti crude oil": {
   "checkedAt": "2026-10-15",
@@ -18709,10 +19383,15 @@
   "yahooName": null
  },
  "x energy": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US98386P1021",
   "manual": null,
   "name": "X-Energy Inc",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "XE",
+  "type": "EQUITY",
+  "yahooName": "X-Energy, Inc."
  },
  "xiaomi": {
   "checkedAt": "2026-10-15",
@@ -18726,6 +19405,7 @@
   "yahooName": "Xiaomi Corporation"
  },
  "xpeng": {
+  "checkedAt": "2026-10-15",
   "exchange": "NYQ",
   "isin": "US98422D1054",
   "manual": null,
@@ -18758,6 +19438,7 @@
   "yahooName": "Zalando SE"
  },
  "zijin mining": {
+  "checkedAt": "2026-10-15",
   "exchange": "HKG",
   "isin": "CNE100000502",
   "manual": null,
@@ -18779,6 +19460,7 @@
   "yahooName": null
  },
  "zoom communications": {
+  "checkedAt": "2026-10-15",
   "exchange": "NMS",
   "isin": "US98980L1017",
   "manual": null,
@@ -18789,10 +19471,15 @@
   "yahooName": "Zoom Communications, Inc."
  },
  "zscaler": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
   "isin": "US98980G1022",
   "manual": null,
   "name": "Zscaler Inc.",
-  "ticker": null
+  "score": 1.0,
+  "ticker": "ZS",
+  "type": "EQUITY",
+  "yahooName": "Zscaler, Inc."
  },
  "zurich insurance": {
   "checkedAt": "2026-10-09",
