@@ -32,7 +32,9 @@
   --accent:#4cc3b3; --accent-soft:#16332f; --brass:#e0b45c; --brass-soft:#33280f;
   --good:#5fcf87; --good-bg:#15301f; --caution:#e8cc55; --caution-bg:#2f2a10; --bad:#ff8a80; --bad-bg:#3a1a18;
   --stale:#f59a4a; --stale-bg:#3a2412; color-scheme:dark}}
-:root[data-theme="dark"]{
+:root{--q1:#cfe8e3;--q2:#86c7bb;--q3:#3d9b8d;--q4:#0e6b62}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--q1:#24524c;--q2:#2f8a7e;--q3:#4cc3b3;--q4:#a6f0e3}}
+:root[data-theme="dark"]{--q1:#24524c;--q2:#2f8a7e;--q3:#4cc3b3;--q4:#a6f0e3;
   --bg:#0f161c; --surface:#16212a; --ink:#e4ecf1; --muted:#93a4b1; --line:#26343f; --row:#1a2731;
   --accent:#4cc3b3; --accent-soft:#16332f; --brass:#e0b45c; --brass-soft:#33280f;
   --good:#5fcf87; --good-bg:#15301f; --caution:#e8cc55; --caution-bg:#2f2a10; --bad:#ff8a80; --bad-bg:#3a1a18;
@@ -228,7 +230,7 @@ tr.sp td{height:auto;border:none;padding:0}
 .mini{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);display:grid;gap:6px;cursor:pointer;text-align:left;min-width:0}
 .mini .eyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mini .c-unds{font-size:.9rem}
-/* ---------- dettaglio ---------- */
+/* ---------- dettaglio (stile) ---------- */
 .dtitle{font-size:1.05rem;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
 .dtitle b{color:var(--brass)}
 .hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
@@ -299,6 +301,53 @@ tr.sp td{height:auto;border:none;padding:0}
   #updbox,.wrap>.note{font-size:.76rem}
 }
 @keyframes up{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+
+/* ---------- mappa ---------- */
+.mapwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:10px;min-width:0}
+.maphead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.76rem;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.legend .fr{width:14px;height:0;border-radius:0;border-top:2px solid var(--brass)}
+.plot{position:relative;width:100%;touch-action:manipulation}
+.plot svg{display:block;width:100%;height:auto;user-select:none}
+.plot .ax{font-size:11px;fill:var(--muted);font-family:var(--f-num)}
+.plot .axl{font-size:11.5px;fill:var(--muted);font-family:var(--f-ui)}
+.mtip{position:absolute;pointer-events:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgb(0 0 0 / .18);padding:8px 10px;font-size:.8rem;max-width:250px;z-index:5;display:grid;gap:3px}
+.mtip b{font-family:var(--f-num)}
+.mtip .open{margin-top:4px;font-size:.8rem;padding:5px 8px}
+.frontlist{display:grid;gap:6px}
+.frow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:4px 12px;align-items:center;padding:7px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--bg);font-size:.84rem}
+.frow .u{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frow .n{font-family:var(--f-num);text-align:right;white-space:nowrap}
+/* ---------- portafoglio ---------- */
+.pfin{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.pfin label{display:grid;gap:4px;font-size:.74rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.stats>div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stats .k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stats .v{font-family:var(--f-num);font-size:1.3rem;font-weight:600}
+.stats .s{font-size:.72rem;color:var(--muted)}
+.cal{position:relative}
+.cal svg{display:block;width:100%;height:auto}
+.cal .ax{font-size:11px;fill:var(--muted);font-family:var(--f-ui)}
+.cal .vl{font-size:10.5px;fill:var(--ink);font-family:var(--f-num)}
+.expo{display:grid;gap:5px}
+.expo .e{display:grid;grid-template-columns:minmax(90px,200px) 1fr 52px;gap:8px;align-items:center;font-size:.8rem}
+.expo .e span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.expo .bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.expo .bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.expo .e span:last-child{text-align:right;font-family:var(--f-num)}
+.pftab td,.pftab th{height:auto;padding:7px 8px;white-space:nowrap}
+.pftab th{position:static;cursor:default}
+.pftab td.l{max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.b.fr{background:var(--brass-soft);color:var(--brass);border-color:transparent}
+@media (max-width:819px){
+  .bnav{grid-template-columns:repeat(5,1fr)}
+  .bnav button{font-size:.66rem}
+  .bnav button.cur{color:var(--accent)}
+  .frow{grid-template-columns:minmax(0,1fr) auto auto}
+  .frow .hide-n{display:none}
+  .pftab-wrap{overflow:auto}
+}
 </style>
 </head>
 <body>
@@ -306,11 +355,12 @@ tr.sp td{height:auto;border:none;padding:0}
 <header class="top" id="top">
   <div class="top-in">
     <div class="brand">
-      <div class="row" style="gap:10px"><h1>Radar Certificati</h1><span class="status" id="status">Caricamento…</span></div>
+      <div class="row" style="gap:10px"><h1>Radar Certificati</h1><span class="status" id="status">Caricamento…</span><button class="info only-narrow" popovertarget="gloss" aria-label="Glossario">i</button></div>
       <div class="tools">
         <button id="b-fav" aria-pressed="false" title="Mostra solo i preferiti">★ Preferiti <span class="num" id="n-fav">0</span></button>
         <button id="b-filters" aria-expanded="false">Filtri <span class="num" id="n-filt"></span></button>
-        <div class="seg only-wide" id="view"><button data-v="table">Tabella</button><button data-v="cards">Schede</button></div>
+        <button id="b-pf" title="Costruisci un portafoglio dai risultati">Portafoglio</button>
+        <div class="seg only-wide" id="view"><button data-v="table">Tabella</button><button data-v="cards">Schede</button><button data-v="map">Mappa</button></div>
         <button class="info" id="b-gloss" popovertarget="gloss" title="Glossario" aria-label="Glossario">i</button>
       </div>
     </div>
@@ -411,6 +461,7 @@ tr.sp td{height:auto;border:none;padding:0}
 <div class="scrim" id="scrim" hidden></div>
 <div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-label="Scheda certificato"><div class="dbody" id="dbody"></div></div>
 <div class="drawer wide" id="cmp" hidden role="dialog" aria-modal="true" aria-label="Confronto"><div class="dbody" id="cmpbody"></div></div>
+<div class="drawer wide" id="pf" hidden role="dialog" aria-modal="true" aria-label="Portafoglio"><div class="dbody" id="pfbody"></div></div>
 <div class="cmpbar" id="cmpbar" hidden><span id="cmptxt"></span><button class="primary" id="cmpgo">Confronta</button><button id="cmpclr" aria-label="Svuota confronto">×</button></div>
 <div id="gloss" class="gloss" popover>
   <b>Glossario</b>
@@ -423,6 +474,9 @@ tr.sp td{height:auto;border:none;padding:0}
     <dt>Softcallable</dt><dd>L'emittente può decidere di rimborsare in anticipo (callable emittente): di solito lo fa quando il certificato gli costa troppo.</dd>
     <dt>Denaro / lettera</dt><dd>Prezzo a cui il market maker compra (denaro) e vende (lettera). Si compra alla lettera; la differenza è lo spread.</dd>
     <dt>Rendimento annuo</dt><dd>Rendimento annuo a scadenza al prezzo lettera: cedole più differenza tra rimborso (100) e prezzo, divisa per gli anni residui (almeno 3 mesi). Sotto barriera il rimborso è stimato al livello attuale del peggiore. "!" = oltre il 40%: il mercato prezza una perdita probabile. È la soglia dei profili: prudente 8%, bilanciato 12%, aggressivo 16%.</dd>
+    <dt>Frontiera efficiente</dt><dd>Certificati che nessun altro, tra i risultati, batte insieme su rendimento annuo e distanza del peggiore dalla barriera: per avere di più dell'uno bisogna rinunciare all'altro. Sono i candidati migliori a parità di filtri; nella Mappa sono cerchiati e uniti dalla linea dorata.</dd>
+    <dt>Mappa</dt><dd>Ogni punto è un certificato dei risultati: in orizzontale quanto è lontano il peggiore dalla barriera, in verticale il rendimento annuo, il colore la probabilità di tenuta. In alto a destra i migliori; il riquadro tratteggiato è la zona del profilo.</dd>
+    <dt>Portafoglio</dt><dd>Sceglie N certificati dai risultati (o dai preferiti) seguendo l'ordinamento, con al massimo X per emittente e senza ripetere lo stesso sottostante; capitale diviso in parti uguali. Mostra rendita, calendario cedole a 12 mesi (se le cedole vengono pagate) e concentrazione. Indicativo, non è consulenza.</dd>
     <dt>Cedola e distanza</dt><dd>Ordinamento: rendimento annuo × distanza del peggiore dalla barriera / 50% (oltre il 50% conta pieno). Premia chi paga molto con la barriera lontana; i rendimenti sospetti (oltre 40%) restano fuori.</dd>
     <dt>Rendimento atteso</dt><dd>Media, pesata con la probabilità di tenuta, tra il rendimento se la barriera tiene e una stima se viene rotta (rimborso ≈ 85% del livello barriera, metà delle cedole). Con "~" la probabilità non è nota: si usa il rendimento a scadenza (al massimo 25%) scontato in base alla distanza del peggiore.</dd>
     <dt>Punteggio</dt><dd>0-100, somma pesata secondo il profilo di rendimento annuo (pieno a 14% prudente, 20% bilanciato, 28% aggressivo), sicurezza del peggiore, affidabilità della cedola, liquidità e qualità (classe dell'emittente, memoria, dati completi). Apri la scheda per vedere il dettaglio.</dd>
@@ -434,10 +488,11 @@ tr.sp td{height:auto;border:none;padding:0}
 </div>
 <div class="toast" id="toast" hidden></div>
 <nav class="bnav only-narrow" id="bnav" aria-label="Navigazione">
-  <button data-nav="top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Risultati</span></button>
+  <button data-nav="list" id="nb-list"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Risultati</span></button>
+  <button data-nav="map" id="nb-map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16"/><circle cx="9" cy="14" r="1.6"/><circle cx="13" cy="9" r="1.6"/><circle cx="17" cy="12" r="1.6"/><path d="M8 7l4 2 6-4"/></svg><span>Mappa</span></button>
   <button data-nav="filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span>Filtri <b id="nb-filt"></b></span></button>
   <button data-nav="fav" id="nb-fav" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span>Preferiti <b id="nb-nfav"></b></span></button>
-  <button data-nav="info" popovertarget="gloss"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Glossario</span></button>
+  <button data-nav="pf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Portafoglio</span></button>
 </nav>
 
 <script>
@@ -483,12 +538,12 @@ const TIER={"BNP Paribas":"A","Crédit Agricole":"A","Santander":"A","UBS":"A","
   "Société Générale":"B","Citigroup":"B","Deutsche Bank":"B","BBVA":"B","Morgan Stanley":"B","BIL":"B","Goldman Sachs":"B","UniCredit":"B","Intesa Sanpaolo":"B","Mediobanca":"B","EFG International":"B","Exane":"B",
   "Banco BPM":"C","BPER Banca":"C","Nomura":"C","Leonteq Securities":"C","Marex":"C","Banca Akros":"C"};
 const TIERV={A:1,B:.8,C:.55};
-const NUMF=["er","y","ym","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav"];
+const NUMF=["er","y","ym","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front"];
 // obiettivi rapidi: un clic imposta (o toglie) un gruppo di filtri
-const OBJ={mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
+const OBJ={frontiera:["Frontiera efficiente",{front:true}],mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
 const LABEL={er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
-  active:()=>"Cedola in pagamento",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
+  active:()=>"Cedola in pagamento",front:()=>"Solo frontiera efficiente",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
 const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sort:{key:"score",dir:-1},view:null};
 function neutral(){const f={};NUMF.forEach(k=>f[k]=null);SELF.forEach(k=>f[k]="");BOOLF.forEach(k=>f[k]=false);return f}
 function applyPreset(p){state.profile=p;Object.assign(state.f,PRESETS[p])}
@@ -641,7 +696,13 @@ function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){
 
 /* ---------- filtro e ordinamento ---------- */
 const SORT={cd:c=>c.cdScore,er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
-let ROWS=[],ISIN=null;
+let ROWS=[],ISIN=null,FRONT=[];
+// frontiera efficiente (Pareto) tra i risultati: nessun altro ha insieme più rendimento annuo e più distanza dalla barriera
+function markFrontier(list){
+  FRONT.forEach(c=>c.front=false);FRONT=[];
+  const pts=list.filter(c=>c.ytm!=null&&c.dist!=null&&c.dist>0&&!c.ytmHigh&&!c.priceBad).sort((a,b)=>b.dist-a.dist||b.ytm-a.ytm);
+  let best=-1e9;for(const c of pts)if(c.ytm>best+1e-9){c.front=true;FRONT.push(c);best=c.ytm}
+}
 function compute(){
   const f=state.f;ISIN=isinMode(state.q);
   if(ISIN){ROWS=CERTS.filter(c=>c.isin.startsWith(ISIN));return}
@@ -674,6 +735,8 @@ function compute(){
       if(!c.undW.length||!c.undW.every(ws=>ws.some(w=>S.matched.has(w))))continue}
     out.push(c);
   }
+  markFrontier(out);
+  if(f.front)out=out.filter(c=>c.front);
   const g=SORT[state.sort.key]||SORT.score,d=state.sort.dir;
   out.sort((a,b)=>{const x=g(a),y=g(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return d*(x-y)});
   ROWS=out;
@@ -699,6 +762,7 @@ function scenarios(c){if(c.ytmGood==null)return "";
 const freqTxt=f=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[f]||f||"—");
 function badges(c){
   const b=[];
+  if(c.front)b.push(`<span class="b fr">Frontiera efficiente</span>`);
   b.push(`<span class="b">${c.n>1?"Worst-of "+c.n:"Singolo"}</span>`);
   b.push(`<span class="b">${esc(c.cat)}</span>`);
   if(c.freq)b.push(`<span class="b ${c.freq==="1m"?"pk":""}">${freqTxt(c.freq)}</span>`);
@@ -763,7 +827,7 @@ let cardN=0,io=null;
 const undsHtml=c=>c.unds.length?c.unds.map(u=>c.n>1&&u===c.worst?`<b>${esc(u)}</b>`:esc(u)).join(" · "):"Sottostanti n.d.";
 const fshort=f=>({"1m":"mens.","3m":"trim.","6m":"sem.","12m":"ann."}[f]||"");
 const scls=v=>v>=70?"":v>=50?"ca":"neg";
-function keyBadges(c){const b=[];
+function keyBadges(c){const b=[];if(c.front)b.push(`<span class="b fr" title="Frontiera efficiente: nessun altro risultato ha insieme più rendimento e più distanza dalla barriera">Frontiera</span>`);
   if(c.priceBad)b.push(`<span class="b ko">Prezzo anomalo</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
   if(c.ytmHigh)b.push(`<span class="b ca">Rend. sospetto</span>`);
@@ -788,6 +852,136 @@ function renderCards(){
   io?.disconnect();io=new IntersectionObserver(e=>{if(e[0].isIntersecting)moreCards()},{rootMargin:"600px"});io.observe($("#more"));
 }
 function moreCards(){if(cardN>=ROWS.length)return;const n=Math.min(ROWS.length,cardN+60);$("#clist").insertAdjacentHTML("beforeend",ROWS.slice(cardN,n).map(cardHtml).join(""));cardN=n}
+
+/* ---------- mappa rischio-rendimento ---------- */
+const PQ=[["≥ 85%","var(--q4)"],["70–85%","var(--q3)"],["50–70%","var(--q2)"],["< 50%","var(--q1)"]];
+const pcol=p=>p==null?"none":p>=85?"var(--q4)":p>=70?"var(--q3)":p>=50?"var(--q2)":"var(--q1)";
+let MAP=null;
+function renderMap(){
+  const pts=ROWS.filter(c=>c.ytm!=null&&c.dist!=null&&!c.priceBad);const out=ROWS.length-pts.length;
+  const inRows=new Set(ROWS);const fr=FRONT.filter(c=>inRows.has(c)).sort((a,b)=>b.dist-a.dist);
+  // sfondo: il resto del mercato (con prezzo, rendimento e distanza noti) in grigio, per vedere dove stanno i filtrati
+  const bg=CERTS.filter(c=>!inRows.has(c)&&!c.lev&&c.liq&&!c.priceBad&&!c.ytmHigh&&c.ytm!=null&&c.dist!=null);
+  $("#results").innerHTML=`<div class="mapwrap"><div class="maphead"><div><b>Mappa rischio-rendimento</b> <span class="note">${pts.length.toLocaleString("it-IT")} certificati${out?` · ${out.toLocaleString("it-IT")} senza rendimento o distanza non mostrati`:""}</span></div>
+<div class="legend"><span>Prob. tenuta</span>${PQ.map(([t,c])=>`<span><i style="background:${c}"></i>${t}</span>`).join("")}<span><i style="border:1.5px solid var(--muted)"></i>n.d.</span><span><i class="fr"></i>Frontiera</span><span><i style="background:var(--line)"></i>resto del mercato (${bg.length.toLocaleString("it-IT")})</span></div></div>
+<div class="plot" id="plot"></div>
+<div class="note">${innerWidth<820?"Tocca":"Passa o clicca"} un punto per i dettagli. In alto a destra: rendimento alto con il peggiore lontano dalla barriera. Il riquadro tratteggiato è la zona dei filtri di rendimento e distanza.</div></div>
+<div class="panel"><h2>Frontiera efficiente · ${fr.length} certificati</h2><p class="note" style="margin:0 0 8px">Nessun altro risultato offre insieme più rendimento annuo e più distanza dalla barriera. Scorrendo la lista: sempre più rendimento, sempre meno margine.</p>
+<div class="frontlist">${fr.slice(0,40).map(c=>`<div class="frow" data-open="${esc(c.isin)}"><span class="u"><b>${esc(c.issuer||"")}</b> · ${esc(c.unds.join(", "))}</span><span class="n">${pct(c.dist,0)} <span class="note">dist.</span></span><span class="n hi">${pct(c.ytm)}</span><span class="n hide-n ${pcls(c.prob)}">${probTxt(c)}</span></div>`).join("")||`<p class="note">Nessun certificato con rendimento e distanza noti.</p>`}</div></div>`;
+  drawMap(pts,fr,bg);
+}
+function drawMap(pts,fr,bg=[]){
+  const box=$("#plot");if(!box)return;const W=Math.max(300,box.clientWidth),narrow=W<600;
+  const H=Math.round(narrow?W*1.1:Math.min(560,W*.48)),m={l:42,r:12,t:12,b:38};
+  const q=(a,p)=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.min(s.length-1,Math.floor(s.length*p))]:0};
+  const all=pts.concat(bg),D=all.map(c=>c.dist),Yv=all.map(c=>c.ytm);
+  const xmax=Math.min(100,Math.max(50,Math.ceil(q(D,.99)/10)*10)),ymax=Math.min(50,Math.max(15,Math.ceil(q(Yv,.98)/5)*5));
+  const xmin=Math.max(-20,Math.min(0,Math.floor(q(D,.03)/10)*10)),ymin=Math.max(-10,Math.min(0,Math.floor(q(Yv,.03)/5)*5));
+  const X=v=>m.l+(clamp(v,xmin,xmax)-xmin)/(xmax-xmin)*(W-m.l-m.r),Y=v=>H-m.b-(clamp(v,ymin,ymax)-ymin)/(ymax-ymin)*(H-m.t-m.b);
+  const g=[];for(let v=Math.ceil(xmin/10)*10;v<=xmax;v+=10)g.push(`<line x1="${X(v)}" x2="${X(v)}" y1="${m.t}" y2="${H-m.b}" stroke="var(--line)" stroke-width="1"/><text class="ax" x="${X(v)}" y="${H-m.b+15}" text-anchor="middle">${v}%</text>`);
+  for(let v=Math.ceil(ymin/5)*5;v<=ymax;v+=5)g.push(`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text class="ax" x="${m.l-6}" y="${Y(v)+4}" text-anchor="end">${v}%</text>`);
+  if(xmin<0)g.push(`<line x1="${X(0)}" x2="${X(0)}" y1="${m.t}" y2="${H-m.b}" stroke="var(--bad)" stroke-width="1" stroke-dasharray="3 3"/>`);
+  const f=state.f;let zone="";
+  if(f.y!=null||f.b!=null){const x0=X(f.b??xmin),y0=Y(f.y??ymin),y1=Y(Math.min(f.ym??ymax,ymax));zone=`<rect x="${x0}" y="${y1}" width="${Math.max(0,X(xmax)-x0)}" height="${Math.max(0,y0-y1)}" fill="var(--accent-soft)" fill-opacity=".45" stroke="var(--accent)" stroke-dasharray="5 4" stroke-width="1"/>`}
+  const r=narrow?3.4:4;
+  const ordered=[...pts].sort((a,b)=>((a.front?1:0)-(b.front?1:0))||((a.prob??-1)-(b.prob??-1)));
+  const dots=ordered.map(c=>{const p=pcol(c.prob);return `<circle cx="${X(c.dist).toFixed(1)}" cy="${Y(c.ytm).toFixed(1)}" r="${c.front?r+1.4:r}" fill="${p==="none"?"var(--surface)":p}" stroke="${c.front?"var(--brass)":p==="none"?"var(--muted)":"var(--surface)"}" stroke-width="${c.front?2:1}"/>`}).join("");
+  const line=fr.length>1?`<polyline points="${fr.map(c=>`${X(c.dist).toFixed(1)},${Y(c.ytm).toFixed(1)}`).join(" ")}" fill="none" stroke="var(--brass)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`:"";
+  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mappa: distanza del peggiore dalla barriera in orizzontale, rendimento annuo in verticale">${g.join("")}${zone}
+<text class="axl" x="${(m.l+W-m.r)/2}" y="${H-4}" text-anchor="middle">Distanza del peggiore dalla barriera →</text>
+<text class="axl" transform="translate(11 ${(m.t+H-m.b)/2}) rotate(-90)" text-anchor="middle">Rendimento annuo →</text>
+<g fill="var(--line)">${bg.map(c=>`<circle cx="${X(c.dist).toFixed(1)}" cy="${Y(c.ytm).toFixed(1)}" r="${narrow?2.2:2.6}"/>`).join("")}</g>${line}${dots}
+<circle id="mhl" r="${r+5}" fill="none" stroke="var(--ink)" stroke-width="2" visibility="hidden"/></svg>`;
+  MAP={pts:pts.map(c=>({c,x:X(c.dist),y:Y(c.ytm)})),W,H};
+}
+function mapNear(e,rad){const svg=$("#plot svg");if(!svg||!MAP)return null;const b=svg.getBoundingClientRect(),k=MAP.W/b.width;
+  const x=(e.clientX-b.left)*k,y=(e.clientY-b.top)*k;let best=null,bd=(rad*k)**2;
+  for(const p of MAP.pts){const d=(p.x-x)**2+(p.y-y)**2;if(d<bd||(d===bd&&p.c.front)){bd=d;best=p}}return best}
+function mapTip(p){const box=$("#plot");if(!box)return;box.querySelector(".mtip")?.remove();const hl=$("#mhl");if(!p){hl?.setAttribute("visibility","hidden");return}
+  hl.setAttribute("cx",p.x);hl.setAttribute("cy",p.y);hl.setAttribute("visibility","visible");
+  const k=box.clientWidth/MAP.W,c=p.c,left=p.x*k,top=p.y*k;
+  const t=document.createElement("div");t.className="mtip";
+  t.innerHTML=`<span class="eyebrow">${esc(c.issuer||"")}${c.front?" · frontiera":""}</span><span>${esc(c.unds.join(", ").slice(0,80))}</span>
+<span>Rend. annuo <b>${pct(c.ytm)}</b> · cedola <b>${pct(c.couponPa,1)}</b></span><span>Peggiore a <b>${pct(c.dist)}</b> · prob. <b>${probTxt(c)}</b></span><button class="primary open" data-open="${esc(c.isin)}">Apri ${esc(c.isin)}</button>`;
+  box.appendChild(t);const w=t.offsetWidth,h=t.offsetHeight;
+  t.style.left=clamp(left+(left>box.clientWidth/2?-w-12:12),4,Math.max(4,box.clientWidth-w-4))+"px";t.style.top=clamp(top-h/2,4,Math.max(4,box.clientHeight-h-4))+"px"}
+document.addEventListener("pointermove",e=>{if(e.pointerType!=="mouse"||!e.target.closest?.("#plot")||e.target.closest(".mtip"))return;mapTip(mapNear(e,14))});
+document.addEventListener("pointerdown",e=>{if(!e.target.closest?.("#plot svg"))return;const p=mapNear(e,e.pointerType==="mouse"?14:24);
+  if(e.pointerType==="mouse"&&p){openDetail(p.c.isin);return}mapTip(p)});
+
+/* ---------- portafoglio ---------- */
+const PFD={cap:50000,n:6,iss:2,src:"rows",key:"score",uniq:true};
+let PF=Object.assign({},PFD,ls.get("rc-pf",{}));
+const GENERIC=new Set(["banco","banca","bank","deutsche","the","credit","societe","royal","general","first","united","international","american"]);
+function undKey(u){const w=norm(u).split(" ").filter(x=>x.length>1&&!/^(spa|ag|se|sa|nv|plc|inc|corp|co|group|holding|holdings|ltd)$/.test(x));return GENERIC.has(w[0])?w.slice(0,2).join(" "):w[0]||norm(u)}
+function buildPf(o){
+  const base=o.src==="fav"?Object.keys(FAV).map(i=>BYISIN.get(i)).filter(Boolean):ROWS;
+  const src=base.filter(c=>c.liq&&!c.priceBad&&c.couponPa!=null&&c.ytm!=null&&!c.ytmHigh&&!c.belowBarrier&&c.pricePct);
+  const key=o.key==="cd"?(c=>c.cdScore??-99):o.key==="ytm"?(c=>c.ytm):o.key==="prob"?(c=>c.prob??-1):(c=>c.score);
+  src.sort((a,b)=>key(b)-key(a));
+  const pick=[],iss={},und=new Set();
+  for(const c of src){if(pick.length>=o.n)break;if((iss[c.issuer]||0)>=o.iss)continue;const us=c.unds.map(undKey);if(o.uniq&&us.some(u=>und.has(u)))continue;
+    pick.push(c);iss[c.issuer]=(iss[c.issuer]||0)+1;us.forEach(u=>und.add(u))}
+  const per=o.cap/Math.max(pick.length,1);
+  return pick.map(c=>{const unit=c.pricePct/100*c.nominal,q=Math.max(0,Math.floor(per/unit));return {c,unit,q,inv:q*unit,inc:q*c.nominal*c.couponPa/100}});
+}
+const MESI=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+function calendar(L){
+  const t0=new Date(today.getFullYear(),today.getMonth(),1),M=[...Array(12)].map((_,i)=>({d:new Date(t0.getFullYear(),t0.getMonth()+i,1),v:0,n:0}));
+  const end=new Date(t0.getFullYear(),t0.getMonth()+12,1);
+  for(const x of L){const per={"1m":1,"3m":3,"6m":6,"12m":12}[x.c.freq];if(!per||!x.q)continue;const pay=x.inc*per/12;
+    let d=x.c.couponDate?new Date(x.c.couponDate):new Date(t0.getFullYear(),t0.getMonth()+1,15);
+    while(d<end&&(!x.c.matDate||d<=x.c.matDate)){const i=(d.getFullYear()-t0.getFullYear())*12+d.getMonth()-t0.getMonth();if(i>=0&&i<12){M[i].v+=pay;M[i].n++}d=new Date(d.getFullYear(),d.getMonth()+per,d.getDate())}}
+  return M}
+function calSvg(M){const W=640,H=200,m={l:8,r:8,t:22,b:24},bw=(W-m.l-m.r)/12,mx=Math.max(1,...M.map(x=>x.v));const top=M.reduce((a,b)=>b.v>a.v?b:a,M[0]);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cedole attese per mese nei prossimi 12 mesi"><line x1="${m.l}" x2="${W-m.r}" y1="${H-m.b}" y2="${H-m.b}" stroke="var(--line)"/>${M.map((x,i)=>{const h=x.v/mx*(H-m.t-m.b),xx=m.l+i*bw+3,y=H-m.b-h,bwi=bw-6,rr=Math.min(4,h);
+    return `<g><title>${MESI[x.d.getMonth()]} ${x.d.getFullYear()}: ${fmt(x.v,0)} € da ${x.n} cedole</title>${x.v?`<path d="M${xx},${H-m.b} V${y+rr} q0,-${rr} ${rr},-${rr} h${bwi-2*rr} q${rr},0 ${rr},${rr} V${H-m.b} Z" fill="var(--accent)"/>`:""}<rect x="${xx}" y="${m.t}" width="${bwi}" height="${H-m.t-m.b}" fill="transparent"/>
+    ${x===top&&x.v?`<text class="vl" x="${xx+bwi/2}" y="${y-6}" text-anchor="middle">${fmt(x.v,0)} €</text>`:""}<text class="ax" x="${xx+bwi/2}" y="${H-7}" text-anchor="middle">${MESI[x.d.getMonth()]}</text></g>`}).join("")}</svg>`}
+function expoHtml(title,map,tot){const e=[...map.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
+  return `<div><div class="cap" style="margin-bottom:6px">${title}</div><div class="expo">${e.map(([k,v])=>`<div class="e"><span title="${esc(k)}">${esc(k)}</span><span class="bar"><i style="width:${v/tot*100}%"></i></span><span>${fmt(v/tot*100,0)}%</span></div>`).join("")}</div></div>`}
+function renderPf(){
+  const L=buildPf(PF),inv=L.reduce((a,x)=>a+x.inv,0),inc=L.reduce((a,x)=>a+x.inc,0);
+  const w=f=>inv?L.reduce((a,x)=>a+x.inv*(f(x.c)??0),0)/inv:null;
+  const probs=L.map(x=>x.c.prob),allP=L.length&&probs.every(p=>p!=null)?probs.reduce((a,p)=>a*p/100,1)*100:null;
+  const M=calendar(L),cal12=M.reduce((a,x)=>a+x.v,0),minD=L.length?Math.min(...L.map(x=>x.c.dist??99)):null;
+  const byIss=new Map(),byUnd=new Map();L.forEach(x=>{byIss.set(x.c.issuer,(byIss.get(x.c.issuer)||0)+x.inv);x.c.unds.forEach(u=>byUnd.set(u,(byUnd.get(u)||0)+x.inv/Math.max(1,x.c.unds.length)))});
+  const opt=(v,t,cur)=>`<option value="${v}" ${String(cur)===String(v)?"selected":""}>${t}</option>`;
+  $("#pfbody").innerHTML=`<div class="dhead"><div><div class="eyebrow">Costruttore</div><b style="font-size:1.1rem">Portafoglio di certificati</b></div><button data-close aria-label="Chiudi">✕</button></div>
+<div class="pfin">
+<label>Capitale (€)<input id="pf-cap" type="number" step="1000" min="1000" inputmode="numeric" value="${PF.cap}"></label>
+<label>Certificati<select id="pf-n">${[3,4,5,6,8,10,12].map(n=>opt(n,n,PF.n)).join("")}</select></label>
+<label>Max per emittente<select id="pf-iss">${[1,2,3,99].map(n=>opt(n,n===99?"senza limite":n,PF.iss)).join("")}</select></label>
+<label>Scegli per<select id="pf-key">${opt("score","Punteggio",PF.key)}${opt("cd","Cedola e distanza",PF.key)}${opt("ytm","Rendimento annuo",PF.key)}${opt("prob","Probabilità di tenuta",PF.key)}</select></label>
+<label>Da<select id="pf-src">${opt("rows",`Risultati filtrati (${ROWS.length.toLocaleString("it-IT")})`,PF.src)}${opt("fav",`Preferiti (${Object.keys(FAV).length})`,PF.src)}</select></label>
+<label class="check" style="align-self:end"><input type="checkbox" id="pf-uniq" ${PF.uniq?"checked":""}> Un sottostante una volta sola</label>
+</div>
+${L.length?`<div class="stats">
+<div><div class="k">Investito</div><div class="v">${fmt(inv,0)} €</div><div class="s">${L.length} certificati · profilo ${esc(state.profile)}</div></div>
+<div><div class="k">Rendimento annuo</div><div class="v hi">${pct(w(c=>c.ytm))}</div><div class="s">medio pesato, se le barriere tengono</div></div>
+<div><div class="k">Cedole all'anno</div><div class="v">${fmt(inc,0)} €</div><div class="s">≈ ${fmt(inc/12,0)} € al mese · ${pct(inv?inc/inv*100:null)} sul capitale</div></div>
+<div><div class="k">Peggiore più vicino</div><div class="v ${cls(minD)}">${pct(minD)}</div><div class="s">dalla barriera</div></div>
+<div><div class="k">Prob. media di tenuta</div><div class="v ${pcls(w(c=>c.prob))}">${pct(w(c=>c.prob),0)}</div><div class="s">${allP!=null?`tutte insieme ≈ ${pct(allP,0)} (se indipendenti)`:"non nota per tutti"}</div></div>
+<div><div class="k">Costo spread</div><div class="v">${fmt(L.reduce((a,x)=>a+x.inv*(x.c.spread??0)/100,0),0)} €</div><div class="s">se rivendi subito al denaro</div></div>
+</div>
+<div class="panel"><div class="cap" style="margin-bottom:6px">Cedole attese nei prossimi 12 mesi · ≈ ${fmt(cal12,0)} € se i trigger vengono rispettati</div><div class="cal">${calSvg(M)}</div>
+<p class="note" style="margin:6px 0 0">Stima dalle frequenze e dalle prossime date di pagamento note; un richiamo anticipato chiude prima i flussi (e rimborsa il capitale).</p></div>
+<div class="panel pftab-wrap"><table class="pftab"><thead><tr><th class="l">Certificato</th><th>Rend.</th><th>Cedola</th><th>Dist.</th><th>Prob.</th><th>Lettera</th><th>Pezzi</th><th>Investito</th><th>Cedole/anno</th></tr></thead><tbody>
+${L.map(x=>`<tr class="r" data-open="${esc(x.c.isin)}"><td class="l t"><b>${esc(x.c.issuer||"")}</b> <span class="num note">${esc(x.c.isin)}</span><br><span class="note">${esc(x.c.unds.join(", "))}</span></td><td class="hi">${pct(x.c.ytm)}</td><td>${pct(x.c.couponPa,1)}</td><td class="${cls(x.c.dist)}">${pct(x.c.dist,0)}</td><td class="${pcls(x.c.prob)}">${probTxt(x.c)}</td><td>${fmt(x.unit)}</td><td>${x.q}</td><td>${fmt(x.inv,0)}</td><td>${fmt(x.inc,0)}</td></tr>`).join("")}</tbody></table></div>
+<div class="panel" style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${expoHtml("Esposizione per emittente",byIss,inv)}${expoHtml("Esposizione per sottostante",byUnd,inv)}</div>
+<div class="row"><button class="primary" id="pf-xls">Esporta in Excel</button><button id="pf-fav">★ Salva tutti nei preferiti</button></div>`:`<div class="panel empty">Nessun certificato adatto: servono prezzo, cedola e rendimento noti, non sotto barriera. Allarga i filtri o scegli "Risultati filtrati".</div>`}
+<p class="note">Selezione automatica e indicativa sui dati del radar: non è una raccomandazione d'investimento. Verifica sempre KID, term sheet e rischio emittente.</p>`;
+  window._PF=L;
+}
+function openPf(){$("#pf").hidden=false;document.body.style.overflow="hidden";renderPf()}
+document.addEventListener("change",e=>{const t=e.target;if(!t.id||!t.id.startsWith("pf-"))return;
+  PF={cap:Math.max(1000,+$("#pf-cap").value||PFD.cap),n:+$("#pf-n").value,iss:+$("#pf-iss").value,key:$("#pf-key").value,src:$("#pf-src").value,uniq:$("#pf-uniq").checked};ls.set("rc-pf",PF);renderPf()});
+document.addEventListener("click",e=>{
+  if(e.target.id==="pf-fav"){(window._PF||[]).forEach(x=>{if(!FAV[x.c.isin])FAV[x.c.isin]={ask:x.c.ask,at:new Date().toISOString()}});ls.set("rc-fav",FAV);render(false);toast("Salvati nei preferiti");return}
+  if(e.target.id==="pf-xls"){if(!window.XLSX){toast("Esportazione non disponibile");return}
+    const rows=(window._PF||[]).map(x=>({ISIN:x.c.isin,Emittente:x.c.issuer,Sottostanti:x.c.unds.join(", "),"Rend. annuo %":+(x.c.ytm??0).toFixed(2),"Cedola p.a. %":x.c.couponPa,Frequenza:freqTxt(x.c.freq),"Dist. barriera %":x.c.dist,"Prob. tenuta %":x.c.prob==null?null:+x.c.prob.toFixed(1),"Prezzo unitario €":+x.unit.toFixed(2),Pezzi:x.q,"Investito €":+x.inv.toFixed(2),"Cedole/anno €":+x.inc.toFixed(2),Scadenza:x.c.maturity||""}));
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),"Portafoglio");const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf]));a.download=`portafoglio-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+});
 
 /* ---------- dettaglio ---------- */
 async function loadDetail(isin){
@@ -855,7 +1049,7 @@ async function openDetail(isin){
   const d=$("#drawer"),b=$("#dbody");d.hidden=false;document.body.style.overflow="hidden";b.innerHTML=`<p class="note">Caricamento ${esc(isin)}…</p>`;
   b.innerHTML=await detailHtml(c);wireChart(b);b.querySelector("[data-close]").focus();
 }
-function closeDrawers(){$("#drawer").hidden=true;$("#cmp").hidden=true;document.body.style.overflow=""}
+function closeDrawers(){$("#drawer").hidden=true;$("#cmp").hidden=true;$("#pf").hidden=true;document.body.style.overflow=""}
 
 /* ---------- confronto ---------- */
 function renderCmpBar(){$("#cmpbar").hidden=!CMP.size;$("#cmptxt").textContent=`${CMP.size} da confrontare (max 4)`}
@@ -877,7 +1071,7 @@ const QUICK=[
   ["freq","Frequenza cedola",["","1m","3m","6m"],v=>freqTxt(v)],
   ["n","Sottostanti",["","single","multi"],v=>v==="single"?"Singolo":"Worst-of"],
 ];
-const QT=[["mem","Con memoria"],["active","Cedola in pagamento"],["cpn","Solo con cedola"],["probx","Solo con probabilità"],["illiq","Anche senza prezzo"]];
+const QT=[["front","Frontiera efficiente"],["mem","Con memoria"],["active","Cedola in pagamento"],["cpn","Solo con cedola"],["probx","Solo con probabilità"],["illiq","Anche senza prezzo"]];
 function renderQuick(){
   $("#quick").innerHTML=QUICK.map(([k,lab,vals,f])=>{const cur=state.f[k]??(SELF.includes(k)?"":null);
     const opts=[...vals];if(cur!==null&&cur!==""&&!opts.includes(cur))opts.push(cur);
@@ -939,7 +1133,9 @@ function render(recompute=true){
   if(!CERTS.length)return;
   if(!ROWS.length&&!ISIN){$("#results").innerHTML=`<div class="empty">Nessun certificato con questa ricerca e questi filtri. Togli qualche filtro dai chip in alto o usa "Azzera tutto".</div>`;vt=null;return}
   if(ISIN&&ROWS.length<=1){$("#results").innerHTML="";vt=null;return}
-  if(state.view==="table"&&innerWidth>=820)renderTable();else{vt=null;renderCards()}
+  MAP=null;
+  if(state.view==="map"){vt=null;renderMap()}else if(state.view==="table"&&innerWidth>=820)renderTable();else{vt=null;renderCards()}
+  $("#nb-list")?.classList.toggle("cur",state.view!=="map");$("#nb-map")?.classList.toggle("cur",state.view==="map");
 }
 async function renderIsinBox(){
   const box=$("#isinbox");
@@ -1054,7 +1250,8 @@ $("#sheet-apply").addEventListener("click",()=>{openSheet(false);scrollTo({top:0
 $("#sheet-reset").addEventListener("click",()=>{resetAll();toast("Filtri azzerati")});
 $("#export2").addEventListener("click",()=>$("#export").click());
 $("#bnav").addEventListener("click",e=>{const b=e.target.closest("[data-nav]");if(!b)return;const n=b.dataset.nav;
-  if(n==="top"){closeDrawers();openSheet(false);scrollTo({top:0,behavior:"smooth"})}
+  if(n==="list"||n==="map"){closeDrawers();openSheet(false);state.view=n==="map"?"map":"cards";ls.set("rc-view",state.view);render(false);scrollTo({top:0,behavior:"smooth"})}
+  else if(n==="pf")openPf();
   else if(n==="filters")openSheet(true);
   else if(n==="fav"){state.f.fav=!state.f.fav;update();scrollTo({top:0});toast(state.f.fav?"Solo preferiti":"Tutti i certificati")}});
 $("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render(false)});
@@ -1073,11 +1270,13 @@ document.addEventListener("click",e=>{
   const cb=e.target.closest("[data-cmpbtn]");if(cb){const i=cb.dataset.cmpbtn;toggleCmp(i);cb.classList.toggle("on",CMP.has(i));cb.textContent=CMP.has(i)?"✓ Confronto":"Confronta";return}
   const cy=e.target.closest("[data-copy]");if(cy){navigator.clipboard?.writeText(cy.dataset.copy).then(()=>toast("ISIN copiato: "+cy.dataset.copy)).catch(()=>toast(cy.dataset.copy));return}
   if(e.target.closest("a,input,label,select"))return;
-  const op=e.target.closest("[data-open]");if(op){$("#cmp").hidden=true;openDetail(op.dataset.open)}
+  const op=e.target.closest("[data-open]");if(op){$("#cmp").hidden=true;$("#pf").hidden=true;openDetail(op.dataset.open)}
 });
 document.addEventListener("change",e=>{const cp=e.target.closest("[data-cmp]");if(cp)toggleCmp(cp.dataset.cmp)});
 $("#drawer").addEventListener("click",e=>{if(e.target.id==="drawer")closeDrawers()});
 $("#cmp").addEventListener("click",e=>{if(e.target.id==="cmp")closeDrawers()});
+$("#pf").addEventListener("click",e=>{if(e.target.id==="pf")closeDrawers()});
+$("#b-pf").addEventListener("click",openPf);
 $("#cmpgo").addEventListener("click",openCmp);$("#cmpclr").addEventListener("click",()=>{CMP.clear();renderCmpBar();render(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawers();openSheet(false)}});
 addEventListener("hashchange",()=>{if(fromHash()){rescore();render()}});

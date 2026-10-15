@@ -37,7 +37,7 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 
 | Sorgente | Come |
 |---|---|
-| **Euronext** (elenco completo) | `scraper/euronext.py`: la directory prodotti di live.euronext.com (Euronext è proprietaria di Borsa Italiana) espone in JSON paginato tutti gli strumenti di SeDeX e Cert-X: `POST /it/product_directory/data/warrants-milan?mics=ETLX,SEDX` (parametri DataTables `start`/`length`, 500 righe per pagina, 1 s di pausa). Ogni riga ha ISIN, mercato, simbolo, codice emittente, sottostante, tipologia di borsa, strike, scadenza, **denaro/lettera**. A ottobre 2026: 42.394 strumenti, di cui 29.031 a leva (in `docs/data/leva.json`, caricati dal sito solo su richiesta) e 13.363 d'investimento. Emittente, sottostanti, scadenza e link valgono solo dove l'archivio non ha già i dati più ricchi delle API degli emittenti. Funziona; la ricerca avanzata di Borsa Italiana invece non espone un elenco interrogabile (moduli senza risultati JSON) |
+| **Euronext** (elenco completo) | `scraper/euronext.py`: la directory prodotti di live.euronext.com (Euronext è proprietaria di Borsa Italiana) espone in JSON paginato tutti gli strumenti di SeDeX e Cert-X: `POST /it/product_directory/data/warrants-milan?mics=ETLX,SEDX` (parametri DataTables `start`/`length`, 500 righe per pagina, 4 pagine in parallelo con 3 tentativi ciascuna). Ogni riga ha ISIN, mercato, simbolo, codice emittente, sottostante, tipologia di borsa, strike, scadenza, **denaro/lettera**. A ottobre 2026: 42.394 strumenti, di cui 29.031 a leva (in `docs/data/leva.json`, caricati dal sito solo su richiesta) e 13.363 d'investimento. Emittente, sottostanti, scadenza e link valgono solo dove l'archivio non ha già i dati più ricchi delle API degli emittenti. Funziona; la ricerca avanzata di Borsa Italiana invece non espone un elenco interrogabile (moduli senza risultati JSON) |
 | Vontobel | tabelle HTML delle liste prodotti (cash collect, multi cash collect, express, bonus cap, fixed cash collect, phoenix) |
 | Leonteq | API `product-model/search` paginata; `issuer` = emittente reale, `platform` = "Leonteq". Il sito è protetto da Incapsula, che blocca spesso i runner GitHub: al massimo una ricerca completa al giorno (`scraper/leonteq_state.json`), pause di 2,5-5 s tra le pagine; se bloccata restano i dati dell'ultima ricerca riuscita e la sorgente risulta "bloccata" |
 | BNP Paribas | API `productlist` paginata, tutto il gruppo investimento (cash collect, phoenix, express, bonus cap, protetti) |
@@ -48,7 +48,7 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | BNP Paribas (`bnp_dettaglio`) | per i certificati BNP che arrivano solo da Euronext: GET pubbliche per ISIN `apiv2/api/v1/product/keyvaluerow/<ISIN>` (cedola p.a., barriera, trigger, memoria, frequenza) e `underlyingbasket/<ISIN>` (sottostanti con strike e distanze). A rotazione, 4 richieste in parallelo, 8 minuti per run, prima i certificati senza cedola; ogni ISIN si rilegge dopo 7 giorni (`scraper/bnp_detail_state.json`) |
 | Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
 | Citigroup | API pubblica CitiFirst (`citivelocity.com/rcs/eppublic/v1/content/citifirst/product?...country=it`, senza parametri di paginazione): cedola (campo `manualField` o "Cpn: x%" nel nome), frequenza dal calendario dei richiami, barriera, strike dei sottostanti, prossimo richiamo, memoria. Le distanze si ricalcolano da strike e chiusure (`risk.py`), solo se strike e chiusura sono confrontabili |
-| Borsa Italiana (`borsa_scheda`) | schede per ISIN (`/scheda/<ISIN>-SEDX.html`, Cert-X `/eurotlx/scheda/<ISIN>-ETLX.html`) per i certificati ancora senza barriera: barriera capitale %, emittente (sostituisce i codici Euronext ignoti), nome commerciale (memoria), sottostanti. Niente cedola: le schede non la riportano. A rotazione, 1 richiesta/s, 12 minuti per run (~650 schede), prima cash collect/phoenix poi express; ripresa da `scraper/scheda_state.json` |
+| Borsa Italiana (`borsa_scheda`) | schede per ISIN (`/scheda/<ISIN>-SEDX.html`, Cert-X `/eurotlx/scheda/<ISIN>-ETLX.html`) per i certificati ancora senza barriera: barriera capitale %, emittente (sostituisce i codici Euronext ignoti), nome commerciale (memoria), sottostanti. Niente cedola: le schede non la riportano. A rotazione, 1 richiesta/s, 5 minuti per run (~280 schede), prima cash collect/phoenix poi express; ripresa da `scraper/scheda_state.json` |
 
 ### Verifica
 
@@ -122,6 +122,22 @@ Il sito calcola nel browser, per ogni certificato:
 
 - **Obiettivi rapidi**: rendita mensile, sotto la pari, scadenza breve, memoria, cedola in pagamento, peggiore lontano.
 - I prezzi anomali (< 1 o > 300% del nominale) sono esclusi; il robot scarta anche le lettere oltre 5 volte il nominale.
+
+## Il sito
+
+- **Profili** a un tocco (prudente, bilanciato, aggressivo) e **filtri a tocchi** (rendimento, distanza, probabilità, spread,
+  scadenza, frequenza, caratteristiche); "Altri filtri" per i valori esatti.
+- **Tabella** (desktop), **Schede** e **Mappa**. La Mappa è un grafico a dispersione: distanza del peggiore dalla barriera
+  in orizzontale, rendimento annuo in verticale, colore = probabilità di tenuta; in grigio il resto del mercato, tratteggiata la
+  zona dei filtri, in oro la **frontiera efficiente** (i certificati che nessun altro risultato batte insieme su rendimento e
+  distanza), elencata sotto il grafico. La frontiera è anche un filtro ("Frontiera efficiente") e un'etichetta sulle schede.
+- **Portafoglio**: sceglie N certificati dai risultati o dai preferiti (per punteggio, cedola e distanza, rendimento o
+  probabilità), con un massimo per emittente e senza ripetere lo stesso sottostante, capitale in parti uguali; mostra
+  investito, rendimento medio, cedole annue e mensili, peggiore più vicino, probabilità media e congiunta (se indipendenti),
+  costo dello spread, calendario delle cedole a 12 mesi, esposizione per emittente e sottostante; esporta in Excel.
+- Scheda certificato con quattro numeri chiave, scenari, motivazione del punteggio, distanze per sottostante e storico prezzo;
+  preferiti con avvisi, confronto fino a 4, esportazione in Excel. Sul telefono: barra in basso (Risultati, Mappa, Filtri,
+  Preferiti, Portafoglio).
 
 ## Note
 

@@ -1470,7 +1470,7 @@ async def citi_api(DISC, src, NOW, ctx):
 # la run successiva riparte dagli ISIN non ancora visitati (scraper/scheda_state.json).
 
 SCHEDA_STATE = Path(__file__).resolve().parent / "scheda_state.json"
-SCHEDA_BUDGET_S = int(os.environ.get("SCHEDA_BUDGET_MIN", "12")) * 60
+SCHEDA_BUDGET_S = int(os.environ.get("SCHEDA_BUDGET_MIN", "5")) * 60  # le schede degli emittenti coprono ormai quasi tutto
 SCHEDA_URL = {"SeDeX": "https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/{}-SEDX.html?lang=it",
               "Cert-X": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/{}-ETLX.html?lang=it"}
 LEGAL_NAMES = [(r"vontobel", "Vontobel"), (r"bnp", "BNP Paribas"), (r"unicredit|hvb|hypovereins", "UniCredit"),

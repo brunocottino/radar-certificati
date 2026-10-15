@@ -128,7 +128,10 @@ def form(start, length, draw):
     return urlencode(p)
 
 
-async def fetch_all(ctx, log, max_pages=None, pause_ms=1000):
+PARALLEL = 4
+
+
+async def fetch_all(ctx, log, max_pages=None, pause_ms=800):
     """Scarica tutte le righe. Le richieste partono dalla pagina Euronext (cookie e header del browser)."""
     page = await ctx.new_page()
     out = {}
@@ -153,35 +156,48 @@ async def fetch_all(ctx, log, max_pages=None, pause_ms=1000):
                 except Exception:
                     pass
                 break
-        total, start, draw = None, 0, 1
-        while total is None or start < total:
-            res = await page.evaluate("""async ([url, body]) => {
-                const r = await fetch(url, {method: 'POST', body, credentials: 'include',
-                  headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-requested-with': 'XMLHttpRequest'}});
-                return [r.status, await r.text()];
-            }""", [api, form(start, PAGE, draw)])
-            st, txt = res
-            if st != 200:
-                log.setdefault("errors", []).append({"start": start, "status": st, "body": txt[:300]})
-                if len(log["errors"]) > 5:
-                    break
-                await page.wait_for_timeout(5000)
-                continue
-            d = json.loads(txt)
-            total = int(d.get("iTotalRecords") or d.get("recordsTotal") or 0)
-            rows = d.get("aaData") or d.get("data") or []
+        # prima pagina: dà il totale; poi le altre a gruppi di PARALLEL in parallelo (prima erano in fila: 15 minuti)
+        async def get(start, draw):
+            for attempt in range(3):
+                st, txt = await page.evaluate("""async ([url, body]) => {
+                    const r = await fetch(url, {method: 'POST', body, credentials: 'include',
+                      headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-requested-with': 'XMLHttpRequest'}});
+                    return [r.status, await r.text()];
+                }""", [api, form(start, PAGE, draw)])
+                if st == 200:
+                    try:
+                        return json.loads(txt)
+                    except ValueError:
+                        pass
+                log.setdefault("errors", []).append({"start": start, "status": st, "attempt": attempt, "body": txt[:200]})
+                await page.wait_for_timeout(4000 * (attempt + 1))
+            return None
+
+        def take(d, start):
+            rows = (d or {}).get("aaData") or (d or {}).get("data") or []
             for r in rows:
                 c = parse_row(r)
                 if c:
                     out[c["isin"]] = c
             log.setdefault("pages", []).append({"start": start, "rows": len(rows)})
-            if not rows:
-                break
-            start += len(rows)
-            draw += 1
-            if max_pages and draw > max_pages:
-                break
+
+        first = await get(0, 1)
+        if first is None:
+            raise RuntimeError("prima pagina Euronext non disponibile")
+        total = int(first.get("iTotalRecords") or first.get("recordsTotal") or 0)
+        take(first, 0)
+        starts = list(range(PAGE, total, PAGE))
+        if max_pages:
+            starts = starts[:max_pages - 1]
+        for k in range(0, len(starts), PARALLEL):
+            batch = starts[k:k + PARALLEL]
+            res = await asyncio.gather(*(get(st, 2 + k + n) for n, st in enumerate(batch)))
+            for st, d in zip(batch, res):
+                take(d, st)
             await page.wait_for_timeout(pause_ms)
+        missing = [p["start"] for p in log["pages"] if not p["rows"]]
+        if missing:
+            log["missing_pages"] = missing
         log["total"] = total
     finally:
         await page.close()
