@@ -132,9 +132,8 @@
   "yahooName": "A2A S.p.A."
  },
  "abbott laboratories": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US0028241000",
   "manual": null,
   "name": "Abbott Laboratories",
   "score": 1.0,
@@ -283,6 +282,12 @@
   "type": "EQUITY",
   "yahooName": "Adobe Inc."
  },
+ "advanced": {
+  "isin": null,
+  "manual": null,
+  "name": "Advanced",
+  "ticker": null
+ },
  "advanced micro devices": {
   "checkedAt": "2026-10-15",
   "exchange": "NMS",
@@ -406,6 +411,12 @@
   "isin": "FR0000120073",
   "manual": null,
   "name": "Air Liquide SA",
+  "ticker": null
+ },
+ "air products and chemicals": {
+  "isin": null,
+  "manual": null,
+  "name": "Air Products and Chemicals Inc",
   "ticker": null
  },
  "airbnb": {
@@ -665,6 +676,12 @@
   "type": "EQUITY",
   "yahooName": "American International Group, Inc."
  },
+ "american international i": {
+  "isin": null,
+  "manual": null,
+  "name": "American International Group I",
+  "ticker": null
+ },
  "amgen": {
   "checkedAt": "2026-10-15",
   "exchange": "NMS",
@@ -835,9 +852,8 @@
   "yahooName": "Apple Inc."
  },
  "applied optoelectronics": {
-  "checkedAt": "2026-10-09",
   "exchange": "NGM",
-  "isin": null,
+  "isin": "US03823U1025",
   "manual": null,
   "name": "Applied Optoelectronics Inc.",
   "score": 1.0,
@@ -1197,6 +1213,12 @@
   "type": "EQUITY",
   "yahooName": "Banca Mediolanum S.p.A."
  },
+ "banca monte dei paschi di sien": {
+  "isin": null,
+  "manual": null,
+  "name": "Banca Monte dei Paschi di Sien",
+  "ticker": null
+ },
  "banca monte dei paschi di siena": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -1261,6 +1283,12 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "banco bilbao vizcaya argentari": {
+  "isin": null,
+  "manual": null,
+  "name": "Banco Bilbao Vizcaya Argentari",
+  "ticker": null
  },
  "banco bilbao vizcaya argentaria": {
   "checkedAt": "2026-10-15",
@@ -2518,6 +2546,12 @@
   "type": "EQUITY",
   "yahooName": "Chevron Corporation"
  },
+ "chocoladefabriken lindt spruengli": {
+  "isin": null,
+  "manual": null,
+  "name": "Chocoladefabriken Lindt & Spruengli",
+  "ticker": null
+ },
  "chugai pharmaceutical": {
   "checkedAt": "2026-10-09",
   "exchange": "JPX",
@@ -3029,9 +3063,8 @@
   "yahooName": null
  },
  "cvs health": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US1266501006",
   "manual": null,
   "name": "CVS Health Corp.",
   "score": 1.0,
@@ -3721,9 +3754,8 @@
   "yahooName": "Enphase Energy, Inc."
  },
  "eos energy enterprises": {
-  "checkedAt": "2026-10-09",
   "exchange": "NCM",
-  "isin": null,
+  "isin": "US29415C1018",
   "manual": null,
   "name": "Eos Energy Enterprises Inc",
   "score": 1.0,
@@ -5238,6 +5270,12 @@
   "type": "EQUITY",
   "yahooName": "Gilead Sciences, Inc."
  },
+ "givaudan": {
+  "isin": null,
+  "manual": null,
+  "name": "Givaudan SA",
+  "ticker": null
+ },
  "glaxosmithkline nwe": {
   "checkedAt": "2026-10-15",
   "exchange": "LSE",
@@ -5671,6 +5709,12 @@
   "type": "INDEX",
   "yahooName": "Hang Seng TECH Index"
  },
+ "hubspot": {
+  "isin": null,
+  "manual": null,
+  "name": "HubSpot Inc.",
+  "ticker": null
+ },
  "hugo boss": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -5683,9 +5727,8 @@
   "yahooName": "Hugo Boss AG"
  },
  "humana": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US4448591028",
   "manual": null,
   "name": "Humana Inc",
   "score": 1.0,
@@ -5934,6 +5977,12 @@
   "type": "EQUITY",
   "yahooName": "International Business Machines Corporation"
  },
+ "international flavors fragra": {
+  "isin": null,
+  "manual": null,
+  "name": "International Flavors & Fragra",
+  "ticker": null
+ },
  "intesa sanpaolo": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -6088,6 +6137,30 @@
   "ticker": "IBIT",
   "type": "ETF",
   "yahooName": "iShares Bitcoin Trust ETF"
+ },
+ "ishares china": {
+  "isin": null,
+  "manual": null,
+  "name": "iShares China",
+  "ticker": null
+ },
+ "ishares china large cap etf": {
+  "isin": null,
+  "manual": null,
+  "name": "iShares China Large-Cap ETF",
+  "ticker": null
+ },
+ "ishares china large cap etf 600 utilities pri": {
+  "isin": null,
+  "manual": null,
+  "name": "iShares China Large-Cap ETF 600 Utilities Pri",
+  "ticker": null
+ },
+ "ishares china large cap etf select dividend 30": {
+  "isin": null,
+  "manual": null,
+  "name": "iShares China Large-Cap ETF Select Dividend 30",
+  "ticker": null
  },
  "ishares china large cap ucits etf": {
   "checkedAt": "2026-10-09",
@@ -12400,6 +12473,12 @@
   "type": "INDEX",
   "yahooName": "KOSPI 200 Index"
  },
+ "kraft": {
+  "isin": null,
+  "manual": null,
+  "name": "The Kraft",
+  "ticker": null
+ },
  "kraft heinz": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -12519,6 +12598,12 @@
   "ticker": "OR.PA",
   "type": "EQUITY",
   "yahooName": "L'Oréal S.A."
+ },
+ "l oreal american tobacco": {
+  "isin": null,
+  "manual": null,
+  "name": "L'Oreal SA American Tobacco PLC",
+  "ticker": null
  },
  "l oreal s a": {
   "checkedAt": "2026-10-09",
@@ -13236,9 +13321,8 @@
   "yahooName": "Li Auto Inc."
  },
  "li ning": {
-  "checkedAt": "2026-10-09",
   "exchange": "HKG",
-  "isin": null,
+  "isin": "KYG5496K1242",
   "manual": null,
   "name": "Li Ning Company Limited",
   "score": 1.0,
@@ -13350,6 +13434,12 @@
   "ticker": "MC.PA",
   "type": "EQUITY",
   "yahooName": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne"
+ },
+ "lvmh moet hennessy louis vuitt": {
+  "isin": null,
+  "manual": null,
+  "name": "LVMH Moet Hennessy Louis Vuitt",
+  "ticker": null
  },
  "lvmh moet hennessy louis vuitton": {
   "checkedAt": "2026-10-09",
@@ -13499,9 +13589,8 @@
   "yahooName": "Mediobanca Banca di Credito Finanziario S.p.A."
  },
  "meituan": {
-  "checkedAt": "2026-10-09",
   "exchange": "HKG",
-  "isin": null,
+  "isin": "KYG596691041",
   "manual": null,
   "name": "Meituan",
   "score": 1.0,
@@ -13513,6 +13602,12 @@
   "isin": "US58733R1023",
   "manual": null,
   "name": "MercadoLibre Inc.",
+  "ticker": null
+ },
+ "mercedes": {
+  "isin": null,
+  "manual": null,
+  "name": "Mercedes-",
   "ticker": null
  },
  "mercedes benz": {
@@ -13669,9 +13764,8 @@
   "yahooName": "Moderna, Inc."
  },
  "molina healthcare": {
-  "checkedAt": "2026-10-09",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US60855R1005",
   "manual": null,
   "name": "Molina Healthcare Inc",
   "score": 1.0,
@@ -14499,6 +14593,12 @@
   "type": "EQUITY",
   "yahooName": "Novo Nordisk A/S"
  },
+ "novo nordisk a": {
+  "isin": null,
+  "manual": null,
+  "name": "Novo Nordisk A",
+  "ticker": null
+ },
  "novo nordisk a s": {
   "checkedAt": "2026-10-15",
   "exchange": "CPH",
@@ -14509,6 +14609,12 @@
   "ticker": "NOVO-B.CO",
   "type": "EQUITY",
   "yahooName": "Novo Nordisk A/S"
+ },
+ "novo nordisk a s american tobacco": {
+  "isin": null,
+  "manual": null,
+  "name": "Novo Nordisk A/S American Tobacco PLC",
+  "ticker": null
  },
  "novo nordisk a s b": {
   "checkedAt": "2026-10-09",
@@ -17327,9 +17433,8 @@
   "yahooName": null
  },
  "technip energies n v": {
-  "checkedAt": "2026-10-09",
   "exchange": "PAR",
-  "isin": null,
+  "isin": "NL0014559478",
   "manual": null,
   "name": "Technip Energies N.V.",
   "score": 1.0,
@@ -18653,9 +18758,8 @@
   "yahooName": "Zalando SE"
  },
  "zijin mining": {
-  "checkedAt": "2026-10-09",
   "exchange": "HKG",
-  "isin": null,
+  "isin": "CNE100000502",
   "manual": null,
   "name": "Zijin Mining Group Co.",
   "score": 1.0,
