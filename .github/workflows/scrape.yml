@@ -47,6 +47,7 @@ jobs:
         run: |
           pip install playwright==1.47.0 numpy==2.1.3
           python -m playwright install --with-deps chromium
+          sudo apt-get install -y -q poppler-utils > /dev/null  # pdftotext per i term sheet Marex
       - name: Esegui robot
         if: steps.cal.outputs.open == 'true'
         run: python scraper/run.py ${{ github.event.inputs.sources }}
@@ -85,7 +86,7 @@ jobs:
         run: |
           git config user.name "radar-bot"
           git config user.email "radar-bot@users.noreply.github.com"
-          git add docs/data docs/api scraper/underlyings_map.json $(ls scraper/risk_state.json scraper/leonteq_state.json scraper/scheda_state.json scraper/bnp_detail_state.json scraper/intesa_detail_state.json scraper/vontobel_detail_state.json 2>/dev/null)
+          git add docs/data docs/api scraper/underlyings_map.json $(ls scraper/risk_state.json scraper/leonteq_state.json scraper/scheda_state.json scraper/bnp_detail_state.json scraper/intesa_detail_state.json scraper/vontobel_detail_state.json scraper/marex_detail_state.json 2>/dev/null)
           git diff --cached --quiet || git commit -m "Dati certificati $(date -u +%F)"
           git pull --rebase -q origin "${GITHUB_REF_NAME}"
           git push

@@ -202,7 +202,7 @@ def detail_queue(certs, issuer, state, days=7):
     return q
 
 
-async def rotate(DISC, src, issuer, state_path, budget_s, one, log):
+async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7):
     """Rotazione delle schede per ISIN di un emittente: 4 richieste in parallelo entro il budget di tempo.
     one(c) restituisce il certificato arricchito, None se la scheda non c'è, o solleva un'eccezione."""
     import time as _time
@@ -210,7 +210,7 @@ async def rotate(DISC, src, issuer, state_path, budget_s, one, log):
     from run import DATA
     certs = json.loads(DATA.read_text()).get("certs", []) if DATA.exists() else []
     st = json.loads(state_path.read_text()) if state_path.exists() else {}
-    todo = detail_queue(certs, issuer, st)
+    todo = detail_queue(certs, issuer, st, days)
     log.update({"queue": len(todo), "read": 0, "withCoupon": 0, "missing": 0, "errors": 0, "samples": []})
     out, t0 = [], _time.time()
 
@@ -389,6 +389,142 @@ async def vontobel_details(DISC, src, NOW, ctx):
         return vontobel_cert(await r.text(), c)
 
     return await rotate(DISC, src, "Vontobel", VONTOBEL_DETAIL_STATE, int(os.environ.get("VONTOBEL_DETAIL_BUDGET_MIN", "6")) * 60, one, {})
+
+
+# ---------------------------------------------------------------- Marex: term sheet per ISIN
+# Marex non pubblica dati di prodotto, solo documenti: fp.marex.com/api/<ISIN> elenca i file e il term sheet
+# (TS-<ISIN>-...PDF) ha sempre la stessa impaginazione: nominale, tabella sottostanti (strike e livello barriera
+# con la % nell'intestazione), tabella cedole (barriera cedola, tasso per periodo, date), tabella autocall.
+# Testo estratto con pdftotext -layout (poppler-utils). Distanze: le ricalcola risk.py da strike e chiusure.
+
+MAREX_DETAIL_STATE = Path(__file__).resolve().parent / "marex_detail_state.json"
+MAREX = "https://fp.marex.com"
+MONTHS_EN = {m: i + 1 for i, m in enumerate(["january", "february", "march", "april", "may", "june", "july",
+                                             "august", "september", "october", "november", "december"])}
+
+
+def en_date(s):
+    m = re.match(r"(\d{1,2}) ([A-Za-z]+) (\d{4})", s.strip())
+    if not m or m.group(2).lower() not in MONTHS_EN:
+        return None
+    return f"{m.group(3)}-{MONTHS_EN[m.group(2).lower()]:02d}-{int(m.group(1)):02d}"
+
+
+def marex_ts(text, title=""):
+    """Dati dal testo (pdftotext -layout) di un term sheet Marex."""
+    from datetime import date as _date
+    lines, prev = [], None
+    for l in text.splitlines():  # il PDF ha il testo sovrapposto due volte: righe consecutive identiche
+        if l.strip() and l != prev:
+            lines.append(l)
+        prev = l
+    t = "\n".join(lines)
+    out = {}
+    m = re.search(r"Nominal Amount\s+([A-Z]{3})\s+([\d,.]+)", t)
+    if m:
+        out["nominal"] = float(m.group(2).replace(",", ""))
+        out["currency"] = m.group(1)
+    m = re.search(r"Final Fixing Date\s+(\d{1,2} [A-Za-z]+ \d{4})", t)
+    out["maturity"] = en_date(m.group(1)) if m else None
+    out["barrierType"] = "scadenza" if re.search(r"European observation", t) else ("continua" if re.search(r"American observation|continuous", t, re.I) else None)
+    # tabella sottostanti: colonne dalla riga d'intestazione
+    unds = []
+    hi = next((i for i, l in enumerate(lines) if re.search(r"\bUnderlying\b", l) and "Related" in l), None)
+    if hi is not None:
+        h = lines[hi]
+        c0, c1 = h.index("Underlying"), h.index("Related")
+        pcts = []
+        for l in lines[hi + 1:hi + 3]:
+            pcts += re.findall(r"\(([\d.]+)%\)\*", l)
+        bar = float(pcts[-1]) if len(pcts) >= 3 else None
+        cur = None
+        for l in lines[hi + 1:hi + 60]:
+            if l.lstrip().startswith("*") or re.match(r"\s*[A-Z ]{6,}$", l) and "UNDERLYING" not in l and cur:
+                break
+            mi = re.match(r"\s*(\d+)\s", l)
+            if mi and len(l) > c1 and re.search(r"[A-Z]{3} [\d,.]+", l):
+                vals = re.findall(r"\b[A-Z]{3} ([\d,.]+)", l)
+                cur = {"name": re.sub(r"^\s*\d+\s+", "", l[:c1]).strip(), "tk": (re.search(r"([A-Z0-9./]+ [A-Z]{2})(?: Equity| Index)?", l[c1:]) or [None, None])[1],
+                       "strike": float(vals[1].replace(",", "")) if len(vals) >= 2 else None}
+                unds.append(cur)
+            elif cur and len(l) > c0 and l[:c0].strip() == "":
+                frag = l[max(c0 - 2, 0):c1].strip()
+                if frag and not re.search(r"Exchange|Equity|Index", frag):
+                    cur["name"] = (cur["name"] + " " + frag).strip()
+        if bar:
+            out["barrierPct"] = bar
+    if unds:
+        out["underlyings"] = [u["name"] for u in unds]
+        out["underlyingsDetail"] = [clean({"name": u["name"], "strike": u["strike"]}) for u in unds]
+    # cedole: n, barriera cedola %, tasso %, data determinazione, data pagamento
+    ci, ei = t.find("Coupon Payment"), t.find("EARLY REDEMPTION")
+    csec = t[ci:ei if ei > ci else len(t)] if ci >= 0 else ""
+    rows = re.findall(r"^\s+\d+\s+([\d.]+)%\s+([\d.]+)%\s+(\d{1,2} [A-Za-z]+ \d{4})\s+\d{1,2} [A-Za-z]+ \d{4}\s*$", csec, re.M)
+    today = _date.today().isoformat()
+    if rows:
+        ds = [en_date(r[2]) for r in rows]
+        if len(ds) >= 2 and ds[0] and ds[-1]:
+            months = max(1, round((_date.fromisoformat(ds[-1]) - _date.fromisoformat(ds[0])).days / 30.44 / (len(ds) - 1)))
+        else:
+            months = 12
+        rates = [float(r[1]) for r in rows]
+        out["couponPa"] = round(sorted(rates)[len(rates) // 2] * 12 / months, 4)
+        out["freq"] = months_to_freq(months)
+        out["triggerPct"] = float(rows[-1][0])
+        out["nextCouponDate"] = next((d for d in ds if d and d >= today), None)
+        out["memory"] = True if re.search(r"memory", title + " " + t[:3000], re.I) else None
+    # autocall: N, livello %, importo %, data osservazione, data rimborso
+    ac = re.findall(r"^\s+\d+\s+([\d.]+)%\s+([\d.]+)%\s+(\d{1,2} [A-Za-z]+ \d{4})\s+\d{1,2} [A-Za-z]+ \d{4}\s*$",
+                    t[t.find("EARLY REDEMPTION"):] if "EARLY REDEMPTION" in t else "", re.M)
+    if ac:
+        out["callable"] = "Autocall"
+        out["nextCallDate"] = next((en_date(r[2]) for r in ac if (en_date(r[2]) or "") >= today), None)
+        if "couponPa" not in out:  # express: premio crescente nell'importo di rimborso anticipato
+            amts = [float(r[1]) for r in ac]
+            ds = [en_date(r[2]) for r in ac]
+            if len(amts) >= 2 and amts[-1] > amts[0] and ds[0] and ds[-1]:
+                yrs = (_date.fromisoformat(ds[-1]) - _date.fromisoformat(ds[0])).days / 365.25
+                if yrs > 0:
+                    out["couponPa"] = round((amts[-1] - amts[0]) / yrs, 4)
+                    out["couponNote"] = "premio express annualizzato (pagato solo al richiamo)"
+    return {k: v for k, v in out.items() if v not in (None, "", [])}
+
+
+async def marex_details(DISC, src, NOW, ctx):
+    import subprocess
+    import tempfile
+    src = {**src, "_now": NOW}
+
+    async def one(c):
+        r = await ctx.request.get(f"{MAREX}/api/{c['isin']}", timeout=30000)
+        if r.status == 404:
+            return None
+        if r.status != 200:
+            raise RuntimeError(f"api HTTP {r.status}")
+        d = json.loads(await r.text())
+        docs = [x for x in d.get("documents") or [] if re.match(r"TS-", x.get("fileName") or "")]
+        if not docs:
+            return None
+        doc = max(docs, key=lambda x: x.get("id") or 0)  # l'ultima versione del term sheet
+        from urllib.parse import quote
+        pr = await ctx.request.get(f"{MAREX}/file/{c['isin']}/{doc['id']}/{quote(doc['fileName'])}", timeout=60000)
+        body = await pr.body()
+        if pr.status != 200 or body[:4] != b"%PDF":
+            raise RuntimeError(f"pdf HTTP {pr.status}")
+        with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+            f.write(body)
+            f.flush()
+            text = await asyncio.to_thread(lambda: subprocess.run(["pdftotext", "-layout", f.name, "-"], capture_output=True,
+                                                                    text=True, timeout=60).stdout)
+        out = marex_ts(text, d.get("title") or "")
+        if not out:
+            return None
+        out["type"] = re.sub(r"^\d+m\s+", "", (d.get("title") or "").split(" on ")[0]) or None
+        out["url"] = f"{MAREX}/it/"
+        return out
+
+    return await rotate(DISC, src, "Marex", MAREX_DETAIL_STATE, int(os.environ.get("MAREX_DETAIL_BUDGET_MIN", "6")) * 60, one, {},
+                        days=30)
 
 
 # ---------------------------------------------------------------- Intesa Sanpaolo: dettaglio per ISIN

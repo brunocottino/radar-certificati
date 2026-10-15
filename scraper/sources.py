@@ -16,6 +16,7 @@ SOURCES = [
     {"name": "bnp_cash_collect", "issuer": "BNP Paribas", "url": "https://investimenti.bnpparibas.it/prodotti-di-investimento/cash-collect/", "max_clicks": 0, "parser": "bnp_api"},
     {"name": "bnp_dettaglio", "issuer": "BNP Paribas", "url": "https://investimenti.bnpparibas.it/product-details/XS2502585859/", "skip_page": True, "parser": "bnp_details"},
     {"name": "vontobel_dettaglio", "issuer": "Vontobel", "url": "https://markets.vontobel.com/it-it/prodotti", "skip_page": True, "parser": "vontobel_details"},
+    {"name": "marex_dettaglio", "issuer": "Marex", "url": "https://fp.marex.com/it/", "skip_page": True, "parser": "marex_details"},
     {"name": "intesa_dettaglio", "issuer": "Intesa Sanpaolo", "url": "https://www.intesasanpaolo.prodottiequotazioni.com/", "skip_page": True, "parser": "intesa_details"},
     {"name": "socgen", "issuer": "Société Générale", "url": "https://www.prodotti.societegenerale.it/product-search", "max_clicks": 0, "parser": "socgen_api"},
     {"name": "marex", "issuer": "Marex", "url": "https://fp.marex.com/", "max_clicks": 0, "parser": "marex_probe"},
