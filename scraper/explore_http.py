@@ -19,6 +19,10 @@ async def main():
             try:
                 r = await req.get(url, timeout=60000, max_redirects=0)
                 body = await r.body()
+                if body[:4] == b"%PDF":
+                    (OUT / f"{name}.pdf").write_bytes(body)
+                    print(name, r.status, len(body), "pdf", flush=True)
+                    continue
                 txt = body.decode("utf-8", "replace")
                 if "charset=windows-1252" in txt[:3000].lower() or "iso-8859" in txt[:3000].lower():
                     txt = body.decode("cp1252", "replace")
