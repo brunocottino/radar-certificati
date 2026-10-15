@@ -222,7 +222,7 @@ tr.sp td{height:auto;border:none;padding:0}
       <div class="row">
         <span class="count" id="count" aria-live="polite"></span>
         <label class="note" style="display:flex;gap:6px;align-items:center">Ordina<select id="sortsel" style="width:auto;padding:5px 8px">
-          <option value="score">Punteggio</option><option value="ytm">Rendimento annuo</option><option value="er">Rendimento atteso</option>
+          <option value="score">Punteggio</option><option value="cd">Cedola e distanza</option><option value="ytm">Rendimento annuo</option><option value="er">Rendimento atteso</option>
           <option value="prob">Prob. tenuta barriera</option><option value="dist">Distanza del peggiore</option><option value="sigma">Margine in dev. std</option>
           <option value="coupon">Cedola</option><option value="price">Prezzo (più basso)</option><option value="mat">Scadenza (più vicina)</option><option value="spread">Spread (più stretto)</option></select></label>
         <button id="export" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
@@ -310,6 +310,7 @@ tr.sp td{height:auto;border:none;padding:0}
     <dt>Softcallable</dt><dd>L'emittente può decidere di rimborsare in anticipo (callable emittente): di solito lo fa quando il certificato gli costa troppo.</dd>
     <dt>Denaro / lettera</dt><dd>Prezzo a cui il market maker compra (denaro) e vende (lettera). Si compra alla lettera; la differenza è lo spread.</dd>
     <dt>Rendimento annuo</dt><dd>Rendimento annuo a scadenza al prezzo lettera: cedole più differenza tra rimborso (100) e prezzo, divisa per gli anni residui (almeno 3 mesi). Sotto barriera il rimborso è stimato al livello attuale del peggiore. "!" = oltre il 40%: il mercato prezza una perdita probabile. È la soglia dei profili: prudente 8%, bilanciato 12%, aggressivo 16%.</dd>
+    <dt>Cedola e distanza</dt><dd>Ordinamento: rendimento annuo × distanza del peggiore dalla barriera / 50% (oltre il 50% conta pieno). Premia chi paga molto con la barriera lontana; i rendimenti sospetti (oltre 40%) restano fuori.</dd>
     <dt>Rendimento atteso</dt><dd>Media, pesata con la probabilità di tenuta, tra il rendimento se la barriera tiene e una stima se viene rotta (rimborso ≈ 85% del livello barriera, metà delle cedole). Con "~" la probabilità non è nota: si usa il rendimento a scadenza (al massimo 25%) scontato in base alla distanza del peggiore.</dd>
     <dt>Punteggio</dt><dd>0-100, somma pesata secondo il profilo di rendimento annuo (pieno a 14% prudente, 20% bilanciato, 28% aggressivo), sicurezza del peggiore, affidabilità della cedola, liquidità e qualità (classe dell'emittente, memoria, dati completi). Apri la scheda per vedere il dettaglio.</dd>
     <dt>Classe emittente</dt><dd>A, B, C: classe indicativa ricavata dai rating pubblici della capogruppo. Non è un rating ufficiale: verificare sempre.</dd>
@@ -431,6 +432,8 @@ function enrich(c){
   r.ytmHigh=r.ytm!=null&&r.ytm>40; // rendimento "troppo bello": il mercato prezza una perdita probabile
   // margine del peggiore in deviazioni standard fino a scadenza
   r.sigma=(r.wvol&&r.dist!=null&&r.dist<100&&r.years)?Math.log(1/(1-r.dist/100))/(r.wvol/100*Math.sqrt(r.years)):null;
+  // cedola e distanza: rendimento annuo pesato per quanto è lontano il peggiore dalla barriera (pieno dal 50%)
+  r.cdScore=(r.ytm!=null&&r.dist!=null&&!r.ytmHigh)?r.ytm*clamp(r.dist/50,0,1):null;
   r.tier=TIER[c.issuer]||null;
   r.priceAt=c.priceAt||(ask&&bid?c.updatedAt:null);
   r.stale=!!(ask&&bid&&r.priceAt&&bizDaysSince(r.priceAt)>2);
@@ -514,7 +517,7 @@ function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];
 function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){toast("Massimo 4 certificati nel confronto");return}CMP.add(isin)}renderCmpBar();render(false)}
 
 /* ---------- filtro e ordinamento ---------- */
-const SORT={er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
+const SORT={cd:c=>c.cdScore,er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
 let ROWS=[],ISIN=null;
 function compute(){
   const f=state.f;ISIN=isinMode(state.q);
