@@ -37,6 +37,7 @@
   --accent:#4cc3b3; --accent-soft:#16332f; --brass:#e0b45c; --brass-soft:#33280f;
   --good:#5fcf87; --good-bg:#15301f; --caution:#e8cc55; --caution-bg:#2f2a10; --bad:#ff8a80; --bad-bg:#3a1a18;
   --stale:#f59a4a; --stale-bg:#3a2412; color-scheme:dark}
+html,body{overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45}
 .wrap{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:14px 80px;display:grid;gap:14px}
 h1{font-size:1.15rem;margin:0;letter-spacing:-.01em}
@@ -195,6 +196,109 @@ tr.sp td{height:auto;border:none;padding:0}
 .upd{width:100%;font-size:.84rem}
 .upd td,.upd th{height:auto;padding:5px 8px}
 .upd th{cursor:default;position:static}
+
+/* ---------- scelte rapide nei filtri ---------- */
+.quick{display:grid;gap:14px}
+.qlab{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.qlab i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400}
+.qopts{display:flex;flex-wrap:wrap;gap:6px}
+.qopts button{font-size:.88rem;padding:7px 12px;border-radius:99px;min-height:36px;font-family:var(--f-num)}
+.qopts button.txt{font-family:var(--f-ui)}
+.qopts button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+.more-f>summary{font-size:.9rem;color:var(--accent);padding:6px 0}
+/* ---------- schede risultato ---------- */
+.card{gap:8px;padding:12px 14px}
+.c-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.c-head .who{min-width:0;flex:1}
+.c-unds{font-weight:600;font-size:.98rem;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.c-unds b{color:var(--brass)}
+.c-side{display:flex;align-items:center;gap:2px;flex:none}
+.pill{font-family:var(--f-num);font-weight:700;font-size:.9rem;min-width:38px;text-align:center;padding:4px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+.pill.ca{background:var(--caution-bg);color:var(--caution)}.pill.neg{background:var(--bad-bg);color:var(--bad)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:var(--row);border-radius:8px;padding:8px 6px}
+.kpi{text-align:center;min-width:0}
+.kpi .v{font-family:var(--f-num);font-variant-numeric:tabular-nums;font-size:1.08rem;font-weight:600;line-height:1.2;white-space:nowrap}
+.kpi .k{font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .v.hi{color:var(--accent)}
+.c-foot{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.78rem;color:var(--muted);align-items:center}
+.c-foot b{color:var(--ink);font-weight:600;font-family:var(--f-num)}
+.c-foot .badges{gap:4px}
+/* ---------- scelte del giorno ---------- */
+.daily-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mini{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);display:grid;gap:6px;cursor:pointer;text-align:left;min-width:0}
+.mini .eyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .c-unds{font-size:.9rem}
+/* ---------- dettaglio ---------- */
+.dtitle{font-size:1.05rem;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+.dtitle b{color:var(--brass)}
+.hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.hero>div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.hero .s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero .k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.hero .v{font-family:var(--f-num);font-size:1.45rem;font-weight:600;line-height:1.2}
+.hero .s{font-size:.74rem;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 14px;font-size:.84rem}
+.facts div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:5px 0}
+.facts span:first-child{color:var(--muted)}
+.facts span:last-child{font-family:var(--f-num);text-align:right}
+.dact{display:none}
+.fsum{font-size:.82rem;padding:6px 12px;border-radius:99px;background:var(--accent-soft);color:var(--accent);border-color:transparent;max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ---------- telefono ---------- */
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:45;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgb(0 0 0 / .06)}
+.bnav button{border:none;background:none;display:grid;justify-items:center;gap:2px;padding:6px 2px;font-size:.7rem;color:var(--muted);border-radius:8px}
+.bnav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bnav button[aria-pressed="true"]{color:var(--brass)}.bnav button[aria-pressed="true"] svg{fill:currentColor}
+.bnav b{font-family:var(--f-num);font-weight:600;color:var(--accent)}
+.sheet-foot{display:none}
+@media (max-width:819px){
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .wrap{padding-block:10px 24px;gap:10px;padding-inline:12px}
+  .top-in{padding:8px 12px 8px;gap:8px}
+  .brand h1{font-size:1rem}
+  .brand .tools{display:none}
+  .status{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .brand .row{flex-wrap:nowrap;width:100%;justify-content:space-between}
+  .search input{font-size:1rem;padding:10px 40px;border-radius:10px}
+  .seg-top{display:grid!important;grid-template-columns:repeat(3,1fr);width:100%}
+  .seg-top button{padding:8px 4px;font-size:.88rem}
+  .resrow{display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .resrow>.row{flex-wrap:nowrap;min-width:0}
+  .resrow .count{display:none}
+  .resrow label.note{font-size:0;gap:0!important;max-width:none}
+  .resrow select{font-size:.84rem;width:132px!important;padding:6px 6px}
+  .fsum{max-width:none;text-align:left}
+  .brand .status .full{display:none}
+  .top.scrolled .brand,.top.scrolled #profile-top,.top.scrolled #objs{display:none!important}
+  .top.scrolled .top-in{gap:6px;padding-block:6px}
+  .objs .lab{display:none}
+  .objs button{font-size:.8rem;padding:6px 12px}
+  .daily-row{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:82%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:2px}
+  .mini{scroll-snap-align:start}
+  #daily{padding:12px}
+  #daily h2{margin-bottom:8px}
+  .card{border-radius:12px}
+  .kpi .v{font-size:1rem}
+  .fpanel{max-height:88dvh;padding:0 16px;z-index:48}
+  .scrim{z-index:47}
+  .fpanel .sheet-head{top:0;margin:0 -16px 6px;padding:14px 16px 10px;border-bottom:1px solid var(--line);z-index:2}
+  .sheet-foot{display:grid;grid-template-columns:1fr 2fr;gap:8px;position:sticky;bottom:0;background:var(--surface);margin:12px -16px 0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+  .sheet-foot button{padding:12px;font-size:1rem}
+  .grid-f{grid-template-columns:1fr 1fr}
+  .grid-f label{font-size:.72rem}
+  .drawer .dbody{width:100%;padding:0 14px calc(90px + env(safe-area-inset-bottom,0px));gap:12px}
+  .drawer:not([hidden]) .dbody{animation:up .2s ease}
+  .dhead{top:0;margin:0 -14px;padding:10px 14px;border-bottom:1px solid var(--line)}
+  .hero{grid-template-columns:1fr 1fr}
+  .hero .v{font-size:1.3rem}
+  .dact{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--surface);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
+  .dact button,.dact a{padding:11px 6px;font-size:.88rem;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-decoration:none}
+  .dact .on{background:var(--brass-soft);color:var(--brass);border-color:transparent}
+  .sbar{grid-template-columns:118px 1fr 34px;font-size:.78rem}
+  .cmpbar{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  #updbox,.wrap>.note{font-size:.76rem}
+}
+@keyframes up{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -216,16 +320,20 @@ tr.sp td{height:auto;border:none;padding:0}
       <button class="clear" id="q-clear" aria-label="Svuota ricerca" hidden>×</button>
       <ul id="sugg" class="sugg" role="listbox" hidden></ul>
     </div>
+    <div class="seg seg-top only-narrow" id="profile-top" role="group" aria-label="Profilo">
+      <button data-p="prudente">Prudente</button><button data-p="bilanciato">Bilanciato</button><button data-p="aggressivo">Aggressivo</button>
+    </div>
     <div class="chiprow objs" id="objs" aria-label="Obiettivi rapidi"></div>
-    <div class="row" style="justify-content:space-between">
-      <div class="chiprow" id="chips"></div>
+    <div class="row resrow" style="justify-content:space-between">
+      <div class="chiprow only-wide" id="chips"></div>
+      <button class="fsum only-narrow" id="fsum" aria-label="Modifica filtri"></button>
       <div class="row">
         <span class="count" id="count" aria-live="polite"></span>
         <label class="note" style="display:flex;gap:6px;align-items:center">Ordina<select id="sortsel" style="width:auto;padding:5px 8px">
           <option value="score">Punteggio</option><option value="cd">Cedola e distanza</option><option value="ytm">Rendimento annuo</option><option value="er">Rendimento atteso</option>
           <option value="prob">Prob. tenuta barriera</option><option value="dist">Distanza del peggiore</option><option value="sigma">Margine in dev. std</option>
           <option value="coupon">Cedola</option><option value="price">Prezzo (più basso)</option><option value="mat">Scadenza (più vicina)</option><option value="spread">Spread (più stretto)</option></select></label>
-        <button id="export" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
+        <button id="export" class="only-wide" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
       </div>
     </div>
   </div>
@@ -235,7 +343,7 @@ tr.sp td{height:auto;border:none;padding:0}
   <section class="panel alerts" id="alerts" hidden></section>
 
   <section class="panel fpanel" id="fpanel" aria-label="Filtri">
-    <div class="sheet-head"><b>Filtri</b><button id="sheet-close">Fatto</button></div>
+    <div class="sheet-head"><b>Filtri</b><button id="sheet-close" aria-label="Chiudi filtri">✕</button></div>
     <details id="fbox">
       <summary>Filtri e profilo</summary>
       <div style="display:grid;gap:14px;margin-top:12px">
@@ -248,7 +356,9 @@ tr.sp td{height:auto;border:none;padding:0}
           </div>
           <span class="note" id="prof-note">imposta i filtri qui sotto; puoi modificarli dopo</span>
         </div>
-        <div class="grid-f">
+        <div class="quick" id="quick"></div>
+        <details class="more-f" id="more-f"><summary>Altri filtri e valori esatti</summary>
+        <div class="grid-f" style="margin-top:12px">
           <label>Rendimento annuo min % (cedole + rimborso, al prezzo lettera)<input id="f-y" type="number" step="0.5"></label>
           <label>Rendimento annuo max % (oltre: perdita probabile già nel prezzo)<input id="f-ym" type="number" step="1"></label>
           <label>Rend. atteso min % (pesato con la probabilità)<input id="f-er" type="number" step="0.5"></label>
@@ -272,19 +382,22 @@ tr.sp td{height:auto;border:none;padding:0}
           <label class="check"><input type="checkbox" id="f-lev"> Includi certificati a leva</label>
           <label class="check"><input type="checkbox" id="f-excl"> Solo panieri composti esclusivamente dai sottostanti cercati</label>
         </div>
-        <div class="row chips" id="issuers"></div>
+        </details>
+        <div><div class="qlab">Emittenti</div><div class="row chips" id="issuers"></div></div>
       </div>
     </details>
+    <div class="sheet-foot only-narrow"><button id="sheet-reset">Azzera</button><button class="primary" id="sheet-apply">Mostra risultati</button></div>
   </section>
 
   <section id="isinbox" hidden></section>
 
   <section class="panel" id="daily" hidden>
-    <h2>Scelte del giorno · regole del profilo selezionato</h2>
-    <div id="dailybody" style="display:grid;gap:8px"></div>
+    <h2>Scelte del giorno · profilo <span id="daily-prof"></span></h2>
+    <div id="dailybody" class="daily-row"></div>
   </section>
 
   <section id="results" style="min-width:0"><div class="empty">Caricamento dei certificati…</div></section>
+  <div class="only-narrow" style="display:grid"><button id="export2">Esporta i risultati in Excel</button></div>
 
   <details class="panel" id="updbox">
     <summary>Aggiornamento per emittente</summary>
@@ -320,6 +433,12 @@ tr.sp td{height:auto;border:none;padding:0}
   <button popovertarget="gloss" popovertargetaction="hide">Chiudi</button>
 </div>
 <div class="toast" id="toast" hidden></div>
+<nav class="bnav only-narrow" id="bnav" aria-label="Navigazione">
+  <button data-nav="top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Risultati</span></button>
+  <button data-nav="filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span>Filtri <b id="nb-filt"></b></span></button>
+  <button data-nav="fav" id="nb-fav" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span>Preferiti <b id="nb-nfav"></b></span></button>
+  <button data-nav="info" popovertarget="gloss"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Glossario</span></button>
+</nav>
 
 <script>
 (function(){
@@ -395,7 +514,7 @@ function enrich(c){
   r.nominal=nominal;r.ask=ask;r.bid=bid;
   r.pricePct=ask?ask/nominal*100:null;
   if(ask&&nominal>=500&&ask<250)r.pricePct=ask; // quotato in % del nominale (es. 98,50 su nominale 1.000)
-  r.priceBad=r.pricePct!=null&&(r.pricePct<1||r.pricePct>300); // prezzo impossibile: dato errato
+  r.priceBad=(r.pricePct!=null&&(r.pricePct<1||r.pricePct>300))||(ask&&bid&&bid>ask); // prezzo impossibile o denaro > lettera: dato errato
   if(r.priceBad)r.pricePct=null;
   r.spread=(ask&&bid)?(ask-bid)/ask*100:null;
   r.matDate=parseDate(c.maturity);
@@ -404,8 +523,10 @@ function enrich(c){
   r.unds=Array.isArray(c.underlyings)?c.underlyings.filter(u=>u&&!/^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$/.test(u)):String(c.underlyings||"").split("|").map(s=>s.trim()).filter(Boolean);
   r.n=r.unds.length;
   r.dist=c.distBarrier==null||c.distBarrier===""?null:+c.distBarrier;
+  // barriere sopra il 100% (bonus, protetti, reverse) e distanze ≥100%: la distanza "dal basso" non ha senso
+  if((+c.barrierPct||0)>100||(r.dist!=null&&r.dist>=100))r.dist=null;
   r.worst=c.worstName||(r.n===1?r.unds[0]:null);
-  const bp=+c.barrierPct||null,tp=+c.triggerPct||null;
+  const bp=(+c.barrierPct>0&&+c.barrierPct<=100)?+c.barrierPct:null,tp=(+c.triggerPct>0&&+c.triggerPct<=130)?+c.triggerPct:null;
   r.spotPct=(bp&&r.dist!=null&&r.dist<100)?bp/(1-r.dist/100):null;
   r.trigDist=(tp&&r.spotPct)?(r.spotPct-tp)/r.spotPct*100:null;
   r.couponActive=r.trigDist==null?null:r.trigDist>=0;
@@ -513,7 +634,9 @@ function isinMode(q){const s=q.trim().toUpperCase().replace(/\s+/g,"");if(/^[A-Z
 
 /* ---------- preferiti e confronto ---------- */
 let FAV=ls.get("rc-fav",{});const CMP=new Set();
-function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];else FAV[isin]={ask:c?.ask??null,at:new Date().toISOString()};ls.set("rc-fav",FAV);render()}
+function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];else FAV[isin]={ask:c?.ask??null,at:new Date().toISOString()};ls.set("rc-fav",FAV);render();
+  const on=!!FAV[isin];document.querySelectorAll(`[data-fav="${isin}"]`).forEach(b=>{b.setAttribute("aria-pressed",on);if(b.classList.contains("star"))b.textContent=on?"★":"☆";else{b.textContent=on?"★ Preferito":"☆ Preferito";b.classList.toggle("on",on)}});
+  toast(on?"Aggiunto ai preferiti":"Tolto dai preferiti")}
 function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){toast("Massimo 4 certificati nel confronto");return}CMP.add(isin)}renderCmpBar();render(false)}
 
 /* ---------- filtro e ordinamento ---------- */
@@ -637,22 +760,28 @@ function paintRows(){
 
 /* ---------- schede (telefono) ---------- */
 let cardN=0,io=null;
+const undsHtml=c=>c.unds.length?c.unds.map(u=>c.n>1&&u===c.worst?`<b>${esc(u)}</b>`:esc(u)).join(" · "):"Sottostanti n.d.";
+const fshort=f=>({"1m":"mens.","3m":"trim.","6m":"sem.","12m":"ann."}[f]||"");
+const scls=v=>v>=70?"":v>=50?"ca":"neg";
+function keyBadges(c){const b=[];
+  if(c.priceBad)b.push(`<span class="b ko">Prezzo anomalo</span>`);
+  if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
+  if(c.ytmHigh)b.push(`<span class="b ca">Rend. sospetto</span>`);
+  if(c.stale)b.push(`<span class="b st">Prezzo vecchio</span>`);
+  if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
+  if(c.callKind==="autocall")b.push(`<span class="b">Autocall</span>`);
+  return b.slice(0,3).join("")}
 function cardHtml(c){
   return `<article class="card" data-open="${esc(c.isin)}">
-<div class="card-top"><div class="who"><div class="eyebrow">${esc(c.issuer||"Emittente n.d.")}${c.type?" · "+esc(c.type):""}</div><div class="unds">${esc(c.unds.join(" · ")||"Sottostanti n.d.")}</div></div>
-<div class="score">${starBtn(c)}<div class="v">${c.score}</div><div class="l">punteggio</div></div></div>
-<div class="badges">${badges(c)}</div>
-<div class="metrics">
-<div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
-<div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}">${probTxt(c)}</div></div>
-<div class="m"><div class="k">Rend. annuo</div><div class="v hi">${pct(c.ytm)}</div></div>
-<div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div></div>
-<div class="m"><div class="k">Lettera · prezzo</div><div class="v ${c.stale?"stale":""}">${fmt(c.ask)} <span style="color:var(--muted)">${c.pricePct?"("+fmt(c.pricePct,1)+"%)":""}</span></div></div>
-<div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
-<div class="m"><div class="k">Dist. trigger</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
-<div class="m"><div class="k">Scadenza</div><div class="v">${dshort(c.matDate)}</div></div>
+<div class="c-head"><div class="who"><div class="eyebrow">${esc(c.issuer||"Emittente n.d.")}${c.type?" · "+esc(c.type):""}</div><div class="c-unds">${undsHtml(c)}</div></div>
+<div class="c-side">${starBtn(c)}<span class="pill ${scls(c.score)}" title="${esc(scoreTitle(c))}">${c.score}</span></div></div>
+<div class="kpis">
+<div class="kpi"><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="k">Rend. annuo</div></div>
+<div class="kpi"><div class="v">${pct(c.couponPa,1)}</div><div class="k">Cedola</div></div>
+<div class="kpi"><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div><div class="k">Dist. barr.</div></div>
+<div class="kpi"><div class="v ${pcls(c.prob)}">${probTxt(c)}</div><div class="k">Prob.</div></div>
 </div>
-<div class="row" style="justify-content:space-between;font-size:.8rem;color:var(--muted)"><span class="num">${esc(c.isin)}</span><span>${cmpBox(c)} confronta</span></div>
+<div class="c-foot">${c.freq?`<span><b style="font-family:var(--f-ui)">${freqTxt(c.freq)}</b></span>`:""}<span>Lettera <b class="${c.stale?"stale":""}">${c.pricePct?fmt(c.pricePct,1)+"%":"—"}</b></span><span>Spread <b>${pct(c.spread,1)}</b></span><span>Scade <b>${dshort(c.matDate)}</b></span><span class="badges">${keyBadges(c)}</span></div>
 </article>`}
 function renderCards(){
   const res=$("#results");res.innerHTML=`<div class="list" id="clist"></div><div id="more" style="height:1px"></div>`;cardN=0;moreCards();
@@ -697,34 +826,29 @@ const KV=[["Emittente","issuer"],["Piattaforma","platform"],["Tipo","type"],["Ca
 function kvVal(k,v){if(v==null||v==="")return "—";if(k==="memory")return v?"Sì":"No";if(k==="freq")return freqTxt(v);if(k==="probBarrierHold")return pct(v*100,1);if(k==="worstVol")return pct(v*100,1);
   if(/At$/.test(k))return dtime(v);if(/Date$|maturity/.test(k))return dshort(parseDate(v));if(typeof v==="number")return fmt(v,/Pct|couponPa|dist/.test(k)?2:2);return esc(v)}
 async function detailHtml(c){
-  const j=await loadDetail(c.isin);const full=j?.certificate||c;
+  const j=await loadDetail(c.isin);const full=j?.certificate||c;const own=full.url&&/borsaitaliana\.it/.test(full.url);
+  const F=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],
+    ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
+    ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",dshort(c.callDate)],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
   return `<div class="dhead"><div style="min-width:0"><div class="eyebrow">${esc(c.issuer||"")}${c.type?" · "+esc(c.type):""}</div>
-<div class="unds" style="font-size:1.15rem">${esc(c.unds.join(" · ")||"Sottostanti n.d.")}</div>
-<div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}">${esc(c.isin)}</button>${starBtn(c)}<label class="check">${cmpBox(c)} confronta</label></div></div>
+<div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><span class="pill ${scls(c.score)}" title="${esc(scoreTitle(c))}">${c.score}</span></div></div>
 <button data-close aria-label="Chiudi">✕</button></div>
+<div class="dtitle">${undsHtml(c)}</div>
 <div class="badges">${badges(c)}</div>
-<div class="metrics">
-<div class="m"><div class="k">Prob. tenuta barriera</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div></div>
-<div class="m"><div class="k">Peggiore · dist. barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div></div>
-<div class="m"><div class="k">Dist. trigger cedola</div><div class="v ${cls(c.trigDist)}">${pct(c.trigDist)}</div></div>
-<div class="m"><div class="k">Vol peggiore</div><div class="v">${pct(c.wvol,0)}</div></div>
-<div class="m"><div class="k">Rend. annuo (a scadenza)</div><div class="v hi">${pct(c.ytm)}</div></div>
-<div class="m"><div class="k">Rend. atteso</div><div class="v">${pct(c.retProxy)}</div></div>
-<div class="m"><div class="k">Rend. a richiamo</div><div class="v">${pct(c.ytc)}</div></div>
-<div class="m"><div class="k">Emittente (classe)</div><div class="v">${c.tier?c.tier:"n.d."}</div></div>
-<div class="m"><div class="k">Denaro / lettera</div><div class="v ${c.stale?"stale":""}">${fmt(c.bid)} / ${fmt(c.ask)}</div></div>
-<div class="m"><div class="k">Spread</div><div class="v">${pct(c.spread,2)}</div></div>
-<div class="m"><div class="k">Prossima cedola</div><div class="v">${dshort(c.couponDate)}</div></div>
-<div class="m"><div class="k">Prossimo richiamo</div><div class="v">${dshort(c.callDate)}</div></div>
-<div class="m"><div class="k">Scadenza</div><div class="v">${dshort(c.matDate)}</div></div>
-<div class="m"><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)} ${c.freq?`<span class="note">${freqTxt(c.freq)}</span>`:""}</div></div>
+<div class="hero">
+<div><div class="k">Rend. annuo</div><div class="v hi">${pct(c.ytm)}</div><div class="s">${c.expRet!=null?"atteso "+pct(c.expRet):"a scadenza, al prezzo lettera"}</div></div>
+<div><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div><div class="s">${freqTxt(c.freq)}${c.memory?" · memoria":""}</div></div>
+<div><div class="k">Peggiore dalla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div><div class="s">${esc(c.worst||"peggiore n.d.")}</div></div>
+<div><div class="k">Prob. tenuta</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div><div class="s">${c.wvol!=null?"vol peggiore "+pct(c.wvol,0):"volatilità n.d."}</div></div>
 </div>
+<div class="facts">${F.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>
 ${scenarios(c)}
 ${scoreBars(c)}
 ${ladder(c,full)}
 ${chart(j?.history)}
 <div class="row" style="font-size:.88rem">${links(full)}</div>
-<details><summary>Tutti i dati</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>`;
+<details><summary>Tutti i dati</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>
+<div class="dact"><button data-fav="${esc(c.isin)}" class="${FAV[c.isin]?"on":""}">${FAV[c.isin]?"★ Preferito":"☆ Preferito"}</button><button data-cmpbtn="${esc(c.isin)}" class="${CMP.has(c.isin)?"on":""}">${CMP.has(c.isin)?"✓ Confronto":"Confronta"}</button><a href="${esc(own?full.url:bi(c))}" target="_blank" rel="noopener">Borsa ↗</a></div>`;
 }
 async function openDetail(isin){
   const c=BYISIN.get(isin);if(!c)return;
@@ -743,11 +867,33 @@ async function openCmp(){
   $("#cmp").hidden=false;document.body.style.overflow="hidden";
 }
 
+/* ---------- scelte rapide (tocchi invece di numeri da digitare) ---------- */
+const QUICK=[
+  ["y","Rendimento annuo minimo",[null,6,8,10,12,16,20],v=>v+"%"],
+  ["b","Peggiore: distanza dalla barriera, minimo",[null,15,20,25,30,40,50],v=>v+"%"],
+  ["prob","Probabilità di tenuta, minimo",[null,50,60,70,80,90],v=>v+"%"],
+  ["sp","Spread massimo",[null,1,1.5,2,3,5],v=>fmt(v,v%1?1:0)+"%"],
+  ["mat","Scadenza entro",[null,1,2,3,5,8],v=>v+(v===1?" anno":" anni")],
+  ["freq","Frequenza cedola",["","1m","3m","6m"],v=>freqTxt(v)],
+  ["n","Sottostanti",["","single","multi"],v=>v==="single"?"Singolo":"Worst-of"],
+];
+const QT=[["mem","Con memoria"],["active","Cedola in pagamento"],["cpn","Solo con cedola"],["probx","Solo con probabilità"],["illiq","Anche senza prezzo"]];
+function renderQuick(){
+  $("#quick").innerHTML=QUICK.map(([k,lab,vals,f])=>{const cur=state.f[k]??(SELF.includes(k)?"":null);
+    const opts=[...vals];if(cur!==null&&cur!==""&&!opts.includes(cur))opts.push(cur);
+    return `<div><div class="qlab">${esc(lab)}</div><div class="qopts">${opts.map(v=>`<button class="${v===null||v===""||SELF.includes(k)?"txt":""}" data-q="${k}" data-v='${JSON.stringify(v)}' aria-pressed="${v===cur}">${v===null||v===""?"Qualsiasi":esc(f(v))}</button>`).join("")}</div></div>`}).join("")+
+    `<div><div class="qlab">Caratteristiche</div><div class="qopts">${QT.map(([k,t])=>`<button class="txt" data-qt="${k}" aria-pressed="${!!state.f[k]}">${esc(t)}</button>`).join("")}</div></div>`;
+}
+function fsumText(n){const R=`${ROWS.length.toLocaleString("it-IT")} risultati`;if(!n)return R+" · nessun filtro";const P=[];
+  if(state.f.y!=null)P.push(`rend ≥${fmt(state.f.y,0)}%`);if(state.f.b!=null)P.push(`dist ≥${fmt(state.f.b,0)}%`);if(state.f.prob!=null)P.push(`prob ≥${fmt(state.f.prob,0)}%`);if(state.f.sp!=null)P.push(`spread ≤${fmt(state.f.sp,state.f.sp%1?1:0)}%`);
+  return `${R} · ${P.length?P.join(" · "):n+" filtri"}`}
+
 /* ---------- filtri: controlli, chip, profilo ---------- */
 const IDS={ym:"#f-ym",er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
 function syncControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")el.checked=!!state.f[k];else el.value=state.f[k]??""}
   $("#q").value=state.q;$("#q-clear").hidden=!state.q;$("#b-fav").setAttribute("aria-pressed",state.f.fav);
-  document.querySelectorAll("#profile button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
+  document.querySelectorAll("#profile button,#profile-top button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
+  $("#nb-fav").setAttribute("aria-pressed",!!state.f.fav);$("#nb-nfav").textContent=Object.keys(FAV).length||"";
   const P=PRESETS[state.profile],mod=Object.keys(P).some(k=>state.f[k]!==P[k]);$("#prof-note").textContent=mod?"profilo modificato a mano":"imposta i filtri qui sotto; puoi modificarli dopo";
   document.querySelectorAll("#view button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===state.view))}
 function readControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")state.f[k]=el.checked;else if(el.type==="number"){const v=parseFloat(el.value);state.f[k]=isNaN(v)?null:v}else state.f[k]=el.value}}
@@ -771,6 +917,7 @@ function chips(){
   const any=state.q||out.length;
   $("#chips").innerHTML=out.join("")+(any?`<button class="linkbtn" id="reset">Azzera tutto</button>`:"");
   $("#n-filt").textContent=out.length?`(${out.length})`:"";
+  $("#nb-filt").textContent=out.length||"";$("#fsum").textContent=fsumText(out.length);
 }
 const chip=(k,t)=>`<span class="chip">${esc(t)}<button data-rm="${esc(k)}" aria-label="Rimuovi filtro ${esc(t)}">×</button></span>`;
 function rmChip(k){if(k==="illiq-off")state.f.illiq=true;else if(k==="lev-off")state.f.lev=true;else if(k.startsWith("iss:"))state.iss.delete(k.slice(4));
@@ -780,9 +927,11 @@ function resetAll(){state.q="";state.f=neutral();state.f.illiq=true;state.f.lev=
 /* ---------- render ---------- */
 function render(recompute=true){
   if(recompute)compute();
-  chips();objs();syncControls();toHash();
+  chips();objs();syncControls();renderQuick();toHash();
   $("#count").textContent=ISIN?`${ROWS.length} ${ROWS.length===1?"certificato":"certificati"} con ISIN ${ISIN}…`:`${ROWS.length.toLocaleString("it-IT")} certificati`;
   $("#export").textContent=`Esporta ${ROWS.length.toLocaleString("it-IT")} risultati (Excel)`;$("#export").disabled=!ROWS.length;
+  $("#export2").textContent=`Esporta ${ROWS.length.toLocaleString("it-IT")} risultati in Excel`;$("#export2").disabled=!ROWS.length;
+  $("#sheet-apply").textContent=ROWS.length?`Mostra ${ROWS.length.toLocaleString("it-IT")} risultati`:"Nessun risultato";
   $("#n-fav").textContent=Object.keys(FAV).length;
   renderIsinBox();
   $("#daily").hidden=!!ISIN||!!state.q||!DAILY;
@@ -846,7 +995,10 @@ function pickDaily(){
   const P=PRESETS[state.profile];
   const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.couponPa!=null&&c.spread<=2&&!c.stale&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=P.b&&c.prob!=null&&c.prob>=(P.prob??50)&&(c.ytm??-99)>=P.y&&!c.ytmHigh&&(c.years??99)<=P.mat).sort((a,b)=>b.score-a.score).slice(0,3);
   if(!ok.length){DAILY=null;return}
-  DAILY=ok;$("#dailybody").innerHTML=ok.map(c=>`<p style="margin:0"><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button> — ${esc(c.issuer)} su ${esc(c.unds.join(", "))}: cedola ${pct(c.couponPa,2)} ${freqTxt(c.freq).toLowerCase()}, peggiore a ${pct(c.dist)} dalla barriera${c.prob!=null?`, prob. tenuta ${probTxt(c)}`:""}, lettera ${pct(c.pricePct,1)}, rend. annuo ${pct(c.ytm)} (atteso ${pct(c.expRet)}), punteggio ${c.score}.</p>`).join("");
+  DAILY=ok;$("#daily-prof").textContent=state.profile;
+  $("#dailybody").innerHTML=ok.map(c=>`<button class="mini" data-open="${esc(c.isin)}"><span class="eyebrow">${esc(c.issuer)} · punteggio ${c.score}</span><span class="c-unds">${undsHtml(c)}</span>
+<span class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))"><span class="kpi"><span class="v hi" style="display:block">${pct(c.ytm)}</span><span class="k" style="display:block">Rend. annuo</span></span><span class="kpi"><span class="v ${cls(c.dist)}" style="display:block">${pct(c.dist,0)}</span><span class="k" style="display:block">Dist. barr.</span></span><span class="kpi"><span class="v ${pcls(c.prob)}" style="display:block">${probTxt(c)}</span><span class="k" style="display:block">Prob.</span></span></span>
+<span class="note">Cedola ${pct(c.couponPa,1)} ${freqTxt(c.freq).toLowerCase()} · spread ${pct(c.spread,1)} · ${esc(c.isin)}</span></button>`).join("");
 }
 function renderAlerts(){
   const out=[];
@@ -858,7 +1010,7 @@ function renderAlerts(){
 }
 function renderStatus(){
   const liq=CERTS.filter(c=>c.liq).length,up=META.updatedAt;
-  $("#status").innerHTML=`<b>${CERTS.length.toLocaleString("it-IT")}</b> in archivio · <b>${liq.toLocaleString("it-IT")}</b> con denaro e lettera${up?` · aggiornato <b>${dtime(up)}</b>`:""}`;
+  $("#status").innerHTML=`<span class="full"><b>${CERTS.length.toLocaleString("it-IT")}</b> in archivio · <b>${liq.toLocaleString("it-IT")}</b> con denaro e lettera · </span>${up?`aggiornato <b>${dtime(up)}</b>`:""}`;
   const n=up?tradingDaysSince(up):null;const bn=$("#banner");
   if(n!=null&&n>1){bn.hidden=false;bn.textContent=`Dati non aggiornati: l'ultimo aggiornamento è del ${dtime(up)}, ${n} giorni di borsa fa. Prezzi e distanze potrebbero non essere attuali.`}else bn.hidden=true;
   const g=new Map();
@@ -893,7 +1045,18 @@ $("#q").addEventListener("blur",()=>setTimeout(()=>$("#sugg").hidden=true,150));
 $("#sugg").addEventListener("mousedown",e=>{const li=e.target.closest("li");if(li){e.preventDefault();pickSugg(+li.dataset.i)}});
 $("#q-clear").addEventListener("click",()=>{state.q="";update();$("#q").focus()});
 Object.values(IDS).forEach(s=>$(s).addEventListener("input",()=>{readControls();update()}));
-$("#profile").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;applyPreset(b.dataset.p);rescore();pickDaily();update();toast(`Profilo ${b.textContent}: filtri impostati`)});
+const onProfile=e=>{const b=e.target.closest("button[data-p]");if(!b)return;applyPreset(b.dataset.p);rescore();pickDaily();update();toast(`Profilo ${b.textContent}: filtri impostati`)};
+$("#profile").addEventListener("click",onProfile);$("#profile-top").addEventListener("click",onProfile);
+$("#quick").addEventListener("click",e=>{const q=e.target.closest("[data-q]");if(q){state.f[q.dataset.q]=JSON.parse(q.dataset.v);update();return}
+  const t=e.target.closest("[data-qt]");if(t){state.f[t.dataset.qt]=!state.f[t.dataset.qt];update()}});
+$("#fsum").addEventListener("click",()=>openSheet(true));
+$("#sheet-apply").addEventListener("click",()=>{openSheet(false);scrollTo({top:0,behavior:"smooth"})});
+$("#sheet-reset").addEventListener("click",()=>{resetAll();toast("Filtri azzerati")});
+$("#export2").addEventListener("click",()=>$("#export").click());
+$("#bnav").addEventListener("click",e=>{const b=e.target.closest("[data-nav]");if(!b)return;const n=b.dataset.nav;
+  if(n==="top"){closeDrawers();openSheet(false);scrollTo({top:0,behavior:"smooth"})}
+  else if(n==="filters")openSheet(true);
+  else if(n==="fav"){state.f.fav=!state.f.fav;update();scrollTo({top:0});toast(state.f.fav?"Solo preferiti":"Tutti i certificati")}});
 $("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render(false)});
 $("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.iss.has(i)?state.iss.delete(i):state.iss.add(i);update()});
 $("#chips").addEventListener("click",e=>{const r=e.target.closest("[data-rm]");if(r){rmChip(r.dataset.rm);return}if(e.target.id==="reset")resetAll()});
@@ -907,6 +1070,7 @@ document.addEventListener("click",e=>{
   const st=e.target.closest("[data-fav]");if(st){e.stopPropagation();toggleFav(st.dataset.fav);return}
   const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};update();return}
   const cl=e.target.closest("[data-close]");if(cl){closeDrawers();return}
+  const cb=e.target.closest("[data-cmpbtn]");if(cb){const i=cb.dataset.cmpbtn;toggleCmp(i);cb.classList.toggle("on",CMP.has(i));cb.textContent=CMP.has(i)?"✓ Confronto":"Confronta";return}
   const cy=e.target.closest("[data-copy]");if(cy){navigator.clipboard?.writeText(cy.dataset.copy).then(()=>toast("ISIN copiato: "+cy.dataset.copy)).catch(()=>toast(cy.dataset.copy));return}
   if(e.target.closest("a,input,label,select"))return;
   const op=e.target.closest("[data-open]");if(op){$("#cmp").hidden=true;openDetail(op.dataset.open)}
@@ -918,12 +1082,14 @@ $("#cmpgo").addEventListener("click",openCmp);$("#cmpclr").addEventListener("cli
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawers();openSheet(false)}});
 addEventListener("hashchange",()=>{if(fromHash()){rescore();render()}});
 let rT=null;addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>{setTopH();render(false)},200)});
+addEventListener("scroll",()=>{if(innerWidth<820)$("#top").classList.toggle("scrolled",scrollY>140)},{passive:true});
 function setTopH(){document.documentElement.style.setProperty("--top-h",$("#top").offsetHeight+"px")}
 new ResizeObserver(setTopH).observe($("#top"));
 
 /* ---------- avvio ---------- */
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});
 fromHash();setTopH();syncControls();
+if(innerWidth<820)$("#q").placeholder="Cerca ISIN, sottostante, emittente";
 async function load(){
   let j;
   try{const r=await fetch("data/list.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;j=await r.json();
