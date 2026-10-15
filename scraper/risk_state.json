@@ -10,6 +10,8 @@
   "0992.HK|ADS.DE": 0.1017,
   "0992.HK|KO": -0.1952,
   "0992.HK|V": -0.0708,
+  "0LBM.IL|ENEL.MI": 0.513,
+  "0LBM.IL|SRG.VI": 0.6285,
   "0MGU.IL|ABI.BR": 0.4255,
   "0MGU.IL|RI.PA": 0.66,
   "0V6.SG|CEG": 0.6335,
@@ -226,6 +228,10 @@
   "AAPL|UCG.MI": 0.223,
   "AA|ABX.TO": 0.4493,
   "AA|MT.AS": 0.259,
+  "AB2A.MU|BAMI.MI": 0.1541,
+  "AB2A.MU|ENGI.PA": 0.0555,
+  "AB2A.MU|GLE.PA": 0.1693,
+  "AB2A.MU|UCG.MI": 0.2046,
   "ABBN.SW|LIN": 0.027,
   "ABBN.SW|MSFT": -0.0676,
   "ABBN.SW|SIE.DE": 0.6331,
@@ -339,6 +345,7 @@
   "ADBE|PYPL": 0.3519,
   "ADBE|SNPS": 0.24,
   "ADBE|STMPA.PA": -0.1986,
+  "ADBE|TTD.VI": 0.3735,
   "ADEN.SW|RAND.AS": 0.7159,
   "ADEN.SW|RAND.VI": 0.664,
   "ADI|AMD": 0.4745,
@@ -1151,6 +1158,7 @@
   "BAYN.DE|UCG.MI": 0.26,
   "BAYN.DE|VOD.L": 0.1163,
   "BAYN.DE|VOW3.DE": 0.1831,
+  "BAYN.DE|VX1.F": 0.0911,
   "BA|COHR": 0.181,
   "BA|DSY.PA": 0.0526,
   "BA|EZJ.L": 0.147,
@@ -1606,6 +1614,7 @@
   "BRK-B|G.MI": 0.1813,
   "BRK-B|MUV2.DE": 0.1951,
   "BRK-B|SREN.SW": 0.2156,
+  "BRK-B|TTD.VI": 0.0638,
   "BSP|SPCX": -0.1356,
   "BSX|FCT.MI": 0.01,
   "BSX|RHM.DE": 0.0858,
@@ -2986,6 +2995,7 @@
   "ISP.MI|ZAL.DE": 0.1645,
   "ISP.MI|ZURN.SW": 0.3572,
   "ISRG|LLY": 0.2128,
+  "ISRG|MDT": 0.3908,
   "ISRG|NEE": -0.0838,
   "ISRG|SYM": 0.0652,
   "ISRG|TER": -0.0375,
@@ -3020,6 +3030,7 @@
   "JNJ|NESN.SW": 0.2272,
   "JNJ|PG": 0.3739,
   "JNJ|TTE.PA": 0.0966,
+  "JNJ|VX1.F": 0.1872,
   "JPM|NGG": 0.2266,
   "JPM|NOVN.SW": 0.0898,
   "JPM|SAN.MC": 0.3262,
@@ -3270,6 +3281,8 @@
   "MDLZ|SPOT": 0.0187,
   "MDLZ|TGT": 0.2674,
   "MDLZ|VNA.DE": 0.0391,
+  "MDT|PFE": 0.2402,
+  "MDT|UNH": 0.1438,
   "MELI|XYZ": 0.3155,
   "META|MSFT": 0.1765,
   "META|MU": 0.0797,
@@ -3345,6 +3358,7 @@
   "MRK.DE|TMO": 0.2631,
   "MRK.DE|TTE.PA": -0.1425,
   "MRK.DE|VIE.PA": 0.34,
+  "MRK.DE|VX1.F": 0.2703,
   "MRNA|MRVL": 0.1683,
   "MRNA|NOVN.SW": 0.158,
   "MRNA|NOVO-B.CO": 0.0948,
@@ -3586,6 +3600,7 @@
   "NVDA|STM": 0.3878,
   "NVDA|STMPA.PA": 0.2982,
   "NVDA|TSLA": 0.4238,
+  "NVDA|TSM": 0.6484,
   "NVDA|TTE.PA": -0.1463,
   "NVDA|UCG.MI": 0.1971,
   "NVDA|UNH": -0.0094,
@@ -3994,6 +4009,7 @@
   "STM|TS": 0.2251,
   "STM|TSLA": 0.4798,
   "STM|UCG.MI": 0.2642,
+  "STX|TSM": 0.5186,
   "STX|WDC": 0.8812,
   "SU.PA|VIE.PA": 0.343,
   "SU.PA|VRT": 0.4738,
@@ -4101,6 +4117,7 @@
  "tried": [
   "000300.SS",
   "000852.SS",
+  "0LBM.IL",
   "0MOL.IL",
   "1876.HK",
   "22UA.DE",
@@ -4109,6 +4126,7 @@
   "7203.T",
   "9660.HK",
   "9PDA.SG",
+  "AB2A.MU",
   "ABBN.SW",
   "AI.PA",
   "AIUT.HA",
@@ -4163,6 +4181,7 @@
   "LR.PA",
   "LSPN.MU",
   "MAIRE.MI",
+  "MDT",
   "MED5.PA",
   "MELI",
   "MOH.HM",
@@ -4185,6 +4204,8 @@
   "SMIN.SW",
   "TGT",
   "TMO",
+  "TSM",
+  "TTD.VI",
   "UET5.DU",
   "US0091191082.SG",
   "US5021172037.SG",
@@ -4195,6 +4216,7 @@
   "VNA.DE",
   "VOLV-B.ST",
   "VTY.L",
+  "VX1.F",
   "WBD",
   "XE",
   "ZS",
@@ -4229,6 +4251,15 @@
    "vol1y": 0.6094,
    "vol3m": 0.7132,
    "volUsed": 0.7132
+  },
+  "0LBM.IL": {
+   "lastClose": 9.425999641418457,
+   "lastDate": "2026-10-15",
+   "observations": 253,
+   "updatedAt": "2026-10-15T08:12:04+00:00",
+   "vol1y": 0.1697,
+   "vol3m": 0.1566,
+   "volUsed": 0.1697
   },
   "0MGU.IL": {
    "lastClose": 47.36000061035156,
@@ -4589,6 +4620,15 @@
    "vol1y": 0.2456,
    "vol3m": 0.2576,
    "volUsed": 0.2576
+  },
+  "AB2A.MU": {
+   "lastClose": 41.0,
+   "lastDate": "2026-10-15",
+   "observations": 253,
+   "updatedAt": "2026-10-15T08:12:04+00:00",
+   "vol1y": 0.2097,
+   "vol3m": 0.1713,
+   "volUsed": 0.2097
   },
   "ABBN.SW": {
    "lastClose": 75.44000244140625,
@@ -7893,6 +7933,15 @@
    "vol3m": 0.2171,
    "volUsed": 0.2358
   },
+  "MDT": {
+   "lastClose": 94.2300033569336,
+   "lastDate": "2026-10-14",
+   "observations": 251,
+   "updatedAt": "2026-10-15T08:12:04+00:00",
+   "vol1y": 0.2414,
+   "vol3m": 0.225,
+   "volUsed": 0.2414
+  },
   "MELI": {
    "lastClose": 1839.1099853515625,
    "lastDate": "2026-10-14",
@@ -9774,6 +9823,24 @@
    "vol3m": 0.4993,
    "volUsed": 0.4993
   },
+  "TSM": {
+   "lastClose": 430.0,
+   "lastDate": "2026-10-14",
+   "observations": 251,
+   "updatedAt": "2026-10-15T08:12:04+00:00",
+   "vol1y": 0.3878,
+   "vol3m": 0.3394,
+   "volUsed": 0.3878
+  },
+  "TTD.VI": {
+   "lastClose": 10.770000457763672,
+   "lastDate": "2026-10-15",
+   "observations": 253,
+   "updatedAt": "2026-10-15T08:12:04+00:00",
+   "vol1y": 0.5972,
+   "vol3m": 0.6927,
+   "volUsed": 0.6927
+  },
   "TTE.PA": {
    "lastClose": 79.88999938964844,
    "lastDate": "2026-10-13",
@@ -10106,6 +10173,15 @@
    "vol1y": 0.4306,
    "vol3m": 0.5014,
    "volUsed": 0.5014
+  },
+  "VX1.F": {
+   "lastClose": 445.25,
+   "lastDate": "2026-10-15",
+   "observations": 253,
+   "updatedAt": "2026-10-15T08:12:04+00:00",
+   "vol1y": 0.3052,
+   "vol3m": 0.2945,
+   "volUsed": 0.3052
   },
   "VZ": {
    "lastClose": 44.41999816894531,
