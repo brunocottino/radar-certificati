@@ -8,10 +8,20 @@ Screener di certificati a cedola (softcallable/autocall, worst-of) quotati in It
 
 ## Orari
 
-Il workflow gira dal lunedì al venerdì alle 9:20 e 14:20 UTC, cioè a borsa aperta:
-11:20 e 16:20 con l'ora legale, 10:20 e 15:20 con l'ora solare.
-Il primo step (`scraper/borsa.py`) salta le run programmate nei giorni di chiusura di Borsa Italiana
-(1/1, Venerdì Santo, Lunedì dell'Angelo, 1/5, 15/8, 24/12, 25/12, 26/12, 31/12). Le run manuali girano sempre.
+Il workflow gira dal lunedì al venerdì alle **09:35** e alle **16:15** ora di Roma (Europe/Rome), sia con l'ora legale
+sia con l'ora solare, solo nei giorni di borsa. GitHub usa l'UTC, quindi ogni orario ha due cron:
+
+| Cron (UTC) | Ora legale (+0200) | Ora solare (+0100) |
+|---|---|---|
+| `35 7,8 * * 1-5` | 07:35 UTC = 09:35 | 08:35 UTC = 09:35 |
+| `15 14,15 * * 1-5` | 14:15 UTC = 16:15 | 15:15 UTC = 16:15 |
+
+Il primo step ("Orario di Roma") legge da `github.event.schedule` quale cron è partito e da `TZ=Europe/Rome date +%z`
+il fuso del giorno: la run prosegue solo se l'orario UTC giusto per quel fuso è già passato e la fascia di oggi non è
+ancora stata pubblicata (il commit dei dati di una run programmata si chiama `Dati certificati <data> 09:35` o `… 16:15`).
+Così l'occorrenza dell'altro fuso salta, un ritardo di GitHub non fa perdere la run giusta e non ci sono doppioni.
+Poi `scraper/borsa.py` salta i giorni di chiusura di Borsa Italiana (1/1, Venerdì Santo, Lunedì dell'Angelo, 1/5,
+15/8, 24/12, 25/12, 26/12, 31/12). Le run manuali partono sempre, senza controlli d'orario.
 
 ## Prezzi
 
@@ -39,14 +49,11 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
 | Citigroup | API pubblica CitiFirst (`citivelocity.com/rcs/eppublic/v1/content/citifirst/product?...country=it`, senza parametri di paginazione): cedola (campo `manualField` o "Cpn: x%" nel nome), frequenza dal calendario dei richiami, barriera, strike dei sottostanti, prossimo richiamo, memoria. Le distanze si ricalcolano da strike e chiusure (`risk.py`), solo se strike e chiusura sono confrontabili |
 | Borsa Italiana (`borsa_scheda`) | schede per ISIN (`/scheda/<ISIN>-SEDX.html`, Cert-X `/eurotlx/scheda/<ISIN>-ETLX.html`) per i certificati ancora senza barriera: barriera capitale %, emittente (sostituisce i codici Euronext ignoti), nome commerciale (memoria), sottostanti. Niente cedola: le schede non la riportano. A rotazione, 1 richiesta/s, 12 minuti per run (~650 schede), prima cash collect/phoenix poi express; ripresa da `scraper/scheda_state.json` |
-| Marex | sonda, nessuna API trovata |
 
-### Orari e verifica
+### Verifica
 
-Il workflow parte ogni ora nei giorni feriali e `scraper/slot.py` decide se lavorare: solo a borsa aperta e una volta per fascia
-(mattina 9:30-13:00, pomeriggio 14:30-17:20, ora di Roma). GitHub ritarda o salta spesso i cron: con questo schema una fascia
-saltata viene recuperata all'ora successiva. L'ultimo step controlla che entro 5 minuti dal push il sito
-(`radar-certificati.cottinob.workers.dev`, dove il robot pubblica i dati) serva il nuovo `updatedAt`, altrimenti la run fallisce.
+L'ultimo step controlla che entro 5 minuti dal push il sito (`radar-certificati.cottinob.workers.dev`, dove il robot
+pubblica i dati) serva il nuovo `updatedAt`, altrimenti la run fallisce.
 
 Il repository è privato: GitHub Actions ha 2.000 minuti gratuiti al mese e ogni run ne usa 15-45.
 

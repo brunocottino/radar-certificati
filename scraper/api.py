@@ -190,8 +190,8 @@ def main():
         "count": len(certs), "withProbability": sum(c.get("probBarrierHold") is not None for c in certs),
         "issuers": dict(sorted(by.items(), key=lambda x: -x[1]["certificates"])),
         "sources": meta.get("sources", []),
-        "schedule": {"cron_utc": "20 9,14 * * 1-5",
-                     "description": "Lun-ven alle 11:20 e 16:20 (ora legale) o 10:20 e 15:20 (ora solare), "
+        "schedule": {"cron_utc": ["35 7,8 * * 1-5", "15 14,15 * * 1-5"], "timezone": "Europe/Rome",
+                     "description": "Lun-ven alle 09:35 e alle 16:15 ora di Roma, con l'ora legale e con l'ora solare, "
                                     "esclusi i giorni di chiusura di Borsa Italiana."},
         "methodology": METHOD,
         "endpoints": ["certificates.json", "isin/{ISIN}.json", "underlyings.json", "meta.json", "schema.json"],

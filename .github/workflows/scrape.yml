@@ -2,9 +2,11 @@ name: Aggiornamento certificati
 
 on:
   schedule:
-    # ogni ora nei giorni feriali: GitHub ritarda o salta i cron, quindi è scraper/slot.py a decidere
-    # se partire (borsa aperta e fascia mattina 9:30-13:00 o pomeriggio 14:30-17:20 ancora da coprire)
-    - cron: "7 7-15 * * 1-5"
+    # 09:35 e 16:15 ora di Roma (Europe/Rome), lun-ven. GitHub usa l'UTC: ogni cron ha due occorrenze,
+    # una per l'ora legale (+0200: 07:35 e 14:15 UTC) e una per l'ora solare (+0100: 08:35 e 15:15 UTC).
+    # Il primo step tiene solo quella giusta per il fuso del giorno; il calendario di borsa salta le festività.
+    - cron: "35 7,8 * * 1-5"
+    - cron: "15 14,15 * * 1-5"
   workflow_dispatch:
     inputs:
       sources:
@@ -32,12 +34,54 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 50
-      - name: Calendario di borsa e fascia oraria
-        id: cal
-        # le run programmate partono solo a borsa aperta e una volta per fascia; quelle manuali girano sempre
+      - name: Orario di Roma (09:35 / 16:15)
+        id: ora
+        # Run manuali: sempre, senza controlli d'orario.
+        # Run programmate: github.event.schedule dice quale cron è partito (mattina o pomeriggio); TZ=Europe/Rome
+        # dà il fuso del giorno e quindi l'orario UTC giusto (+0200: 07:35/14:15, +0100: 08:35/15:15).
+        # GitHub non anticipa mai ma ritarda anche di molti minuti: la run parte se l'orario giusto è già passato
+        # e la fascia di oggi non è ancora stata pubblicata (commit "Dati certificati <data> <fascia>").
+        # Così l'occorrenza dell'altro fuso, se arriva prima, salta; se l'occorrenza giusta arriva in ritardo
+        # non si perde; e la seconda occorrenza dello stesso giorno trova la fascia già coperta e non la ripete.
+        env:
+          EVENT: ${{ github.event_name }}
+          CRON: ${{ github.event.schedule }}
         run: |
-          LAST=$(git log -1 --format=%ct --grep='^Dati certificati' || echo 0)
-          python3 scraper/slot.py "${{ github.event_name }}" "${LAST:-0}"
+          if [ "$EVENT" != "schedule" ]; then
+            echo "Run manuale: nessun controllo d'orario"
+            echo "go=true" >> "$GITHUB_OUTPUT"; echo "slot=manuale" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          OFF=$(TZ=Europe/Rome date +%z)   # +0200 ora legale, +0100 ora solare
+          case "$CRON" in
+            "35 7,8 * * 1-5")   SLOT="09:35"; LEGALE=0735; SOLARE=0835 ;;
+            "15 14,15 * * 1-5") SLOT="16:15"; LEGALE=1415; SOLARE=1515 ;;
+            *) echo "Cron non previsto: '$CRON'"; echo "go=false" >> "$GITHUB_OUTPUT"; exit 0 ;;
+          esac
+          case "$OFF" in
+            +0200) WANT=$LEGALE ;;
+            +0100) WANT=$SOLARE ;;
+            *) echo "Fuso di Roma inatteso: $OFF"; echo "go=false" >> "$GITHUB_OUTPUT"; exit 0 ;;
+          esac
+          NOW=$(date -u +%H%M)
+          echo "cron '$CRON' · Roma $(TZ=Europe/Rome date '+%F %H:%M %z') · UTC $NOW · orario giusto oggi ${WANT} UTC (${SLOT} Roma)"
+          if [ $((10#$NOW)) -lt $((10#$WANT)) ]; then
+            echo "Salta: occorrenza dell'altro fuso (le ${SLOT} di Roma oggi sono le ${WANT:0:2}:${WANT:2} UTC)"
+            echo "go=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          TAG="Dati certificati $(TZ=Europe/Rome date +%F) ${SLOT}"
+          if git log --since="30 hours ago" --format=%s | grep -qxF "$TAG"; then
+            echo "Salta: fascia delle ${SLOT} di oggi già pubblicata"
+            echo "go=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "Parte: fascia delle ${SLOT}"
+          echo "go=true" >> "$GITHUB_OUTPUT"; echo "slot=${SLOT}" >> "$GITHUB_OUTPUT"
+      - name: Calendario di borsa
+        id: cal
+        # le run programmate partono solo nei giorni di apertura di Borsa Italiana; quelle manuali sempre
+        run: |
+          if [ "${{ steps.ora.outputs.go }}" != "true" ]; then echo "open=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "${{ github.event_name }}" != "schedule" ]; then echo "open=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          python3 scraper/borsa.py
       - uses: actions/setup-python@v5
         if: steps.cal.outputs.open == 'true'
         with:
@@ -87,7 +131,11 @@ jobs:
           git config user.name "radar-bot"
           git config user.email "radar-bot@users.noreply.github.com"
           git add docs/data docs/api scraper/underlyings_map.json $(ls scraper/risk_state.json scraper/leonteq_state.json scraper/scheda_state.json scraper/bnp_detail_state.json scraper/intesa_detail_state.json scraper/vontobel_detail_state.json scraper/marex_detail_state.json 2>/dev/null)
-          git diff --cached --quiet || git commit -m "Dati certificati $(date -u +%F)"
+          # le run programmate firmano il commit con la fascia (09:35 / 16:15): serve al controllo d'orario
+          SLOT="${{ steps.ora.outputs.slot }}"
+          MSG="Dati certificati $(TZ=Europe/Rome date +%F)"
+          [ "$SLOT" != "manuale" ] && MSG="$MSG $SLOT"
+          git diff --cached --quiet || git commit -m "$MSG"
           git pull --rebase -q origin "${GITHUB_REF_NAME}"
           git push
       - name: Verifica che il sito mostri i nuovi dati
