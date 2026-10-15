@@ -32,6 +32,8 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | Leonteq | API `product-model/search` paginata; `issuer` = emittente reale, `platform` = "Leonteq". Il sito è protetto da Incapsula, che blocca spesso i runner GitHub: al massimo una ricerca completa al giorno (`scraper/leonteq_state.json`), pause di 2,5-5 s tra le pagine; se bloccata restano i dati dell'ultima ricerca riuscita e la sorgente risulta "bloccata" |
 | BNP Paribas | API `productlist` paginata, tutto il gruppo investimento (cash collect, phoenix, express, bonus cap, protetti) |
 | UniCredit (onemarkets) | tabella paginata |
+| Vontobel (`vontobel_dettaglio`) | le liste e il CSV ufficiale (`/cms/productdownload/export_it-it-csv`) coprono solo i ~590 prodotti in vetrina; centinaia di Vontobel quotati arrivano solo da Euronext. La pagina prodotto (`/it-it/prodotti/investment/<categoria qualsiasi>/<ISIN>`) contiene in `__NEXT_DATA__` cedola p.a., e per ogni sottostante strike, barriera %, trigger cedola e livello autocall con le date: stessa rotazione, 6 minuti per run (`scraper/vontobel_detail_state.json`) |
+| Intesa Sanpaolo (`intesa_dettaglio`) | GET pubblica `rest/public/title/dossierbystock?isin=` di prodottiequotazioni.intesasanpaolo.com: premio per periodo e frequenza (→ cedola p.a.), barriera, strike e distanze dei sottostanti, autocall, scadenza. Stessa rotazione, 5 minuti per run |
 | BNP Paribas (`bnp_dettaglio`) | per i certificati BNP che arrivano solo da Euronext: GET pubbliche per ISIN `apiv2/api/v1/product/keyvaluerow/<ISIN>` (cedola p.a., barriera, trigger, memoria, frequenza) e `underlyingbasket/<ISIN>` (sottostanti con strike e distanze). A rotazione, 4 richieste in parallelo, 8 minuti per run, prima i certificati senza cedola; ogni ISIN si rilegge dopo 7 giorni (`scraper/bnp_detail_state.json`) |
 | Société Générale | API `EmcWebApi/api/ProductSearch`: classificazioni → GridConfig → `Search` in GET (`ProductClassificationId`, `PageNum`) dopo l'avviso di residenza, più dettaglio `Products/{isin}`. Funziona dal 3° tentativo; il listino quotato di SG ha solo la classe "Cash Collect Worst-Of" (27 prodotti a ottobre 2026) |
 | Citigroup | API pubblica CitiFirst (`citivelocity.com/rcs/eppublic/v1/content/citifirst/product?...country=it`, senza parametri di paginazione): cedola (campo `manualField` o "Cpn: x%" nel nome), frequenza dal calendario dei richiami, barriera, strike dei sottostanti, prossimo richiamo, memoria. Le distanze si ricalcolano da strike e chiusure (`risk.py`), solo se strike e chiusura sono confrontabili |
@@ -80,6 +82,7 @@ Cache: 5 minuti (`Cache-Control: public, max-age=300`). Gli header CORS sono in 
   Solo nella prima run del giorno; le successive riusano `scraper/risk_state.json`.
 - Monte Carlo a ogni run (le distanze cambiano): moti browniani geometrici correlati, drift 0, fino a scadenza.
   Barriera a scadenza: 20.000 scenari; barriera continua: 5.000 scenari a passi giornalieri. Seed fisso per ISIN.
+- Il prezzo non serve al calcolo: la probabilità si calcola per ogni certificato con distanza, scadenza e volatilità.
 - `probMethod`: `mc_europea`, `mc_continua`, `solo_peggiore` (nota solo la distanza del peggiore → limite superiore).
 
 **Limiti del modello.** Volatilità storica (non implicita), rendimenti normali senza salti né code grasse, nessun richiamo
@@ -105,8 +108,8 @@ Il sito calcola nel browser, per ogni certificato:
 
 | Profilo | Rend. annuo | Dist. barriera | Prob. tenuta | Trigger | Scadenza | Spread |
 |---|---|---|---|---|---|---|
-| Prudente | 8-25% | ≥ 35% | ≥ 80% | ≥ 5% | ≤ 5 anni | ≤ 2,5% |
-| Bilanciato | 12-35% | ≥ 25% | ≥ 60% | — | ≤ 6 anni | ≤ 3% |
+| Prudente | 8-25% | ≥ 35% | ≥ 75% | ≥ 5% | ≤ 5 anni | ≤ 2% |
+| Bilanciato | 12-35% | ≥ 25% | ≥ 50% | — | ≤ 6 anni | ≤ 3% |
 | Aggressivo | 16-50% | ≥ 15% | — | — | ≤ 8 anni | ≤ 4% |
 
 - **Obiettivi rapidi**: rendita mensile, sotto la pari, scadenza breve, memoria, cedola in pagamento, peggiore lontano.

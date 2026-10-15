@@ -125,7 +125,9 @@ def rows_to_certs(heads, rows, src):
         v = num(g("couponPa"));  c.update(couponPa=v) if v is not None else None
         f = freq_of(g("freq"));  c.update(freq=f) if f else None
         v = num(g("distBarrier")); c.update(distBarrier=v) if v is not None else None
-        v = num(g("barrierPct")); c.update(barrierPct=v) if v is not None else None
+        v = num(g("barrierPct"))
+        if v is not None:
+            c["barrierLevel" if src.get("barrier_abs") else "barrierPct"] = v  # alcune liste danno il livello assoluto
         v = num(g("triggerPct")); c.update(triggerPct=v) if v is not None else None
         d = pdate(g("maturity")); c.update(maturity=d) if d else None
         v = num(g("bid")); c.update(bid=v) if v else None
@@ -274,6 +276,10 @@ def clean_underlyings(c):
         c["underlyings"] = [u for u in c["underlyings"] if u and not JUNK_UND.match(str(u).strip())]
     if isinstance(c.get("nominal"), str):
         c["nominal"] = num(c["nominal"])
+    # Vontobel cash collect a sottostante singolo: la colonna "barriera" è il livello assoluto, non la %
+    # (pulizia dell'archivio: da ora la lista lo salva in barrierLevel e la % arriva dalla scheda vontobel_dettaglio)
+    if c.get("source") == "vontobel_cc_barriera" and c.get("barrierPct") is not None and c.get("barrierLevel") is None:
+        c["barrierLevel"] = c.pop("barrierPct")
     kind = f'{c.get("type") or ""} {c.get("typeMarket") or ""}'
     if c.get("couponPa") is not None and NO_COUPON.search(kind) and not HAS_COUPON.search(kind):
         c.pop("couponPa")

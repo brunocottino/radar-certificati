@@ -430,7 +430,8 @@ def risk_for(c, m, st):
            "riskAt": NOW}
     T = years_to(c.get("maturity"))
     dist = c.get("distBarrier")
-    if not (c.get("bid") and c.get("ask")) or T is None or T <= 0 or dist is None or not rows:
+    # il prezzo non serve: la probabilità dipende da distanza, volatilità e tempo (prima mancava a chi era senza prezzo)
+    if T is None or T <= 0 or dist is None or not rows:
         return out
     T = min(T, 15.0)
     continuous = c.get("barrierType") == "continua"

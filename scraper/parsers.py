@@ -293,6 +293,104 @@ async def bnp_details(DISC, src, NOW, ctx):
         await page.close()
 
 
+# ---------------------------------------------------------------- Vontobel: dettaglio per ISIN
+# Le liste e il CSV di Vontobel coprono solo i prodotti "in vetrina" (~590): centinaia di certificati Vontobel
+# quotati arrivano solo da Euronext, senza cedola. La pagina prodotto risponde per qualsiasi ISIN (la categoria
+# nell'indirizzo non conta) e contiene in __NEXT_DATA__ tutti i dati: cedola p.a., per sottostante strike (8),
+# barriera con % (58), trigger cedola con data (36), livello autocall con data (35), prezzo; tipo di barriera.
+
+VONTOBEL_DETAIL_STATE = Path(__file__).resolve().parent / "vontobel_detail_state.json"
+VONTOBEL_PAGE = "https://markets.vontobel.com/it-it/prodotti/investment/cash-collect-certificate/{}"
+
+
+def vt_kf(kfs, name):
+    """Valore (prezzo, %, data) di una key figure Vontobel per numero di nome."""
+    for k in kfs or []:
+        if k.get("name") != name:
+            continue
+        v = k.get("value") or {}
+        if "keyFigure" in v:
+            v = (v["keyFigure"] or {}).get("value") or {}
+        if "first" in v:
+            f, s = (v.get("first") or {}).get("value") or {}, (v.get("second") or {}).get("value") or {}
+            return {"price": f.get("price"), "pct": s.get("percentage"), "date": (s.get("value") or "")[:10] or None}
+        return {"price": v.get("price"), "pct": v.get("percentage"), "date": None}
+    return {}
+
+
+def vontobel_cert(html, c):
+    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', html, re.S)
+    if not m:
+        return None
+    ad = (json.loads(m.group(1)).get("props") or {}).get("pageProps", {}).get("additionalData") or {}
+    d = ad.get("data") or {}
+    if not d.get("isin"):
+        return None
+    ukf = {u.get("ulinsId"): u.get("keyFigures") for u in ad.get("underlyingKeyFigures") or []}
+    unds, bars, trigs = [], [], []
+    next_cpn = next_call = None
+    for u in ad.get("underlyings") or []:
+        k = ukf.get(u.get("ulinsId")) or []
+        strike = vt_kf(k, 8).get("price")
+        bar = vt_kf(k, 58)
+        trg = vt_kf(k, 36)
+        call = vt_kf(k, 35)
+        last = (u.get("price") or {}).get("latest") or (u.get("price") or {}).get("previousClose")
+        b = bar.get("price") or u.get("barrier")
+        if bar.get("pct"):
+            bars.append(bar["pct"] * 100)
+        if strike and trg.get("price"):
+            trigs.append(trg["price"] / strike * 100)
+        next_cpn = next_cpn or trg.get("date")
+        next_call = next_call or call.get("date")
+        unds.append(clean({"name": u.get("name"), "strike": strike,
+                           "dist": round((last - b) / last * 100, 4) if last and b else None,
+                           "isin": u.get("isin") if ISIN_RE.fullmatch(u.get("isin") or "") else None}))
+    dists = [u for u in unds if u.get("dist") is not None]
+    worst = min(dists, key=lambda u: u["dist"]) if dists else None
+    feats = {f.get("$type"): f for f in ad.get("primaryFeatures") or []}
+    mat = (feats.get("ProductFeatureFinalFixingDto") or {}).get("date")
+    mem = (feats.get("ProductFeatureCouponMemoryTypeDto") or {}).get("couponMemoryType")
+    call = (feats.get("ProductFeatureCallabilityDto") or {}).get("callability")
+    text = re.sub(r"<[^>]+>", " ", html[:400000])
+    fm = re.search(r"Frequenza cedolare \(in mesi\)\D{0,80}?(\d+)", text)
+    cpa = d.get("couponPerAnnum")
+    return {
+        "type": d.get("associationName"),
+        "underlyings": [u["name"] for u in unds] or None,
+        "underlyingsDetail": unds or None,
+        "worstName": worst["name"] if worst else None,
+        # barrierDistance di Vontobel è senza segno: prima la distanza calcolata dai prezzi (negativa sotto barriera)
+        "distBarrier": worst["dist"] if worst else (round(d["barrierDistance"] * 100, 4) if d.get("barrierDistance") is not None else None),
+        "barrierPct": round(min(bars), 2) if bars else (round(d["barrier"] / d["strikePrice"] * 100, 2) if d.get("barrier") and d.get("strikePrice") else None),
+        "triggerPct": round(min(trigs), 2) if trigs else None,
+        "barrierType": "scadenza" if d.get("barrierObservation") == 11 else ("continua" if d.get("barrierObservation") else None),
+        "couponPa": round(cpa * 100, 4) if cpa else None,
+        "freq": months_to_freq(fm.group(1)) if fm else None,
+        "nominal": d.get("denomination") or d.get("issuePrice"),
+        "maturity": (mat or "")[:10] or None,
+        "memory": True if mem == 0 else None,
+        "callable": "Autocall" if call == 2 else None,
+        "nextCouponDate": next_cpn, "nextCallDate": next_call,
+        "currency": d.get("currency"),
+        "url": f"https://markets.vontobel.com/it-it/prodotti/investment/cash-collect-certificate/{c['isin']}",
+    }
+
+
+async def vontobel_details(DISC, src, NOW, ctx):
+    src = {**src, "_now": NOW}
+
+    async def one(c):
+        r = await ctx.request.get(VONTOBEL_PAGE.format(c["isin"]), timeout=30000)
+        if r.status == 404:
+            return None
+        if r.status != 200:
+            raise RuntimeError(f"HTTP {r.status}")
+        return vontobel_cert(await r.text(), c)
+
+    return await rotate(DISC, src, "Vontobel", VONTOBEL_DETAIL_STATE, int(os.environ.get("VONTOBEL_DETAIL_BUDGET_MIN", "6")) * 60, one, {})
+
+
 # ---------------------------------------------------------------- Intesa Sanpaolo: dettaglio per ISIN
 # Il sito prodottiequotazioni usa una GET pubblica per ISIN (rest/public/title/dossierbystock): premio
 # condizionato per periodo e frequenza (-> cedola p.a. sul prezzo di emissione), barriera %, sottostanti con

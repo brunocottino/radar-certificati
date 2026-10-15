@@ -349,12 +349,12 @@ const dtime=s=>s?new Date(s).toLocaleString("it-IT",{day:"2-digit",month:"2-digi
 // profili = preset dei filtri (modificabili) + pesi del punteggio
 // soglia principale = rendimento annuo a scadenza (cedole + rimborso, al prezzo di lettera); i dati mancanti non escludono
 const PRESETS={
-  prudente:{er:null,y:8,ym:25,b:35,t:5,prob:80,mat:5,sp:2.5,cpn:true},
-  bilanciato:{er:null,y:12,ym:35,b:25,t:null,prob:60,mat:6,sp:3,cpn:true},
+  prudente:{er:null,y:8,ym:25,b:35,t:5,prob:75,mat:5,sp:2,cpn:true},
+  bilanciato:{er:null,y:12,ym:35,b:25,t:null,prob:50,mat:6,sp:3,cpn:true},
   aggressivo:{er:null,y:16,ym:50,b:15,t:null,prob:null,mat:8,sp:4,cpn:true},
 };
 // R rendimento atteso, S sicurezza (probabilità e distanza del peggiore), T affidabilità cedola, L liquidità, Q qualità
-const W={prudente:{R:.25,S:.38,T:.13,L:.12,Q:.12},bilanciato:{R:.38,S:.30,T:.10,L:.11,Q:.11},aggressivo:{R:.50,S:.22,T:.08,L:.10,Q:.10}};
+const W={prudente:{R:.24,S:.34,T:.12,L:.18,Q:.12},bilanciato:{R:.34,S:.28,T:.10,L:.17,Q:.11},aggressivo:{R:.45,S:.20,T:.08,L:.17,Q:.10}};
 // rendimento annuo che vale il massimo del punteggio, per profilo
 const RTOP={prudente:14,bilanciato:20,aggressivo:28};
 const COMP={R:"Rendimento annuo",S:"Sicurezza del peggiore",T:"Affidabilità cedola",L:"Liquidità",Q:"Qualità"};
@@ -451,7 +451,7 @@ function score(c,w){
   else S=.15;
   S=clamp(S,0,1);
   const T=c.couponPa==null?0:c.trigDist!=null?clamp((c.trigDist+5)/40,0,1):S*.7;
-  const L=!c.liq?0:clamp(1-(c.spread??3)/3,0,1)*(c.stale?.6:1);
+  const L=!c.liq?0:clamp((3-(c.spread??3))/2.5,0,1)*(c.stale?.6:1); // spread 0,5% = pieno, 3% = zero
   const known=[c.prob,c.trigDist,c.freq,c.barrierPct].filter(v=>v!=null&&v!=="").length/4;
   const Q=clamp((c.tier?TIERV[c.tier]:.5)*.7+(c.memory?.15:0)+known*.15,0,1);
   c.sc={R,S,T,L,Q};
