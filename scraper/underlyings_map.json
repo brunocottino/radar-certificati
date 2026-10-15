@@ -275,6 +275,17 @@
   "type": "EQUITY",
   "yahooName": "adidas AG"
  },
+ "adidas brunello cucinelli kering zalando": {
+  "checkedAt": "2026-10-15",
+  "exchange": "GER",
+  "isin": null,
+  "manual": null,
+  "name": "Adidas, Brunello Cucinelli, Kering, Zalando",
+  "score": 0.8,
+  "ticker": "ADS.DE",
+  "type": "EQUITY",
+  "yahooName": "adidas AG"
+ },
  "adidas netflix unicredit": {
   "checkedAt": "2026-10-15",
   "exchange": "GER",
@@ -997,6 +1008,17 @@
   "manual": null,
   "name": "Arm Holding plc",
   "score": 1.0,
+  "ticker": "ARM",
+  "type": "EQUITY",
+  "yahooName": "Arm Holdings plc"
+ },
+ "arm marvell micron sandisk": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NMS",
+  "isin": null,
+  "manual": null,
+  "name": "ARM Holdings, Marvell, Micron, Sandisk",
+  "score": 0.8,
   "ticker": "ARM",
   "type": "EQUITY",
   "yahooName": "Arm Holdings plc"
@@ -12821,6 +12843,28 @@
   "ticker": "KLAR",
   "type": "EQUITY",
   "yahooName": "Klarna Group plc"
+ },
+ "klm airbnb norwegian cruise": {
+  "checkedAt": "2026-10-15",
+  "exchange": "NYQ",
+  "isin": null,
+  "manual": null,
+  "name": "KLM, Airbnb, Norwegian Cruise",
+  "score": 0.667,
+  "ticker": "NCLH",
+  "type": "EQUITY",
+  "yahooName": "Norwegian Cruise Line Holdings Ltd."
+ },
+ "koninklijke ahold delhaize": {
+  "checkedAt": "2026-10-15",
+  "exchange": "CXE",
+  "isin": null,
+  "manual": null,
+  "name": "Koninklijke Ahold Delhaize NV",
+  "score": 1.0,
+  "ticker": "ADA.XC",
+  "type": "EQUITY",
+  "yahooName": "Koninklijke Ahold Delhaize N.V."
  },
  "koninklijke philips n v": {
   "checkedAt": "2026-10-15",

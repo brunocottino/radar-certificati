@@ -327,6 +327,9 @@
   "ACS.MC|HEI.DE": 0.4149,
   "ACS.MC|MT.AS": 0.5616,
   "ACS.MC|SGO.PA": 0.3522,
+  "ADA.XC|CL": 0.0801,
+  "ADA.XC|HEIA.AS": 0.1577,
+  "ADA.XC|LSPN.MU": 0.2273,
   "ADBE|AI": 0.3735,
   "ADBE|ASML.AS": -0.3337,
   "ADBE|CRM": 0.7536,
@@ -4128,6 +4131,7 @@
   "9PDA.SG",
   "AB2A.MU",
   "ABBN.SW",
+  "ADA.XC",
   "AI.PA",
   "AIUT.HA",
   "ALC",
@@ -4728,6 +4732,15 @@
    "vol1y": 0.3406,
    "vol3m": 0.2927,
    "volUsed": 0.3406
+  },
+  "ADA.XC": {
+   "lastClose": 32.63999938964844,
+   "lastDate": "2026-10-15",
+   "observations": 254,
+   "updatedAt": "2026-10-15T18:57:40+00:00",
+   "vol1y": 0.216,
+   "vol3m": 0.2401,
+   "volUsed": 0.2401
   },
   "ADBE": {
    "lastClose": 240.67999267578125,
