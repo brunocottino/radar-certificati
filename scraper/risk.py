@@ -182,7 +182,7 @@ def pick(quotes, name, by_isin=False):
             "type": q.get("quoteType"), "exchange": q.get("exchange"), "score": sim}
 
 
-def update_map(unds, offline):
+def update_map(unds, offline, only_new=False):
     m = load(MAP, {})
     retry_before = (TODAY - timedelta(days=7)).isoformat()
     searched = 0
@@ -191,8 +191,8 @@ def update_map(unds, offline):
         if u.get("isin") and not e.get("isin"):
             e["isin"] = u["isin"]
             e.pop("checkedAt", None)  # con l'ISIN vale la pena riprovare
-        if e.get("manual") is not None or offline:
-            continue
+        if e.get("manual") is not None or offline or (only_new and e.get("checkedAt")):
+            continue  # nelle run successive alla prima del giorno: solo i nomi mai cercati
         if e.get("checkedAt") and (e.get("ticker") or e["checkedAt"] >= retry_before):
             continue
         res = None
@@ -291,7 +291,7 @@ def update_state(certs, m, offline, force):
     st = load(STATE, {})
     if st.get("date") == TODAY.isoformat() and not force:
         log("volatilità già calcolate oggi: riuso", STATE.name)
-        return st
+        return add_new_tickers(st, certs, m, offline)
     tickers = sorted({t for c in certs for n, _, _ in cert_underlyings(c) if (t := ticker_of(m, n))})
     log(f"scarico prezzi per {len(tickers)} ticker")
     closes, und = {}, {}
@@ -322,6 +322,45 @@ def update_state(certs, m, offline, force):
     return st
 
 
+def add_new_tickers(st, certs, m, offline):
+    """Run successive alla prima del giorno: volatilità e correlazioni solo dei ticker nuovi (es. sottostanti
+    di certificati appena arricchiti dalle schede), senza riscaricare gli altri."""
+    und, corr = st.setdefault("underlyings", {}), st.setdefault("corr", {})
+    tried = set(st.get("tried", []))
+    tickers = sorted({t for c in certs for n, _, _ in cert_underlyings(c) if (t := ticker_of(m, n))})
+    new = [t for t in tickers if t not in und and t not in tried]
+    if not new or offline:
+        return st
+    log(f"ticker nuovi: {len(new)}")
+    closes = {}
+    for t in new:
+        tried.add(t)
+        cl = fetch_closes(t, offline)
+        if not cl:
+            continue
+        v1, v3 = vols(cl)
+        if v1 is None and v3 is None:
+            continue
+        closes[t] = cl
+        und[t] = {"vol1y": round(v1, 4) if v1 else None, "vol3m": round(v3, 4) if v3 else None,
+                  "volUsed": round(max(x for x in (v1, v3) if x is not None), 4),
+                  "observations": len(cl), "lastClose": cl[-1][1], "lastDate": cl[-1][0], "updatedAt": NOW}
+    for c in certs:
+        ts = sorted({t for n, _, _ in cert_underlyings(c) if (t := ticker_of(m, n)) and t in und})
+        for i, a in enumerate(ts):
+            for b in ts[i + 1:]:
+                if (a in closes or b in closes) and f"{a}|{b}" not in corr:
+                    ca = closes.get(a) or fetch_closes(a, True)
+                    cb = closes.get(b) or fetch_closes(b, True)
+                    r = correlation(ca, cb) if ca and cb else None
+                    if r is not None:
+                        corr[f"{a}|{b}"] = r
+    st["tried"] = sorted(tried)
+    dump(STATE, st)
+    log(f"volatilità aggiunte: {len(closes)} ticker nuovi")
+    return st
+
+
 # ---------------------------------------------------------------- distanza dai prezzi dei sottostanti
 
 def refresh_distance(c, m, st):
@@ -341,7 +380,7 @@ def refresh_distance(c, m, st):
         if not v or not v.get("lastClose"):
             return False
         # strike e chiusura devono essere confrontabili (stessa quotazione e valuta): altrimenti niente distanza
-        if not 0.2 <= v["lastClose"] / u["strike"] <= 5:
+        if not 0.1 <= v["lastClose"] / u["strike"] <= 5:  # sotto 0,1: quasi certamente un errore di dati
             c["distNote"] = f"strike di {u.get('name')} non confrontabile con la chiusura di {ticker_of(m, u.get('name'))}"
             if c.get("distSource") == "chiusure sottostanti":  # toglie una distanza ricalcolata in precedenza
                 for k in ("distBarrier", "worstName", "distAt", "distSource"):
@@ -487,7 +526,7 @@ def main():
     unds = all_underlyings([c for c in certs if c.get("distBarrier") is not None or c.get("underlyingsDetail")])
     log(f"{len(certs)} certificati, {len(unds)} sottostanti distinti")
     first_today = load(STATE, {}).get("date") != TODAY.isoformat() or force
-    m = update_map(unds, offline or not first_today)
+    m = update_map(unds, offline, only_new=not first_today)
     st = update_state(certs, m, offline, force)
     t0, n_prob, n_dist = time.time(), 0, 0
     for c in certs:

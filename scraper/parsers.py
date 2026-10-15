@@ -436,7 +436,9 @@ def marex_ts(text, title=""):
         pcts = []
         for l in lines[hi + 1:hi + 3]:
             pcts += re.findall(r"\(([\d.]+)%\)\*", l)
-        bar = float(pcts[-1]) if len(pcts) >= 3 else None
+        # 3 colonne: iniziale (100%), strike (100%), barriera (x%); 2 colonne: iniziale (100%) e strike basso (x%)
+        # che fa da barriera. In entrambi i casi la barriera è l'ultima % dell'intestazione, se sotto 100.
+        bar = float(pcts[-1]) if len(pcts) >= 2 and float(pcts[-1]) < 100 else None
         cur = None
         for l in lines[hi + 1:hi + 60]:
             if l.lstrip().startswith("*") or re.match(r"\s*[A-Z ]{6,}$", l) and "UNDERLYING" not in l and cur:
@@ -445,8 +447,10 @@ def marex_ts(text, title=""):
             if mi and len(l) > c1 and re.search(r"[A-Z]{3} [\d,.]+", l):
                 vals = re.findall(r"\b[A-Z]{3} ([\d,.]+)", l)
                 cur = {"name": re.sub(r"^\s*\d+\s+", "", l[:c1]).strip(), "tk": (re.search(r"([A-Z0-9./]+ [A-Z]{2})(?: Equity| Index)?", l[c1:]) or [None, None])[1],
-                       "strike": float(vals[1].replace(",", "")) if len(vals) >= 2 else None}
+                       "strike": float(vals[0].replace(",", "")) if vals else None}  # livello iniziale = 100%
                 unds.append(cur)
+            elif re.search(r"BISHOPSGATE|Marex Financial|hello@marexfp", l):
+                continue  # piè di pagina in mezzo alla tabella
             elif cur and len(l) > c0 and l[:c0].strip() == "":
                 frag = l[max(c0 - 2, 0):c1].strip()
                 if frag and not re.search(r"Exchange|Equity|Index", frag):
