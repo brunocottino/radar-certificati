@@ -144,7 +144,7 @@ tr.sp td{height:auto;border:none;padding:0}
 .star[aria-pressed="true"]{color:var(--brass)}
 .sel{width:auto;margin:0}
 /* schede */
-.list{display:grid;gap:12px}
+.list{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;min-width:0;cursor:pointer}
 .card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .card-top .who{min-width:0}
@@ -190,7 +190,8 @@ tr.sp td{height:auto;border:none;padding:0}
 .inline-detail .dhead{position:static;background:none;padding:0}
 .drawer .lad,.inline-detail .lad{grid-template-columns:minmax(150px,340px) 1fr 70px}
 @media (max-width:819px){.chiprow{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.chip{flex:none}.top-in{gap:6px;padding-top:8px}.status{font-size:.74rem}
-  .drawer .lad,.inline-detail .lad{grid-template-columns:minmax(110px,1fr) 70px 56px}}
+  .drawer .lad,.inline-detail .lad{grid-template-columns:minmax(110px,1fr) 70px 56px}
+  .lad .n{white-space:normal;line-height:1.25}.lad .n .note{display:block;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 .inline-detail{border:2px solid var(--accent);border-radius:var(--r);background:var(--surface);padding:16px;display:grid;gap:14px}
 .cmp-table td,.cmp-table th{height:auto;padding:7px 10px;white-space:normal;vertical-align:top}
 .cmp-table th{position:static;cursor:default;text-align:left}
@@ -217,7 +218,11 @@ tr.sp td{height:auto;border:none;padding:0}
 .qopts button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
 .more-f>summary{font-size:.9rem;color:var(--accent);padding:6px 0}
 /* ---------- schede risultato ---------- */
-.card{gap:8px;padding:12px 14px}
+.card{gap:8px;padding:12px 14px;grid-template-columns:minmax(0,1fr)}
+.card>*{min-width:0}
+.card{content-visibility:auto;contain-intrinsic-size:auto 230px}
+.wrap,.drawer .dbody{grid-template-columns:minmax(0,1fr)}
+.wrap>*,.drawer .dbody>*{min-width:0}
 .c-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
 .c-head .who{min-width:0;flex:1}
 .c-unds{font-weight:600;font-size:.98rem;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
@@ -278,8 +283,7 @@ tr.sp td{height:auto;border:none;padding:0}
   .resrow select{font-size:.84rem;width:132px!important;padding:6px 6px}
   .fsum{max-width:none;text-align:left}
   .brand .status .full{display:none}
-  .top.scrolled .brand,.top.scrolled #profile-top,.top.scrolled #objs{display:none!important}
-  .top.scrolled .top-in{gap:6px;padding-block:6px}
+  #mobbar{display:grid;gap:8px}
   .objs .lab{display:none}
   .objs button{font-size:.8rem;padding:6px 12px}
   .daily-row{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:82%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:2px}
@@ -413,7 +417,8 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .dp-k b{font-size:1.02rem;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .dp-k small{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* schede */
-.card{position:relative;border-radius:var(--r);box-shadow:inset 4px 0 0 var(--spine,var(--line)),var(--shadow);padding-left:18px;transition:transform .2s,box-shadow .2s;animation:rise .45s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 28ms)}
+.card{position:relative;border-radius:var(--r);box-shadow:inset 4px 0 0 var(--spine,var(--line)),var(--shadow);padding-left:18px;transition:transform .2s,box-shadow .2s;}
+.card.anim{animation:rise .4s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 30ms)}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media (hover:hover){.card:hover,.mini:hover{transform:translateY(-2px);box-shadow:inset 4px 0 0 var(--spine,var(--line)),0 18px 36px -18px rgb(16 24 32 / .35)}.dp:hover{box-shadow:0 18px 36px -18px rgb(16 24 32 / .35)}}
 .ring{position:relative;display:grid;place-items:center;width:42px;height:42px;font-family:var(--f-num);font-weight:700;font-size:.86rem;color:var(--accent);flex:none}
@@ -523,6 +528,7 @@ td{font-weight:500}
 </header>
 
 <main class="wrap">
+  <div id="mobbar" class="only-narrow"></div>
   <section class="panel alerts" id="alerts" hidden></section>
 
   <section class="panel fpanel" id="fpanel" aria-label="Filtri">
@@ -644,7 +650,7 @@ td{font-weight:500}
 (function(){
 "use strict";
 const $=s=>document.querySelector(s);
-const fmt=(v,d=2)=>v==null||isNaN(v)?"—":Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d});
+const NF=[];const fmt=(v,d=2)=>v==null||isNaN(v)?"—":(NF[d]||(NF[d]=new Intl.NumberFormat("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d}))).format(v);
 const pct=(v,d=1)=>v==null||isNaN(v)?"—":fmt(v,d)+"%";
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -662,7 +668,7 @@ const holi={};function isOpen(d){const w=d.getDay();if(w===0||w===6)return false
   return !holi[y].has(d.toDateString())}
 function tradingDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;const t=new Date(x);t.setDate(t.getDate()+1);for(;t<=today;t.setDate(t.getDate()+1))if(isOpen(t))n++;return n}
 function bizDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;for(const t=new Date(x);t<today;t.setDate(t.getDate()+1)){const w=t.getDay();if(w&&w!==6)n++}return n}
-const dshort=d=>d?d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"}):"—";
+const DF=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"});const dshort=d=>d?DF.format(d):"—";
 const dtime=s=>s?new Date(s).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
 
 /* ---------- stato ---------- */
@@ -981,7 +987,7 @@ function keyBadges(c){const b=[];if(c.front)b.push(`<span class="b fr" title="Fr
   if(c.callKind==="autocall")b.push(`<span class="b">Autocall</span>`);
   return b.slice(0,3).join("")}
 function cardHtml(c,i){const sp=pcol(c.prob);
-  return `<article class="card" data-open="${esc(c.isin)}" style="--i:${Math.min(i||0,14)};--spine:${sp==="none"?"var(--line)":sp}">
+  return `<article class="card${(i||0)<8?" anim":""}" data-open="${esc(c.isin)}" style="--i:${i||0};--spine:${sp==="none"?"var(--line)":sp}">
 <div class="c-head"><div class="who"><div class="c-iss"><b>${esc(c.issuer||"Emittente n.d.")}</b>${c.type?" · "+esc(c.type):""}</div><div class="c-unds">${undsHtml(c)}</div></div>
 <div class="c-side">${starBtn(c)}<span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span></div></div>
 <div class="kpis">
@@ -996,7 +1002,7 @@ function renderCards(){
   const res=$("#results");res.innerHTML=`<div class="list" id="clist"></div><div id="more" style="height:1px"></div>`;cardN=0;moreCards();
   io?.disconnect();io=new IntersectionObserver(e=>{if(e[0].isIntersecting)moreCards()},{rootMargin:"600px"});io.observe($("#more"));
 }
-function moreCards(){if(cardN>=ROWS.length)return;const n=Math.min(ROWS.length,cardN+60);$("#clist").insertAdjacentHTML("beforeend",ROWS.slice(cardN,n).map(cardHtml).join(""));cardN=n}
+function moreCards(){if(cardN>=ROWS.length)return;const n=Math.min(ROWS.length,cardN+24);$("#clist").insertAdjacentHTML("beforeend",ROWS.slice(cardN,n).map((c,i)=>cardHtml(c,cardN+i)).join(""));cardN=n}
 
 /* ---------- mappa rischio-rendimento ---------- */
 const PQ=[["≥ 85%","var(--q4)"],["70–85%","var(--q3)"],["50–70%","var(--q2)"],["< 50%","var(--q1)"]];
@@ -1446,8 +1452,12 @@ $("#cmpgo").addEventListener("click",openCmp);$("#cmpclr").addEventListener("cli
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawers();openSheet(false)}});
 addEventListener("hashchange",()=>{if(fromHash()){rescore();render()}});
 let rT=null;addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>{setTopH();render(false)},200)});
-addEventListener("scroll",()=>{if(innerWidth<820)$("#top").classList.toggle("scrolled",scrollY>140)},{passive:true});
-function setTopH(){document.documentElement.style.setProperty("--top-h",$("#top").offsetHeight+"px")}
+/* telefono: profilo e obiettivi scorrono con la pagina; in alto restano fissi solo ricerca e conteggio */
+function placeBars(){const narrow=innerWidth<820,mb=$("#mobbar"),ti=$(".top-in");
+  if(narrow&&$("#objs").parentNode!==mb){mb.append($("#profile-top"),$("#objs"))}
+  else if(!narrow&&$("#objs").parentNode===mb){ti.insertBefore($("#objs"),$(".resrow"));ti.insertBefore($("#profile-top"),$("#objs"))}
+  $("#top").style.top=narrow?-Math.max(0,$(".search").offsetTop-8)+"px":"0px"}
+function setTopH(){placeBars();document.documentElement.style.setProperty("--top-h",$("#top").offsetHeight+"px")}
 new ResizeObserver(setTopH).observe($("#top"));
 
 /* ---------- tema ---------- */
