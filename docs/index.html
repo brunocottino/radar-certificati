@@ -362,7 +362,7 @@ body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px
 ::selection{background:var(--accent);color:var(--surface)}
 .top{background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:none}
 .hbtns{display:flex;gap:6px;flex:none;margin-left:auto}
-.brandmark{display:flex;align-items:center;gap:9px;font-family:var(--f-disp);font-weight:700;font-size:1.3rem;letter-spacing:-.025em;line-height:1;white-space:nowrap}
+.brandmark{display:flex;align-items:center;gap:9px;font-family:var(--f-disp);font-weight:700;font-size:1.15rem;letter-spacing:-.025em;line-height:1;white-space:nowrap}
 .brandmark .bm2{color:var(--accent)}
 .logo{width:30px;height:30px;flex:none;border-radius:8px;box-shadow:0 2px 8px -2px rgb(15 76 129 / .5)}
 .logo .sweep{transform-origin:16px 16px;animation:sweep 7s linear infinite}
@@ -383,12 +383,13 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .plate::before,.plate::after{content:"";position:absolute;width:14px;height:14px;border:solid var(--gold);pointer-events:none}
 .plate::before{top:6px;left:6px;border-width:2px 0 0 2px}
 .plate::after{bottom:6px;right:6px;border-width:0 2px 2px 0}
-.pl-main{padding:18px 22px 16px;display:grid;gap:4px;align-content:center;border-right:1px solid var(--ink)}
+.pl-main{padding:14px 20px;display:grid;gap:4px;align-content:center;border-right:1px solid var(--ink)}
 .pl-tag{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;gap:8px;align-items:center}
 .pl-tag::before{content:"";width:18px;height:1.5px;background:var(--gold)}
-.pl-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.pl-n{font-family:var(--f-disp);font-weight:700;font-size:4rem;line-height:.95;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.045em}
-.pl-t{font-family:var(--f-disp);font-weight:500;font-size:1.2rem;line-height:1.35;max-width:34ch;letter-spacing:-.01em;color:var(--muted)}
+.pl-head{display:block;line-height:1.4}
+.pl-head .pl-n{margin-right:8px}
+.pl-n{font-family:var(--f-disp);font-weight:700;font-size:2.1rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.045em}
+.pl-t{font-family:var(--f-disp);font-weight:500;font-size:1.05rem;line-height:1.4;letter-spacing:-.01em;color:var(--muted)}
 .pl-t em{font-style:normal;font-weight:700;color:var(--ink)}
 .pl-prof{display:block;margin-top:4px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--muted)}
 .pl-cells{display:grid;grid-template-columns:1fr 1fr;margin:0}
@@ -396,26 +397,25 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .pl-cells>div:nth-child(odd){border-left:none}
 .pl-cells>div:nth-last-child(-n+2){border-bottom:none}
 .pl-cells dt{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pl-cells dd{margin:0;font-family:var(--f-disp);font-weight:650;font-size:1.65rem;line-height:1.1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pl-cells dd{margin:0;font-family:var(--f-disp);font-weight:650;font-size:1.2rem;line-height:1.2;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .pl-cells dd.gold{color:var(--brass)}
-/* scelte del giorno come mazzetta Pantone */
-.daily-row{gap:14px}
-.sw{padding:0;overflow:hidden;background:var(--surface);border-radius:6px;border:1px solid var(--line);box-shadow:var(--shadow);gap:0;align-content:start;transition:transform .2s,box-shadow .2s}
-.sw-chip{display:grid;align-content:space-between;gap:16px;min-height:132px;padding:12px 14px;background:var(--sw);color:#fbfaf7}
-.sw-chip.lt{color:#101820}
-.sw-rank{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.85;display:flex;justify-content:space-between}
-.sw-big{font-family:var(--f-disp);font-weight:700;font-size:2.7rem;line-height:.95;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
-.sw-big small{font-family:var(--f-ui);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-left:6px;opacity:.85}
-.sw-body{display:grid;gap:4px;padding:10px 14px 12px}
-.sw-code{font-weight:700;letter-spacing:.04em;font-size:.95rem}
-.sw-code small{display:block;margin:1px 0 0;font-weight:600;color:var(--muted);font-size:.66rem;letter-spacing:.1em;margin-left:4px}
-.sw-name{font-weight:600;font-size:.98rem;line-height:1.3;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.sw-name b{color:var(--brass);font-weight:700}
-.sw-meta{font-size:.74rem;color:var(--muted)}
+/* scelte del giorno */
+.daily-row{gap:12px}
+.dp{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--accent-fill);border-radius:10px;box-shadow:var(--shadow);padding:12px 14px;gap:6px;align-content:start;transition:transform .2s,box-shadow .2s}
+.dp-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.dp-iss{font-weight:700;font-size:.95rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-n{font-size:.7rem;color:var(--muted);white-space:nowrap}
+.dp-type{font-size:.76rem;color:var(--muted);margin-top:-4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-und{font-size:.92rem;font-weight:500;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dp-und b{color:var(--brass);font-weight:700}
+.dp-k{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;gap:4px 10px;border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
+.dp-k span{display:grid;gap:1px;min-width:0}
+.dp-k b{font-size:1.02rem;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dp-k small{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* schede */
 .card{position:relative;border-radius:var(--r);box-shadow:inset 4px 0 0 var(--spine,var(--line)),var(--shadow);padding-left:18px;transition:transform .2s,box-shadow .2s;animation:rise .45s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 28ms)}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media (hover:hover){.card:hover,.sw:hover,.mini:hover{transform:translateY(-2px);box-shadow:inset 4px 0 0 var(--spine,var(--line)),0 18px 36px -18px rgb(16 24 32 / .35)}.sw:hover{box-shadow:0 18px 36px -18px rgb(16 24 32 / .35)}}
+@media (hover:hover){.card:hover,.mini:hover{transform:translateY(-2px);box-shadow:inset 4px 0 0 var(--spine,var(--line)),0 18px 36px -18px rgb(16 24 32 / .35)}.dp:hover{box-shadow:0 18px 36px -18px rgb(16 24 32 / .35)}}
 .ring{position:relative;display:grid;place-items:center;width:42px;height:42px;font-family:var(--f-num);font-weight:700;font-size:.86rem;color:var(--accent);flex:none}
 .ring::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(currentColor calc(var(--s)*1%),var(--line) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px))}
 .ring.ca{color:var(--caution)}.ring.neg{color:var(--bad)}
@@ -426,11 +426,13 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .ruler i{position:absolute;left:0;top:0;bottom:0;width:var(--d);border-radius:2px;background:var(--good)}
 .ruler.ca i{background:var(--caution)}.ruler.neg i{background:var(--bad)}
 .c-unds b{font-weight:700}
+.c-iss{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.c-iss b{font-size:.92rem;color:var(--ink);font-weight:700}
 /* dettaglio e portafoglio: numeri da copertina */
 .dtitle{font-family:var(--f-disp);font-weight:600;font-size:1.3rem;line-height:1.3;letter-spacing:-.02em}
 .dtitle b{font-weight:700}
 .hero>div,.stats>div{border-radius:12px;box-shadow:var(--shadow)}
-.hero .v,.stats .v{font-family:var(--f-disp);font-weight:700;font-size:1.75rem;line-height:1.1;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.hero .v,.stats .v{font-family:var(--f-disp);font-weight:700;font-size:1.3rem;line-height:1.2;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .drawer .dbody{background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
 .dhead{background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .drawer:not([hidden]) .dbody{animation:slidein .28s cubic-bezier(.2,.7,.2,1)}
@@ -454,22 +456,21 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .bnav{background:color-mix(in srgb,var(--surface) 86%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
 .bnav svg{transition:background-color .2s}
 @media (max-width:819px){
-  .brandmark{font-size:1.12rem;gap:8px}.logo{width:26px;height:26px}
+  .brandmark{font-size:1rem;gap:8px}.logo{width:26px;height:26px}
   .bnav button.cur{color:var(--accent);font-weight:600}
   .bnav button.cur svg{background:var(--accent-soft);border-radius:99px;width:52px;height:28px;padding:3px 15px;box-sizing:border-box}
   .bnav button svg{width:52px;height:28px;padding:3px 15px;box-sizing:border-box}
   .plate{grid-template-columns:1fr}
   .pl-main{border-right:none;border-bottom:1px solid var(--ink);padding:12px 14px 10px}
-  .pl-n{font-size:2.8rem}.pl-t{font-size:.98rem}
+  .pl-n{font-size:1.6rem}.pl-t{font-size:.9rem}
   .pl-cells{grid-template-columns:repeat(4,minmax(0,1fr))}
   .pl-cells>div{padding:8px 8px;border-bottom:none;border-left:1px solid var(--line)}
   .pl-cells>div:first-child{border-left:none}
   .pl-cells dt{font-size:.54rem;letter-spacing:.04em}
-  .pl-cells dd{font-size:1.25rem}
+  .pl-cells dd{font-size:1rem}
   .kpi .k{letter-spacing:.01em}
-  .daily-row{grid-auto-columns:68%}
-  .sw-chip{min-height:96px}.sw-big{font-size:2.3rem}
-  .hero .v,.stats .v{font-size:1.5rem}
+  .daily-row{grid-auto-columns:86%}
+  .hero .v,.stats .v{font-size:1.15rem}
   .dtitle{font-size:1.12rem}
   .drawer:not([hidden]) .dbody{animation:up .25s ease}
 }
@@ -981,7 +982,7 @@ function keyBadges(c){const b=[];if(c.front)b.push(`<span class="b fr" title="Fr
   return b.slice(0,3).join("")}
 function cardHtml(c,i){const sp=pcol(c.prob);
   return `<article class="card" data-open="${esc(c.isin)}" style="--i:${Math.min(i||0,14)};--spine:${sp==="none"?"var(--line)":sp}">
-<div class="c-head"><div class="who"><div class="eyebrow">${esc(c.issuer||"Emittente n.d.")}${c.type?" · "+esc(c.type):""}</div><div class="c-unds">${undsHtml(c)}</div></div>
+<div class="c-head"><div class="who"><div class="c-iss"><b>${esc(c.issuer||"Emittente n.d.")}</b>${c.type?" · "+esc(c.type):""}</div><div class="c-unds">${undsHtml(c)}</div></div>
 <div class="c-side">${starBtn(c)}<span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span></div></div>
 <div class="kpis">
 <div class="kpi"><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="k">Rend. annuo</div></div>
@@ -1169,7 +1170,7 @@ async function detailHtml(c){
   const F=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],
     ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
     ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",dshort(c.callDate)],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
-  return `<div class="dhead"><div style="min-width:0"><div class="eyebrow">${esc(c.issuer||"")}${c.type?" · "+esc(c.type):""}</div>
+  return `<div class="dhead"><div style="min-width:0"><div class="c-iss"><b>${esc(c.issuer||"")}</b>${c.type?" · "+esc(c.type):""}</div>
 <div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
 <button data-close aria-label="Chiudi">✕</button></div>
 <div class="dtitle">${undsHtml(c)}</div>
@@ -1351,12 +1352,10 @@ function pickDaily(){
   const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.couponPa!=null&&c.spread<=2&&!c.stale&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=P.b&&c.prob!=null&&c.prob>=(P.prob??50)&&(c.ytm??-99)>=P.y&&!c.ytmHigh&&(c.years??99)<=P.mat).sort((a,b)=>b.score-a.score).slice(0,3);
   if(!ok.length){DAILY=null;return}
   DAILY=ok;$("#daily-prof").textContent=state.profile;
-  const two=v=>String(Math.max(0,Math.min(99,Math.round(v??0)))).padStart(2,"0");
-  $("#dailybody").innerHTML=ok.map((c,i)=>{const sw="#0f4c81",lt=false;
-    return `<button class="mini sw" data-open="${esc(c.isin)}" title="Codice RC: rendimento annuo - distanza dalla barriera e probabilità di tenuta">
-<span class="sw-chip ${lt?"lt":""}" style="--sw:${sw}"><span class="sw-rank"><span>N. ${String(i+1).padStart(2,"0")}</span><span>punteggio ${c.score}</span></span><span class="sw-big">${fmt(c.ytm,1)}%<small>annuo</small></span></span>
-<span class="sw-body"><span class="sw-code">RC ${two(c.ytm)}-${two(c.dist)}${two(c.prob)}<small>REND · DIST · PROB</small></span><span class="sw-name">${undsHtml(c)}</span>
-<span class="sw-meta">${esc(c.issuer)} · cedola ${pct(c.couponPa,1)} ${freqTxt(c.freq).toLowerCase()} · ${pct(c.dist,0)} dalla barriera · prob. ${probTxt(c)}</span></span></button>`}).join("");
+  $("#dailybody").innerHTML=ok.map((c,i)=>`<button class="mini dp" data-open="${esc(c.isin)}">
+<span class="dp-top"><span class="dp-iss">${esc(c.issuer||"Emittente n.d.")}</span><span class="dp-n">N. ${i+1} · punteggio ${c.score}</span></span>
+${c.type?`<span class="dp-type">${esc(c.type)}${c.freq?" · "+freqTxt(c.freq).toLowerCase():""}</span>`:""}<span class="dp-und">${undsHtml(c)}</span>
+<span class="dp-k"><span><b class="hi">${pct(c.ytm)}</b><small>Rend. annuo</small></span><span><b>${pct(c.couponPa,1)}</b><small>Cedola</small></span><span><b class="${cls(c.dist)}">${pct(c.dist,0)}</b><small>Dist. barr.</small></span><span><b class="${pcls(c.prob)}">${probTxt(c)}</b><small>Prob.</small></span></span></button>`).join("");
 }
 function renderAlerts(){
   const out=[];
