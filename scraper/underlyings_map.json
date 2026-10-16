@@ -979,6 +979,17 @@
   "type": null,
   "yahooName": null
  },
+ "argenx": {
+  "checkedAt": "2026-10-16",
+  "exchange": "BRU",
+  "isin": "NL0010832176",
+  "manual": null,
+  "name": "Argenx",
+  "score": 1.0,
+  "ticker": "ARGX.BR",
+  "type": "EQUITY",
+  "yahooName": "argenx SE"
+ },
  "arista networks": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
