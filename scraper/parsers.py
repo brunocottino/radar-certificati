@@ -194,7 +194,8 @@ def detail_queue(certs, issuer, state, days=7):
     today = _date.today()
     lev = re.compile(r"turbo|mini ?future|leva|leverage|warrant|tracker", re.I)
     old = (today - timedelta(days=days)).isoformat()
-    q = [c for c in certs if c.get("issuer") == issuer and not lev.search(c.get("typeMarket") or c.get("type") or "")
+    iss = set(issuer) if isinstance(issuer, (tuple, list, set)) else {issuer}
+    q = [c for c in certs if c.get("issuer") in iss and not lev.search(c.get("typeMarket") or c.get("type") or "")
          and (not c.get("maturity") or c["maturity"] >= today.isoformat()) and state.get(c["isin"], "") < old]
     kind = lambda c: (0 if re.search(r"cash collect|phoenix|coupon|cedol", c.get("typeMarket") or c.get("type") or "", re.I)
                       else 1 if re.search(r"express|autocall", c.get("typeMarket") or c.get("type") or "", re.I) else 2)
@@ -202,7 +203,7 @@ def detail_queue(certs, issuer, state, days=7):
     return q
 
 
-async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7):
+async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7, par=4, pause=0.3):
     """Rotazione delle schede per ISIN di un emittente: 4 richieste in parallelo entro il budget di tempo.
     one(c) restituisce il certificato arricchito, None se la scheda non c'è, o solleva un'eccezione."""
     import time as _time
@@ -223,7 +224,7 @@ async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7):
                 return
             cert.pop("bid", None)
             cert.pop("ask", None)  # i prezzi restano quelli di Euronext
-            cert.update(isin=c["isin"], issuer=issuer, source=src["name"], updatedAt=NOW_OF(src))
+            cert.update(isin=c["isin"], issuer=c.get("issuer") or issuer, source=src["name"], updatedAt=NOW_OF(src))
             out.append(clean(cert))
             log["read"] += 1
             log["withCoupon"] += cert.get("couponPa") is not None
@@ -235,12 +236,12 @@ async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7):
                 log["samples"].append({"isin": c["isin"], "err": repr(e)[:300]})
 
     try:
-        for k in range(0, len(todo), 4):
+        for k in range(0, len(todo), par):
             if _time.time() - t0 > budget_s:
                 log["stopped"] = "tempo esaurito"
                 break
-            await asyncio.gather(*(wrap(c) for c in todo[k:k + 4]))
-            await asyncio.sleep(0.3)
+            await asyncio.gather(*(wrap(c) for c in todo[k:k + par]))
+            await asyncio.sleep(pause)
             if log["errors"] > 40 and log["read"] < 5:
                 log["stopped"] = "troppi errori"
                 break
@@ -657,6 +658,50 @@ def uc_rows(heads, rows, src, NOW, base):
     return out
 
 
+UNICREDIT_DETAIL_STATE = Path(__file__).resolve().parent / "unicredit_detail_state.json"
+UC_PAGE = "https://www.onemarkets.it/it/productpage.html/{}"
+
+
+def unicredit_detail_cert(html, c):
+    """Pagina prodotto onemarkets: "Valore Iniziale (Strike)" e "Barriera" elencano i livelli di ogni sottostante
+    separati da " / ", nell'ordine dei sottostanti. Le distanze le calcola risk.py ogni giorno dalle chiusure."""
+    t = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.S | re.I)
+    t = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "|", t)).replace("&nbsp;", " ")
+    t = re.sub(r"(\| ?)+", "|", t)
+    ms = re.search(r"\|Valore Iniziale \(Strike\)\|([^|]+)\|", t, re.I)
+    mb = re.search(r"\|Barriera\|([^|]+)\|", t)
+    if not ms:
+        raise RuntimeError("pagina senza 'Valore Iniziale (Strike)'")
+    strikes = [num(re.sub(r"[^\d,.]", "", x)) for x in ms.group(1).split(" / ")]
+    bars = [num(re.sub(r"[^\d,.]", "", x)) for x in mb.group(1).split(" / ")] if mb else []
+    names = c.get("underlyings") or []
+    if len(strikes) != len(names) or not all(strikes):
+        return {}  # ordine/numero non verificabile: meglio nessun dato che strike attribuiti al sottostante sbagliato
+    if len(bars) != len(strikes):
+        bars = [None] * len(strikes)
+    pcts = {round(b / s * 100, 2) for s, b in zip(strikes, bars) if s and b}
+    return {
+        "underlyingsDetail": [clean({"name": n, "strike": s, "barrierLevel": b}) for n, s, b in zip(names, strikes, bars)],
+        "barrierPct": c.get("barrierPct") or (pcts.pop() if len(pcts) == 1 else None),
+    }
+
+
+async def unicredit_details(DISC, src, NOW, ctx):
+    """Strike e barriere per sottostante dalle pagine prodotto UniCredit (non cambiano: rilettura ogni 30 giorni)."""
+    src = {**src, "_now": NOW}
+
+    async def one(c):
+        r = await ctx.request.get(UC_PAGE.format(c["isin"]), timeout=45000, headers={"accept-language": "it-IT,it;q=0.9"})
+        if r.status == 404:
+            return None
+        if r.status != 200:
+            raise RuntimeError(f"HTTP {r.status}")
+        return unicredit_detail_cert(await r.text(), c) or None
+
+    return await rotate(DISC, src, "UniCredit", UNICREDIT_DETAIL_STATE,
+                        int(os.environ.get("UNICREDIT_DETAIL_BUDGET_MIN", "4")) * 60, one, {}, days=30, par=3, pause=0.5)
+
+
 async def unicredit_pages(DISC, src, NOW, ctx):
     from run import extract_tables
     out, log, reqs = {}, [], []
@@ -914,6 +959,63 @@ def leonteq_cert(p, src, NOW):
 
 LAST_STATUS = {}  # esito non numerico per sorgente (es. "saltata: già fatta oggi"), letto da run.py
 LEONTEQ_STATE = Path(__file__).resolve().parent / "leonteq_state.json"
+LEONTEQ_DETAIL_STATE = Path(__file__).resolve().parent / "leonteq_detail_state.json"
+
+
+def leonteq_detail_cert(d):
+    """Scheda per ISIN (api/product-model/details): per ogni sottostante fixing iniziale (strike), livello e
+    distanza dalla barriera con il prezzo del momento; barriera % anche per i Multi Express che la ricerca non dà."""
+    p = (d or {}).get("product") or {}
+    ul = [u for u in (p.get("underlyingList") or {}).get("values") or [] if u.get("shortName")]
+    if not p or not ul:
+        return None
+    det = []
+    for u in ul:
+        dist = num((u.get("distanceToBarrier") or {}).get("raw"))
+        det.append(clean({"name": u["shortName"], "isin": u.get("isin") if ISIN_RE.fullmatch(u.get("isin") or "") else None,
+                          "strike": num(u.get("rawInitialFixingLevel")), "barrierLevel": num(u.get("rawBarrierLevel")),
+                          "dist": round(dist * 100, 4) if dist is not None else None}))
+    dists = [u for u in det if u.get("dist") is not None]
+    worst = min(dists, key=lambda u: u["dist"]) if dists else None
+    return {
+        "underlyings": [u["name"] for u in det],
+        "underlyingsDetail": det,
+        "worstName": worst["name"] if worst else None,
+        "distBarrier": worst["dist"] if worst else None,
+        "barrierPct": pct(lv(p, "barrier")),
+        "triggerPct": pct(lv(p, "conditionalCouponTriggerLevel")),
+        "detailAt": NOW_OF_DETAIL[0],
+    }
+
+
+NOW_OF_DETAIL = [None]
+
+
+async def leonteq_details(DISC, src, NOW, ctx):
+    """Schede Leonteq a rotazione: 2 alla volta con pause (sito protetto da Incapsula), rilettura ogni 3 giorni;
+    fra una lettura e l'altra le distanze le aggiorna risk.py dagli strike e dalle chiusure."""
+    src = {**src, "_now": NOW}
+    NOW_OF_DETAIL[0] = NOW
+    base = "https://certificati.leonteq.com"
+    page = await ctx.new_page()
+    await page.goto(base + "/", wait_until="domcontentloaded", timeout=60000)
+    await page.wait_for_timeout(6000)
+
+    async def one(c):
+        await asyncio.sleep(random.uniform(0.4, 1.2))
+        st, txt = await fetch(page, f"{base}/api/product-model/details/isin/{c['isin']}?language_id=5", "GET", None,
+                              {"accept": "application/json"})
+        if st == 404:
+            return None
+        if st != 200:
+            raise RuntimeError(f"HTTP {st}: {txt[:150]}")
+        return leonteq_detail_cert(json.loads(txt))
+
+    try:
+        return await rotate(DISC, src, ("Leonteq Securities", "BIL"), LEONTEQ_DETAIL_STATE,
+                            int(os.environ.get("LEONTEQ_DETAIL_BUDGET_MIN", "5")) * 60, one, {}, days=3, par=2, pause=1.0)
+    finally:
+        await page.close()
 
 
 async def leonteq_api(DISC, src, NOW, ctx):

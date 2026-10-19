@@ -312,6 +312,11 @@ def merge(old, new):
         else:
             c.pop("bid", None)
             c.pop("ask", None)
+        # elenco sottostanti solo con i nomi (es. ricerca Leonteq): non cancella strike e distanze di una scheda
+        pd, nd = prev.get("underlyingsDetail"), c.get("underlyingsDetail")
+        if pd and nd and [u.get("name") for u in pd] == [u.get("name") for u in nd] \
+                and not any(u.get("strike") or u.get("dist") is not None for u in nd):
+            c["underlyingsDetail"] = pd
         by[c["isin"]] = {**by.get(c["isin"], {}), **c}
     today = date.today().isoformat()
     return [clean_underlyings(c) for c in by.values() if not c.get("maturity") or c["maturity"] >= today]

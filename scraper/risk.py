@@ -225,7 +225,11 @@ ALIASES_RAW = {
     "FMIB": "FTSEMIB.MI", "FTMIB": "FTSEMIB.MI", "FTSEMIB": "FTSEMIB.MI", "DAX EUR INDEX": "^GDAXI",
     "Korea Stock Exchange KOSPI 200 Index": "^KS200", "EUR/USD": "EURUSD=X",
     "Société Générale S.A.": "GLE.PA", "SG": "GLE.PA", "DBK": "DBK.DE", "STLA": "STLAM.MI", "LDO": "LDO.MI",
-    "SPM": "SPM.MI", "BPER": "BPE.MI", "ALPHABET A": "GOOGL", "Nexi S.p.A.": "NEXI.MI",
+    "SPM": "SPM.MI", "BPER": "BPE.MI", "Basket: 1 x Banca Monte dei Paschi di Siena S.p.A.": "BMPS.MI",
+    "Terna Rete Elettrica Nazionale S.p.A.": "TRN.MI", "Spotify Technologies SA": "SPOT", "STOXX® Europe 600 (Price) Index (EUR)": "^STOXX",
+    "EURO STOXX® Insurance (Price) Index (EUR)": "^SXIE", "STOXX® Europe 600 Health Care (Price) Index (EUR)": "^SXDP",
+    "STOXX® Europe 600 Utilities (Price) Index (EUR)": "^SX6P", "STOXX® Europe 600 Automobiles & Parts (Price) Index (EUR)": "^SXAP",
+    "EURO STOXX® Utilities (Price) Index (EUR)": "^SX6E", "ALPHABET A": "GOOGL", "Nexi S.p.A.": "NEXI.MI",
     "MicroStrategy Incorporated": "MSTR", "Estee Lauder Cos Inc/The": "EL",
     "SX7E": "^SX7E", "EURO STOXX Banks Price EUR": "^SX7E", "EURO STOXX Utilities": "^SX6E",
     "EURO STOXX ® UTILITIES INDEX": "^SX6E", "EUROSTOXX TECHNOLOGY": "^SX8E",
@@ -413,7 +417,8 @@ def refresh_distance(c, m, st):
         t = ticker_of(m, u.get("name"))
         v = U.get(t or "")
         if not v or not v.get("lastClose"):
-            return False
+            # manca il prezzo di un sottostante: se il peggiore arriva fresco dall'emittente, si completano gli altri
+            return fill_missing_distances(c, det, bp, m, st) if not c.get("distAt") and c.get("distBarrier") is not None else False
         v = {**v, "lastClose": comparable_close(t, v["lastClose"], u["strike"])}
         # strike e chiusura devono essere confrontabili (stessa quotazione e valuta): altrimenti niente distanza
         if not 0.1 <= v["lastClose"] / u["strike"] <= 5:  # sotto 0,1: quasi certamente un errore di dati
@@ -445,15 +450,16 @@ def fill_missing_distances(c, det, bp, m, st):
         w0 = min(issuer, key=lambda u: u["dist"])
         c.update({"distBarrier": w0["dist"], "worstName": w0.get("name")})
         c.pop("distSource", None)
+    # distanze di una scheda letta nei giorni scorsi (es. Leonteq, riletta ogni 3 giorni): si aggiornano dalle chiusure
+    stale = bool(c.get("detailAt")) and c["detailAt"][:10] < TODAY.isoformat()
     done = False
     for u in det:
-        if u.get("dist") is not None and not u.get("distCalc"):
+        if u.get("dist") is not None and not u.get("distCalc") and not stale:
             continue
-        u.pop("dist", None); u.pop("distCalc", None)
         t = ticker_of(m, u.get("name"))
         v = U.get(t or "")
         if not u.get("strike") or not v or not v.get("lastClose"):
-            continue
+            continue  # resta l'ultima distanza nota
         close = comparable_close(t, v["lastClose"], u["strike"])
         if not 0.1 <= close / u["strike"] <= 5:
             continue
