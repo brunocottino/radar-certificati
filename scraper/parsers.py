@@ -188,7 +188,7 @@ BNP_V1 = "https://investimenti.bnpparibas.it/apiv2/api/v1/product/"
 BNP_HDR = {"accept": "application/json", "content-type": "application/json", "clientid": "1", "languageid": "it", "countryid": ""}
 
 
-def detail_queue(certs, issuer, state, days=7):
+def detail_queue(certs, issuer, state, days=7, need=None):
     """ISIN dell'emittente da (ri)leggere: prima quelli senza cedola, per tipo; poi i più vecchi."""
     from datetime import date as _date, timedelta
     today = _date.today()
@@ -199,11 +199,20 @@ def detail_queue(certs, issuer, state, days=7):
          and (not c.get("maturity") or c["maturity"] >= today.isoformat()) and state.get(c["isin"], "") < old]
     kind = lambda c: (0 if re.search(r"cash collect|phoenix|coupon|cedol", c.get("typeMarket") or c.get("type") or "", re.I)
                       else 1 if re.search(r"express|autocall", c.get("typeMarket") or c.get("type") or "", re.I) else 2)
-    q.sort(key=lambda c: (c.get("couponPa") is not None, kind(c), state.get(c["isin"], ""), c["isin"]))
+    if need:  # prima chi ha bisogno della scheda (es. cedola e prezzo ma senza strike dei sottostanti)
+        q.sort(key=lambda c: (not need(c), not c.get("ask"), state.get(c["isin"], ""), c["isin"]))
+    else:
+        q.sort(key=lambda c: (c.get("couponPa") is not None, kind(c), state.get(c["isin"], ""), c["isin"]))
     return q
 
 
-async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7, par=4, pause=0.3):
+def needs_strikes(c):
+    """Certificato interessante (cedola nota) a cui mancano gli strike dei sottostanti."""
+    det = c.get("underlyingsDetail") or []
+    return c.get("couponPa") is not None and not (det and all(u.get("strike") for u in det))
+
+
+async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7, par=4, pause=0.3, need=None):
     """Rotazione delle schede per ISIN di un emittente: 4 richieste in parallelo entro il budget di tempo.
     one(c) restituisce il certificato arricchito, None se la scheda non c'è, o solleva un'eccezione."""
     import time as _time
@@ -211,7 +220,7 @@ async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7, par=
     from run import DATA
     certs = json.loads(DATA.read_text()).get("certs", []) if DATA.exists() else []
     st = json.loads(state_path.read_text()) if state_path.exists() else {}
-    todo = detail_queue(certs, issuer, st, days)
+    todo = detail_queue(certs, issuer, st, days, need)
     log.update({"queue": len(todo), "read": 0, "withCoupon": 0, "missing": 0, "errors": 0, "samples": []})
     out, t0 = [], _time.time()
 
@@ -699,7 +708,7 @@ async def unicredit_details(DISC, src, NOW, ctx):
         return unicredit_detail_cert(await r.text(), c) or None
 
     return await rotate(DISC, src, "UniCredit", UNICREDIT_DETAIL_STATE,
-                        int(os.environ.get("UNICREDIT_DETAIL_BUDGET_MIN", "4")) * 60, one, {}, days=30, par=3, pause=0.5)
+                        int(os.environ.get("UNICREDIT_DETAIL_BUDGET_MIN", "4")) * 60, one, {}, days=30, par=3, pause=0.5, need=needs_strikes)
 
 
 async def unicredit_pages(DISC, src, NOW, ctx):
@@ -1013,7 +1022,7 @@ async def leonteq_details(DISC, src, NOW, ctx):
 
     try:
         return await rotate(DISC, src, ("Leonteq Securities", "BIL"), LEONTEQ_DETAIL_STATE,
-                            int(os.environ.get("LEONTEQ_DETAIL_BUDGET_MIN", "5")) * 60, one, {}, days=3, par=2, pause=1.0)
+                            int(os.environ.get("LEONTEQ_DETAIL_BUDGET_MIN", "5")) * 60, one, {}, days=3, par=2, pause=1.0, need=needs_strikes)
     finally:
         await page.close()
 
