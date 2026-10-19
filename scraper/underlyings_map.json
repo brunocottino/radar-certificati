@@ -352,6 +352,17 @@
   "type": "EQUITY",
   "yahooName": "Advanced Micro Devices, Inc."
  },
+ "ady": {
+  "checkedAt": "2026-10-19",
+  "exchange": "VAN",
+  "isin": null,
+  "manual": null,
+  "name": "ADY",
+  "score": 0.9,
+  "ticker": "ADY.V",
+  "type": "EQUITY",
+  "yahooName": "Adyton Resources Corporation"
+ },
  "adyen": {
   "checkedAt": "2026-10-09",
   "exchange": "AMS",
@@ -1969,6 +1980,17 @@
   "type": null,
   "yahooName": null
  },
+ "bmps": {
+  "checkedAt": "2026-10-19",
+  "exchange": "MIL",
+  "isin": null,
+  "manual": null,
+  "name": "BMPS",
+  "score": 0.9,
+  "ticker": "BMPS.MI",
+  "type": "EQUITY",
+  "yahooName": "Banca Monte dei Paschi di Siena S.p.A."
+ },
  "bmw": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -2507,6 +2529,17 @@
   "ticker": "1211.HK",
   "type": "EQUITY",
   "yahooName": "BYD Company Limited"
+ },
+ "byr": {
+  "checkedAt": "2026-10-19",
+  "exchange": "FRA",
+  "isin": null,
+  "manual": null,
+  "name": "BYR",
+  "score": 0.9,
+  "ticker": "BYR.F",
+  "type": "EQUITY",
+  "yahooName": "PT Bank Rakyat Indonesia (Persero) Tbk"
  },
  "c3 ai": {
   "checkedAt": "2026-10-09",
@@ -3417,6 +3450,17 @@
   "name": "DAX Index",
   "ticker": null
  },
+ "dbk": {
+  "checkedAt": "2026-10-19",
+  "exchange": "GER",
+  "isin": null,
+  "manual": null,
+  "name": "DBK",
+  "score": 0.9,
+  "ticker": "DBK.DE",
+  "type": "EQUITY",
+  "yahooName": "Deutsche Bank Aktiengesellschaft"
+ },
  "deere": {
   "checkedAt": "2026-10-15",
   "exchange": "NYQ",
@@ -3427,6 +3471,17 @@
   "ticker": "DE",
   "type": "EQUITY",
   "yahooName": "Deere & Company"
+ },
+ "del hero": {
+  "checkedAt": "2026-10-19",
+  "exchange": "GER",
+  "isin": null,
+  "manual": null,
+  "name": "DEL HERO",
+  "score": 0.762,
+  "ticker": "DHER.DE",
+  "type": "EQUITY",
+  "yahooName": "Delivery Hero SE"
  },
  "delivery hero": {
   "checkedAt": "2026-10-15",
@@ -4089,6 +4144,61 @@
   "isin": null,
   "manual": null,
   "name": "Estee Lauder Cos Inc/The",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "estoxx 50": {
+  "checkedAt": "2026-10-19",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ESTOXX 50",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "estoxx banks": {
+  "checkedAt": "2026-10-19",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ESTOXX BANKS",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "estxbanks": {
+  "checkedAt": "2026-10-19",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ESTXBANKS",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "estxtechnology": {
+  "checkedAt": "2026-10-19",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ESTXTECHNOLOGY",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "estxutilities": {
+  "checkedAt": "2026-10-19",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ESTXUTILITIES",
   "score": null,
   "ticker": null,
   "type": null,
@@ -4953,6 +5063,17 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "eurostoxx50": {
+  "checkedAt": "2026-10-19",
+  "exchange": "JNB",
+  "isin": null,
+  "manual": null,
+  "name": "EUROSTOXX50",
+  "score": 0.629,
+  "ticker": "SYGEU.JO",
+  "type": "EQUITY",
+  "yahooName": "Sygnia Itrix Euro Stoxx 50 ETF"
  },
  "eurozone hicp ex tobacco unrevised": {
   "checkedAt": "2026-10-15",
@@ -6321,6 +6442,17 @@
   "type": "EQUITY",
   "yahooName": "International Flavors & Fragrances Inc."
  },
+ "intesa": {
+  "checkedAt": "2026-10-19",
+  "exchange": "MIL",
+  "isin": null,
+  "manual": null,
+  "name": "INTESA",
+  "score": 0.8,
+  "ticker": "ISP.MI",
+  "type": "EQUITY",
+  "yahooName": "Intesa Sanpaolo S.p.A."
+ },
  "intesa sanpaolo": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -6364,6 +6496,17 @@
   "ticker": "ISP.MI",
   "type": "EQUITY",
   "yahooName": "Intesa Sanpaolo S.p.A."
+ },
+ "intl": {
+  "checkedAt": "2026-10-19",
+  "exchange": "BTS",
+  "isin": null,
+  "manual": null,
+  "name": "INTL",
+  "score": 0.9,
+  "ticker": "INTL",
+  "type": "ETF",
+  "yahooName": "Main International ETF"
  },
  "intuit": {
   "checkedAt": "2026-10-09",
@@ -12228,6 +12371,17 @@
   "type": null,
   "yahooName": null
  },
+ "isp": {
+  "checkedAt": "2026-10-19",
+  "exchange": "MIL",
+  "isin": null,
+  "manual": null,
+  "name": "ISP",
+  "score": 0.9,
+  "ticker": "ISP.MI",
+  "type": "EQUITY",
+  "yahooName": "Intesa Sanpaolo S.p.A."
+ },
  "istoxx alv gr decrement 9 60 price eur": {
   "checkedAt": "2026-10-15",
   "exchange": null,
@@ -14340,6 +14494,17 @@
   "type": "EQUITY",
   "yahooName": "Banca Monte dei Paschi di Siena S.p.A."
  },
+ "monte paschi": {
+  "checkedAt": "2026-10-19",
+  "exchange": "MIL",
+  "isin": null,
+  "manual": null,
+  "name": "MONTE PASCHI",
+  "score": 0.667,
+  "ticker": "BMPS.MI",
+  "type": "EQUITY",
+  "yahooName": "Banca Monte dei Paschi di Siena S.p.A."
+ },
  "moody s": {
   "checkedAt": "2026-10-15",
   "exchange": "NYQ",
@@ -14383,6 +14548,17 @@
   "ticker": "MP",
   "type": "EQUITY",
   "yahooName": "MP Materials Corp."
+ },
+ "mps": {
+  "checkedAt": "2026-10-19",
+  "exchange": "NSI",
+  "isin": null,
+  "manual": null,
+  "name": "MPS",
+  "score": 1.0,
+  "ticker": "MPSLTD.NS",
+  "type": "EQUITY",
+  "yahooName": "MPS Limited"
  },
  "msci acwi investable market innovation quality sustainable 100 select 10 risk control 3 decrement index": {
   "checkedAt": "2026-10-15",
@@ -14747,6 +14923,17 @@
   "type": "EQUITY",
   "yahooName": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München"
  },
+ "n225": {
+  "checkedAt": "2026-10-19",
+  "exchange": "OSA",
+  "isin": null,
+  "manual": null,
+  "name": "N225",
+  "score": 0.9,
+  "ticker": "^N225",
+  "type": "INDEX",
+  "yahooName": "Nikkei 225"
+ },
  "nasdaq 100": {
   "isin": "US6311011026",
   "manual": "^NDX",
@@ -14813,6 +15000,17 @@
   "ticker": "NWG.L",
   "type": "EQUITY",
   "yahooName": "NatWest Group plc"
+ },
+ "ndx": {
+  "checkedAt": "2026-10-19",
+  "exchange": "NIM",
+  "isin": null,
+  "manual": null,
+  "name": "NDX",
+  "score": 0.9,
+  "ticker": "^NDX",
+  "type": "INDEX",
+  "yahooName": "NASDAQ-100"
  },
  "nebius": {
   "checkedAt": "2026-10-19",
@@ -14974,6 +15172,17 @@
   "type": "ETF",
   "yahooName": "CSOP Nikkei 225 Index ETF"
  },
+ "nikkei225": {
+  "checkedAt": "2026-10-19",
+  "exchange": "JPX",
+  "isin": null,
+  "manual": null,
+  "name": "NIKKEI225",
+  "score": 0.8,
+  "ticker": "1579.T",
+  "type": "ETF",
+  "yahooName": "Nikkei225 Bull 2x ETF"
+ },
  "nio": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -15116,6 +15325,17 @@
   "ticker": "NVAX",
   "type": "EQUITY",
   "yahooName": "Novavax, Inc."
+ },
+ "novo": {
+  "checkedAt": "2026-10-19",
+  "exchange": "NYQ",
+  "isin": null,
+  "manual": null,
+  "name": "NOVO",
+  "score": 0.8,
+  "ticker": "NVO",
+  "type": "EQUITY",
+  "yahooName": "Novo Nordisk A/S"
  },
  "novo nordisk": {
   "checkedAt": "2026-10-09",
@@ -15843,6 +16063,17 @@
   "type": "EQUITY",
   "yahooName": "Prysmian S.p.A."
  },
+ "pst": {
+  "checkedAt": "2026-10-19",
+  "exchange": "PCX",
+  "isin": null,
+  "manual": null,
+  "name": "PST",
+  "score": 0.9,
+  "ticker": "PST",
+  "type": "ETF",
+  "yahooName": "ProShares UltraShort 7-10 Year Treasury"
+ },
  "puma": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -15908,6 +16139,17 @@
   "ticker": "QUBT",
   "type": "EQUITY",
   "yahooName": "Quantum Computing Inc."
+ },
+ "race": {
+  "checkedAt": "2026-10-19",
+  "exchange": "NYQ",
+  "isin": null,
+  "manual": null,
+  "name": "RACE",
+  "score": 0.9,
+  "ticker": "RACE",
+  "type": "EQUITY",
+  "yahooName": "Ferrari N.V."
  },
  "raiffeisen bank international": {
   "checkedAt": "2026-10-09",
@@ -16538,6 +16780,17 @@
   "type": null,
   "yahooName": null
  },
+ "s p500": {
+  "checkedAt": "2026-10-19",
+  "exchange": "SNP",
+  "isin": null,
+  "manual": null,
+  "name": "S&P500",
+  "score": 0.923,
+  "ticker": "^GSPC",
+  "type": "INDEX",
+  "yahooName": "S&P 500"
+ },
  "s p500 sector rotator 5 daily rc2 0 5 decrement index er": {
   "checkedAt": "2026-10-15",
   "exchange": null,
@@ -16746,6 +16999,17 @@
   "ticker": "SNW2.SG",
   "type": "EQUITY",
   "yahooName": "Sanofi SA"
+ },
+ "sant": {
+  "checkedAt": "2026-10-19",
+  "exchange": "ASX",
+  "isin": null,
+  "manual": null,
+  "name": "SANT",
+  "score": 0.8,
+  "ticker": "STO.AX",
+  "type": "EQUITY",
+  "yahooName": "Santos Limited"
  },
  "santander barclays deutsche bank": {
   "checkedAt": "2026-10-15",
@@ -17523,6 +17787,17 @@
   "type": null,
   "yahooName": null
  },
+ "spx": {
+  "checkedAt": "2026-10-19",
+  "exchange": "WCB",
+  "isin": null,
+  "manual": null,
+  "name": "SPX",
+  "score": 0.9,
+  "ticker": "^SPX",
+  "type": "INDEX",
+  "yahooName": "S&P 500 INDEX"
+ },
  "stellantis": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -17534,6 +17809,17 @@
   "type": "EQUITY",
   "yahooName": "Stellantis N.V."
  },
+ "stellantis it": {
+  "checkedAt": "2026-10-19",
+  "exchange": "PAR",
+  "isin": null,
+  "manual": null,
+  "name": "STELLANTIS IT",
+  "score": 0.684,
+  "ticker": "SSTIG.PA",
+  "type": "INDEX",
+  "yahooName": "Euronext Stellantis IT GR"
+ },
  "stellantis n v": {
   "checkedAt": "2026-10-15",
   "exchange": "MIL",
@@ -17544,6 +17830,28 @@
   "ticker": "STLAM.MI",
   "type": "EQUITY",
   "yahooName": "Stellantis N.V."
+ },
+ "stl": {
+  "checkedAt": "2026-10-19",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "STL",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "stm": {
+  "checkedAt": "2026-10-19",
+  "exchange": "NYQ",
+  "isin": null,
+  "manual": null,
+  "name": "STM",
+  "score": 0.9,
+  "ticker": "STM",
+  "type": "EQUITY",
+  "yahooName": "STMicroelectronics N.V."
  },
  "stmicroelectronics": {
   "checkedAt": "2026-10-09",
@@ -17941,6 +18249,17 @@
   "type": "ETF",
   "yahooName": "iShares STOXX Global Select Dividend 100 UCITS ETF (DE)"
  },
+ "stoxxeu 600 auto parts": {
+  "checkedAt": "2026-10-19",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "STOXXEU 600 Auto Parts",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "str": {
   "checkedAt": "2026-10-09",
   "exchange": "NGM",
@@ -18050,6 +18369,17 @@
   "ticker": "SCMN.SW",
   "type": "EQUITY",
   "yahooName": "Swisscom AG"
+ },
+ "sx7e": {
+  "checkedAt": "2026-10-19",
+  "exchange": "ZRH",
+  "isin": null,
+  "manual": null,
+  "name": "SX7E",
+  "score": 0.9,
+  "ticker": "SX7E.Z",
+  "type": "INDEX",
+  "yahooName": "ESTX Banks I"
  },
  "sxhca": {
   "checkedAt": "2026-10-15",
