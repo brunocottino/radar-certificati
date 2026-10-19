@@ -217,10 +217,43 @@ def update_map(unds, offline, only_new=False):
     return m
 
 
+# codici Bloomberg/abbreviazioni che la ricerca Yahoo per nome non trova
+ALIASES_RAW = {
+    "SPX": "^GSPC", "S&P500": "^GSPC", "S AND P 500": "^GSPC", "S&P 500": "^GSPC", "NDX": "^NDX",
+    "SX5E": "^STOXX50E", "ES50": "^STOXX50E", "EUROSTOXX50": "^STOXX50E", "EURO STOXX 50 Price EUR": "^STOXX50E",
+    "NKY": "^N225", "N225": "^N225", "NIKKEI225": "^N225", "FTSE 100 INDEX": "^FTSE", "CAC": "^FCHI", "AEX": "^AEX",
+    "FMIB": "FTSEMIB.MI", "FTMIB": "FTSEMIB.MI", "FTSEMIB": "FTSEMIB.MI", "DAX EUR INDEX": "^GDAXI",
+    "Korea Stock Exchange KOSPI 200 Index": "^KS200", "EUR/USD": "EURUSD=X",
+    "Société Générale S.A.": "GLE.PA", "SG": "GLE.PA", "DBK": "DBK.DE", "STLA": "STLAM.MI", "LDO": "LDO.MI",
+    "SPM": "SPM.MI", "BPER": "BPE.MI", "ALPHABET A": "GOOGL", "Nexi S.p.A.": "NEXI.MI",
+    "MicroStrategy Incorporated": "MSTR", "Estee Lauder Cos Inc/The": "EL",
+    "SX7E": "^SX7E", "EURO STOXX Banks Price EUR": "^SX7E", "EURO STOXX Utilities": "^SX6E",
+    "EURO STOXX ® UTILITIES INDEX": "^SX6E", "EUROSTOXX TECHNOLOGY": "^SX8E",
+    "EURO STOXX® Technology (Price) Index (EUR)": "^SX8E", "EUROSTOXX INSURANCE": "^SXIE",
+    "EUROSTOXX OIL&GAS": "^SXEE", "EURO STOXX® Oil & Gas (Price) Index (EUR)": "^SXEE",
+    "EURO STOXX® Automobiles & Parts (Price) Index (EUR)": "^SXAE", "SD3E": "^SD3E",
+    "EUROSTOXX Select Dividend 30": "^SD3E", "EURO STOXX® Select Dividend 30 (Price) Index (EUR)": "^SD3E",
+    "STOXX 600 BASIC RESOURCES": "^SXPP", "SXPP": "^SXPP", "STOXX® Europe 600 Basic Resources (Price) Index (EUR)": "^SXPP",
+    "STOXX® Europe 600 Basic Resources Index": "^SXPP", "SXEP": "^SXEP", "STOXX® Europe 600 Oil & Gas Index": "^SXEP",
+    "STOXX® Europe 600 Oil & Gas (Price) Index (EUR)": "^SXEP", "STOXX® Europe 600 Technology Index": "^SX8P",
+    "DJ Stoxx Auto Index": "^SXAP", "DOW JONES STOXX HEALTHCARE INDEX": "^SXDP", "SX6P": "^SX6P",
+}
+ALIASES = {norm(k): v for k, v in ALIASES_RAW.items()}
+
+
 def ticker_of(m, name):
     e = m.get(core(name) or norm(name)) or {}
     t = e.get("manual") if e.get("manual") is not None else e.get("ticker")
+    if not t:
+        t = ALIASES.get(norm(name))
     return t if t and t != "-" else None
+
+
+def comparable_close(ticker, close, strike):
+    """Londra: Yahoo quota in pence (GBp), gli strike sono in sterline."""
+    if ticker and ticker.endswith(".L") and strike and close / strike > 20:
+        return close / 100
+    return close
 
 
 # ---------------------------------------------------------------- prezzi e volatilità
@@ -368,17 +401,20 @@ def refresh_distance(c, m, st):
     strike di ogni sottostante e barriera %, ricalcola le distanze dalle ultime chiusure.
     Altrimenti resta l'ultima distanza nota con la sua data (distAt)."""
     det, bp = c.get("underlyingsDetail") or [], c.get("barrierPct")
-    # solo se la distanza non arriva fresca dall'emittente: distanza vecchia (distAt) o strike senza distanze (es. Citi)
-    if not c.get("distAt") and any(u.get("dist") is not None for u in det):
-        return False
+    # distanza fresca dall'emittente ma solo per alcuni sottostanti (spesso BNP): le mancanti si calcolano
+    # dalle chiusure; se una di queste è più vicina alla barriera, il peggiore vero è quello
+    if not c.get("distAt") and any(u.get("dist") is not None and not u.get("distCalc") for u in det):
+        return fill_missing_distances(c, det, bp, m, st)
     if not det or not bp or not all(u.get("strike") for u in det):
         return False
     U = st.get("underlyings", {})
     rows = []
     for u in det:
-        v = U.get(ticker_of(m, u.get("name")) or "")
+        t = ticker_of(m, u.get("name"))
+        v = U.get(t or "")
         if not v or not v.get("lastClose"):
             return False
+        v = {**v, "lastClose": comparable_close(t, v["lastClose"], u["strike"])}
         # strike e chiusura devono essere confrontabili (stessa quotazione e valuta): altrimenti niente distanza
         if not 0.1 <= v["lastClose"] / u["strike"] <= 5:  # sotto 0,1: quasi certamente un errore di dati
             c["distNote"] = f"strike di {u.get('name')} non confrontabile con la chiusura di {ticker_of(m, u.get('name'))}"
@@ -395,6 +431,40 @@ def refresh_distance(c, m, st):
     c.update({"distBarrier": w[0]["dist"], "worstName": w[0].get("name"),
               "distAt": min(v["lastDate"] for _, v in rows), "distSource": "chiusure sottostanti"})
     return True
+
+
+def fill_missing_distances(c, det, bp, m, st):
+    """Completa le distanze che l'emittente non dà, da strike e ultima chiusura (segnate distCalc).
+    Restano quelle dell'emittente; se una calcolata è la più bassa, diventa lei il peggiore."""
+    if not bp:
+        return False
+    U = st.get("underlyings", {})
+    # la distanza del peggiore dichiarata dall'emittente, prima di qualsiasi calcolo
+    issuer = [u for u in det if u.get("dist") is not None and not u.get("distCalc")]
+    if c.get("distSource") == "chiusure sottostanti parziali" and issuer:
+        w0 = min(issuer, key=lambda u: u["dist"])
+        c.update({"distBarrier": w0["dist"], "worstName": w0.get("name")})
+        c.pop("distSource", None)
+    done = False
+    for u in det:
+        if u.get("dist") is not None and not u.get("distCalc"):
+            continue
+        u.pop("dist", None); u.pop("distCalc", None)
+        t = ticker_of(m, u.get("name"))
+        v = U.get(t or "")
+        if not u.get("strike") or not v or not v.get("lastClose"):
+            continue
+        close = comparable_close(t, v["lastClose"], u["strike"])
+        if not 0.1 <= close / u["strike"] <= 5:
+            continue
+        u["dist"] = round((1 - u["strike"] * bp / 100 / close) * 100, 2)
+        u["distCalc"] = True
+        done = True
+    if done:
+        w = min((u for u in det if u.get("dist") is not None), key=lambda u: u["dist"])
+        if c.get("distBarrier") is None or w["dist"] < c["distBarrier"]:
+            c.update({"distBarrier": w["dist"], "worstName": w.get("name"), "distSource": "chiusure sottostanti parziali"})
+    return done
 
 
 # ---------------------------------------------------------------- Monte Carlo

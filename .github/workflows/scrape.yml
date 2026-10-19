@@ -7,6 +7,10 @@ on:
     # Il primo step tiene solo quella giusta per il fuso del giorno; il calendario di borsa salta le festività.
     - cron: "35 7,8 * * 1-5"
     - cron: "15 14,15 * * 1-5"
+    # Recuperi: GitHub ritarda di ore o salta le run programmate (16/10 partite con 5 ore di ritardo, 19/10 nessuna).
+    # Se la fascia non è ancora pubblicata la recuperano; altrimenti si fermano al primo step (pochi secondi).
+    - cron: "5 9,10,11 * * 1-5"
+    - cron: "50 14,15,16 * * 1-5"
   workflow_dispatch:
     inputs:
       sources:
@@ -55,6 +59,8 @@ jobs:
           case "$CRON" in
             "35 7,8 * * 1-5")   SLOT="09:35"; LEGALE=0735; SOLARE=0835 ;;
             "15 14,15 * * 1-5") SLOT="16:15"; LEGALE=1415; SOLARE=1515 ;;
+            "5 9,10,11 * * 1-5")  SLOT="09:35"; LEGALE=0735; SOLARE=0835; echo "Recupero della fascia 09:35" ;;
+            "50 14,15,16 * * 1-5") SLOT="16:15"; LEGALE=1415; SOLARE=1515; echo "Recupero della fascia 16:15" ;;
             *) echo "Cron non previsto: '$CRON'"; echo "go=false" >> "$GITHUB_OUTPUT"; exit 0 ;;
           esac
           case "$OFF" in

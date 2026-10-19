@@ -20,6 +20,9 @@ Il primo step ("Orario di Roma") legge da `github.event.schedule` quale cron è 
 il fuso del giorno: la run prosegue solo se l'orario UTC giusto per quel fuso è già passato e la fascia di oggi non è
 ancora stata pubblicata (il commit dei dati di una run programmata si chiama `Dati certificati <data> 09:35` o `… 16:15`).
 Così l'occorrenza dell'altro fuso salta, un ritardo di GitHub non fa perdere la run giusta e non ci sono doppioni.
+GitHub però ritarda di ore o salta del tutto le run programmate (il 16/10 sono partite con 5 ore di ritardo, il 19/10
+nessuna): per questo ci sono anche cron di recupero, `5 9,10,11 * * 1-5` per la fascia delle 09:35 e `50 14,15,16 * * 1-5`
+per quella delle 16:15. Se la fascia è già pubblicata si fermano al primo step; altrimenti la recuperano.
 Poi `scraper/borsa.py` salta i giorni di chiusura di Borsa Italiana (1/1, Venerdì Santo, Lunedì dell'Angelo, 1/5,
 15/8, 24/12, 25/12, 26/12, 31/12). Le run manuali partono sempre, senza controlli d'orario.
 
