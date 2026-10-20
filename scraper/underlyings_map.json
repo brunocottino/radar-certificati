@@ -3097,6 +3097,17 @@
   "type": null,
   "yahooName": null
  },
+ "coreweave": {
+  "checkedAt": "2026-10-20",
+  "exchange": "NMS",
+  "isin": "US21873S1087",
+  "manual": null,
+  "name": "CoreWeave Inc.",
+  "score": 1.0,
+  "ticker": "CRWV",
+  "type": "EQUITY",
+  "yahooName": "CoreWeave, Inc."
+ },
  "corning": {
   "checkedAt": "2026-10-15",
   "exchange": "NYQ",
