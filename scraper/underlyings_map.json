@@ -1552,7 +1552,7 @@
   "yahooName": null
  },
  "basket 1 x ge aerospace 0 25 x ge vernova llc": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2289,15 +2289,15 @@
   "yahooName": "BP p.l.c."
  },
  "bper": {
-  "checkedAt": "2026-10-09",
-  "exchange": null,
+  "checkedAt": "2026-10-20",
+  "exchange": "MIL",
   "isin": null,
   "manual": null,
   "name": "BPER",
-  "score": null,
-  "ticker": null,
-  "type": null,
-  "yahooName": null
+  "score": 0.8,
+  "ticker": "BPE.MI",
+  "type": "EQUITY",
+  "yahooName": "BPER Banca SpA"
  },
  "bper banca": {
   "checkedAt": "2026-10-09",
@@ -4623,7 +4623,7 @@
   "yahooName": null
  },
  "euro istoxx responsibility screened select 30 index": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4988,7 +4988,7 @@
   "yahooName": null
  },
  "eurostat eurozone hicp ex tobacco unrevised series nsa": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13318,7 +13318,7 @@
   "yahooName": null
  },
  "leonardo stellantis telecom": {
-  "checkedAt": "2026-10-12",
+  "checkedAt": "2026-10-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17370,7 +17370,7 @@
   "yahooName": null
  },
  "solactive btp 10y annual comp 11am yield index": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18558,7 +18558,7 @@
   "yahooName": "Telefónica, S.A."
  },
  "telefonica s a": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-20",
   "exchange": null,
   "isin": null,
   "manual": null,
