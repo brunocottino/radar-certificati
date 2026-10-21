@@ -17985,6 +17985,17 @@
   "type": null,
   "yahooName": null
  },
+ "stoxx europe 600 automobiles parts price eur": {
+  "checkedAt": "2026-10-21",
+  "exchange": null,
+  "isin": "EU0009658681",
+  "manual": null,
+  "name": "STOXX Europe 600 Automobiles & Parts Price EUR",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "stoxx europe 600 basic resources": {
   "checkedAt": "2026-10-09",
   "exchange": "GER",
@@ -18150,12 +18161,34 @@
   "type": null,
   "yahooName": null
  },
+ "stoxx europe 600 technology price eur": {
+  "checkedAt": "2026-10-21",
+  "exchange": null,
+  "isin": "EU0009658921",
+  "manual": null,
+  "name": "STOXX Europe 600 Technology Price EUR",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "stoxx europe 600 telecommunications index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
   "isin": null,
   "manual": null,
   "name": "STOXX Europe 600 Telecommunications Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "stoxx europe 600 telecommunications price eur": {
+  "checkedAt": "2026-10-21",
+  "exchange": null,
+  "isin": "EU0009658947",
+  "manual": null,
+  "name": "STOXX Europe 600 Telecommunications Price EUR",
   "score": null,
   "ticker": null,
   "type": null,
@@ -18468,6 +18501,17 @@
   "ticker": "TMUS",
   "type": "EQUITY",
   "yahooName": "T-Mobile US, Inc."
+ },
+ "t1 energy": {
+  "checkedAt": "2026-10-21",
+  "exchange": "NYQ",
+  "isin": null,
+  "manual": null,
+  "name": "T1 Energy Inc",
+  "score": 1.0,
+  "ticker": "TE",
+  "type": "EQUITY",
+  "yahooName": "T1 Energy Inc."
  },
  "taiwan semiconductor manufactu": {
   "checkedAt": "2026-10-15",

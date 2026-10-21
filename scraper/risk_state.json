@@ -234,6 +234,7 @@
   "AAOI|EOSE": 0.3191,
   "AAOI|NBIS": 0.4274,
   "AAOI|SNDK": 0.423,
+  "AAOI|TE": 0.311,
   "AAPL|AMD": 0.0395,
   "AAPL|AMZN": 0.0694,
   "AAPL|AVGO": 0.121,
@@ -2886,6 +2887,7 @@
   "EOAN.DE|VIE.PA": 0.5228,
   "EOSE|NBIS": 0.4475,
   "EOSE|SNDK": 0.3686,
+  "EOSE|TE": 0.4121,
   "EQIX|ORCL": 0.1828,
   "EQNR.OL|ORSTED.CO": 0.036,
   "EQNR.OL|REP.MC": 0.682,
@@ -3431,6 +3433,7 @@
   "HTZ|SNDK": 0.0998,
   "HTZ|STLAM.MI": 0.0548,
   "HTZ|STMPA.PA": 0.1297,
+  "HTZ|TE": 0.0799,
   "HTZ|TSLA": 0.0925,
   "HUBS|META": 0.0628,
   "HUBS|MSFT": 0.3976,
@@ -5042,6 +5045,7 @@
   "SMIN.SW",
   "SSTIG.PA",
   "SX7E.Z",
+  "TE",
   "UET5.DU",
   "US0091191082.SG",
   "US5021172037.SG",
@@ -10483,6 +10487,15 @@
    "vol1y": 0.6316,
    "vol3m": 0.802,
    "volUsed": 0.802
+  },
+  "TE": {
+   "lastClose": 2.384999990463257,
+   "lastDate": "2026-10-21",
+   "observations": 252,
+   "updatedAt": "2026-10-21T18:55:43+00:00",
+   "vol1y": 1.2066,
+   "vol3m": 1.0125,
+   "volUsed": 1.2066
   },
   "TE.PA": {
    "lastClose": 30.860000610351562,
