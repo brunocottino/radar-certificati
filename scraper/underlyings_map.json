@@ -1089,6 +1089,17 @@
   "type": "EQUITY",
   "yahooName": "Assicurazioni Generali S.p.A."
  },
+ "assicurazioni generali enel saipem": {
+  "checkedAt": "2026-10-21",
+  "exchange": "MIL",
+  "isin": null,
+  "manual": null,
+  "name": "Assicurazioni Generali, Enel, Saipem",
+  "score": 0.806,
+  "ticker": "G.MI",
+  "type": "EQUITY",
+  "yahooName": "Assicurazioni Generali S.p.A."
+ },
  "ast spacemobile": {
   "checkedAt": "2026-10-09",
   "exchange": "NMS",
@@ -1530,7 +1541,7 @@
   "yahooName": "BASF SE"
  },
  "basket 1 x banca monte dei paschi di siena s p a": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1541,7 +1552,7 @@
   "yahooName": null
  },
  "basket 1 x continental 0 5 x aumovio": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1915,7 +1926,7 @@
   "yahooName": null
  },
  "bloomberg gold subindex": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4612,7 +4623,7 @@
   "yahooName": null
  },
  "euro istoxx esg leaders 50 nr decrement 5 price eur": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14660,7 +14671,7 @@
   "yahooName": null
  },
  "msci europe smart security defense infrastructure top 50 select 4 5 decrement index": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14693,7 +14704,7 @@
   "yahooName": null
  },
  "msci world ai effect select 4 5 decrement index": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14715,7 +14726,7 @@
   "yahooName": null
  },
  "msci world gold uranium rare earth select 4 5 decrement idx eur net total return": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15536,7 +15547,7 @@
   "yahooName": "On Holding AG"
  },
  "onemarkets fidelity world equity income fund c": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18228,7 +18239,7 @@
   "yahooName": null
  },
  "stoxx global esg social leaders diversification select 30 index": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19075,7 +19086,7 @@
   "yahooName": null
  },
  "uc european sector rotation strategy index": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-21",
   "exchange": null,
   "isin": null,
   "manual": null,
