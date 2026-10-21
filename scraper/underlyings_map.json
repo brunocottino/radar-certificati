@@ -5064,6 +5064,17 @@
   "type": null,
   "yahooName": null
  },
+ "eurostoxx sel div30": {
+  "checkedAt": "2026-10-21",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "EUROSTOXX SEL DIV30",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "eurostoxx select dividend 30": {
   "checkedAt": "2026-10-15",
   "exchange": null,
@@ -5228,6 +5239,17 @@
   "ticker": "RACE.MI",
   "type": "EQUITY",
   "yahooName": "Ferrari N.V."
+ },
+ "ferrari it": {
+  "checkedAt": "2026-10-21",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "FERRARI IT",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "ferrari n v": {
   "checkedAt": "2026-10-15",
