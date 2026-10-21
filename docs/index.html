@@ -220,7 +220,6 @@ tr.sp td{height:auto;border:none;padding:0}
 /* ---------- schede risultato ---------- */
 .card{gap:8px;padding:12px 14px;grid-template-columns:minmax(0,1fr)}
 .card>*{min-width:0}
-.card{content-visibility:auto;contain-intrinsic-size:auto 230px}
 .wrap,.drawer .dbody{grid-template-columns:minmax(0,1fr)}
 .wrap>*,.drawer .dbody>*{min-width:0}
 .c-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
@@ -364,7 +363,7 @@ tr.sp td{height:auto;border:none;padding:0}
 /* ---------- edizione Pantone: carta da disegno, Classic Blue, oro ---------- */
 body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--accent);color:var(--surface)}
-.top{background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:none}
+.top{background:var(--bg);box-shadow:none}
 .hbtns{display:flex;gap:6px;flex:none;margin-left:auto}
 .brandmark{display:flex;align-items:center;gap:9px;font-family:var(--f-disp);font-weight:700;font-size:1.15rem;letter-spacing:-.025em;line-height:1;white-space:nowrap}
 .brandmark .bm2{color:var(--accent)}
@@ -439,7 +438,7 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .hero>div,.stats>div{border-radius:12px;box-shadow:var(--shadow)}
 .hero .v,.stats .v{font-family:var(--f-disp);font-weight:700;font-size:1.3rem;line-height:1.2;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .drawer .dbody{background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
-.dhead{background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.dhead{background:var(--bg)}
 .drawer:not([hidden]) .dbody{animation:slidein .28s cubic-bezier(.2,.7,.2,1)}
 @keyframes slidein{from{transform:translateX(40px);opacity:.3}to{transform:none;opacity:1}}
 .scrim,.drawer{background:rgb(16 24 32 / .28)}
@@ -458,7 +457,8 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .pchip span{display:block;padding:5px 6px 6px}
 .pchip b{display:block;font-size:.62rem;letter-spacing:.02em}
 /* telefono */
-.bnav{background:color-mix(in srgb,var(--surface) 86%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
+/* tinta piena e livello proprio: su iPhone la sfocatura e le altezze che cambiano facevano galleggiare la barra */
+.bnav{background:var(--surface);-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);-webkit-backface-visibility:hidden}
 .bnav svg{transition:background-color .2s}
 @media (max-width:819px){
   .brandmark{font-size:1rem;gap:8px}.logo{width:26px;height:26px}
@@ -1002,7 +1002,7 @@ function renderCards(){
   const res=$("#results");res.innerHTML=`<div class="list" id="clist"></div><div id="more" style="height:1px"></div>`;cardN=0;moreCards();
   io?.disconnect();io=new IntersectionObserver(e=>{if(e[0].isIntersecting)moreCards()},{rootMargin:"600px"});io.observe($("#more"));
 }
-function moreCards(){if(cardN>=ROWS.length)return;const n=Math.min(ROWS.length,cardN+24);$("#clist").insertAdjacentHTML("beforeend",ROWS.slice(cardN,n).map((c,i)=>cardHtml(c,cardN+i)).join(""));cardN=n}
+function moreCards(){if(cardN>=ROWS.length)return;const n=Math.min(ROWS.length,cardN+(cardN?24:12));$("#clist").insertAdjacentHTML("beforeend",ROWS.slice(cardN,n).map((c,i)=>cardHtml(c,cardN+i)).join(""));cardN=n}
 
 /* ---------- mappa rischio-rendimento ---------- */
 const PQ=[["≥ 85%","var(--q4)"],["70–85%","var(--q3)"],["50–70%","var(--q2)"],["< 50%","var(--q1)"]];

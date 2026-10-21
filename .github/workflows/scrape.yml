@@ -37,6 +37,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # sempre l'ultima versione del branch, non quella del momento in cui GitHub ha messo la run in coda:
+          # una run rimasta in coda dietro un'altra deve vedere la fascia appena pubblicata (il 20/10 una seconda
+          # run delle 16:15 è ripartita da capo ed è fallita in conflitto) e usare il codice più recente
+          ref: ${{ github.ref_name }}
           fetch-depth: 50
       - name: Orario di Roma (09:35 / 16:15)
         id: ora
