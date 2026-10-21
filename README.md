@@ -68,7 +68,7 @@ Base: `https://radar-certificati.cottinob.workers.dev/api/v1/`
 | Indirizzo | Contenuto |
 |---|---|
 | `certificates.json` | `{version, updatedAt, count, disclaimer, certificates: [...]}`: tutti i certificati con tutti i campi |
-| `isin/<ISIN>.json` | un certificato: `{version, updatedAt, disclaimer, certificate}` |
+| `isin/<gg>.json` | i certificati del gruppo `gg` con lo storico prezzi: `{version, updatedAt, disclaimer, certificates: {ISIN: {certificate, history}}}`. Il gruppo è FNV-1a a 32 bit dell'ISIN modulo 256, in esadecimale a due cifre (vedi `isin_bucket` qui sotto): 256 file invece di uno per ISIN, così ogni pubblicazione resta leggera |
 | `underlyings.json` | sottostanti con ticker Yahoo, `vol1y`, `vol3m`, `volUsed`, data di aggiornamento |
 | `meta.json` | totali per emittente, orari delle run, metodologia del modello |
 | `schema.json` | descrizione in italiano di ogni campo |
@@ -77,7 +77,9 @@ Base: `https://radar-certificati.cottinob.workers.dev/api/v1/`
 const BASE = "https://radar-certificati.cottinob.workers.dev/api/v1/";
 const { certificates } = await fetch(BASE + "certificates.json").then(r => r.json());
 const solidi = certificates.filter(c => c.probBarrierHold >= 0.85 && c.probMethod !== "solo_peggiore");
-const uno = await fetch(BASE + "isin/DE000BD0HR17.json").then(r => r.ok ? r.json() : null);
+const isin_bucket = s => { let h = 0x811c9dc5; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0; return (h % 256).toString(16).padStart(2, "0"); };
+const gruppo = await fetch(BASE + `isin/${isin_bucket("DE000BD0HR17")}.json`).then(r => r.json());
+const uno = gruppo.certificates["DE000BD0HR17"];  // {certificate, history}
 ```
 
 Cache: 5 minuti (`Cache-Control: public, max-age=300`). Gli header CORS sono in `docs/_headers`

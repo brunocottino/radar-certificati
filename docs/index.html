@@ -1138,7 +1138,10 @@ document.addEventListener("click",e=>{
 /* ---------- dettaglio ---------- */
 async function loadDetail(isin){
   if(DETAIL.has(isin))return DETAIL.get(isin);
-  try{const r=await fetch(`api/v1/isin/${isin}.json`,{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();DETAIL.set(isin,j);return j}catch(e){return null}
+  /* i certificati sono raggruppati in 256 file (FNV-1a dell'ISIN mod 256, come isin_bucket in scraper/api.py) */
+  let h=0x811c9dc5;for(const ch of isin)h=Math.imul(h^ch.charCodeAt(0),0x01000193)>>>0;const g=(h%256).toString(16).padStart(2,"0");
+  try{const r=await fetch(`api/v1/isin/${g}.json`,{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
+    for(const[k,v]of Object.entries(j.certificates||{}))DETAIL.set(k,v);return DETAIL.get(isin)||null}catch(e){return null}
 }
 function ladder(c,full){
   const det=(full.underlyingsDetail||[]).filter(u=>u.name);

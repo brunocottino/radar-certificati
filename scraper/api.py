@@ -1,7 +1,7 @@
 """Radar Certificati - API JSON pubblica (file statici in docs/api/v1/), rigenerata a ogni run.
 
   certificates.json    tutti i certificati
-  isin/<ISIN>.json     un file per certificato
+  isin/<gg>.json       certificati raggruppati in 256 file (gg = isin_bucket(ISIN)), con lo storico prezzi
   underlyings.json     sottostanti con ticker e volatilità
   meta.json            totali per emittente, orari, metodologia
   schema.json          descrizione dei campi
@@ -86,11 +86,22 @@ METHOD = {
 }
 
 
-HIST = ROOT / "docs" / "data" / "history"
+# storico prezzi: archivio del robot, fuori dalla cartella pubblicata (arriva al sito dentro i gruppi isin/<gg>.json)
+HIST = ROOT / "history"
+BUCKETS = 256
+
+
+def isin_bucket(isin):
+    """Gruppo del certificato: FNV-1a a 32 bit dell'ISIN modulo 256, in esadecimale (stessa funzione nel sito).
+    Prima c'era un file per ISIN: ~14.000 file riscritti a ogni run rendevano lenta e incerta la pubblicazione."""
+    h = 0x811C9DC5
+    for b in isin.encode():
+        h = ((h ^ b) * 0x01000193) & 0xFFFFFFFF
+    return f"{h % BUCKETS:02x}"
 LIST = ROOT / "docs" / "data" / "list.json"
 HIST_DAYS = 250
 
-# colonne del file leggero per la lista del sito (docs/data/list.json): il dettaglio è in api/v1/isin/<ISIN>.json
+# colonne del file leggero per la lista del sito (docs/data/list.json): il dettaglio è in api/v1/isin/<gruppo>.json
 LIST_COLS = ["isin", "issuer", "platform", "type", "typeMarket", "category", "underlyings", "worstName", "distBarrier", "distAt",
              "barrierPct", "barrierType", "triggerPct", "autocallPct", "couponPa", "freq", "memory", "callable",
              "maturity", "bid", "ask", "nominal", "priceAt", "nextCouponDate", "nextCallDate", "market", "currency",
@@ -151,11 +162,13 @@ def main():
     dump(OUT / "certificates.json", {"version": 1, "updatedAt": updated, "count": len(certs),
                                      "disclaimer": DISCLAIMER, "certificates": certs})
     day = updated[:10]
+    groups = {}
     for c in certs:
         if ISIN_RE.match(c["isin"]):
             hist = update_history(c, day)
-            dump(OUT / "isin" / f"{c['isin']}.json", {"version": 1, "updatedAt": updated, "disclaimer": DISCLAIMER,
-                                                      "certificate": c, "history": hist})
+            groups.setdefault(isin_bucket(c["isin"]), {})[c["isin"]] = {"certificate": c, "history": hist}
+    for g, items in groups.items():
+        dump(OUT / "isin" / f"{g}.json", {"version": 2, "updatedAt": updated, "disclaimer": DISCLAIMER, "certificates": items})
     # file leggero per la lista del sito: colonne + righe (niente chiavi ripetute)
     dump(LIST, {"version": 1, "updatedAt": updated, "riskAt": meta.get("riskAt"), "count": len(certs),
                 "sources": meta.get("sources", []), "cols": LIST_COLS,
@@ -194,7 +207,7 @@ def main():
                      "description": "Lun-ven alle 09:35 e alle 16:15 ora di Roma, con l'ora legale e con l'ora solare, "
                                     "esclusi i giorni di chiusura di Borsa Italiana."},
         "methodology": METHOD,
-        "endpoints": ["certificates.json", "isin/{ISIN}.json", "underlyings.json", "meta.json", "schema.json"],
+        "endpoints": ["certificates.json", "isin/{gruppo}.json (gruppo = FNV-1a 32 bit dell'ISIN mod 256, 2 cifre esadecimali)", "underlyings.json", "meta.json", "schema.json"],
         "disclaimer": DISCLAIMER,
     })
     dump(OUT / "schema.json", {"version": 1, "disclaimer": DISCLAIMER, "fields": SCHEMA})
