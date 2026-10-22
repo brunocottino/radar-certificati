@@ -279,6 +279,20 @@ def ticker_of(m, name):
     return t if t and t != "-" else None
 
 
+def comparable(ticker, close, strike):
+    """Strike e chiusura nella stessa scala? Oltre al rapporto, lo strike deve stare vicino ai prezzi dell'ultimo anno:
+    un ETF usato al posto di un indice (EXX1.DE ≈ 27 € per l'EURO STOXX Banks ≈ 260 punti) passerebbe il solo rapporto
+    e darebbe −370% dalla barriera."""
+    if not 0.1 <= close / strike <= 5:
+        return False
+    cl = [x[1] for x in fetch_closes(ticker, True) if x[1]] if ticker else []
+    if len(cl) >= 40:
+        cl = [comparable_close(ticker, x, strike) for x in cl]
+        if strike > 3 * max(cl) or strike < min(cl) / 3:
+            return False
+    return True
+
+
 def comparable_close(ticker, close, strike):
     """Londra: Yahoo quota in pence (GBp), gli strike sono in sterline."""
     if ticker and ticker.endswith(".L") and strike and close / strike > 20:
@@ -447,7 +461,7 @@ def refresh_distance(c, m, st):
             return fill_missing_distances(c, det, bp, m, st) if not c.get("distAt") and c.get("distBarrier") is not None else False
         v = {**v, "lastClose": comparable_close(t, v["lastClose"], u["strike"])}
         # strike e chiusura devono essere confrontabili (stessa quotazione e valuta): altrimenti niente distanza
-        if not 0.1 <= v["lastClose"] / u["strike"] <= 5:  # sotto 0,1: quasi certamente un errore di dati
+        if not comparable(t, v["lastClose"], u["strike"]):
             c["distNote"] = f"strike di {u.get('name')} non confrontabile con la chiusura di {ticker_of(m, u.get('name'))}"
             if c.get("distSource") == "chiusure sottostanti":  # toglie una distanza ricalcolata in precedenza
                 for k in ("distBarrier", "worstName", "distAt", "distSource"):
@@ -487,13 +501,25 @@ def fill_missing_distances(c, det, bp, m, st):
         if not u.get("strike") or not v or not v.get("lastClose"):
             continue  # resta l'ultima distanza nota
         close = comparable_close(t, v["lastClose"], u["strike"])
-        if not 0.1 <= close / u["strike"] <= 5:
+        if not comparable(t, close, u["strike"]):
+            if u.get("distCalc"):  # toglie una distanza calcolata in precedenza su una scala sbagliata
+                u.pop("dist", None)
+                u.pop("distCalc", None)
             continue
         u["dist"] = round((1 - u["strike"] * bp / 100 / close) * 100, 2)
         u["distCalc"] = True
         done = True
-    if done:
-        w = min((u for u in det if u.get("dist") is not None), key=lambda u: u["dist"])
+    known = [u for u in det if u.get("dist") is not None]
+    if c.get("distSource") == "chiusure sottostanti parziali":  # il peggiore calcolato può essere stato tolto
+        c.pop("distSource")
+        if issuer:
+            w0 = min(issuer, key=lambda u: u["dist"])
+            c.update({"distBarrier": w0["dist"], "worstName": w0.get("name")})
+        else:
+            c.pop("distBarrier", None)
+            c.pop("worstName", None)
+    if known:
+        w = min(known, key=lambda u: u["dist"])
         if c.get("distBarrier") is None or w["dist"] < c["distBarrier"]:
             c.update({"distBarrier": w["dist"], "worstName": w.get("name"), "distSource": "chiusure sottostanti parziali"})
     return done

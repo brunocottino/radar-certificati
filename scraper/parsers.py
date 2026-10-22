@@ -113,8 +113,27 @@ def bnp_cert(r, src, NOW):
         trig = f.get("knockInPercent2")
     act = r.get("autocallType")
     cpa = r.get("premiumPerAnnumPercent")
+    freq = months_to_freq(kf.get("couponFrequency")) or freq_of(kf.get("couponFrequencyText"))
+    # Express/Athena/Relax/Bonus (premio pagato al richiamo): il "premio annuo" di BNP è moltiplicato per un fattore
+    # sbagliato (es. 43% con prossimo premio 123,5 su 1000). Si ricalcola dal prossimo premio: premio del periodo
+    # x periodi l'anno, e se il premio è cumulato (memoria) diviso per i periodi trascorsi; vale il più basso
+    g = lambda k: r.get(k) if r.get(k) is not None else kf.get(k) if kf.get(k) is not None else f.get(k)
+    nprem, iss, raw_cpa = num(g("nextPremium")), num(g("issuancePrice")), cpa
+    if nprem and iss and re.search(r"express|athena|relax|bonus|protection|lock", r.get("derivativeTypeName") or "", re.I):
+        ppy = {"1m": 12, "2m": 6, "3m": 4, "4m": 3, "6m": 2, "12m": 1}.get(freq, 1)
+        per = nprem / iss * 100
+        k = 1
+        try:
+            from datetime import date as _d
+            d0, d1 = _d.fromisoformat(str(g("issueDate"))[:10]), _d.fromisoformat(pdate(f.get("nextObservationDate")))
+            k = max(1, round((d1 - d0).days / 365.25 * ppy))
+        except Exception:
+            pass
+        cpa = round(min(per * ppy, per / k * ppy), 4)
+        if re.search(r"con cap", r.get("derivativeTypeName") or "", re.I):
+            cpa = None  # Equity Protection con Cap: nessuna cedola, il "premio" è il rendimento massimo a scadenza
     return clean({
-        "couponRaw": raw_coupon(r, kf, f) if odd_coupon(cpa) else None,
+        "couponRaw": raw_coupon(r, kf, f) if odd_coupon(cpa) or odd_coupon(raw_cpa) else None,
         "isin": r["isin"], "issuer": src["issuer"], "source": src["name"],
         "type": r.get("derivativeTypeName"), "underlyings": unds,
         "underlyingsDetail": [clean({"name": u.get("underlyingName"), "strike": u.get("strikeAbsolute"),
@@ -123,8 +142,8 @@ def bnp_cert(r, src, NOW):
                               for u in items] if items else None,
         "barrierType": barrier_type(items[0].get("barrierTypeName") if items else None),
         "worstName": worst.get("underlyingName") if worst else None,
-        "couponPa": r.get("premiumPerAnnumPercent"),
-        "freq": months_to_freq(kf.get("couponFrequency")) or freq_of(kf.get("couponFrequencyText")),
+        "couponPa": cpa,
+        "freq": freq,
         "distBarrier": dist, "barrierPct": f.get("knockInPercent"), "triggerPct": trig,
         "maturity": pdate(kf.get("maturityDate") or r.get("maturityDate")),
         "bid": r.get("bid") or None, "ask": r.get("ask") or None,
@@ -1560,17 +1579,27 @@ def citi_cert(item, src, NOW):
     calls = j.get("periodAutoCall") or []
     freq = citi_freq([p.get("endDate") for p in calls])
     cpa, mf = None, j.get("manualField") or {}
+    den = num(j.get("denomination")) or 1000
+    cands = []
+    # "Coupon mensile con memoria": "100 EUR i primi tre mesi, poi 5 EUR (barriera coupon: 60%)": la % tra parentesi è
+    # la barriera, non la cedola; "Barriera Coupon" non è una cedola; il "Coupon maxi" si paga una volta sola.
+    # Con più tassi (prima 5%, poi 1%) vale quello più basso, cioè quello che resta
     for k, v in mf.items():
-        m = re.search(r"([\d.,]+)\s*%", str(v))
-        if m and re.search(r"coupon|cedola|premio", k, re.I):
-            per = num(m.group(1))
-            f = next((v for rx, v in ((r"mensil|month", "1m"), (r"trimestr|quarter", "3m"), (r"semestr|semi", "6m"), (r"annual|annu", "12m"))
-                      if re.search(rx, k, re.I)), None) or freq
-            cpa = per * {"1m": 12, "3m": 4, "6m": 2, "12m": 1}.get(f, 1) if per is not None else None
-            freq = f or freq
-            break
+        if not re.search(r"coupon|cedola|premio", k, re.I) or re.search(r"barrier|maxi|rebate", k, re.I):
+            continue
+        v = re.sub(r"\([^)]*\)", " ", str(v))
+        vals = [num(x) for x in re.findall(r"([\d.,]+)\s*%", v)] or \
+               [x / den * 100 for x in (num(y) for y in re.findall(r"([\d.,]+)\s*EUR", v)) if x is not None]
+        f = next((v for rx, v in ((r"mensil|month", "1m"), (r"trimestr|quarter", "3m"), (r"semestr|semi", "6m"), (r"annual|annu", "12m"))
+                  if re.search(rx, k, re.I)), None) or freq
+        for per in vals:
+            if per is not None:
+                cands.append(per * {"1m": 12, "3m": 4, "6m": 2, "12m": 1}.get(f, 1))
+        freq = f or freq
+    if cands:
+        cpa = min(cands)
     if cpa is None:
-        m = re.search(r"Cpn:\s*([\d.,]+)\s*%", name)
+        m = None if re.search(r"rebate", name, re.I) else re.search(r"Cpn:\s*([\d.,]+)\s*%", name)
         cpa = num(m.group(1)) if m else None  # nel nome è la cedola annua
     from datetime import date as _d
     today = _d.today().isoformat()
@@ -1585,7 +1614,7 @@ def citi_cert(item, src, NOW):
         "couponPa": round(cpa, 4) if cpa else None, "freq": freq,
         "memory": True if re.search(r"memory", name, re.I) else None,
         "callable": "Autocall" if calls else None,
-        "autocallPct": nxt.get("autocallLevel") if nxt else None, "nextCallDate": nxt.get("endDate") if nxt else None,
+        "autocallPct": nxt.get("autocallLevel") if nxt and (nxt.get("autocallLevel") or 0) >= 30 else None, "nextCallDate": nxt.get("endDate") if nxt else None,
         "maturity": pdate(j.get("maturity")), "nominal": j.get("denomination"),
         "currency": j.get("issueCurrency"), "url": j.get("url") or f"https://www.citivelocity.com/citifirst/it/{isin.lower()}",
         "updatedAt": NOW,

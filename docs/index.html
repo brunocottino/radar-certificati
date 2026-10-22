@@ -832,6 +832,8 @@ function enrich(c){
   r.trigDist=(tp&&r.spotPct)?(r.spotPct-tp)/r.spotPct*100:null;
   r.couponActive=r.trigDist==null?null:r.trigDist>=0;
   r.belowBarrier=r.dist!=null&&r.dist<0;
+  // sotto barriera la distanza (spot−barriera)/spot va a −1000% e oltre: si mostra quanto il peggiore è sotto la barriera
+  if(r.belowBarrier)r.dist=(1/(1-r.dist/100)-1)*100;
   r.cy=(r.pricePct&&r.couponPa!=null)?r.couponPa/r.pricePct*100:null;
   // rendimento se la barriera tiene (cedole + rimborso a 100) e, sotto barriera, rimborso al livello del peggiore
   // anni per annualizzare: almeno 3 mesi, altrimenti pochi centesimi di sconto diventano rendimenti enormi

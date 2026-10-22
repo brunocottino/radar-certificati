@@ -256,6 +256,9 @@ def has_price(c):
 def price_ok(c):
     """Scarta coppie denaro/lettera impossibili: oltre 5 volte il nominale (es. prezzi letti ×100)."""
     n, a = c.get("nominal"), c.get("ask")
+    b = c.get("bid")
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and a > 0 and b > a:
+        return False  # denaro sopra la lettera: quotazione incoerente
     return not (isinstance(n, (int, float)) and n > 0 and isinstance(a, (int, float)) and a > 5 * n)
 
 
@@ -275,12 +278,14 @@ PROTECTED = re.compile(r"protett|protezion|protection|garantit|principal", re.I)
 
 def coupon_check(c):
     """Toglie le cedole non credibili (errori di lettura delle fonti): restano in couponSuspect, non nei filtri.
-    Sopra il 100% annuo nessun certificato; sopra il 15% non un capitale protetto."""
+    Sopra il 100% annuo nessun certificato; sopra il 15% non un capitale protetto; sopra il 40% non un premio Express."""
     v = c.get("couponPa")
     if v is None:
         return c
     kind = f'{c.get("type") or ""} {c.get("typeMarket") or ""} {c.get("commercialName") or ""}'
-    if v <= 0 or v > 100 or (PROTECTED.search(kind) and v > 15):
+    # premio pagato solo al richiamo (Express, Athena, Relax): oltre il 40% annuo è un errore di lettura
+    express = re.search(r"express|athena|relax", kind, re.I) and not re.search(r"cash ?collect|phoenix|reverse", kind, re.I)
+    if v <= 0 or v > 100 or (PROTECTED.search(kind) and v > 15) or (express and v > 40):
         c["couponSuspect"] = c.pop("couponPa")
     else:
         c.pop("couponSuspect", None)
@@ -297,6 +302,16 @@ def clean_underlyings(c):
     # (pulizia dell'archivio: da ora la lista lo salva in barrierLevel e la % arriva dalla scheda vontobel_dettaglio)
     if c.get("source") == "vontobel_cc_barriera" and c.get("barrierPct") is not None and c.get("barrierLevel") is None:
         c["barrierLevel"] = c.pop("barrierPct")
+    # nominale: UniCredit da 100 con prezzi sui 1000, Leonteq col prezzo d'emissione (es. 940) al posto del taglio da 1000
+    px = c.get("ask") or c.get("bid") or 0
+    if c.get("issuer") == "UniCredit" and c.get("nominal") == 100 and 400 < px < 2500:
+        c["nominal"] = 1000
+    if (c.get("source") or "").startswith("leonteq") and isinstance(c.get("nominal"), (int, float)) \
+            and 300 <= c["nominal"] < 1000 and c["nominal"] % 100 and not re.search(r"warrant", c.get("type") or "", re.I):
+        c["nominal"] = 1000.0
+    # livello di richiamo sotto il 30%: è la cedola o un tasso (Citi), non un livello dell'azione
+    if isinstance(c.get("autocallPct"), (int, float)) and c["autocallPct"] < 30:
+        c.pop("autocallPct")
     kind = f'{c.get("type") or ""} {c.get("typeMarket") or ""}'
     if c.get("couponPa") is not None and NO_COUPON.search(kind) and not HAS_COUPON.search(kind):
         c.pop("couponPa")
