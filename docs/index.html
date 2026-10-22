@@ -502,6 +502,36 @@ body{font-feature-settings:"tnum" 1;letter-spacing:-.003em}
 .num,td,.kpi .v,.m .v,.c-foot b,.facts span:last-child,.kv span:last-child{font-variant-numeric:tabular-nums}
 .isin,.sugg .k{font-family:var(--f-mono)}
 td{font-weight:500}
+/* ---------- cursori dei filtri ---------- */
+.sliders{display:grid;gap:22px}
+.sgroup{display:grid;gap:16px}
+.sgroup h3{margin:0;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:10px}
+.sgroup h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.sl{display:grid;gap:4px;--a:0;--b:1}
+.sl-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:2px}
+.sl-lab{font-weight:650;font-size:.95rem;color:var(--ink)}
+.sl-help{font-size:.72rem;color:var(--muted)}
+.sl-val{flex:none;font-variant-numeric:tabular-nums;font-weight:700;font-size:.86rem;color:var(--accent);background:var(--accent-soft);border:none;border-radius:99px;padding:5px 12px;white-space:nowrap}
+.sl-val.any{color:var(--muted);background:var(--row);font-weight:600}
+.hist{display:flex;align-items:flex-end;gap:2px;height:38px;padding:0 13px}
+.hist i{flex:1;height:0;background:var(--line);border-radius:2px 2px 0 0;transition:background-color .12s}
+.hist i.on{background:color-mix(in srgb,var(--accent-fill) 70%,transparent)}
+.rng{position:relative;height:30px;margin-top:-6px}
+.rng .track{position:absolute;left:13px;right:13px;top:13px;height:4px;border-radius:2px;background:var(--line)}
+.rng .fill{position:absolute;top:13px;height:4px;border-radius:2px;background:var(--accent-fill);left:calc(13px + (100% - 26px) * var(--a));right:calc(13px + (100% - 26px) * (1 - var(--b)))}
+.rng input[type=range]{position:absolute;inset:0;width:100%;height:30px;margin:0;padding:0;border:none;background:none;pointer-events:none;-webkit-appearance:none;appearance:none;z-index:3;touch-action:none}
+.rng input[type=range]:focus{outline:none}
+.rng input[type=range]::-webkit-slider-runnable-track{height:30px;background:none}
+.rng input[type=range]::-moz-range-track{height:30px;background:none}
+.rng input[type=range]::-webkit-slider-thumb{pointer-events:auto;-webkit-appearance:none;width:26px;height:26px;margin-top:2px;border-radius:50%;background:#fff;border:2.5px solid var(--accent-fill);box-shadow:0 2px 8px rgb(16 24 32 / .28);cursor:grab}
+.rng input[type=range]::-moz-range-thumb{pointer-events:auto;width:21px;height:21px;border-radius:50%;background:#fff;border:2.5px solid var(--accent-fill);box-shadow:0 2px 8px rgb(16 24 32 / .28);cursor:grab}
+.rng input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--accent-soft),0 2px 8px rgb(16 24 32 / .28)}
+.rng input[type=range]:active::-webkit-slider-thumb{cursor:grabbing;transform:scale(1.1)}
+.ticks{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);padding:0 4px;font-variant-numeric:tabular-nums}
+.sugg .k{font-family:var(--f-ui)}
+.sugg .sg-h{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;cursor:default;padding:8px 10px 4px}
+.sugg .sg-h:hover{background:none}
+@media (min-width:820px){.sliders{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px 36px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -563,6 +593,7 @@ td{font-weight:500}
           </div>
           <span class="note" id="prof-note">imposta i filtri qui sotto; puoi modificarli dopo</span>
         </div>
+        <div class="sliders" id="sliders"></div>
         <div class="quick" id="quick"></div>
         <details class="more-f" id="more-f"><summary>Altri filtri e valori esatti</summary>
         <div class="grid-f" style="margin-top:12px">
@@ -572,6 +603,7 @@ td{font-weight:500}
           <label>Peggiore: distanza barriera min %<input id="f-b" type="number" step="5"></label>
           <label>Peggiore: distanza trigger cedola min %<input id="f-t" type="number" step="5"></label>
           <label>Prob. minima % tenuta barriera<input id="f-prob" type="number" step="5" min="0" max="100"></label>
+          <label>Cedola annua minima %<input id="f-cmin" type="number" step="0.5" min="0"></label>
           <label>Scadenza min (anni)<input id="f-matmin" type="number" step="0.5" min="0"></label>
           <label>Scadenza max (anni)<input id="f-mat" type="number" step="0.5"></label>
           <label>Prezzo max (% del nominale)<input id="f-price" type="number" step="1"></label>
@@ -717,13 +749,13 @@ const TIER={"BNP Paribas":"A","Crédit Agricole":"A","Santander":"A","UBS":"A","
   "Société Générale":"B","Citigroup":"B","Deutsche Bank":"B","BBVA":"B","Morgan Stanley":"B","BIL":"B","Goldman Sachs":"B","UniCredit":"B","Intesa Sanpaolo":"B","Mediobanca":"B","EFG International":"B","Exane":"B",
   "Banco BPM":"C","BPER Banca":"C","Nomura":"C","Leonteq Securities":"C","Marex":"C","Banca Akros":"C"};
 const TIERV={A:1,B:.8,C:.55};
-const NUMF=["er","y","ym","b","t","prob","matmin","mat","price","sp"],SELF=["n","freq","call","cat","acall"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front"];
+const NUMF=["er","y","ym","cmin","b","t","prob","matmin","mat","price","sp"],SELF=["n","freq","call","cat","acall"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front"];
 // obiettivi rapidi: un clic imposta (o toglie) un gruppo di filtri
 const OBJ={frontiera:["Frontiera efficiente",{front:true}],mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
 /* durata in parole: 0,5 -> "6 mesi", 1 -> "1 anno", 2,5 -> "2,5 anni" */
 const yrs=v=>v<1?Math.round(v*12)+" mesi":fmt(v,v%1?1:0)+(v===1?" anno":" anni");
 const ACALL={"3":"entro 3 mesi","6":"entro 6 mesi","12":"entro 1 anno","no":"Senza autocall"};
-const LABEL={acall:v=>v==="no"?"Senza autocall":"Richiamo "+ACALL[v],matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
+const LABEL={cmin:v=>`Cedola ≥ ${fmt(v,v%1?1:0)}%`,acall:v=>v==="no"?"Senza autocall":"Richiamo "+ACALL[v],matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${yrs(v)}`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
   active:()=>"Cedola in pagamento",front:()=>"Solo frontiera efficiente",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
 const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sec:new Set(),sort:{key:"score",dir:-1},view:null};
@@ -919,6 +951,7 @@ function compute(){
     if(f.n==="multi"&&c.n<2)continue;
     if(f.call&&c.callKind!==f.call)continue;
     if(f.cpn&&c.couponPa==null)continue;
+    if(f.cmin!=null&&(c.couponPa??-1)<f.cmin)continue;
     if(f.er!=null&&(c.retProxy??-99)<f.er)continue;
     if(f.y!=null&&c.liq&&(c.ytm??-99)<f.y)continue;
     if(f.ym!=null&&c.ytm!=null&&c.ytm>f.ym)continue; // oltre: il mercato prezza una perdita probabile
@@ -1271,14 +1304,59 @@ async function openCmp(){
   $("#cmp").hidden=false;document.body.style.overflow="hidden";
 }
 
+/* ---------- cursori con istogramma (valori numerici) ---------- */
+/* lo/hi: campi di state.f per il minimo e il massimo; agli estremi il filtro vale "Qualsiasi" (null) */
+const SL=[
+  {g:"Rendimento",id:"ytm",lab:"Rendimento annuo",help:"cedole + rimborso, al prezzo lettera",min:0,max:50,step:1,lo:"y",hi:"ym",val:c=>c.ytmHigh?null:c.ytm,f:v=>fmt(v,0)+"%"},
+  {g:"Rendimento",id:"cpn",lab:"Cedola annua",help:"minima, in % del nominale",min:0,max:30,step:0.5,lo:"cmin",val:c=>c.couponPa,f:v=>fmt(v,v%1?1:0)+"%"},
+  {g:"Rischio",id:"dist",lab:"Distanza dalla barriera",help:"del sottostante peggiore",min:0,max:70,step:1,lo:"b",val:c=>c.dist,f:v=>fmt(v,0)+"%"},
+  {g:"Rischio",id:"prob",lab:"Probabilità di tenuta",help:"stima statistica",min:0,max:95,step:5,lo:"prob",val:c=>c.prob,f:v=>fmt(v,0)+"%"},
+  {g:"Durata",id:"mat",lab:"Scadenza",help:"tempo che manca alla scadenza",min:0,max:10,step:0.5,lo:"matmin",hi:"mat",val:c=>c.years,f:yrs},
+  {g:"Costi",id:"sp",lab:"Spread",help:"massimo, tra denaro e lettera",min:0,max:5,step:0.1,hi:"sp",val:c=>c.spread,f:v=>fmt(v,v%1?1:0)+"%"},
+];
+const NB=28;let SLB=false,SLDRAG=null,slT=null;
+function slText(d){const a=d.lo?state.f[d.lo]:null,b=d.hi?state.f[d.hi]:null;
+  if(a==null&&b==null)return "Qualsiasi";
+  if(d.id==="mat")return a!=null&&b!=null?`da ${yrs(a)} a ${yrs(b)}`:a!=null?`almeno ${yrs(a)}`:`entro ${yrs(b)}`;
+  return a!=null&&b!=null?`${d.f(a)} – ${d.f(b)}`:a!=null?`almeno ${d.f(a)}`:`fino a ${d.f(b)}`}
+function buildSliders(){
+  const box=$("#sliders");if(!box||SLB||!CERTS.length)return;SLB=true;
+  const base=CERTS.filter(c=>!c.lev&&c.couponPa!=null);
+  for(const d of SL){const h=new Array(NB).fill(0);for(const c of base){const v=d.val(c);if(v==null||isNaN(v))continue;
+    h[Math.max(0,Math.min(NB-1,Math.floor((v-d.min)/(d.max-d.min)*NB)))]++}d.hist=h}
+  const groups=[...new Set(SL.map(d=>d.g))];
+  box.innerHTML=groups.map(g=>`<section class="sgroup"><h3>${g}</h3>${SL.filter(d=>d.g===g).map(d=>{const mx=Math.max(...d.hist);
+    return `<div class="sl" id="sl-${d.id}"><div class="sl-head"><div><div class="sl-lab">${d.lab}</div><div class="sl-help">${d.help}</div></div>
+<button class="sl-val" data-slreset="${d.id}" title="Tocca per togliere il filtro"></button></div>
+<div class="hist" aria-hidden="true">${d.hist.map(n=>`<i style="height:${n?Math.max(6,Math.round(Math.sqrt(n/mx)*100)):0}%"></i>`).join("")}</div>
+<div class="rng"><div class="track"></div><div class="fill"></div>
+${d.lo?`<input type="range" class="lo" min="${d.min}" max="${d.max}" step="${d.step}" aria-label="${d.lab}: minimo" data-sl="${d.id}" data-end="lo">`:""}
+${d.hi?`<input type="range" class="hi" min="${d.min}" max="${d.max}" step="${d.step}" aria-label="${d.lab}: massimo" data-sl="${d.id}" data-end="hi">`:""}</div>
+<div class="ticks"><span>${d.id==="mat"?"oggi":d.f(d.min)}</span><span>${d.f(d.max)}${d.hi?"+":""}</span></div></div>`}).join("")}</section>`).join("");
+  box.addEventListener("input",e=>{const el=e.target.closest("input[data-sl]");if(!el)return;const d=SL.find(x=>x.id===el.dataset.sl);SLDRAG=el;
+    const v=+el.value,root=el.closest(".sl"),lo=root.querySelector("input.lo"),hi=root.querySelector("input.hi");
+    if(el.dataset.end==="lo"){if(hi&&v>+hi.value){el.value=hi.value}const x=+el.value;state.f[d.lo]=x<=d.min?null:x}
+    else{if(lo&&v<+lo.value){el.value=lo.value}const x=+el.value;state.f[d.hi]=x>=d.max?null:x}
+    paintSlider(d);clearTimeout(slT);slT=setTimeout(()=>update(),160)});
+  box.addEventListener("change",()=>{SLDRAG=null;clearTimeout(slT);update()});
+  box.addEventListener("click",e=>{const r=e.target.closest("[data-slreset]");if(!r)return;const d=SL.find(x=>x.id===r.dataset.slreset);
+    if(d.lo)state.f[d.lo]=null;if(d.hi)state.f[d.hi]=null;update()});
+  syncSliders();
+}
+function paintSlider(d){const root=$("#sl-"+d.id);if(!root)return;
+  const a=d.lo?state.f[d.lo]:null,b=d.hi?state.f[d.hi]:null,span=d.max-d.min;
+  const pa=a==null?0:Math.max(0,Math.min(1,(a-d.min)/span)),pb=b==null?1:Math.max(0,Math.min(1,(b-d.min)/span));
+  root.style.setProperty("--a",pa);root.style.setProperty("--b",pb);
+  const lo=root.querySelector("input.lo"),hi=root.querySelector("input.hi");
+  if(lo){if(lo!==SLDRAG)lo.value=a??d.min;lo.style.zIndex=pa>0.5?4:3}
+  if(hi&&hi!==SLDRAG)hi.value=b??d.max;
+  const t=slText(d),v=root.querySelector(".sl-val");v.textContent=t;v.classList.toggle("any",t==="Qualsiasi");
+  root.querySelectorAll(".hist i").forEach((el,i)=>{const c=(i+0.5)/NB;el.classList.toggle("on",c>=pa&&c<=pb)});
+}
+function syncSliders(){if(SLB)SL.forEach(paintSlider)}
+
 /* ---------- scelte rapide (tocchi invece di numeri da digitare) ---------- */
 const QUICK=[
-  ["y","Rendimento annuo minimo",[null,6,8,10,12,16,20],v=>v+"%"],
-  ["b","Peggiore: distanza dalla barriera, minimo",[null,15,20,25,30,40,50],v=>v+"%"],
-  ["prob","Probabilità di tenuta, minimo",[null,50,60,70,80,90],v=>v+"%"],
-  ["sp","Spread massimo",[null,1,1.5,2,3,5],v=>fmt(v,v%1?1:0)+"%"],
-  ["matmin","Scadenza almeno tra",[null,0.5,1,2,3,5],yrs],
-  ["mat","Scadenza entro",[null,1,2,3,5,8],yrs],
   ["acall","Richiamo anticipato (autocall)",["","3","6","12","no"],v=>ACALL[v]],
   ["freq","Frequenza cedola",["","1m","3m","6m"],v=>freqTxt(v)],
   ["n","Sottostanti",["","single","multi"],v=>v==="single"?"Singolo":"Worst-of"],
@@ -1287,6 +1365,7 @@ const QT=[["front","Frontiera efficiente"],["mem","Con memoria"],["active","Cedo
 const SECORDER=["Banche","Assicurazioni","Finanza","Tecnologia","Telecom e media","Energia","Utility","Auto","Industria e difesa","Trasporti e turismo","Consumi e lusso","Salute","Materie prime","Immobiliare","Crypto","Indici","Tassi e credito","Valute","Misto"];
 let SECN=null;
 function renderQuick(){
+  buildSliders();syncSliders();
   if(!SECN&&CERTS.length){SECN={};for(const c of CERTS)if(c.sector&&c.couponPa!=null&&!c.lev)SECN[c.sector]=(SECN[c.sector]||0)+1}
   const secs=SECORDER.filter(s=>SECN&&SECN[s]);
   $("#quick").innerHTML=(secs.length?`<div><div class="qlab">Settore <i>${state.sec.size?"":"tocca uno o più settori"}</i></div><div class="qopts">${secs.map(s=>`<button class="txt" data-sec="${esc(s)}" aria-pressed="${state.sec.has(s)}">${esc(s)} <span class="note">${SECN[s]}</span></button>`).join("")}</div></div>`:"")+QUICK.map(([k,lab,vals,f])=>{const cur=state.f[k]??(SELF.includes(k)?"":null);
@@ -1296,12 +1375,13 @@ function renderQuick(){
 }
 function fsumText(n){const R=`${ROWS.length.toLocaleString("it-IT")} risultati`;if(!n)return R+" · nessun filtro";const P=[];
   if(state.f.y!=null)P.push(`rend ≥${fmt(state.f.y,0)}%`);if(state.f.b!=null)P.push(`dist ≥${fmt(state.f.b,0)}%`);if(state.f.prob!=null)P.push(`prob ≥${fmt(state.f.prob,0)}%`);if(state.f.sp!=null)P.push(`spread ≤${fmt(state.f.sp,state.f.sp%1?1:0)}%`);
+  if(state.f.cmin!=null)P.push(`cedola ≥${fmt(state.f.cmin,state.f.cmin%1?1:0)}%`);
   if(state.f.acall)P.push(state.f.acall==="no"?"senza autocall":`autocall ≤${ACALL[state.f.acall].replace("entro ","")}`);
   const mn=state.f.matmin,mx=state.f.mat;if(mn!=null||mx!=null)P.push(mn!=null&&mx!=null?`scad. ${mn>=1?fmt(mn,mn%1?1:0)+"–"+yrs(mx):yrs(mn)+"–"+yrs(mx)}`:mn!=null?`scad. ≥${yrs(mn)}`:`scad. ≤${yrs(mx)}`);
   return `${R} · ${P.length?P.join(" · "):n+" filtri"}`}
 
 /* ---------- filtri: controlli, chip, profilo ---------- */
-const IDS={ym:"#f-ym",er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",matmin:"#f-matmin",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
+const IDS={ym:"#f-ym",er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",cmin:"#f-cmin",matmin:"#f-matmin",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
 function syncControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")el.checked=!!state.f[k];else el.value=state.f[k]??""}
   $("#q").value=state.q;$("#q-clear").hidden=!state.q;$("#b-fav").setAttribute("aria-pressed",state.f.fav);
   document.querySelectorAll("#profile button,#profile-top button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
@@ -1396,9 +1476,15 @@ function update(){render();ensureLeva();}
 
 /* ---------- suggerimenti ---------- */
 let SG=[],sgi=-1;
+const EXQ=[["banche mensile","settore e frequenza"],["tecnologia memoria","settore e caratteristica"],["enel","un sottostante"],
+  ["lusso","settore"],["oro argento","materie prime"],["difesa autocall","settore e richiamo"],["intesa unicredit","due sottostanti"]];
 function suggest(){
   const raw=$("#q").value,ul=$("#sugg");
   const toks=norm(raw).split(" ").filter(Boolean),last=toks[toks.length-1]||"";
+  if(INDEX&&!raw.trim()&&document.activeElement===$("#q")){ // casella vuota: esempi di ricerca
+    SG=EXQ.map(([q,k])=>({label:q,kind:k,rep:q,whole:true}));sgi=-1;
+    ul.innerHTML=`<li class="sg-h">Prova a cercare</li>`+SG.map((s,i)=>`<li role="option" id="sg${i}" data-i="${i}"><span class="v">${esc(s.label)}</span><span class="k">${esc(s.kind)}</span></li>`).join("");
+    ul.hidden=false;return}
   if(!INDEX||!last||/\s$/.test(raw)){ul.hidden=true;SG=[];return}
   const out=[];const up=raw.trim().toUpperCase();
   if(/^[A-Z]{2}\d?[A-Z0-9]*$/.test(up)&&up.length>=3&&CC.has(up.slice(0,2)))for(const c of CERTS){if(c.isin.startsWith(up)){out.push({label:c.isin,kind:"ISIN · "+(c.issuer||""),rep:c.isin,whole:true});if(out.length>=8)break}}
@@ -1472,9 +1558,10 @@ $("#export").addEventListener("click",()=>{
 let qT=null;
 $("#q").addEventListener("input",()=>{suggest();clearTimeout(qT);qT=setTimeout(()=>{state.q=$("#q").value.trim();update()},140)});
 $("#q").addEventListener("keydown",e=>{const ul=$("#sugg");
-  if(e.key==="ArrowDown"||e.key==="ArrowUp"){if(ul.hidden)return;e.preventDefault();sgi=(sgi+(e.key==="ArrowDown"?1:-1)+SG.length)%SG.length;ul.querySelectorAll("li").forEach((li,i)=>li.setAttribute("aria-selected",i===sgi));$("#q").setAttribute("aria-activedescendant","sg"+sgi)}
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){if(ul.hidden)return;e.preventDefault();sgi=(sgi+(e.key==="ArrowDown"?1:-1)+SG.length)%SG.length;ul.querySelectorAll("li[data-i]").forEach((li,i)=>li.setAttribute("aria-selected",i===sgi));$("#q").setAttribute("aria-activedescendant","sg"+sgi)}
   else if(e.key==="Enter"){if(!ul.hidden&&sgi>=0){e.preventDefault();pickSugg(sgi)}else{clearTimeout(qT);state.q=$("#q").value.trim();ul.hidden=true;update()}}
   else if(e.key==="Escape"){ul.hidden=true}});
+$("#q").addEventListener("focus",()=>{if(!$("#q").value)suggest()});
 $("#q").addEventListener("blur",()=>setTimeout(()=>$("#sugg").hidden=true,150));
 $("#sugg").addEventListener("mousedown",e=>{const li=e.target.closest("li");if(li){e.preventDefault();pickSugg(+li.dataset.i)}});
 $("#q-clear").addEventListener("click",()=>{state.q="";update();$("#q").focus()});
