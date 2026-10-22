@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from risk import core, norm
-from sectors import cert_sector, classify
+from sectors import cert_sector, classify_name
 
 TODAY = datetime.now(timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo("Europe/Rome")).date().isoformat()
 ROOT = Path(os.environ.get("RADAR_ROOT") or Path(__file__).resolve().parent.parent)
@@ -167,7 +167,7 @@ def main():
     for c in certs:
         c["category"] = category(c)
         # settore di ogni sottostante (stesso ordine di underlyings) e del certificato ("Misto" se diversi)
-        secs = [classify(n, m.get(core(n) or norm(n))) for n in c.get("underlyings") or []]
+        secs = [classify_name(n, lambda p: m.get(core(p) or norm(p))) for n in c.get("underlyings") or []]
         c["sectors"] = secs or None
         c["sector"] = cert_sector(secs)
         # prossimo richiamo dal calendario completo (Leonteq, UniCredit, Marex): resta giusto anche senza rileggere la scheda
