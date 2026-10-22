@@ -245,10 +245,13 @@
  "acs actividades construccion y servicios": {
   "checkedAt": "2026-10-15",
   "exchange": "MCE",
+  "industry": "Engineering & Construction",
   "isin": "ES0167050915",
   "manual": null,
   "name": "ACS ACTIVIDADES DE CONSTRUCCIÓN Y SERVICIOS",
   "score": 0.952,
+  "sector": "Industrials",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "ACS.MC",
   "type": "EQUITY",
   "yahooName": "ACS, Actividades de Construcción y Servicios, S.A."
@@ -326,6 +329,19 @@
   "manual": null,
   "name": "Advanced",
   "score": 0.8,
+  "ticker": "AMD",
+  "type": "EQUITY",
+  "yahooName": "Advanced Micro Devices, Inc."
+ },
+ "advanced micro": {
+  "checkedAt": "2026-10-22",
+  "exchange": "NMS",
+  "industry": "Semiconductors",
+  "isin": null,
+  "manual": null,
+  "name": "Advanced Micro",
+  "score": 0.8,
+  "sector": "Technology",
   "ticker": "AMD",
   "type": "EQUITY",
   "yahooName": "Advanced Micro Devices, Inc."
@@ -652,10 +668,13 @@
  "aluminum": {
   "checkedAt": "2026-10-09",
   "exchange": "HKG",
+  "industry": "Aluminum",
   "isin": "XD0002746010",
   "manual": null,
   "name": "Aluminum",
   "score": 0.8,
+  "sector": "Basic Materials",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "2600.HK",
   "type": "EQUITY",
   "yahooName": "Aluminum Corporation of China Limited"
@@ -839,10 +858,13 @@
  "analog devices": {
   "checkedAt": "2026-10-15",
   "exchange": "NMS",
+  "industry": "Semiconductors",
   "isin": "US0326541051",
   "manual": null,
   "name": "ANALOG DEVICES INC",
   "score": 1.0,
+  "sector": "Technology",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "ADI",
   "type": "EQUITY",
   "yahooName": "Analog Devices, Inc."
@@ -934,6 +956,19 @@
   "ticker": "AAPL",
   "type": "EQUITY",
   "yahooName": "Apple Inc."
+ },
+ "applied materials": {
+  "checkedAt": "2026-10-22",
+  "exchange": "NMS",
+  "industry": "Semiconductor Equipment & Materials",
+  "isin": "US0382221051",
+  "manual": null,
+  "name": "APPLIED MATERIALS",
+  "score": 1.0,
+  "sector": "Technology",
+  "ticker": "AMAT",
+  "type": "EQUITY",
+  "yahooName": "Applied Materials, Inc."
  },
  "applied optoelectronics": {
   "checkedAt": "2026-10-15",
@@ -1136,10 +1171,13 @@
  "aston martin lagonda global": {
   "checkedAt": "2026-10-09",
   "exchange": "LSE",
+  "industry": "Auto Manufacturers",
   "isin": null,
   "manual": null,
   "name": "Aston Martin Lagonda Global Holdings PLC",
   "score": 1.0,
+  "sector": "Consumer Cyclical",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "AML.L",
   "type": "EQUITY",
   "yahooName": "Aston Martin Lagonda Global Holdings plc"
@@ -3342,10 +3380,13 @@
  "d r horton": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
+  "industry": "Residential Construction",
   "isin": null,
   "manual": null,
   "name": "D.R. Horton, Inc.",
   "score": 1.0,
+  "sector": "Consumer Cyclical",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "DHI",
   "type": "EQUITY",
   "yahooName": "D.R. Horton, Inc."
@@ -3932,10 +3973,13 @@
  "elo": {
   "checkedAt": "2026-10-15",
   "exchange": "TOR",
+  "industry": "Gold",
   "isin": null,
   "manual": null,
   "name": "Elo",
   "score": 0.9,
+  "sector": "Basic Materials",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "ELO.TO",
   "type": "EQUITY",
   "yahooName": "Eloro Resources Ltd."
@@ -4141,10 +4185,13 @@
  "ermenegildo zegna": {
   "checkedAt": "2026-10-09",
   "exchange": "MUN",
+  "industry": "Apparel Manufacturing",
   "isin": null,
   "manual": null,
   "name": "ERMENEGILDO ZEGNA NV",
   "score": 1.0,
+  "sector": "Consumer Cyclical",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "JN0.MU",
   "type": "EQUITY",
   "yahooName": "Ermenegildo Zegna NV"
@@ -13306,6 +13353,19 @@
   "type": "EQUITY",
   "yahooName": "L'Oreal S.A. (ADRs)"
  },
+ "lam research": {
+  "checkedAt": "2026-10-22",
+  "exchange": "NMS",
+  "industry": "Semiconductor Equipment & Materials",
+  "isin": "US5128073062",
+  "manual": null,
+  "name": "LAM RESEARCH CORP",
+  "score": 1.0,
+  "sector": "Technology",
+  "ticker": "LRCX",
+  "type": "EQUITY",
+  "yahooName": "Lam Research Corporation"
+ },
  "lazard": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -14035,10 +14095,13 @@
  "lincoln national": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
+  "industry": "Insurance—Life",
   "isin": "US5341871094",
   "manual": null,
   "name": "Lincoln National",
   "score": 1.0,
+  "sector": "Financial Services",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "LNC",
   "type": "EQUITY",
   "yahooName": "Lincoln National Corporation"
@@ -18659,10 +18722,13 @@
  "teladoc health": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
+  "industry": "Health Information Services",
   "isin": "US87918A1051",
   "manual": null,
   "name": "Teladoc Health",
   "score": 1.0,
+  "sector": "Healthcare",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "TDOC",
   "type": "EQUITY",
   "yahooName": "Teladoc Health, Inc."
@@ -18978,10 +19044,13 @@
  "trade desk": {
   "checkedAt": "2026-10-15",
   "exchange": "VIE",
+  "industry": "Advertising Agencies",
   "isin": null,
   "manual": null,
   "name": "Trade Desk Inc/The",
   "score": 1.0,
+  "sector": "Communication Services",
+  "sectorCheckedAt": "2026-10-22",
   "ticker": "TTD.VI",
   "type": "EQUITY",
   "yahooName": "The Trade Desk, Inc."
