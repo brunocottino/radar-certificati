@@ -157,8 +157,8 @@ contengono), esposizione per settore nel Portafoglio, colonna nell'Excel.
 
 ## Note
 
-- `docs/_headers` (noindex, cache breve dei dati) vale su Cloudflare, che ospita il sito.
-  GitHub Pages lo ignora: lì valgono il `<meta name="robots" content="noindex">` della pagina e la cache
-  fissa di 10 minuti, aggirata dal sito con `?t=` sulla richiesta dei dati.
+- Il sito è pubblico e indicizzabile; `docs/_headers` (Cloudflare) tiene fuori dai motori di ricerca solo i file
+  dati (`data/`, `api/`) e imposta la cache breve dei dati. Nessun cookie né tracciamento: caratteri serviti dal sito,
+  libreria Excel scaricata solo all'esportazione. Note legali e fonti in fondo alla pagina.
 
 Dati indicativi raccolti da fonti pubbliche: verificare sempre KID e term sheet dell'emittente.
