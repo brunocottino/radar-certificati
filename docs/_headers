@@ -1,10 +1,8 @@
-/*
-  X-Robots-Tag: noindex
-
 /data/*
   Access-Control-Allow-Origin: *
   Access-Control-Allow-Methods: GET, OPTIONS
   Cache-Control: public, max-age=60, must-revalidate
+  X-Robots-Tag: noindex
 
 /api/*
   Access-Control-Allow-Origin: *

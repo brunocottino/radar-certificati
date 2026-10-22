@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex">
+<meta name="description" content="Screener gratuito dei certificati d'investimento quotati in Italia: cedole, rendimento annuo, distanza dalla barriera, probabilità di tenuta, settori. Dati aggiornati due volte al giorno.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Radar Certificati">
+<meta property="og:description" content="Cedole, rendimento, distanza dalla barriera e probabilità di tenuta di oltre 13.000 certificati quotati in Italia.">
+<meta property="og:image" content="icon-512.png">
+<meta name="twitter:card" content="summary">
 <title>Radar Certificati</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -12,11 +17,16 @@
 <script>try{var t=JSON.parse(localStorage.getItem("rc-theme"));if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Radar Certificati">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400;500;600&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
 <style>
+/* caratteri Geist serviti dal sito (niente richieste a Google: licenza in fonts/OFL.txt) */
+@font-face{font-family:'Geist';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/geist-400-800-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Geist';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/geist-400-800-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Geist Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/geist-mono-400-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Geist Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/geist-mono-400-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Geist Mono';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/geist-mono-400-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Geist Mono';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/geist-mono-400-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Geist Mono';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/geist-mono-400-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Geist Mono';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/geist-mono-400-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 *{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}
 /* Layout: ricerca fissa in alto, chip dei filtri attivi, griglia virtualizzata (desktop) o schede (telefono); scheda dettaglio a comparsa */
 :root{
@@ -430,6 +440,9 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .ruler i{position:absolute;left:0;top:0;bottom:0;width:var(--d);border-radius:2px;background:var(--good)}
 .ruler.ca i{background:var(--caution)}.ruler.neg i{background:var(--bad)}
 .c-unds b{font-weight:700}
+.legal summary{font-weight:600}
+.legal-body{display:grid;gap:10px;margin-top:10px;font-size:.86rem;line-height:1.55;color:var(--muted);max-width:90ch}
+.legal-body p{margin:0}.legal-body b{color:var(--ink)}
 /* settore dei sottostanti */
 .sec{display:inline-flex;align-items:center;gap:5px;font-size:.74rem;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--row);color:var(--ink);border:1px solid var(--line);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .sec::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent-fill);flex:none}
@@ -610,6 +623,15 @@ td{font-weight:500}
   </details>
 
   <p class="note">Prob. tenuta = probabilità stimata che tutti i sottostanti restino sopra la barriera capitale fino a scadenza (Monte Carlo su volatilità storica, correlazioni a 1 anno, drift 0, senza richiamo anticipato). Verde ≥85%, giallo 70–85%, rosso &lt;70%. L'asterisco indica che è nota solo la distanza del peggiore: la stima è un limite superiore. Rend. a scadenza = cedole sul prezzo lettera + recupero verso 100, annualizzato, se tutte le cedole sono pagate. Stime statistiche, non previsioni né consulenza: verificare sempre KID e term sheet. Dati anche via <a href="api/v1/meta.json">API JSON</a>.</p>
+  <details class="panel legal" id="legal">
+    <summary>Note legali, fonti e privacy</summary>
+    <div class="legal-body">
+      <p><b>Non è consulenza finanziaria.</b> Radar Certificati è uno strumento gratuito di ricerca e confronto. Nulla di quanto pubblicato è una raccomandazione, un invito all'acquisto o alla vendita, né una consulenza in materia di investimenti. I certificati sono prodotti complessi che possono far perdere in tutto o in parte il capitale investito: prima di qualsiasi decisione leggi il KID e il prospetto dell'emittente e, se serve, rivolgiti a un consulente abilitato.</p>
+      <p><b>Dati indicativi.</b> I dati sono raccolti automaticamente da fonti pubbliche due volte al giorno nei giorni di borsa e possono essere incompleti, in ritardo o errati. Rendimenti, distanze, probabilità, punteggi e settori sono calcoli e stime del sito, non dati ufficiali: le probabilità sono stime statistiche basate su volatilità storiche, non previsioni. Fanno fede solo i documenti e le quotazioni ufficiali dell'emittente e del mercato.</p>
+      <p><b>Fonti.</b> Liste e prezzi: Borsa Italiana, Euronext e i siti pubblici degli emittenti (tra cui BNP Paribas, UniCredit, Intesa Sanpaolo, Vontobel, Leonteq, Marex, Citigroup, Société Générale). Prezzi storici dei sottostanti: Yahoo Finance. Il sito non è affiliato né collegato agli emittenti, ai mercati o ai fornitori di dati; nomi e marchi appartengono ai rispettivi titolari.</p>
+      <p><b>Privacy.</b> Il sito non usa cookie, non ha pubblicità né strumenti di tracciamento o statistiche. Preferiti, profilo, tema e impostazioni restano solo nel tuo browser (memoria locale) e non vengono inviati a nessuno. Il sito è ospitato da Cloudflare, che tratta i dati tecnici delle connessioni (es. indirizzo IP) per erogarlo. I caratteri sono serviti dal sito stesso; la libreria per l'Excel si scarica da cdnjs (Cloudflare) solo quando premi "Esporta".</p>
+    </div>
+  </details>
   <div class="colophon" aria-label="Palette"><span class="cap">Palette ispirata a PANTONE®</span><div class="pchip" style="--c:#f0eee9"><i></i><span><b>11-4201</b>Cloud Dancer · la carta</span></div><div class="pchip" style="--c:#0f4c81"><i></i><span><b>19-4052</b>Classic Blue · l'accento</span></div><div class="pchip" style="--c:#d69a2d"><i></i><span><b>7563 C</b>Oro · la frontiera</span></div><div class="pchip" style="--c:#101820"><i></i><span><b>Black 6 C</b>Inchiostro · il testo</span></div><div class="pchip" style="--c:#d7d2cb"><i></i><span><b>Warm Gray 1 C</b>Linee · la griglia</span></div></div>
 </main>
 
@@ -1153,7 +1175,7 @@ document.addEventListener("change",e=>{const t=e.target;if(!t.id||!t.id.startsWi
   PF={cap:Math.max(1000,+$("#pf-cap").value||PFD.cap),n:+$("#pf-n").value,iss:+$("#pf-iss").value,key:$("#pf-key").value,src:$("#pf-src").value,uniq:$("#pf-uniq").checked};ls.set("rc-pf",PF);renderPf()});
 document.addEventListener("click",e=>{
   if(e.target.id==="pf-fav"){(window._PF||[]).forEach(x=>{if(!FAV[x.c.isin])FAV[x.c.isin]={ask:x.c.ask,at:new Date().toISOString()}});ls.set("rc-fav",FAV);render(false);toast("Salvati nei preferiti");return}
-  if(e.target.id==="pf-xls"){if(!window.XLSX){toast("Esportazione non disponibile");return}
+  if(e.target.id==="pf-xls"){if(!window.XLSX){toast("Preparo l'Excel…");loadXLSX().then(()=>e.target.click()).catch(()=>toast("Esportazione non disponibile"));return}
     const rows=(window._PF||[]).map(x=>({ISIN:x.c.isin,Emittente:x.c.issuer,Sottostanti:x.c.unds.join(", "),"Rend. annuo %":+(x.c.ytm??0).toFixed(2),"Cedola p.a. %":x.c.couponPa,Frequenza:freqTxt(x.c.freq),"Dist. barriera %":x.c.dist,"Prob. tenuta %":x.c.prob==null?null:+x.c.prob.toFixed(1),"Prezzo unitario €":+x.unit.toFixed(2),Pezzi:x.q,"Investito €":+x.inv.toFixed(2),"Cedole/anno €":+x.inc.toFixed(2),Scadenza:x.c.maturity||""}));
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),"Portafoglio");const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf]));a.download=`portafoglio-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
@@ -1419,9 +1441,13 @@ function renderStatus(){
 }
 
 /* ---------- esporta ---------- */
+/* la libreria Excel si scarica solo quando serve (prima la scaricava ogni visitatore) */
+let XP=null;
+function loadXLSX(){return XP||(XP=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+  s.onload=ok;s.onerror=()=>{XP=null;ko()};document.head.append(s)}))}
 $("#export").addEventListener("click",()=>{
   if(!ROWS.length){toast("Niente da esportare");return}
-  if(!window.XLSX){toast("Esportazione non disponibile (libreria non caricata)");return}
+  if(!window.XLSX){toast("Preparo l'Excel…");loadXLSX().then(()=>$("#export").click()).catch(()=>toast("Esportazione non disponibile"));return}
   const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Settore:c.sector==="Misto"?"Misto ("+c.secU.join(", ")+")":(c.sector||""),Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Rend. atteso %":c.retProxy==null?null:+c.retProxy.toFixed(2),"Classe emittente":c.tier||"","Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"",Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});const a=document.createElement("a");
