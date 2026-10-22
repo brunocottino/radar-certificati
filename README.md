@@ -130,6 +130,18 @@ Il sito calcola nel browser, per ogni certificato:
 
 ## Il sito
 
+### Il mio portafoglio e analisi globale
+
+Nella pagina Portafoglio, oltre al costruttore automatico, "Il mio portafoglio": certificati scelti a mano (dalla scheda
+con "+ Portafoglio" o cercandoli nella pagina) con l'importo di ciascuno, salvati nel browser. Per entrambe le modalità:
+- correlazione tra i certificati (rendimenti settimanali medi dei loro sottostanti, ultimo anno), correlazione media,
+  numero effettivo di scommesse indipendenti, sottostanti in comune;
+- simulazione congiunta (3.000 scenari): sottostanti con volatilità storica e correlazioni stimate, esito di ogni
+  certificato alla sua scadenza (barriera a scadenza, niente richiamo, cedole intere se la barriera tiene e per metà se
+  si rompe, rimborso pari al peggiore): probabilità che nessuna barriera si rompa (confrontata con il calcolo
+  indipendente), barriere rotte in media, esito mediano, scenario sfavorevole (5° percentile), probabilità di perdita.
+I rendimenti settimanali vengono da `docs/data/returns.json`, scritto da `risk.py` a ogni run dalla cache dei prezzi.
+
 ### Settori
 
 Ogni sottostante ha un settore (`scraper/sectors.py`): Banche, Assicurazioni, Finanza, Tecnologia, Telecom e media, Energia,

@@ -36,6 +36,7 @@ DATA = ROOT / "docs" / "data" / "certs.json"
 MAP = ROOT / "scraper" / "underlyings_map.json"
 STATE = ROOT / "scraper" / "risk_state.json"
 PRICES = ROOT / "data" / "prices"
+RETURNS = ROOT / "docs" / "data" / "returns.json"
 NOW = datetime.now(timezone.utc).isoformat(timespec="seconds")
 TODAY = datetime.now(ZoneInfo("Europe/Rome")).date()
 ISIN_RE = re.compile(r"^[A-Z]{2}[A-Z0-9]{9}\d$")
@@ -498,6 +499,34 @@ def fill_missing_distances(c, det, bp, m, st):
     return done
 
 
+# ---------------------------------------------------------------- rendimenti settimanali per il sito
+
+def write_returns(st, weeks=52):
+    """docs/data/returns.json: rendimenti logaritmici settimanali (ultime 52 settimane, venerdì di chiusura) di ogni
+    sottostante con volatilità, per la correlazione e la simulazione del portafoglio nel sito.
+    Settimane senza prezzo = null. Dalla cache dei prezzi: nessuna nuova richiesta."""
+    import math
+    ends = [TODAY - timedelta(days=(TODAY.weekday() - 4) % 7 + 7 * k) for k in range(weeks, -1, -1)]  # venerdì
+    keys = [d.isoformat() for d in ends]
+    out = {}
+    for t in sorted(st.get("underlyings", {})):
+        cl = fetch_closes(t, True)
+        if len(cl) < 40:
+            continue
+        last, i, row = {}, 0, []
+        for k in keys:  # ultima chiusura entro ogni venerdì
+            while i < len(cl) and cl[i][0] <= k:
+                last["v"] = cl[i][1]
+                i += 1
+            row.append(last.get("v"))
+        r = [round(math.log(b / a), 4) if a and b and a > 0 and b > 0 and a != b else (0.0 if a and b else None)
+             for a, b in zip(row, row[1:])]
+        if sum(x is not None for x in r) >= 26:
+            out[t] = r
+    dump(RETURNS, {"version": 1, "updatedAt": NOW, "weeks": keys[1:], "returns": out}, compact=True)
+    log(f"rendimenti settimanali: {len(out)} sottostanti")
+
+
 # ---------------------------------------------------------------- Monte Carlo
 
 def nearest_corr(c):
@@ -637,6 +666,7 @@ def main():
         r = risk_for(c, m, st)
         c.update({k: v for k, v in r.items() if k != "probNote" or v})
         n_prob += r["probBarrierHold"] is not None
+    write_returns(st)
     meta["riskAt"] = NOW
     DATA.write_text(json.dumps(meta, ensure_ascii=False, separators=(",", ":")))
     mapped = sum(1 for k in unds if ticker_of(m, unds[k]["name"]))

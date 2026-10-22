@@ -314,8 +314,8 @@ tr.sp td{height:auto;border:none;padding:0}
   .dhead{top:0;margin:0 -14px;padding:10px 14px;border-bottom:1px solid var(--line)}
   .hero{grid-template-columns:1fr 1fr}
   .hero .v{font-size:1.3rem}
-  .dact{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--surface);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
-  .dact button,.dact a{padding:11px 6px;font-size:.88rem;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-decoration:none}
+  .dact{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--surface);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
+  .dact button,.dact a{padding:11px 4px;font-size:.8rem;white-space:nowrap;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-decoration:none}
   .dact .on{background:var(--brass-soft);color:var(--brass);border-color:transparent}
   .sbar{grid-template-columns:118px 1fr 34px;font-size:.78rem}
   .cmpbar{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
@@ -502,6 +502,35 @@ body{font-feature-settings:"tnum" 1;letter-spacing:-.003em}
 .num,td,.kpi .v,.m .v,.c-foot b,.facts span:last-child,.kv span:last-child{font-variant-numeric:tabular-nums}
 .isin,.sugg .k{font-family:var(--f-mono)}
 td{font-weight:500}
+/* ---------- il mio portafoglio e analisi ---------- */
+.pfmode{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:520px}
+.pfmode button{padding:9px 6px}
+.myp{display:grid;gap:12px}
+.myp-add input{font-size:1rem;padding:11px 14px 11px 40px;border-radius:12px;background:var(--surface)}
+.myp-add .ico{left:13px}
+.myrows{display:grid;gap:8px}
+.myrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.myrow .who{min-width:0;cursor:pointer}
+.myu{font-weight:600;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.myu b{color:var(--brass)}
+.myrow .note{font-size:.74rem}
+.amt{display:flex;align-items:center;gap:4px;font-size:.82rem;color:var(--muted)}
+.amt input{width:96px;padding:7px 8px;text-align:right;font-variant-numeric:tabular-nums}
+.rm{border:none;background:none;color:var(--muted);font-size:1rem;padding:6px}
+.myempty{line-height:1.6}
+.share.on,.dact .on{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.ana{display:grid;gap:14px}
+.ana-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.ohist{position:relative;display:flex;align-items:flex-end;gap:2px;height:110px;margin-top:8px;border-bottom:1px solid var(--line)}
+.ohist .zero{position:absolute;top:-4px;bottom:0;width:0;border-left:1.5px dashed var(--ink);opacity:.55}
+.ohist i{flex:1;background:var(--accent-fill);border-radius:3px 3px 0 0;opacity:.85}
+.ohist i.neg{background:var(--bad)}
+.cmx{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));max-width:320px;gap:2px;margin-top:8px;font-size:.66rem;font-variant-numeric:tabular-nums}
+.cmx .cl{display:none}
+.cmx .cc{aspect-ratio:1;display:grid;place-items:center;border-radius:4px;min-width:0;font-weight:600}
+.clist{margin:8px 0 0;padding-left:20px;font-size:.76rem;color:var(--muted);columns:2;column-gap:18px}
+.ana-notes{display:grid;gap:6px;font-size:.86rem}
+.ana-notes p{margin:0}
 /* ---------- cursori dei filtri ---------- */
 .sliders{display:grid;gap:22px}
 .sgroup{display:grid;gap:16px}
@@ -703,7 +732,7 @@ td{font-weight:500}
   <button data-nav="map" id="nb-map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16"/><circle cx="9" cy="14" r="1.6"/><circle cx="13" cy="9" r="1.6"/><circle cx="17" cy="12" r="1.6"/><path d="M8 7l4 2 6-4"/></svg><span>Mappa</span></button>
   <button data-nav="filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span>Filtri <b id="nb-filt"></b></span></button>
   <button data-nav="fav" id="nb-fav" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span>Preferiti <b id="nb-nfav"></b></span></button>
-  <button data-nav="pf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Portafoglio</span></button>
+  <button data-nav="pf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Portafoglio <b id="nb-pf-n"></b></span></button>
 </nav>
 
 <script>
@@ -1180,21 +1209,22 @@ function calSvg(M){const W=640,H=200,m={l:8,r:8,t:22,b:24},bw=(W-m.l-m.r)/12,mx=
 function expoHtml(title,map,tot){const e=[...map.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
   return `<div><div class="cap" style="margin-bottom:6px">${title}</div><div class="expo">${e.map(([k,v])=>`<div class="e"><span title="${esc(k)}">${esc(k)}</span><span class="bar"><i style="width:${v/tot*100}%"></i></span><span>${fmt(v/tot*100,0)}%</span></div>`).join("")}</div></div>`}
 function renderPf(){
-  const L=buildPf(PF),inv=L.reduce((a,x)=>a+x.inv,0),inc=L.reduce((a,x)=>a+x.inc,0);
+  const mine=PF.mode==="mine",L=mine?buildMine():buildPf(PF),inv=L.reduce((a,x)=>a+x.inv,0),inc=L.reduce((a,x)=>a+x.inc,0);
   const w=f=>inv?L.reduce((a,x)=>a+x.inv*(f(x.c)??0),0)/inv:null;
   const probs=L.map(x=>x.c.prob),allP=L.length&&probs.every(p=>p!=null)?probs.reduce((a,p)=>a*p/100,1)*100:null;
   const M=calendar(L),cal12=M.reduce((a,x)=>a+x.v,0),minD=L.length?Math.min(...L.map(x=>x.c.dist??99)):null;
   const byIss=new Map(),byUnd=new Map(),bySec=new Map();L.forEach(x=>{x.c.unds.forEach(u=>{const k=x.c.secOf.get(u)||"Non classificato";bySec.set(k,(bySec.get(k)||0)+x.inv/Math.max(1,x.c.unds.length))});byIss.set(x.c.issuer,(byIss.get(x.c.issuer)||0)+x.inv);x.c.unds.forEach(u=>byUnd.set(u,(byUnd.get(u)||0)+x.inv/Math.max(1,x.c.unds.length)))});
   const opt=(v,t,cur)=>`<option value="${v}" ${String(cur)===String(v)?"selected":""}>${t}</option>`;
-  $("#pfbody").innerHTML=`<div class="dhead"><div><div class="eyebrow">Costruttore</div><b style="font-size:1.1rem">Portafoglio di certificati</b></div><button data-close aria-label="Chiudi">✕</button></div>
-<div class="pfin">
+  $("#pfbody").innerHTML=`<div class="dhead"><div><div class="eyebrow">${mine?"Le tue scelte":"Costruttore"}</div><b style="font-size:1.1rem">Portafoglio di certificati</b></div><button data-close aria-label="Chiudi">✕</button></div>
+<div class="seg pfmode" role="group" aria-label="Modalità"><button data-pfmode="mine" aria-pressed="${mine}">Il mio portafoglio${MYP.length?` (${MYP.length})`:""}</button><button data-pfmode="auto" aria-pressed="${!mine}">Automatico</button></div>
+${mine?myEditor(L):`<div class="pfin">
 <label>Capitale (€)<input id="pf-cap" type="number" step="1000" min="1000" inputmode="numeric" value="${PF.cap}"></label>
 <label>Certificati<select id="pf-n">${[3,4,5,6,8,10,12].map(n=>opt(n,n,PF.n)).join("")}</select></label>
 <label>Max per emittente<select id="pf-iss">${[1,2,3,99].map(n=>opt(n,n===99?"senza limite":n,PF.iss)).join("")}</select></label>
 <label>Scegli per<select id="pf-key">${opt("score","Punteggio",PF.key)}${opt("cd","Cedola e distanza",PF.key)}${opt("ytm","Rendimento annuo",PF.key)}${opt("prob","Probabilità di tenuta",PF.key)}</select></label>
 <label>Da<select id="pf-src">${opt("rows",`Risultati filtrati (${ROWS.length.toLocaleString("it-IT")})`,PF.src)}${opt("fav",`Preferiti (${Object.keys(FAV).length})`,PF.src)}</select></label>
 <label class="check" style="align-self:end"><input type="checkbox" id="pf-uniq" ${PF.uniq?"checked":""}> Un sottostante una volta sola</label>
-</div>
+</div>`}
 ${L.length?`<div class="stats">
 <div><div class="k">Investito</div><div class="v">${fmt(inv,0)} €</div><div class="s">${L.length} certificati · profilo ${esc(state.profile)}</div></div>
 <div><div class="k">Rendimento annuo</div><div class="v hi">${pct(w(c=>c.ytm))}</div><div class="s">medio pesato, se le barriere tengono</div></div>
@@ -1206,16 +1236,138 @@ ${L.length?`<div class="stats">
 <div class="panel"><div class="cap" style="margin-bottom:6px">Cedole attese nei prossimi 12 mesi · ≈ ${fmt(cal12,0)} € se i trigger vengono rispettati</div><div class="cal">${calSvg(M)}</div>
 <p class="note" style="margin:6px 0 0">Stima dalle frequenze e dalle prossime date di pagamento note; un richiamo anticipato chiude prima i flussi (e rimborsa il capitale).</p></div>
 <div class="panel pftab-wrap"><table class="pftab"><thead><tr><th class="l">Certificato</th><th>Rend.</th><th>Cedola</th><th>Dist.</th><th>Prob.</th><th>Lettera</th><th>Pezzi</th><th>Investito</th><th>Cedole/anno</th></tr></thead><tbody>
-${L.map(x=>`<tr class="r" data-open="${esc(x.c.isin)}"><td class="l t"><b>${esc(x.c.issuer||"")}</b> <span class="num note">${esc(x.c.isin)}</span><br><span class="note">${esc(x.c.unds.join(", "))}</span></td><td class="hi">${pct(x.c.ytm)}</td><td>${pct(x.c.couponPa,1)}</td><td class="${cls(x.c.dist)}">${pct(x.c.dist,0)}</td><td class="${pcls(x.c.prob)}">${probTxt(x.c)}</td><td>${fmt(x.unit)}</td><td>${x.q}</td><td>${fmt(x.inv,0)}</td><td>${fmt(x.inc,0)}</td></tr>`).join("")}</tbody></table></div>
+${L.map(x=>`<tr class="r" data-open="${esc(x.c.isin)}"><td class="l t"><b>${esc(x.c.issuer||"")}</b> <span class="num note">${esc(x.c.isin)}</span><br><span class="note">${esc(x.c.unds.join(", "))}</span></td><td class="hi">${pct(x.c.ytm)}</td><td>${pct(x.c.couponPa,1)}</td><td class="${cls(x.c.dist)}">${pct(x.c.dist,0)}</td><td class="${pcls(x.c.prob)}">${probTxt(x.c)}</td><td>${fmt(x.unit)}</td><td>${x.mine?fmt(x.q,x.q<10?1:0):x.q}</td><td>${fmt(x.inv,0)}</td><td>${fmt(x.inc,0)}</td></tr>`).join("")}</tbody></table></div>
+<div id="pf-ana" data-tag="${pfTag(L)}"></div>
 <div class="panel" style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${expoHtml("Esposizione per settore",bySec,inv)}${expoHtml("Esposizione per emittente",byIss,inv)}${expoHtml("Esposizione per sottostante",byUnd,inv)}</div>
-<div class="row"><button class="primary" id="pf-xls">Esporta in Excel</button><button id="pf-fav">★ Salva tutti nei preferiti</button></div>`:`<div class="panel empty">Nessun certificato adatto: servono prezzo, cedola e rendimento noti, non sotto barriera. Allarga i filtri o scegli "Risultati filtrati".</div>`}
-<p class="note">Selezione automatica e indicativa sui dati del radar: non è una raccomandazione d'investimento. Verifica sempre KID, term sheet e rischio emittente.</p>`;
-  window._PF=L;
+<div class="row"><button class="primary" id="pf-xls">Esporta in Excel</button><button id="pf-fav">★ Salva tutti nei preferiti</button>${mine?"":`<button id="pf-adopt">Copia nel mio portafoglio</button>`}</div>`:mine?"":`<div class="panel empty">Nessun certificato adatto: servono prezzo, cedola e rendimento noti, non sotto barriera. Allarga i filtri o scegli "Risultati filtrati".</div>`}
+<p class="note">${mine?"Analisi indicativa delle tue scelte":"Selezione automatica e indicativa sui dati del radar"}: non è una raccomandazione d'investimento. Verifica sempre KID, term sheet e rischio emittente.</p>`;
+  window._PF=L;clearTimeout(renderPf._t);renderPf._t=setTimeout(()=>analyzePf(L,pfTag(L)),60);
 }
 function openPf(){$("#pf").hidden=false;document.body.style.overflow="hidden";renderPf()}
-document.addEventListener("change",e=>{const t=e.target;if(!t.id||!t.id.startsWith("pf-"))return;
-  PF={cap:Math.max(1000,+$("#pf-cap").value||PFD.cap),n:+$("#pf-n").value,iss:+$("#pf-iss").value,key:$("#pf-key").value,src:$("#pf-src").value,uniq:$("#pf-uniq").checked};ls.set("rc-pf",PF);renderPf()});
+
+const pfTag=L=>L.map(x=>x.c.isin+":"+Math.round(x.inv)).join("|");
+function myEditor(L){
+  return `<div class="myp">
+<div class="search myp-add"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+<input id="pfq" type="text" autocomplete="off" spellcheck="false" placeholder="Aggiungi un certificato: ISIN, sottostante, emittente…" aria-label="Cerca un certificato da aggiungere"><ul id="pfsugg" class="sugg" hidden></ul></div>
+${L.length?`<div class="myrows">${L.map(x=>`<div class="myrow"><div class="who" data-open="${esc(x.c.isin)}"><div class="c-iss"><b>${esc(x.c.issuer||"")}</b> · <span class="num">${esc(x.c.isin)}</span></div><div class="myu">${undsHtml(x.c)}</div>
+<div class="note">${pct(x.c.ytm)} annuo · cedola ${pct(x.c.couponPa,1)} · barriera a ${pct(x.c.dist,0)} · scade ${dshort(x.c.matDate)}</div></div>
+<label class="amt">€<input type="number" inputmode="numeric" min="0" step="500" value="${Math.round(x.inv)}" data-amt="${esc(x.c.isin)}" aria-label="Importo"></label>
+<button class="rm" data-myp-rm="${esc(x.c.isin)}" aria-label="Togli dal portafoglio">✕</button></div>`).join("")}</div>
+<div class="row" style="justify-content:space-between"><span class="note">Totale <b class="num">${fmt(L.reduce((a,x)=>a+x.inv,0),0)} €</b> su ${L.length} certificati</span><span class="row"><button id="pf-eq">Importi uguali</button><button id="pf-addfav">+ Preferiti</button><button id="pf-clear">Svuota</button></span></div>`
+:`<div class="panel empty myempty"><b>Il tuo portafoglio è vuoto</b><br>Cerca qui sopra un certificato oppure apri una scheda e tocca <b>+ Portafoglio</b>.${Object.keys(FAV).length?`<br><button id="pf-addfav" style="margin-top:10px">Aggiungi i ${Object.keys(FAV).length} preferiti</button>`:""}</div>`}
+</div>`}
+function pfSuggest(){const v=$("#pfq").value.trim(),ul=$("#pfsugg");if(!v){ul.hidden=true;return}
+  const S=searchSet(v),isin=isinMode(v);let list=isin?CERTS.filter(c=>c.isin.startsWith(isin)):S?[...S.set].map(i=>CERTS[i]):[];
+  list=list.filter(c=>!inMyp(c.isin)&&!c.lev).sort((a,b)=>(b.liq-a.liq)||((b.score??0)-(a.score??0))).slice(0,8);
+  ul.innerHTML=list.length?list.map(c=>`<li data-pfadd="${esc(c.isin)}"><span class="v"><b>${esc(c.issuer||"")}</b> · ${esc(c.unds.slice(0,3).join(", "))}</span><span class="k">${pct(c.ytm)} · ${pct(c.dist,0)}</span></li>`).join(""):`<li class="sg-h">Nessun certificato trovato</li>`;ul.hidden=false}
+/* ---------- il mio portafoglio: scelte a mano, importo per certificato (salvato nel browser) ---------- */
+let MYP=ls.get("rc-myp",[]);if(!Array.isArray(MYP))MYP=[];
+const saveMyp=()=>{ls.set("rc-myp",MYP);const b=$("#nb-pf-n");if(b)b.textContent=MYP.length||""};
+const inMyp=isin=>MYP.some(x=>x.isin===isin);
+setTimeout(saveMyp);
+function toggleMyp(isin){if(inMyp(isin)){MYP=MYP.filter(x=>x.isin!==isin);toast("Tolto dal tuo portafoglio")}
+  else{MYP.push({isin,amt:PF.amt||5000});toast(`Aggiunto al tuo portafoglio (${MYP.length})`)}saveMyp();
+  document.querySelectorAll(`[data-myp="${isin}"]`).forEach(b=>{b.classList.toggle("on",inMyp(isin));b.textContent=inMyp(isin)?"✓ Portafoglio":"+ Portafoglio"});
+  if(!$("#pf").hidden)renderPf()}
+function buildMine(){return MYP.map(x=>{const c=BYISIN.get(x.isin);if(!c)return null;
+  const unit=c.pricePct?c.pricePct/100*c.nominal:c.nominal,q=x.amt/unit;
+  return {c,unit,q,inv:x.amt,inc:q*c.nominal*(c.couponPa??0)/100,mine:true}}).filter(Boolean)}
+
+/* ---------- analisi globale: correlazioni e simulazione congiunta ---------- */
+let RET=null,RETP=null;
+function loadReturns(){return RETP||(RETP=fetch("data/returns.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>RET=j).catch(()=>null))}
+function corrOf(a,b){let n=0,sa=0,sb=0,saa=0,sbb=0,sab=0;for(let i=0;i<a.length;i++){const x=a[i],y=b[i];if(x==null||y==null)continue;n++;sa+=x;sb+=y;saa+=x*x;sbb+=y*y;sab+=x*y}
+  if(n<20)return null;const cv=sab/n-sa/n*sb/n,va=saa/n-(sa/n)**2,vb=sbb/n-(sb/n)**2;return va>0&&vb>0?cv/Math.sqrt(va*vb):null}
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function cholesky(C){const n=C.length;for(let shrink=0;shrink<=1.0001;shrink+=0.1){const A=C.map((r,i)=>r.map((v,j)=>i===j?1:v*(1-shrink))),L=A.map(()=>new Array(n).fill(0));let ok=true;
+  for(let i=0;i<n&&ok;i++)for(let j=0;j<=i;j++){let s=A[i][j];for(let k=0;k<j;k++)s-=L[i][k]*L[j][k];if(i===j){if(s<=1e-9){ok=false;break}L[i][i]=Math.sqrt(s)}else L[i][j]=s/L[j][j]}
+  if(ok)return L}return C.map((r,i)=>r.map((_,j)=>i===j?1:0))}
+const DEFCORR=0.3; // coppie senza storico comune: correlazione tipica tra azioni
+async function analyzePf(L,tag){
+  const box=$("#pf-ana");if(!box)return;if(L.length<1){box.innerHTML="";return}
+  box.innerHTML=`<div class="panel"><div class="cap">Analisi globale</div><p class="note" style="margin:6px 0 0">Calcolo correlazioni e simulazione…</p></div>`;
+  const [ret]=await Promise.all([loadReturns(),...L.map(x=>loadDetail(x.c.isin))]);
+  if(box.dataset.tag!==tag)return; // il portafoglio è cambiato nel frattempo
+  const R=ret?.returns||{};
+  // sottostanti di ogni certificato con ticker, volatilità e distanza dalla barriera
+  const certs=L.map(x=>{const full=DETAIL.get(x.c.isin)?.certificate||{};const rk=(full.underlyingsRisk||[]);
+    let us=rk.map(u=>({name:u.name,t:u.ticker||null,vol:Math.max(u.vol1y||0,u.vol3m||0)||null,d:u.dist}));
+    if(!us.length||us.every(u=>u.d==null))us=[{name:x.c.worst||x.c.unds[0]||"?",t:(rk.find(u=>u.name===x.c.worst)||{}).ticker||null,vol:x.c.wvol!=null?x.c.wvol/100:null,d:x.c.dist}];
+    us=us.filter(u=>u.d!=null);us.forEach(u=>{if(!u.vol)u.vol=x.c.wvol!=null?x.c.wvol/100:0.3});
+    return {x,us,bp:+full.barrierPct||+x.c.barrierPct||null,T:Math.max(0.08,x.c.years??1)}});
+  // correlazione tra certificati: rendimento medio settimanale dei loro sottostanti
+  const serie=certs.map(k=>{const ts=k.us.map(u=>R[u.t]).filter(Boolean);if(!ts.length)return null;const n=ts[0].length;
+    return [...Array(n)].map((_,i)=>{const v=ts.map(s=>s[i]).filter(v=>v!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null})});
+  const n=certs.length,CM=certs.map((_,i)=>certs.map((_,j)=>i===j?1:serie[i]&&serie[j]?corrOf(serie[i],serie[j]):null));
+  const pairs=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)if(CM[i][j]!=null)pairs.push(CM[i][j]);
+  const avg=pairs.length?pairs.reduce((a,b)=>a+b,0)/pairs.length:null,effN=avg!=null&&n>1?n/(1+(n-1)*Math.max(0,avg)):n;
+  const shared=new Map();certs.forEach(k=>new Set(k.x.c.unds.map(undKey)).forEach(u=>shared.set(u,(shared.get(u)||0)+1)));
+  const dup=[...shared.entries()].filter(([,v])=>v>1).sort((a,b)=>b[1]-a[1]);
+  const nameOf=u=>{for(const k of certs)for(const s of k.x.c.unds)if(undKey(s)===u)return s;return u};
+  // simulazione: moti browniani correlati dei sottostanti, esito di ogni certificato alla sua scadenza (barriera a scadenza)
+  const U=[],key=u=>u.t||("?"+u.name);certs.forEach(k=>k.us.forEach(u=>{if(!U.some(v=>key(v)===key(u)))U.push(u)}));
+  const ui=new Map(U.map((u,i)=>[key(u),i]));
+  const C=U.map((a,i)=>U.map((b,j)=>{if(i===j)return 1;const r=a.t&&b.t&&R[a.t]&&R[b.t]?corrOf(R[a.t],R[b.t]):null;return r==null?DEFCORR:Math.max(-0.95,Math.min(0.95,r))}));
+  const Lc=cholesky(C),m=U.length,times=[...new Set(certs.map(k=>k.T))].sort((a,b)=>a-b),N=3000,rnd=mulberry(7);
+  const gauss=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+  const holdN=new Array(n).fill(0),allHold=[0],breaks=[],totals=[];const inv=L.reduce((a,x)=>a+x.inv,0);
+  const z=new Array(m),e=new Array(m),X=new Array(m);
+  for(let p=0;p<N;p++){X.fill(0);let tPrev=0,tot=0,br=0;
+    for(const t of times){const dt=t-tPrev;tPrev=t;for(let i=0;i<m;i++)e[i]=gauss();
+      for(let i=0;i<m;i++){let s=0;for(let k=0;k<=i;k++)s+=Lc[i][k]*e[k];z[i]=s;const sg=U[i].vol;X[i]+=sg*Math.sqrt(dt)*s-0.5*sg*sg*dt}
+      certs.forEach((k,ci)=>{if(k.T!==t)return;const c=k.x.c;let worst=null,wgap=Infinity;
+        for(const u of k.us){const lb=Math.log(1-Math.min(99,u.d)/100),g=X[ui.get(key(u))]-lb;if(g<wgap){wgap=g;worst=u}}
+        if(wgap>=0){holdN[ci]++;tot+=k.x.inv*(1+(c.ytm??0)/100*k.T)}
+        else{br++;const s0k=k.bp?(k.bp/100)/(1-Math.min(99,worst.d)/100):1,frac=Math.min(1,s0k*Math.exp(X[ui.get(key(worst))]));
+          tot+=k.x.q*c.nominal*frac+0.5*k.x.q*c.nominal*(c.couponPa??0)/100*k.T}})}
+    if(!br)allHold[0]++;breaks.push(br);totals.push(tot)}
+  totals.sort((a,b)=>a-b);const q=f=>totals[Math.min(N-1,Math.floor(N*f))];
+  const Tw=inv?certs.reduce((a,k)=>a+k.x.inv*k.T,0)/inv:1,ann=v=>inv?((v/inv)**(1/Tw)-1)*100:null;
+  const pAll=allHold[0]/N*100,pInd=holdN.reduce((a,h)=>a*h/N,1)*100,eBr=breaks.reduce((a,b)=>a+b,0)/N;
+  const pLoss=totals.filter(v=>v<inv).length/N*100;
+  // istogramma degli esiti (guadagno o perdita totale a scadenza, in % del capitale)
+  const g=totals.map(v=>(v/inv-1)*100),lo=Math.floor(Math.min(...g)/5)*5,hi=Math.ceil(Math.max(...g)/5)*5,nb=Math.max(1,Math.min(24,(hi-lo)/5)),bw=(hi-lo)/nb;
+  const H=new Array(nb).fill(0);g.forEach(v=>H[Math.min(nb-1,Math.floor((v-lo)/bw))]++);const hm=Math.max(...H);
+  const lab=k=>{const c=k.x.c;return `${c.issuer||""} · ${(c.unds[0]||"").slice(0,18)}${c.unds.length>1?" +"+(c.unds.length-1):""}`};
+  const cc=v=>v==null?"var(--row)":`color-mix(in srgb,var(--accent-fill) ${Math.round(Math.max(0,v)*100)}%,var(--surface))`;
+  const noRet=!ret;
+  box.innerHTML=`<div class="panel ana"><div class="cap">Analisi globale del portafoglio</div>
+<div class="stats" style="margin-top:8px">
+<div><div class="k">Nessuna barriera rotta</div><div class="v ${pcls(pAll)}">${pct(pAll,0)}</div><div class="s">con le correlazioni reali · ${pct(pInd,0)} se fossero indipendenti</div></div>
+<div><div class="k">Barriere rotte in media</div><div class="v">${fmt(eBr,1)}</div><div class="s">su ${n} certificati</div></div>
+<div><div class="k">Esito mediano</div><div class="v ${q(.5)>=inv?"pos":"neg"}">${pct(ann(q(.5)),1)}</div><div class="s">annuo · ${fmt(q(.5)-inv,0)} € in ${fmt(Tw,1)} anni</div></div>
+<div><div class="k">Scenario sfavorevole</div><div class="v ${q(.05)>=inv?"pos":"neg"}">${fmt(q(.05)-inv,0)} €</div><div class="s">1 caso su 20 va peggio · ${pct((q(.05)/inv-1)*100,0)}</div></div>
+<div><div class="k">Probabilità di perdita</div><div class="v ${pLoss<10?"pos":pLoss<25?"ca":"neg"}">${pct(pLoss,0)}</div><div class="s">a scadenza, sul capitale</div></div>
+<div><div class="k">Correlazione media</div><div class="v">${avg!=null?fmt(avg,2):"—"}</div><div class="s">${n>1?`≈ ${fmt(effN,1)} scommesse indipendenti su ${n}`:"serve più di un certificato"}</div></div>
+</div>
+<div class="ana-grid">
+<div><div class="cap">Esiti a scadenza (${N.toLocaleString("it-IT")} scenari)</div><div class="ohist"><b class="zero" style="left:${Math.max(0,Math.min(100,(0-lo)/(hi-lo)*100))}%" title="pareggio"></b>${H.map((h,i)=>{const v=lo+(i+.5)*bw;return `<i title="${fmt(lo+i*bw,0)}% … ${fmt(lo+(i+1)*bw,0)}%: ${fmt(h/N*100,1)}% degli scenari" class="${v<0?"neg":""}" style="height:${Math.max(2,h/hm*100)}%"></i>`}).join("")}</div>
+<div class="ticks"><span>${fmt(lo,0)}%</span><span>linea = pareggio</span><span>+${fmt(hi,0)}%</span></div></div>
+${n>1?`<div><div class="cap">Correlazione tra i certificati</div><div class="cmx" style="--n:${n}">${certs.map((k,i)=>`<span class="cl" title="${esc(lab(k))}">${i+1}</span>`).join("")}
+${CM.map((r,i)=>r.map((v,j)=>`<span class="cc" style="background:${cc(v)};color:${v!=null&&v>0.55?"#fff":"var(--ink)"}" title="${esc(lab(certs[i]))} ↔ ${esc(lab(certs[j]))}: ${v==null?"n.d.":fmt(v,2)}">${i===j?i+1:v==null?"·":fmt(v,1)}</span>`).join("")).join("")}</div>
+<ol class="clist">${certs.map(k=>`<li>${esc(lab(k))}</li>`).join("")}</ol></div>`:""}
+</div>
+<div class="ana-notes">
+${dup.length?`<p><b>Sottostanti in comune:</b> ${dup.slice(0,6).map(([u,v])=>`${esc(nameOf(u))} (${v} certificati)`).join(", ")}. Se uno scende, colpisce più certificati insieme.</p>`:n>1?`<p><b>Nessun sottostante in comune</b> tra i certificati.</p>`:""}
+${avg!=null&&n>1?`<p><b>Decorrelazione:</b> ${avg>0.6?"bassa, i certificati si muovono quasi insieme":avg>0.35?"media":"buona, i certificati si muovono in modo abbastanza diverso"}. ${pAll<pInd-3?`La correlazione abbassa la probabilità che tengano tutti meno di quanto farebbe credere il calcolo indipendente: quando va male, va male insieme.`:""}</p>`:""}
+<p class="note">Simulazione a scadenza: sottostanti con volatilità storica e correlazioni settimanali dell'ultimo anno${noRet?" (rendimenti non ancora disponibili: correlazione ipotizzata "+DEFCORR+")":""}, barriera osservata solo a scadenza, nessun richiamo anticipato, cedole pagate se la barriera tiene e per metà se si rompe, rimborso pari al peggiore sotto barriera. Stime statistiche, non previsioni.</p>
+</div></div>`;
+}
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.dataset&&t.dataset.amt!==undefined){const it=MYP.find(x=>x.isin===t.dataset.amt);if(it){it.amt=Math.max(0,+t.value||0);PF.amt=it.amt||PF.amt;ls.set("rc-pf",PF);saveMyp();renderPf()}return}
+  if(!t.id||!t.id.startsWith("pf-")||!$("#pf-cap"))return;
+  PF={...PF,cap:Math.max(1000,+$("#pf-cap").value||PFD.cap),n:+$("#pf-n").value,iss:+$("#pf-iss").value,key:$("#pf-key").value,src:$("#pf-src").value,uniq:$("#pf-uniq").checked};ls.set("rc-pf",PF);renderPf()});
+document.addEventListener("input",e=>{if(e.target.id==="pfq")pfSuggest()});
 document.addEventListener("click",e=>{
+  const pm=e.target.closest("[data-pfmode]");if(pm){PF.mode=pm.dataset.pfmode;ls.set("rc-pf",PF);renderPf();return}
+  const pa=e.target.closest("[data-pfadd]");if(pa){MYP.push({isin:pa.dataset.pfadd,amt:PF.amt||5000});saveMyp();renderPf();setTimeout(()=>$("#pfq")?.focus(),0);return}
+  const pr=e.target.closest("[data-myp-rm]");if(pr){MYP=MYP.filter(x=>x.isin!==pr.dataset.mypRm);saveMyp();renderPf();return}
+  const mb=e.target.closest("[data-myp]");if(mb){PF.mode="mine";ls.set("rc-pf",PF);toggleMyp(mb.dataset.myp);return}
+  if(e.target.id==="pf-adopt"){(window._PF||[]).forEach(x=>{if(!inMyp(x.c.isin))MYP.push({isin:x.c.isin,amt:Math.round(x.inv)})});saveMyp();PF.mode="mine";ls.set("rc-pf",PF);renderPf();toast("Copiato nel tuo portafoglio");return}
+  if(e.target.id==="pf-addfav"){Object.keys(FAV).forEach(i=>{if(BYISIN.has(i)&&!inMyp(i))MYP.push({isin:i,amt:PF.amt||5000})});saveMyp();renderPf();return}
+  if(e.target.id==="pf-eq"){const tot=MYP.reduce((a,x)=>a+x.amt,0);MYP.forEach(x=>x.amt=Math.round(tot/MYP.length/100)*100);saveMyp();renderPf();return}
+  if(e.target.id==="pf-clear"){if(confirm("Svuotare il tuo portafoglio?")){MYP=[];saveMyp();renderPf()}return}
   if(e.target.id==="pf-fav"){(window._PF||[]).forEach(x=>{if(!FAV[x.c.isin])FAV[x.c.isin]={ask:x.c.ask,at:new Date().toISOString()}});ls.set("rc-fav",FAV);render(false);toast("Salvati nei preferiti");return}
   if(e.target.id==="pf-xls"){if(!window.XLSX){toast("Preparo l'Excel…");loadXLSX().then(()=>e.target.click()).catch(()=>toast("Esportazione non disponibile"));return}
     const rows=(window._PF||[]).map(x=>({ISIN:x.c.isin,Emittente:x.c.issuer,Sottostanti:x.c.unds.join(", "),"Rend. annuo %":+(x.c.ytm??0).toFixed(2),"Cedola p.a. %":x.c.couponPa,Frequenza:freqTxt(x.c.freq),"Dist. barriera %":x.c.dist,"Prob. tenuta %":x.c.prob==null?null:+x.c.prob.toFixed(1),"Prezzo unitario €":+x.unit.toFixed(2),Pezzi:x.q,"Investito €":+x.inv.toFixed(2),"Cedole/anno €":+x.inc.toFixed(2),Scadenza:x.c.maturity||""}));
@@ -1268,7 +1420,7 @@ async function detailHtml(c){
     ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
     ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
   return `<div class="dhead"><div style="min-width:0"><div class="c-iss"><b>${esc(c.issuer||"")}</b>${c.type?" · "+esc(c.type):""}</div>
-<div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
+<div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><button class="share only-wide ${inMyp(c.isin)?"on":""}" data-myp="${esc(c.isin)}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
 <button data-close aria-label="Chiudi">✕</button></div>
 <div class="dtitle">${undsHtml(c)}</div>
 <div class="badges">${badges(c)}</div>
@@ -1285,7 +1437,7 @@ ${ladder(c,full)}
 ${chart(j?.history)}
 <div class="row" style="font-size:.88rem">${links(full)}</div>
 <details><summary>Tutti i dati</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>
-<div class="dact"><button data-fav="${esc(c.isin)}" class="${FAV[c.isin]?"on":""}">${FAV[c.isin]?"★ Preferito":"☆ Preferito"}</button><button data-cmpbtn="${esc(c.isin)}" class="${CMP.has(c.isin)?"on":""}">${CMP.has(c.isin)?"✓ Confronto":"Confronta"}</button><a href="${esc(own?full.url:bi(c))}" target="_blank" rel="noopener">Borsa ↗</a></div>`;
+<div class="dact"><button data-myp="${esc(c.isin)}" class="${inMyp(c.isin)?"on":""}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button data-fav="${esc(c.isin)}" class="${FAV[c.isin]?"on":""}">${FAV[c.isin]?"★ Preferito":"☆ Preferito"}</button><button data-cmpbtn="${esc(c.isin)}" class="${CMP.has(c.isin)?"on":""}">${CMP.has(c.isin)?"✓ Confronto":"Confronta"}</button><a href="${esc(own?full.url:bi(c))}" target="_blank" rel="noopener">Borsa ↗</a></div>`;
 }
 async function openDetail(isin){
   const c=BYISIN.get(isin);if(!c)return;
