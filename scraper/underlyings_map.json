@@ -1078,6 +1078,17 @@
   "type": "EQUITY",
   "yahooName": "ASML Holding N.V."
  },
+ "asml n v": {
+  "checkedAt": "2026-10-22",
+  "exchange": "AMS",
+  "isin": "NL0010273215",
+  "manual": null,
+  "name": "ASML HOLDING N.V.",
+  "score": 1.0,
+  "ticker": "ASML.AS",
+  "type": "EQUITY",
+  "yahooName": "ASML Holding N.V."
+ },
  "assicurazioni generali": {
   "checkedAt": "2026-10-15",
   "exchange": "MIL",
@@ -1442,13 +1453,13 @@
   "yahooName": "Banco Bilbao Vizcaya Argentaria, S.A."
  },
  "banco bilbao vizcaya argentaria s a": {
-  "checkedAt": "2026-10-09",
-  "exchange": "NYQ",
-  "isin": null,
+  "checkedAt": "2026-10-22",
+  "exchange": "MCE",
+  "isin": "ES0113211835",
   "manual": null,
   "name": "Banco Bilbao Vizcaya Argentaria S.A.",
   "score": 1.0,
-  "ticker": "BBVA",
+  "ticker": "BBVA.MC",
   "type": "EQUITY",
   "yahooName": "Banco Bilbao Vizcaya Argentaria, S.A."
  },
@@ -1492,6 +1503,17 @@
   "manual": null,
   "name": "Banco Santander",
   "score": 0.882,
+  "ticker": "SAN.MC",
+  "type": "EQUITY",
+  "yahooName": "Banco Santander, S.A."
+ },
+ "banco santander s a": {
+  "checkedAt": "2026-10-22",
+  "exchange": "MCE",
+  "isin": "ES0113900J37",
+  "manual": null,
+  "name": "BANCO SANTANDER S.A.",
+  "score": 1.0,
   "ticker": "SAN.MC",
   "type": "EQUITY",
   "yahooName": "Banco Santander, S.A."
@@ -3963,13 +3985,13 @@
   "yahooName": "Enel SpA"
  },
  "enel s p a": {
-  "checkedAt": "2026-10-09",
-  "exchange": "STU",
-  "isin": null,
+  "checkedAt": "2026-10-22",
+  "exchange": "MIL",
+  "isin": "IT0003128367",
   "manual": null,
   "name": "Enel S.p.A.",
-  "score": 1.0,
-  "ticker": "ENLA.SG",
+  "score": 0.8,
+  "ticker": "ENEL.MI",
   "type": "EQUITY",
   "yahooName": "Enel SpA"
  },
@@ -4029,13 +4051,13 @@
   "yahooName": "Enel SpA"
  },
  "eni s p a": {
-  "checkedAt": "2026-10-09",
-  "exchange": "NYQ",
-  "isin": null,
+  "checkedAt": "2026-10-22",
+  "exchange": "MIL",
+  "isin": "IT0003132476",
   "manual": null,
   "name": "ENI S.p.A.",
   "score": 1.0,
-  "ticker": "E",
+  "ticker": "ENI.MI",
   "type": "EQUITY",
   "yahooName": "Eni S.p.A."
  },
@@ -4331,6 +4353,17 @@
   "isin": null,
   "manual": null,
   "name": "Euribor 12 Monate",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "euribor 3 mesi": {
+  "checkedAt": "2026-10-22",
+  "exchange": null,
+  "isin": "EU0009652783",
+  "manual": null,
+  "name": "EURIBOR 3 MESI",
   "score": null,
   "ticker": null,
   "type": null,
@@ -5522,7 +5555,7 @@
   "yahooName": "Fresenius Medical Care AG"
  },
  "ftse 100": {
-  "isin": null,
+  "isin": "GB0001383545",
   "manual": "^FTSE",
   "name": "FTSE 100",
   "ticker": null
@@ -6256,6 +6289,17 @@
   "manual": null,
   "name": "Iberdrola SA",
   "score": 0.818,
+  "ticker": "IBE.MC",
+  "type": "EQUITY",
+  "yahooName": "Iberdrola, S.A."
+ },
+ "iberdrola s a": {
+  "checkedAt": "2026-10-22",
+  "exchange": "MCE",
+  "isin": "ES0144580Y14",
+  "manual": null,
+  "name": "IBERDROLA S.A.",
+  "score": 1.0,
   "ticker": "IBE.MC",
   "type": "EQUITY",
   "yahooName": "Iberdrola, S.A."
@@ -14737,7 +14781,7 @@
   "yahooName": null
  },
  "msci world ex usa with minimum economic exposure to usa top 50 select 3 5 decrement idx eur net return": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-22",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18503,9 +18547,9 @@
   "yahooName": "T-Mobile US, Inc."
  },
  "t1 energy": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-22",
   "exchange": "NYQ",
-  "isin": null,
+  "isin": "US35834F1049",
   "manual": null,
   "name": "T1 Energy Inc",
   "score": 1.0,
@@ -19262,9 +19306,9 @@
   "yahooName": "UniCredit S.p.A."
  },
  "unicredit s p a": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-22",
   "exchange": "MIL",
-  "isin": null,
+  "isin": "IT0005239360",
   "manual": null,
   "name": "UniCredit S.p.A.",
   "score": 1.0,
