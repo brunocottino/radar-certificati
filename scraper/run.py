@@ -267,7 +267,24 @@ JUNK_UND = re.compile(r"^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$")
 
 # tipologie senza cedola periodica: un "premio annuo" eventualmente letto non è una cedola (Twin Win, Jet Cap, Bonus…)
 NO_COUPON = re.compile(r"twin ?win|jet ?cap|outperformance|bonus|discount|tracker|airbag(?!.*cash)|benchmark|turbo|leva|warrant|mini ?future", re.I)
-HAS_COUPON = re.compile(r"cash ?collect|phoenix|express|autocall|coupon|cedol|premi|reverse|fixed|digital|credit linked|step", re.I)
+HAS_COUPON = re.compile(r"cash ?collect|phoenix|express|autocall|coupon|cedol|premi|reverse ?convertible|fixed|digital|credit linked|step", re.I)
+# cedola periodica vera (non premio express o rendimento potenziale)
+PERIODIC = re.compile(r"cash ?collect|phoenix|coupon|cedol|premi|reverse ?convertible|fixed|digital", re.I)
+PROTECTED = re.compile(r"protett|protezion|protection|garantit|principal", re.I)
+
+
+def coupon_check(c):
+    """Toglie le cedole non credibili (errori di lettura delle fonti): restano in couponSuspect, non nei filtri.
+    Sopra il 100% annuo nessun certificato; sopra il 15% non un capitale protetto."""
+    v = c.get("couponPa")
+    if v is None:
+        return c
+    kind = f'{c.get("type") or ""} {c.get("typeMarket") or ""} {c.get("commercialName") or ""}'
+    if v <= 0 or v > 100 or (PROTECTED.search(kind) and v > 15):
+        c["couponSuspect"] = c.pop("couponPa")
+    else:
+        c.pop("couponSuspect", None)
+    return c
 
 
 def clean_underlyings(c):
@@ -283,7 +300,10 @@ def clean_underlyings(c):
     kind = f'{c.get("type") or ""} {c.get("typeMarket") or ""}'
     if c.get("couponPa") is not None and NO_COUPON.search(kind) and not HAS_COUPON.search(kind):
         c.pop("couponPa")
-    return c
+    # UniCredit: il "rendimento potenziale" di Express e Protection era finito tra le cedole (archivio)
+    if c.get("couponPa") is not None and c.get("source") == "unicredit" and not c.get("freq") and not PERIODIC.search(kind):
+        c.pop("couponPa")
+    return coupon_check(c)
 
 
 def merge(old, new):

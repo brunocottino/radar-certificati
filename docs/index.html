@@ -1044,7 +1044,7 @@ function badges(c){
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);
   else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
   else if(c.couponActive===true)b.push(`<span class="b ok">Cedola in pagamento</span>`);
-  if(c.ytmHigh)b.push(`<span class="b ca" title="Un rendimento così alto di solito significa che il mercato prezza una perdita probabile">Rendimento sospetto (&gt;30%)</span>`);
+  if(c.ytmHigh)b.push(`<span class="b ca" title="Un rendimento così alto di solito significa che il mercato prezza una perdita probabile">Rendimento sospetto (&gt;40%)</span>`);
   if(c.pricePct&&c.pricePct<97&&!c.ytmHigh)b.push(`<span class="b ok">Sotto la pari</span>`);
   return b.join("");
 }

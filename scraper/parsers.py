@@ -79,6 +79,21 @@ def barrier_type(v):
     return None
 
 
+def raw_coupon(*dicts):
+    """Campi grezzi su cedole e premi, salvati con il certificato quando la cedola calcolata non è credibile."""
+    out = {}
+    for d in dicts:
+        for k, v in (d or {}).items():
+            if re.search(r"prem|coupon|cedol|bonus|express|frequen|issu|denomin|nominal", k, re.I) and \
+                    (v is None or isinstance(v, (int, float, str, bool))):
+                out[k] = v
+    return out
+
+
+def odd_coupon(cpa):
+    return cpa is not None and (cpa <= 0 or cpa >= 25)
+
+
 def bnp_cert(r, src, NOW):
     f = r.get("first") or {}
     kf = r.get("keyFigures") or {}
@@ -97,7 +112,9 @@ def bnp_cert(r, src, NOW):
     if trig is None:
         trig = f.get("knockInPercent2")
     act = r.get("autocallType")
+    cpa = r.get("premiumPerAnnumPercent")
     return clean({
+        "couponRaw": raw_coupon(r, kf, f) if odd_coupon(cpa) else None,
         "isin": r["isin"], "issuer": src["issuer"], "source": src["name"],
         "type": r.get("derivativeTypeName"), "underlyings": unds,
         "underlyingsDetail": [clean({"name": u.get("underlyingName"), "strike": u.get("strikeAbsolute"),
@@ -479,6 +496,8 @@ def marex_ts(text, title=""):
     ci, ei = t.find("Coupon Payment"), t.find("EARLY REDEMPTION")
     csec = t[ci:ei if ei > ci else len(t)] if ci >= 0 else ""
     rows = re.findall(r"^\s+\d+\s+([\d.]+)%\s+([\d.]+)%\s+(\d{1,2} [A-Za-z]+ \d{4})\s+\d{1,2} [A-Za-z]+ \d{4}\s*$", csec, re.M)
+    # una data per riga: le righe ripetute del PDF accorcerebbero il periodo e gonfierebbero la cedola annua
+    rows = list({r[2]: r for r in rows}.values())
     today = _date.today().isoformat()
     if rows:
         ds = [en_date(r[2]) for r in rows]
@@ -569,13 +588,19 @@ def intesa_cert(d, c):
     unds = [u for u in ug.get("underlying") or [] if u.get("name")]
     dists = [u for u in unds if u.get("distanceToBarrierPct") is not None]
     worst = min(dists, key=lambda u: u["distanceToBarrierPct"]) if dists else None
-    prem = num(re.sub(r"[^\d,.\-]", "", ci.get("conditionalPremium") or ci.get("fixedPremiumS") or "") or None)
+    # il premio può essere un elenco di importi crescenti ("14 € 15 € 16 €..."): uniti diventavano un numero
+    # enorme. Con più importi vale il più basso (prudenza); la data di ciascuno non è nel dato
+    txt = str(ci.get("conditionalPremium") or ci.get("fixedPremiumS") or "")
+    prems = [num(x) for x in re.findall(r"\d+(?:[.,]\d+)?", txt)]
+    prems = [x for x in prems if x]
+    prem = min(prems) if prems else None
     fr = PER_YEAR.get((ci.get("premiumFrequency") or "").upper().strip())
     issue = num(ci.get("issuePrice"))
     cpa = round(prem * fr[1] / issue * 100, 4) if prem and fr and issue else None
     ep = lambda v: datetime.fromtimestamp(v, timezone.utc).date().isoformat() if isinstance(v, (int, float)) and v > 0 else None
     name = ci.get("name") or ""
     return {
+        "couponRaw": raw_coupon(ci) if odd_coupon(cpa) else None,
         "type": ci.get("typeProduct") or ci.get("certificateType"),
         "underlyings": [u["name"] for u in unds] or None,
         "underlyingsDetail": [clean({"name": u["name"], "strike": u.get("strike") or u.get("initialReferenceValue"),
@@ -648,7 +673,10 @@ def uc_rows(heads, rows, src, NOW, base):
         nominal = 1000 if (ask or bid or 0) > 400 else 100 if (ask or bid) else None
         if coupon is not None and nominal is None:
             nominal = 1000 if coupon > 5 else 100
-        cpa = num(g("yieldPa"))
+        # il "rendimento potenziale annuo" vale come cedola solo per i prodotti a cedola: per Express, Protection,
+        # Bonus include guadagno in conto capitale o premio finale, e annualizzato su pochi mesi esplode
+        cpa = num(g("yieldPa")) if re.search(r"cash ?collect|phoenix|coupon|cedol|premi|fixed|reverse convertible",
+                                             g("type") or "", re.I) else None
         if cpa is not None and not 0 < cpa < 40:
             cpa = None
         if coupon is not None and freq in UC_PER_YEAR:
@@ -1549,6 +1577,7 @@ def citi_cert(item, src, NOW):
     nxt = next((p for p in sorted(calls, key=lambda p: p.get("endDate") or "") if (p.get("endDate") or "") >= today), None)
     unds = j.get("underlyingFields") or []
     return clean({
+        "couponRaw": {"name": name, **{k: v for k, v in mf.items() if isinstance(v, (str, int, float))}} if odd_coupon(cpa) else None,
         "isin": isin, "issuer": "Citigroup", "source": src["name"], "type": j.get("productType"),
         "underlyings": [u.get("name") for u in unds if u.get("name")],
         "underlyingsDetail": [clean({"name": u.get("name"), "isin": u.get("isin"), "strike": u.get("initialPriceLevel")}) for u in unds] or None,
