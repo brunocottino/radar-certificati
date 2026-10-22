@@ -545,7 +545,7 @@ async def marex_details(DISC, src, NOW, ctx):
         return out
 
     return await rotate(DISC, src, "Marex", MAREX_DETAIL_STATE, int(os.environ.get("MAREX_DETAIL_BUDGET_MIN", "6")) * 60, one, {},
-                        days=30)
+                        days=30, need=needs_strikes)
 
 
 # ---------------------------------------------------------------- Intesa Sanpaolo: dettaglio per ISIN
