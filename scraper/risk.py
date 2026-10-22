@@ -179,7 +179,8 @@ def pick(quotes, name, by_isin=False):
         return None
     q, sim = best
     return {"ticker": q["symbol"], "yahooName": q.get("longname") or q.get("shortname"),
-            "type": q.get("quoteType"), "exchange": q.get("exchange"), "score": sim}
+            "type": q.get("quoteType"), "exchange": q.get("exchange"), "score": sim,
+            "sector": q.get("sectorDisp") or q.get("sector"), "industry": q.get("industryDisp") or q.get("industry")}
 
 
 def update_map(unds, offline, only_new=False):
@@ -212,9 +213,33 @@ def update_map(unds, offline, only_new=False):
         if res:
             e.update(res)
         e["checkedAt"] = TODAY.isoformat()
+    sec = 0 if offline else backfill_sectors(m)
     dump(MAP, m)
-    log(f"mappa: {len(m)} nomi, {searched} ricerche nuove")
+    log(f"mappa: {len(m)} nomi, {searched} ricerche nuove, {sec} settori Yahoo")
     return m
+
+
+def backfill_sectors(m, limit=80):
+    """Settore e industria Yahoo per i titoli che le regole sui nomi (sectors.py) non classificano:
+    al massimo `limit` ricerche per run, ogni nome una volta ogni 30 giorni."""
+    from sectors import classify
+    old = (TODAY - timedelta(days=30)).isoformat()
+    todo = [e for e in m.values() if e.get("ticker") and (e.get("type") or "EQUITY") == "EQUITY" and not e.get("sector")
+            and e.get("sectorCheckedAt", "") < old and not classify(e.get("name"), {**e, "type": None})]
+    n = 0
+    for e in todo[:limit]:
+        try:
+            for q in yahoo_search(e["ticker"]):
+                if q.get("symbol") == e["ticker"]:
+                    e["sector"] = q.get("sectorDisp") or q.get("sector")
+                    e["industry"] = q.get("industryDisp") or q.get("industry")
+                    break
+        except Exception as ex:
+            log("settore non trovato", e["ticker"], repr(ex)[:80])
+        e["sectorCheckedAt"] = TODAY.isoformat()
+        n += 1
+        time.sleep(PAUSE)
+    return n
 
 
 # codici Bloomberg/abbreviazioni che la ricerca Yahoo per nome non trova

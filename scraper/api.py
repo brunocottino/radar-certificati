@@ -14,6 +14,9 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
+from risk import core, norm
+from sectors import cert_sector, classify
+
 ROOT = Path(os.environ.get("RADAR_ROOT") or Path(__file__).resolve().parent.parent)
 DATA = ROOT / "docs" / "data" / "certs.json"
 MAP = ROOT / "scraper" / "underlyings_map.json"
@@ -57,6 +60,8 @@ SCHEMA = {
     "nextCallDate": "Prossima data di possibile richiamo.",
     "url": "Pagina del prodotto sul sito dell'emittente.",
     "category": "Categoria: Cash Collect/Phoenix, Express, Bonus Cap, Protetto, Leva, Altro.",
+    "sector": "Settore del certificato: quello comune a tutti i sottostanti (Banche, Tecnologia, Energia, Indici...) o \"Misto\".",
+    "sectors": "Settore di ciascun sottostante, nello stesso ordine di underlyings (null se non classificato).",
     "typeMarket": "Tipologia secondo Borsa Italiana/Euronext.",
     "issuerCode": "Codice emittente nella directory Euronext.",
     "updatedAt": "Data e ora (UTC) dell'ultima rilevazione del certificato.",
@@ -105,7 +110,7 @@ HIST_DAYS = 250
 LIST_COLS = ["isin", "issuer", "platform", "type", "typeMarket", "category", "underlyings", "worstName", "distBarrier", "distAt",
              "barrierPct", "barrierType", "triggerPct", "autocallPct", "couponPa", "freq", "memory", "callable",
              "maturity", "bid", "ask", "nominal", "priceAt", "nextCouponDate", "nextCallDate", "market", "currency",
-             "probBarrierHold", "probMethod", "worstVol", "updatedAt"]
+             "probBarrierHold", "probMethod", "worstVol", "updatedAt", "sector", "sectors"]
 
 CATEGORIES = [  # (categoria, regex sul testo tipo/nome/richiamo) - il primo che corrisponde vince
     ("Leva", r"turbo|mini ?future|leva fissa|leverage|factor|warrant|knock.?out|\bcw\b"),
@@ -156,8 +161,13 @@ def main():
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     updated = meta.get("updatedAt") or now
 
+    m = load(MAP, {})
     for c in certs:
         c["category"] = category(c)
+        # settore di ogni sottostante (stesso ordine di underlyings) e del certificato ("Misto" se diversi)
+        secs = [classify(n, m.get(core(n) or norm(n))) for n in c.get("underlyings") or []]
+        c["sectors"] = secs or None
+        c["sector"] = cert_sector(secs)
     shutil.rmtree(OUT, ignore_errors=True)
     dump(OUT / "certificates.json", {"version": 1, "updatedAt": updated, "count": len(certs),
                                      "disclaimer": DISCLAIMER, "certificates": certs})
@@ -174,7 +184,7 @@ def main():
                 "sources": meta.get("sources", []), "cols": LIST_COLS,
                 "rows": [[c.get(k) for k in LIST_COLS] for c in certs]})
 
-    m, st = load(MAP, {}), load(STATE, {})
+    st = load(STATE, {})
     vols = st.get("underlyings", {})
     used = Counter(u["name"] for c in certs for u in c.get("underlyingsRisk") or [])
     unds = []

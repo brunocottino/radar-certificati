@@ -130,6 +130,17 @@ Il sito calcola nel browser, per ogni certificato:
 
 ## Il sito
 
+### Settori
+
+Ogni sottostante ha un settore (`scraper/sectors.py`): Banche, Assicurazioni, Finanza, Tecnologia, Telecom e media, Energia,
+Utility, Auto, Industria e difesa, Trasporti e turismo, Consumi e lusso, Salute, Materie prime, Immobiliare, Crypto, Indici,
+Tassi e credito, Valute. Prima le regole sul nome (indici settoriali come EURO STOXX Banks, società note, tassi, valute),
+poi il settore e l'industria Yahoo del ticker (`risk.py` li raccoglie per i titoli che le regole non riconoscono, 80 per run).
+Il certificato prende il settore comune a tutti i sottostanti, altrimenti è "Misto" (con la composizione).
+Sul sito: etichetta su schede e dettaglio, colonna in tabella, filtro "Settore" (più settori insieme = panieri fatti solo di
+quei settori; "Misto" = tutti i misti), ricerca per parola (banche, tech, lusso, difesa, oro...: trova anche i misti che li
+contengono), esposizione per settore nel Portafoglio, colonna nell'Excel.
+
 - **Profili** a un tocco (prudente, bilanciato, aggressivo) e **filtri a tocchi** (rendimento, distanza, probabilità, spread,
   scadenza, frequenza, caratteristiche); "Altri filtri" per i valori esatti.
 - **Tabella** (desktop), **Schede** e **Mappa**. La Mappa è un grafico a dispersione: distanza del peggiore dalla barriera
