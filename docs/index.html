@@ -568,28 +568,33 @@ td{font-weight:500}
 .verdict.v-ca{border-left-color:var(--caution)}.verdict.v-ko{border-left-color:var(--bad)}
 .verdict p{margin:0;font-size:.9rem;line-height:1.45}
 .bmap,.uchart,.pay,.cal1{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);display:grid;gap:8px;min-width:0}
-.bm-row{display:grid;gap:4px}
-.bm-n{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;min-width:0}
+.bm-row{display:grid;gap:5px;padding:6px 0;border-top:1px solid var(--line)}
+.bm-row:first-of-type{border-top:0}
+.bm-n{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.84rem;min-width:0}
 .bm-n .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.bm-n>span:last-child{font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+.bm-n>span:last-child{white-space:nowrap;color:var(--muted);font-size:.78rem}
+.bm-n>span:last-child b{color:var(--ink);font-family:var(--f-num);font-variant-numeric:tabular-nums;font-size:.9rem}
 .bm-row.worst .bm-n .t{font-weight:600}
-.bm-track{position:relative;height:14px;border-radius:7px;background:var(--row);overflow:visible}
-.bm-track .z{position:absolute;top:0;bottom:0}
-.z.ko{background:var(--bad-bg);border-radius:7px 0 0 7px}.z.ca{background:var(--caution-bg)}.z.ok{background:var(--good-bg);border-radius:0 7px 7px 0}
-.bm-track s{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--muted);text-decoration:none}
-.bm-track s.bad{background:var(--bad)}.bm-track s.ca{background:var(--caution)}
-.bm-track u{position:absolute;top:5px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--accent) 35%,transparent);text-decoration:none}
-.bm-track .dot,.bm-leg .dot{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--accent)}
-.bm-row.worst .bm-track .dot{width:16px;height:16px;margin:-8px 0 0 -8px}
-.bm-axis{position:relative;height:16px;font-size:.66rem;color:var(--muted)}
-.bm-axis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-.bm-axis span:first-child{transform:translateX(-20%)}.bm-axis span:last-child{transform:translateX(-80%)}
+.pill{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--bad);border:1px solid currentColor;border-radius:999px;padding:0 6px;vertical-align:2px}
+.bm-track{position:relative;height:22px;border-radius:6px;background:var(--row)}
+.bm-track .z{position:absolute;top:0;bottom:0;left:0}
+.bm-track .z.ko{background:var(--bad-bg);border-radius:6px 0 0 6px;box-shadow:inset -2px 0 0 var(--bad)}
+.bm-track .cu{position:absolute;top:4px;bottom:4px;background:var(--good-bg);border:1px solid color-mix(in srgb,var(--good) 45%,transparent);border-left:0;border-radius:0 4px 4px 0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bm-track .cu.ko{background:color-mix(in srgb,var(--bad) 25%,transparent);border-color:var(--bad);border-radius:4px 0 0 4px}
+.bm-track .cu em{font-style:normal;font-size:.68rem;font-weight:600;color:var(--good);font-family:var(--f-num);white-space:nowrap}
+.bm-track s{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--muted);text-decoration:none;opacity:.6}
+.bm-track s.bad{background:var(--bad);opacity:1}.bm-track s.ca{background:var(--caution);opacity:1}
+.bm-track .dot{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 0 0 1.5px var(--accent);z-index:1}
+.bm-track .dot.ko{background:var(--bad);box-shadow:0 0 0 1.5px var(--bad)}
+.bm-say{font-size:.76rem;color:var(--muted)}.bm-say b{color:var(--good)}.bm-say.ca b{color:var(--caution)}.bm-say.neg{color:var(--bad)}
+.bm-axis.two{height:58px}
+.bm-axis{position:relative;height:32px;font-size:.66rem;color:var(--muted);border-top:1px dashed var(--line);margin-top:2px}
+.bm-axis span{position:absolute;top:4px;transform:translateX(-50%);white-space:nowrap;text-align:center;line-height:1.15}
+.bm-axis span.r1{top:30px}
+.bm-axis span b{font-family:var(--f-num);font-size:.72rem}
 .bm-axis .bad{color:var(--bad)}.bm-axis .ca{color:var(--caution)}
 .bm-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.72rem;color:var(--muted)}
 .bm-leg span{display:inline-flex;align-items:center;gap:6px}
-.bm-leg .dot{position:static;margin:0;width:10px;height:10px}
-.bm-leg u{display:inline-block;width:18px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--accent) 35%,transparent)}
-.bm-leg .z{position:static;display:inline-block;width:14px;height:10px;border-radius:3px}
 .uc-plot,.pay-plot{position:relative}
 .uchart svg{width:100%;height:190px;display:block}
 .pay svg{width:100%;height:150px;display:block}
@@ -1508,19 +1513,21 @@ function verdict(c,full){
 
 function barrierMap(c,full){
   const L=levels(c,full);if(!L.bp||!L.rows.length)return "";
-  const top=Math.min(300,Math.max(140,...L.rows.map(r=>{const b=band(r.s,r.vol,L.T);return b?Math.min(b[1],r.s*2.2):r.s*1.15})));
-  const X=v=>clamp(v/top*100,0,100).toFixed(2)+"%";
-  const ticks=[[L.bp,"Barriera","bad"]];if(L.tp&&Math.abs(L.tp-L.bp)>=.5)ticks.push([L.tp,"Cedola","ca"]);ticks.push([100,"Strike",""]);if(L.ap&&L.ap!==100)ticks.push([L.ap,"Richiamo",""]);
-  const zones=`<i class="z ko" style="width:${X(L.bp)}"></i>${L.tp&&L.tp>L.bp?`<i class="z ca" style="left:${X(L.bp)};width:calc(${X(L.tp)} - ${X(L.bp)})"></i>`:""}${L.ap?`<i class="z ok" style="left:${X(L.ap)};right:0"></i>`:""}`;
-  const marks=ticks.map(([v,,k])=>`<s class="${k}" style="left:${X(v)}"></s>`).join("");
-  const rows=L.rows.slice(0,8).map((r,i)=>{const b=band(r.s,r.vol,L.T);const m=(r.s/L.bp-1)*100,room=(1-L.bp/r.s)*100;
-    return `<div class="bm-row${i===0?" worst":""}"><div class="bm-n"><span class="t" title="${esc(r.name)}">${i===0&&L.rows.length>1?"▸ ":""}${esc(r.name)}${r.vol?`<span class="note"> · vol ${fmt(r.vol*100,0)}%</span>`:""}</span><span class="${room<0?"neg":room<15?"ca":"pos"}">${room>=0?`margine ${fmt(room,0)}%`:`sotto di ${fmt(-m,0)}%`}</span></div>
-<div class="bm-track">${zones}${marks}${b?`<u style="left:${X(b[0])};width:calc(${X(b[1])} - ${X(b[0])})" title="Fascia probabile a scadenza (68%): ${fmt(b[0],0)}–${fmt(b[1],0)}% dello strike"></u>`:""}<b class="dot" style="left:${X(r.s)}" title="${esc(r.name)}: oggi ${fmt(r.s,1)}% dello strike"></b></div></div>`}).join("");
-  // etichette sull'asse: se due livelli sono vicini si uniscono
-  const lab=[];ticks.slice().sort((a,b)=>a[0]-b[0]).forEach(([v,t,k])=>{const p=lab[lab.length-1];if(p&&(v-p.v)/top<.11){p.t+=" · "+t;p.l+="/"+fmt(v,0)}else lab.push({v,t,k,l:fmt(v,0)})});
-  return `<div class="bmap"><div class="cap">Dove sono i sottostanti rispetto alla barriera · in % dello strike</div>${rows}
-<div class="bm-axis">${lab.map(o=>`<span class="${o.k}" style="left:${X(o.v)}">${o.t} ${o.l}%</span>`).join("")}</div>
-<div class="bm-leg"><span><b class="dot"></b> oggi</span>${L.rows.some(r=>r.vol)?`<span><u></u> fascia probabile a scadenza (68%)</span>`:""}<span><i class="z ko"></i> sotto barriera</span>${L.tp&&L.tp>L.bp?`<span><i class="z ca"></i> senza cedola</span>`:""}${L.ap?`<span><i class="z ok"></i> zona di richiamo</span>`:""}</div></div>`;
+  const top=Math.min(250,Math.max(130,...L.rows.map(r=>r.s*1.12)));
+  const X=v=>clamp(v/top*100,0,100);
+  const ticks=[[L.bp,"Barriera","bad"]];if(L.tp&&Math.abs(L.tp-L.bp)>=.5)ticks.push([L.tp,"Cedola","ca"]);ticks.push([100,"Strike","st"]);if(L.ap&&L.ap!==100)ticks.push([L.ap,"Richiamo","st"]);
+  ticks.sort((a,b)=>a[0]-b[0]);
+  // etichette su due righe quando sono vicine
+  const lastX=[-99,-99];const lab=ticks.map(([v,t,k])=>{const x=X(v);const row=x-lastX[0]>=16?0:x-lastX[1]>=16?1:0;lastX[row]=x;return {x,t,k,v,row}});
+  const rows=L.rows.slice(0,8).map((r,i)=>{const under=r.s<L.bp,room=(1-L.bp/r.s)*100,xs=X(r.s),xb=X(L.bp);
+    const cush=under?`<i class="cu ko" style="left:${xs}%;width:${xb-xs}%"></i>`:`<i class="cu" style="left:${xb}%;width:${xs-xb}%">${xs-xb>14?`<em>−${fmt(room,0)}%</em>`:""}</i>`;
+    return `<div class="bm-row${i===0?" worst":""}"><div class="bm-n"><span class="t" title="${esc(r.name)}">${esc(r.name)}${i===0&&L.rows.length>1?` <span class="pill">peggiore</span>`:""}</span><span>oggi <b>${fmt(r.s,0)}%</b></span></div>
+<div class="bm-track"><i class="z ko" style="width:${xb}%"></i>${cush}${ticks.map(([v,,k])=>`<s class="${k}" style="left:${X(v)}%"></s>`).join("")}<b class="dot${under?" ko":""}" style="left:${xs}%" title="${esc(r.name)}: oggi ${fmt(r.s,1)}% dello strike"></b></div>
+<div class="bm-say ${under?"neg":room<15?"ca":""}">${under?`sotto la barriera: deve risalire del ${fmt((L.bp/r.s-1)*100,0)}%`:`può scendere ancora del <b>${fmt(room,0)}%</b> prima della barriera`}${r.vol?` · oscillazione tipica ${fmt(r.vol*100,0)}% l'anno`:""}</div></div>`}).join("");
+  return `<div class="bmap"><div class="cap">Quanto spazio c'è prima della barriera</div>
+<p class="note" style="margin:0">Ogni barra è un sottostante: <b>100%</b> è il prezzo iniziale (strike), il pallino è il prezzo di oggi. La parte <span class="neg">rossa</span> è sotto la barriera; quella <span class="pos">verde</span> è lo spazio che ha per scendere senza rischi per il capitale.</p>
+${rows}
+<div class="bm-axis${lab.some(o=>o.row)?" two":""}">${lab.map(o=>`<span class="${o.k} r${o.row}" style="left:${o.x}%;transform:translateX(${o.x<8?-15:o.x>92?-85:-50}%)">${o.t}<br><b>${fmt(o.v,0)}%</b></span>`).join("")}</div></div>`;
 }
 
 const SERC=["var(--accent)","var(--brass)","var(--q2)","var(--muted)"];
