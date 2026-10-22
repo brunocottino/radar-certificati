@@ -17,6 +17,7 @@ from pathlib import Path
 from risk import core, norm
 from sectors import cert_sector, classify
 
+TODAY = datetime.now(timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo("Europe/Rome")).date().isoformat()
 ROOT = Path(os.environ.get("RADAR_ROOT") or Path(__file__).resolve().parent.parent)
 DATA = ROOT / "docs" / "data" / "certs.json"
 MAP = ROOT / "scraper" / "underlyings_map.json"
@@ -60,6 +61,7 @@ SCHEMA = {
     "nextCallDate": "Prossima data di possibile richiamo.",
     "url": "Pagina del prodotto sul sito dell'emittente.",
     "category": "Categoria: Cash Collect/Phoenix, Express, Bonus Cap, Protetto, Leva, Altro.",
+    "callSchedule": "Calendario dei richiami anticipati [data di osservazione, livello %] se l'emittente lo pubblica; nextCallDate e autocallPct sono la prima data futura.",
     "sector": "Settore del certificato: quello comune a tutti i sottostanti (Banche, Tecnologia, Energia, Indici...) o \"Misto\".",
     "sectors": "Settore di ciascun sottostante, nello stesso ordine di underlyings (null se non classificato).",
     "typeMarket": "Tipologia secondo Borsa Italiana/Euronext.",
@@ -168,6 +170,13 @@ def main():
         secs = [classify(n, m.get(core(n) or norm(n))) for n in c.get("underlyings") or []]
         c["sectors"] = secs or None
         c["sector"] = cert_sector(secs)
+        # prossimo richiamo dal calendario completo (Leonteq, UniCredit, Marex): resta giusto anche senza rileggere la scheda
+        cs = sorted(x for x in c.get("callSchedule") or [] if x and x[0])
+        if cs:
+            nxt = next((x for x in cs if x[0] >= TODAY), None)
+            c["nextCallDate"] = nxt[0] if nxt else None
+            if nxt and nxt[1] is not None:
+                c["autocallPct"] = nxt[1]
     shutil.rmtree(OUT, ignore_errors=True)
     dump(OUT / "certificates.json", {"version": 1, "updatedAt": updated, "count": len(certs),
                                      "disclaimer": DISCLAIMER, "certificates": certs})

@@ -717,12 +717,13 @@ const TIER={"BNP Paribas":"A","Crédit Agricole":"A","Santander":"A","UBS":"A","
   "Société Générale":"B","Citigroup":"B","Deutsche Bank":"B","BBVA":"B","Morgan Stanley":"B","BIL":"B","Goldman Sachs":"B","UniCredit":"B","Intesa Sanpaolo":"B","Mediobanca":"B","EFG International":"B","Exane":"B",
   "Banco BPM":"C","BPER Banca":"C","Nomura":"C","Leonteq Securities":"C","Marex":"C","Banca Akros":"C"};
 const TIERV={A:1,B:.8,C:.55};
-const NUMF=["er","y","ym","b","t","prob","matmin","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front"];
+const NUMF=["er","y","ym","b","t","prob","matmin","mat","price","sp"],SELF=["n","freq","call","cat","acall"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front"];
 // obiettivi rapidi: un clic imposta (o toglie) un gruppo di filtri
 const OBJ={frontiera:["Frontiera efficiente",{front:true}],mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
 /* durata in parole: 0,5 -> "6 mesi", 1 -> "1 anno", 2,5 -> "2,5 anni" */
 const yrs=v=>v<1?Math.round(v*12)+" mesi":fmt(v,v%1?1:0)+(v===1?" anno":" anni");
-const LABEL={matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
+const ACALL={"3":"entro 3 mesi","6":"entro 6 mesi","12":"entro 1 anno","no":"Senza autocall"};
+const LABEL={acall:v=>v==="no"?"Senza autocall":"Richiamo "+ACALL[v],matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
   active:()=>"Cedola in pagamento",front:()=>"Solo frontiera efficiente",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
 const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sec:new Set(),sort:{key:"score",dir:-1},view:null};
@@ -927,6 +928,9 @@ function compute(){
     if(f.mem&&c.memory!==true)continue;
     if(f.mat!=null&&c.years!=null&&c.years>f.mat)continue;
     if(f.matmin!=null&&c.years!=null&&c.years<f.matmin)continue;
+    if(f.acall){ /* richiamo anticipato: prossima data di autocall entro N mesi, oppure nessun autocall */
+      if(f.acall==="no"){if(c.callKind==="autocall")continue}
+      else{if(c.callKind!=="autocall"||!c.callDate)continue;const lim=new Date(today);lim.setMonth(lim.getMonth()+(+f.acall));if(c.callDate>lim)continue}}
     if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)continue;
     if(f.sp!=null&&c.spread!=null&&c.spread>f.sp)continue;
     if(f.prob!=null&&(c.prob==null?f.probx:c.prob<f.prob))continue; // probabilità ignota: passa, salvo "solo con probabilità"
@@ -1035,7 +1039,7 @@ function keyBadges(c){const b=[];if(c.front)b.push(`<span class="b fr" title="Fr
   if(c.ytmHigh)b.push(`<span class="b ca">Rend. sospetto</span>`);
   if(c.stale)b.push(`<span class="b st">Prezzo vecchio</span>`);
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
-  if(c.callKind==="autocall")b.push(`<span class="b">Autocall</span>`);
+  if(c.callKind==="autocall")b.push(`<span class="b" title="Prossima data di possibile rimborso anticipato">Autocall${c.callDate?" "+dshort(c.callDate):""}</span>`);
   return b.slice(0,3).join("")}
 function cardHtml(c,i){const sp=pcol(c.prob);
   return `<article class="card${(i||0)<8?" anim":""}" data-open="${esc(c.isin)}" style="--i:${i||0};--spine:${sp==="none"?"var(--line)":sp}">
@@ -1229,7 +1233,7 @@ async function detailHtml(c){
   const j=await loadDetail(c.isin);const full=j?.certificate||c;const own=full.url&&/borsaitaliana\.it/.test(full.url);
   const F=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],
     ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
-    ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",dshort(c.callDate)],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
+    ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
   return `<div class="dhead"><div style="min-width:0"><div class="c-iss"><b>${esc(c.issuer||"")}</b>${c.type?" · "+esc(c.type):""}</div>
 <div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
 <button data-close aria-label="Chiudi">✕</button></div>
@@ -1275,6 +1279,7 @@ const QUICK=[
   ["sp","Spread massimo",[null,1,1.5,2,3,5],v=>fmt(v,v%1?1:0)+"%"],
   ["matmin","Scadenza almeno tra",[null,0.5,1,2,3,5],yrs],
   ["mat","Scadenza entro",[null,1,2,3,5,8],yrs],
+  ["acall","Richiamo anticipato (autocall)",["","3","6","12","no"],v=>ACALL[v]],
   ["freq","Frequenza cedola",["","1m","3m","6m"],v=>freqTxt(v)],
   ["n","Sottostanti",["","single","multi"],v=>v==="single"?"Singolo":"Worst-of"],
 ];
@@ -1291,6 +1296,7 @@ function renderQuick(){
 }
 function fsumText(n){const R=`${ROWS.length.toLocaleString("it-IT")} risultati`;if(!n)return R+" · nessun filtro";const P=[];
   if(state.f.y!=null)P.push(`rend ≥${fmt(state.f.y,0)}%`);if(state.f.b!=null)P.push(`dist ≥${fmt(state.f.b,0)}%`);if(state.f.prob!=null)P.push(`prob ≥${fmt(state.f.prob,0)}%`);if(state.f.sp!=null)P.push(`spread ≤${fmt(state.f.sp,state.f.sp%1?1:0)}%`);
+  if(state.f.acall)P.push(state.f.acall==="no"?"senza autocall":`autocall ≤${ACALL[state.f.acall].replace("entro ","")}`);
   const mn=state.f.matmin,mx=state.f.mat;if(mn!=null||mx!=null)P.push(mn!=null&&mx!=null?`scad. ${mn>=1?fmt(mn,mn%1?1:0)+"–"+yrs(mx):yrs(mn)+"–"+yrs(mx)}`:mn!=null?`scad. ≥${yrs(mn)}`:`scad. ≤${yrs(mx)}`);
   return `${R} · ${P.length?P.join(" · "):n+" filtri"}`}
 

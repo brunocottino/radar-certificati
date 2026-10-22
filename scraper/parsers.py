@@ -207,9 +207,12 @@ def detail_queue(certs, issuer, state, days=7, need=None):
 
 
 def needs_strikes(c):
-    """Certificato interessante (cedola nota) a cui mancano gli strike dei sottostanti."""
+    """Certificato interessante (cedola nota) a cui mancano gli strike dei sottostanti o, se autocall,
+    il calendario dei richiami."""
     det = c.get("underlyingsDetail") or []
-    return c.get("couponPa") is not None and not (det and all(u.get("strike") for u in det))
+    autocall = re.search(r"autocall", c.get("callable") or c.get("type") or "", re.I)
+    return c.get("couponPa") is not None and (not (det and all(u.get("strike") for u in det))
+                                              or bool(autocall and not c.get("callSchedule")))
 
 
 async def rotate(DISC, src, issuer, state_path, budget_s, one, log, days=7, par=4, pause=0.3, need=None):
@@ -495,6 +498,8 @@ def marex_ts(text, title=""):
     if ac:
         out["callable"] = "Autocall"
         out["nextCallDate"] = next((en_date(r[2]) for r in ac if (en_date(r[2]) or "") >= today), None)
+        # calendario completo [data osservazione, livello %]: la prossima data la ricava api.py a ogni run
+        out["callSchedule"] = [[en_date(r[2]), float(r[0])] for r in ac if en_date(r[2])] or None
         if "couponPa" not in out:  # express: premio crescente nell'importo di rimborso anticipato
             amts = [float(r[1]) for r in ac]
             ds = [en_date(r[2]) for r in ac]
@@ -684,12 +689,18 @@ def unicredit_detail_cert(html, c):
     strikes = [num(re.sub(r"[^\d,.]", "", x)) for x in ms.group(1).split(" / ")]
     bars = [num(re.sub(r"[^\d,.]", "", x)) for x in mb.group(1).split(" / ")] if mb else []
     names = c.get("underlyings") or []
-    if len(strikes) != len(names) or not all(strikes):
-        return {}  # ordine/numero non verificabile: meglio nessun dato che strike attribuiti al sottostante sbagliato
     if len(bars) != len(strikes):
         bars = [None] * len(strikes)
     pcts = {round(b / s * 100, 2) for s, b in zip(strikes, bars) if s and b}
-    return {
+    # "Trigger di rimborso anticipato 21.01.2027 (95%)": calendario dei richiami
+    cs = sorted({(f"{y}-{mo}-{d}", num(l)) for d, mo, y, l in
+                 re.findall(r"Trigger di rimborso anticipato (\d{2})\.(\d{2})\.(\d{4}) \((\d+(?:,\d+)?)\s*%\)", t)})
+    out = {"callSchedule": [list(x) for x in cs] or None}
+    if cs:
+        out["callable"] = c.get("callable") or "Autocall"
+    if len(strikes) != len(names) or not all(strikes):
+        return out  # niente strike: ordine/numero non verificabile
+    return {**out,
         "underlyingsDetail": [clean({"name": n, "strike": s, "barrierLevel": b}) for n, s, b in zip(names, strikes, bars)],
         "barrierPct": c.get("barrierPct") or (pcts.pop() if len(pcts) == 1 else None),
     }
@@ -993,6 +1004,9 @@ def leonteq_detail_cert(d):
         "distBarrier": worst["dist"] if worst else None,
         "barrierPct": pct(lv(p, "barrier")),
         "triggerPct": pct(lv(p, "conditionalCouponTriggerLevel")),
+        # rimborsi anticipati: [data osservazione, livello %] (la prossima data la ricava api.py a ogni run)
+        "callSchedule": [[e["rawObservationDate"][:10], round(num(e.get("rawTriggerLevel")) * 100, 2) if num(e.get("rawTriggerLevel")) is not None else None]
+                         for e in ((p.get("early-redemptions") or {}).get("values") or []) if e.get("rawObservationDate")] or None,
         "detailAt": NOW_OF_DETAIL[0],
     }
 
