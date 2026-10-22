@@ -246,6 +246,7 @@ tr.sp td{height:auto;border:none;padding:0}
 .kpi .v.hi{color:var(--accent)}
 .c-foot{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.78rem;color:var(--muted);align-items:center}
 .c-foot b{color:var(--ink);font-weight:600;font-family:var(--f-num)}
+.c-foot .yl{color:var(--muted)}
 .c-foot .badges{gap:4px}
 /* ---------- scelte del giorno ---------- */
 .daily-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -537,7 +538,7 @@ td{font-weight:500}
         <label class="note" style="display:flex;gap:6px;align-items:center">Ordina<select id="sortsel" style="width:auto;padding:5px 8px">
           <option value="score">Punteggio</option><option value="cd">Cedola e distanza</option><option value="ytm">Rendimento annuo</option><option value="er">Rendimento atteso</option>
           <option value="prob">Prob. tenuta barriera</option><option value="dist">Distanza del peggiore</option><option value="sigma">Margine in dev. std</option>
-          <option value="coupon">Cedola</option><option value="price">Prezzo (più basso)</option><option value="mat">Scadenza (più vicina)</option><option value="spread">Spread (più stretto)</option></select></label>
+          <option value="coupon">Cedola</option><option value="price">Prezzo (più basso)</option><option value="mat">Scadenza (più vicina)</option><option value="matfar">Scadenza (più lontana)</option><option value="spread">Spread (più stretto)</option></select></label>
         <button id="export" class="only-wide" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
       </div>
     </div>
@@ -571,6 +572,7 @@ td{font-weight:500}
           <label>Peggiore: distanza barriera min %<input id="f-b" type="number" step="5"></label>
           <label>Peggiore: distanza trigger cedola min %<input id="f-t" type="number" step="5"></label>
           <label>Prob. minima % tenuta barriera<input id="f-prob" type="number" step="5" min="0" max="100"></label>
+          <label>Scadenza min (anni)<input id="f-matmin" type="number" step="0.5" min="0"></label>
           <label>Scadenza max (anni)<input id="f-mat" type="number" step="0.5"></label>
           <label>Prezzo max (% del nominale)<input id="f-price" type="number" step="1"></label>
           <label>Spread max %<input id="f-sp" type="number" step="0.25"></label>
@@ -715,10 +717,12 @@ const TIER={"BNP Paribas":"A","Crédit Agricole":"A","Santander":"A","UBS":"A","
   "Société Générale":"B","Citigroup":"B","Deutsche Bank":"B","BBVA":"B","Morgan Stanley":"B","BIL":"B","Goldman Sachs":"B","UniCredit":"B","Intesa Sanpaolo":"B","Mediobanca":"B","EFG International":"B","Exane":"B",
   "Banco BPM":"C","BPER Banca":"C","Nomura":"C","Leonteq Securities":"C","Marex":"C","Banca Akros":"C"};
 const TIERV={A:1,B:.8,C:.55};
-const NUMF=["er","y","ym","b","t","prob","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front"];
+const NUMF=["er","y","ym","b","t","prob","matmin","mat","price","sp"],SELF=["n","freq","call","cat"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front"];
 // obiettivi rapidi: un clic imposta (o toglie) un gruppo di filtri
 const OBJ={frontiera:["Frontiera efficiente",{front:true}],mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
-const LABEL={er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
+/* durata in parole: 0,5 -> "6 mesi", 1 -> "1 anno", 2,5 -> "2,5 anni" */
+const yrs=v=>v<1?Math.round(v*12)+" mesi":fmt(v,v%1?1:0)+(v===1?" anno":" anni");
+const LABEL={matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${fmt(v,1)} anni`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
   active:()=>"Cedola in pagamento",front:()=>"Solo frontiera efficiente",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti"};
 const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sec:new Set(),sort:{key:"score",dir:-1},view:null};
@@ -885,7 +889,7 @@ function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];
 function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){toast("Massimo 4 certificati nel confronto");return}CMP.add(isin)}renderCmpBar();render(false)}
 
 /* ---------- filtro e ordinamento ---------- */
-const SORT={cd:c=>c.cdScore,er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
+const SORT={cd:c=>c.cdScore,er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,matfar:c=>c.years,coupon:c=>c.couponPa,call:c=>c.callDate?-c.callDate.getTime():null};
 let ROWS=[],ISIN=null,FRONT=[];
 // frontiera efficiente (Pareto) tra i risultati: nessun altro ha insieme più rendimento annuo e più distanza dalla barriera
 function markFrontier(list){
@@ -922,6 +926,7 @@ function compute(){
     if(f.active&&c.couponActive!==true)continue;
     if(f.mem&&c.memory!==true)continue;
     if(f.mat!=null&&c.years!=null&&c.years>f.mat)continue;
+    if(f.matmin!=null&&c.years!=null&&c.years<f.matmin)continue;
     if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)continue;
     if(f.sp!=null&&c.spread!=null&&c.spread>f.sp)continue;
     if(f.prob!=null&&(c.prob==null?f.probx:c.prob<f.prob))continue; // probabilità ignota: passa, salvo "solo con probabilità"
@@ -1042,7 +1047,7 @@ function cardHtml(c,i){const sp=pcol(c.prob);
 <div class="kpi"><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div>${c.dist!=null?`<span class="ruler ${cls(c.dist)}" style="--d:${(clamp(c.dist,0,60)/60*100).toFixed(0)}%" title="Distanza del peggiore dalla barriera, scala 0–60%"><i></i></span>`:""}<div class="k">Dist. barr.</div></div>
 <div class="kpi"><div class="v ${pcls(c.prob)}">${probTxt(c)}</div><div class="k">Prob.</div></div>
 </div>
-<div class="c-foot">${c.sector?`<span class="sec ${c.sector==="Misto"?"mix":""}" title="Settore dei sottostanti">${esc(secTxt(c))}</span>`:""}${c.freq?`<span><b style="font-family:var(--f-ui)">${freqTxt(c.freq)}</b></span>`:""}<span>Lettera <b class="${c.stale?"stale":""}">${c.pricePct?fmt(c.pricePct,1)+"%":"—"}</b></span><span>Spread <b>${pct(c.spread,1)}</b></span><span>Scade <b>${dshort(c.matDate)}</b></span><span class="badges">${keyBadges(c)}</span></div>
+<div class="c-foot">${c.sector?`<span class="sec ${c.sector==="Misto"?"mix":""}" title="Settore dei sottostanti">${esc(secTxt(c))}</span>`:""}${c.freq?`<span><b style="font-family:var(--f-ui)">${freqTxt(c.freq)}</b></span>`:""}<span>Lettera <b class="${c.stale?"stale":""}">${c.pricePct?fmt(c.pricePct,1)+"%":"—"}</b></span><span>Spread <b>${pct(c.spread,1)}</b></span><span>Scade <b>${dshort(c.matDate)}</b>${c.years!=null&&c.years>0?` <span class="yl">· ${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}</span>`:""}</span><span class="badges">${keyBadges(c)}</span></div>
 </article>`}
 function renderCards(){
   const res=$("#results");res.innerHTML=`<div class="list" id="clist"></div><div id="more" style="height:1px"></div>`;cardN=0;moreCards();
@@ -1268,7 +1273,8 @@ const QUICK=[
   ["b","Peggiore: distanza dalla barriera, minimo",[null,15,20,25,30,40,50],v=>v+"%"],
   ["prob","Probabilità di tenuta, minimo",[null,50,60,70,80,90],v=>v+"%"],
   ["sp","Spread massimo",[null,1,1.5,2,3,5],v=>fmt(v,v%1?1:0)+"%"],
-  ["mat","Scadenza entro",[null,1,2,3,5,8],v=>v+(v===1?" anno":" anni")],
+  ["matmin","Scadenza almeno tra",[null,0.5,1,2,3,5],yrs],
+  ["mat","Scadenza entro",[null,1,2,3,5,8],yrs],
   ["freq","Frequenza cedola",["","1m","3m","6m"],v=>freqTxt(v)],
   ["n","Sottostanti",["","single","multi"],v=>v==="single"?"Singolo":"Worst-of"],
 ];
@@ -1285,10 +1291,11 @@ function renderQuick(){
 }
 function fsumText(n){const R=`${ROWS.length.toLocaleString("it-IT")} risultati`;if(!n)return R+" · nessun filtro";const P=[];
   if(state.f.y!=null)P.push(`rend ≥${fmt(state.f.y,0)}%`);if(state.f.b!=null)P.push(`dist ≥${fmt(state.f.b,0)}%`);if(state.f.prob!=null)P.push(`prob ≥${fmt(state.f.prob,0)}%`);if(state.f.sp!=null)P.push(`spread ≤${fmt(state.f.sp,state.f.sp%1?1:0)}%`);
+  const mn=state.f.matmin,mx=state.f.mat;if(mn!=null||mx!=null)P.push(mn!=null&&mx!=null?`scad. ${mn>=1?fmt(mn,mn%1?1:0)+"–"+yrs(mx):yrs(mn)+"–"+yrs(mx)}`:mn!=null?`scad. ≥${yrs(mn)}`:`scad. ≤${yrs(mx)}`);
   return `${R} · ${P.length?P.join(" · "):n+" filtri"}`}
 
 /* ---------- filtri: controlli, chip, profilo ---------- */
-const IDS={ym:"#f-ym",er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
+const IDS={ym:"#f-ym",er:"#f-er",cpn:"#f-cpn",probx:"#f-probx",y:"#f-y",b:"#f-b",t:"#f-t",prob:"#f-prob",matmin:"#f-matmin",mat:"#f-mat",price:"#f-price",sp:"#f-sp",n:"#f-n",freq:"#f-freq",call:"#f-call",cat:"#f-cat",active:"#f-active",mem:"#f-mem",illiq:"#f-illiq",lev:"#f-lev",excl:"#f-excl"};
 function syncControls(){for(const[k,s]of Object.entries(IDS)){const el=$(s);if(el.type==="checkbox")el.checked=!!state.f[k];else el.value=state.f[k]??""}
   $("#q").value=state.q;$("#q-clear").hidden=!state.q;$("#b-fav").setAttribute("aria-pressed",state.f.fav);
   document.querySelectorAll("#profile button,#profile-top button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===state.profile));
@@ -1469,7 +1476,10 @@ Object.values(IDS).forEach(s=>$(s).addEventListener("input",()=>{readControls();
 const onProfile=e=>{const b=e.target.closest("button[data-p]");if(!b)return;applyPreset(b.dataset.p);rescore();pickDaily();update();toast(`Profilo ${b.textContent}: filtri impostati`)};
 $("#profile").addEventListener("click",onProfile);$("#profile-top").addEventListener("click",onProfile);
 $("#quick").addEventListener("click",e=>{const sc=e.target.closest("[data-sec]");if(sc){const k=sc.dataset.sec;state.sec.has(k)?state.sec.delete(k):state.sec.add(k);update();return}
-  const q=e.target.closest("[data-q]");if(q){state.f[q.dataset.q]=JSON.parse(q.dataset.v);update();return}
+  const q=e.target.closest("[data-q]");if(q){const k=q.dataset.q,v=JSON.parse(q.dataset.v),f=state.f;f[k]=v;
+    /* minimo e massimo incompatibili: si toglie l'altro invece di dare zero risultati */
+    if(v!=null&&k==="matmin"&&f.mat!=null&&f.mat<v)f.mat=null;if(v!=null&&k==="mat"&&f.matmin!=null&&f.matmin>v)f.matmin=null;
+    update();return}
   const t=e.target.closest("[data-qt]");if(t){state.f[t.dataset.qt]=!state.f[t.dataset.qt];update()}});
 $("#fsum").addEventListener("click",()=>openSheet(true));
 $("#sheet-apply").addEventListener("click",()=>{openSheet(false);scrollTo({top:0,behavior:"smooth"})});
