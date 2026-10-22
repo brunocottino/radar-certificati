@@ -151,7 +151,8 @@ jobs:
           MSG="Dati certificati $(TZ=Europe/Rome date +%F)"
           [ "$SLOT" != "manuale" ] && MSG="$MSG $SLOT"
           git diff --cached --quiet || git commit -m "$MSG"
-          git pull --rebase -q origin "${GITHUB_REF_NAME}"
+          # file generati toccati anche da un commit arrivato nel frattempo: tiene quelli appena prodotti
+          git pull --rebase -X theirs -q origin "${GITHUB_REF_NAME}"
           git push
       - name: Verifica che il sito mostri i nuovi dati
         if: steps.cal.outputs.open == 'true'
