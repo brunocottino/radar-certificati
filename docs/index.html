@@ -562,6 +562,61 @@ td{font-weight:500}
 .sugg .sg-h:hover{background:none}
 @media (min-width:820px){.sliders{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px 36px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* scheda: grafici per decidere */
+.verdict{border:1px solid var(--line);border-left:4px solid var(--good);border-radius:10px;padding:10px 14px;background:var(--surface);display:grid;gap:4px}
+.verdict.v-ca{border-left-color:var(--caution)}.verdict.v-ko{border-left-color:var(--bad)}
+.verdict p{margin:0;font-size:.9rem;line-height:1.45}
+.bmap,.uchart,.pay,.cal1{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);display:grid;gap:8px;min-width:0}
+.bm-row{display:grid;gap:4px}
+.bm-n{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;min-width:0}
+.bm-n .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.bm-n>span:last-child{font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+.bm-row.worst .bm-n .t{font-weight:600}
+.bm-track{position:relative;height:14px;border-radius:7px;background:var(--row);overflow:visible}
+.bm-track .z{position:absolute;top:0;bottom:0}
+.z.ko{background:var(--bad-bg);border-radius:7px 0 0 7px}.z.ca{background:var(--caution-bg)}.z.ok{background:var(--good-bg);border-radius:0 7px 7px 0}
+.bm-track s{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--muted);text-decoration:none}
+.bm-track s.bad{background:var(--bad)}.bm-track s.ca{background:var(--caution)}
+.bm-track u{position:absolute;top:5px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--accent) 35%,transparent);text-decoration:none}
+.bm-track .dot,.bm-leg .dot{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--accent)}
+.bm-row.worst .bm-track .dot{width:16px;height:16px;margin:-8px 0 0 -8px}
+.bm-axis{position:relative;height:16px;font-size:.66rem;color:var(--muted)}
+.bm-axis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.bm-axis span:first-child{transform:translateX(-20%)}.bm-axis span:last-child{transform:translateX(-80%)}
+.bm-axis .bad{color:var(--bad)}.bm-axis .ca{color:var(--caution)}
+.bm-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.72rem;color:var(--muted)}
+.bm-leg span{display:inline-flex;align-items:center;gap:6px}
+.bm-leg .dot{position:static;margin:0;width:10px;height:10px}
+.bm-leg u{display:inline-block;width:18px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--accent) 35%,transparent)}
+.bm-leg .z{position:static;display:inline-block;width:14px;height:10px;border-radius:3px}
+.uc-plot,.pay-plot{position:relative}
+.uchart svg{width:100%;height:190px;display:block}
+.pay svg{width:100%;height:150px;display:block}
+.uc-plot .lv{position:absolute;right:4px;transform:translateY(-110%);font-size:.66rem;color:var(--muted);background:color-mix(in srgb,var(--surface) 80%,transparent);padding:0 3px;border-radius:3px}
+.uc-plot .lv.bad{color:var(--bad)}.uc-plot .lv.ca{color:var(--caution)}
+.uc-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.74rem}
+.uc-leg span{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.uc-leg i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.uchart .tip{font-size:.74rem;color:var(--muted);min-height:1.2em}
+.duo{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.pay .now{position:absolute;top:2px;transform:translateX(-50%);font-size:.66rem;background:var(--surface);padding:0 4px;border-radius:3px;white-space:nowrap}
+.pay-x{position:relative;height:14px;font-size:.66rem;color:var(--muted)}
+.pay-x span{position:absolute;white-space:nowrap}
+.pay-x span:nth-child(2){transform:translateX(-50%);color:var(--bad)}
+.pay .note,.cal1 .note{margin:0}
+.cl-track{position:relative;height:34px}
+.cl-line{position:absolute;left:0;right:0;top:10px;height:2px;background:var(--line);border-radius:1px}
+.cl-track .cp,.cl-track .ac{position:absolute;top:6px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--accent)}
+.cl-track .ac{background:var(--brass);border-radius:2px;transform:rotate(45deg);top:5px}
+.bm-leg .cp,.bm-leg .ac{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.bm-leg .ac{background:var(--brass);border-radius:2px;transform:rotate(45deg)}
+.cl-track.dense .cp{width:6px;height:6px;margin-left:-3px;top:8px}
+.inline-detail .dhead .row{flex-wrap:wrap}
+.inline-detail{grid-template-columns:minmax(0,1fr)}.inline-detail>*{min-width:0}
+.cl-l,.cl-r{position:absolute;top:20px;font-size:.66rem;color:var(--muted)}.cl-r{right:0}
+.cl-next{display:flex;flex-wrap:wrap;gap:6px}
+.cl-next span{font-size:.74rem;border:1px solid var(--line);border-radius:999px;padding:2px 9px;background:var(--row)}
 </style>
 </head>
 <body>
@@ -1416,8 +1471,121 @@ function wireChart(root){const ch=root.querySelector(".chart[data-hist]");if(!ch
 const KV=[["Emittente","issuer"],["Piattaforma","platform"],["Tipo","type"],["Categoria","category"],["Mercato","market"],["Valuta","currency"],["Nominale","nominal"],["Cedola p.a. %","couponPa"],["Frequenza","freq"],["Memoria","memory"],["Richiamo","callable"],["Barriera %","barrierPct"],["Tipo barriera","barrierType"],["Trigger cedola %","triggerPct"],["Livello autocall %","autocallPct"],["Dist. barriera peggiore %","distBarrier"],["Distanza del","distAt"],["Peggiore","worstName"],["Denaro","bid"],["Lettera","ask"],["Prezzo del","priceAt"],["Fonte prezzo","priceSource"],["Prossima cedola","nextCouponDate"],["Prossimo richiamo","nextCallDate"],["Scadenza","maturity"],["Prob. tenuta barriera","probBarrierHold"],["Metodo","probMethod"],["Nota calcolo","probNote"],["Orizzonte (anni)","probHorizonYears"],["Vol peggiore","worstVol"],["Rischio calcolato il","riskAt"],["Aggiornato","updatedAt"]];
 function kvVal(k,v){if(v==null||v==="")return "—";if(k==="memory")return v?"Sì":"No";if(k==="freq")return freqTxt(v);if(k==="probBarrierHold")return pct(v*100,1);if(k==="worstVol")return pct(v*100,1);
   if(/At$/.test(k))return dtime(v);if(/Date$|maturity/.test(k))return dshort(parseDate(v));if(typeof v==="number")return fmt(v,/Pct|couponPa|dist/.test(k)?2:2);return esc(v)}
+/* ---------- scheda: grafici per decidere (barriera, andamento, rimborso, calendario) ---------- */
+// livelli in % dello strike: sottostante oggi (dalla distanza (spot−barriera)/spot), barriera, trigger, autocall
+function levels(c,full){
+  const bp=+c.barrierPct>0&&+c.barrierPct<=100?+c.barrierPct:null;
+  const tp=+c.triggerPct>0&&+c.triggerPct<=130?+c.triggerPct:null;
+  const ap=+c.autocallPct>=30&&+c.autocallPct<=130?+c.autocallPct:(c.callKind==="autocall"?100:null);
+  const risk=new Map((full.underlyingsRisk||[]).map(u=>[u.name,u]));
+  let rows=bp?(full.underlyingsDetail||[]).filter(u=>u.name).map(u=>{const rk=risk.get(u.name)||{};
+    return {name:u.name,s:u.dist!=null&&u.dist<100?bp/(1-u.dist/100):null,vol:rk.vol1y??null,tk:rk.ticker||null}}):[];
+  if(bp&&!rows.some(r=>r.s!=null)&&c.spotPct)rows=[{name:c.worst||c.unds[0]||"Sottostante",s:c.spotPct,vol:c.wvol!=null?c.wvol/100:null,tk:(risk.get(c.worst)||{}).ticker||null}];
+  rows=rows.filter(r=>r.s!=null&&isFinite(r.s)&&r.s>0).sort((a,b)=>a.s-b.s);
+  return {bp,tp,ap,rows,T:Math.max(c.years||1,.1)}
+}
+const band=(s,vol,T)=>vol?[s*Math.exp(-vol*Math.sqrt(T)),s*Math.exp(vol*Math.sqrt(T))]:null;
+
+function verdict(c,full){
+  const L=levels(c,full),w=L.rows[0];if(!w&&c.dist==null)return "";
+  const v=w?.vol??(c.wvol!=null?c.wvol/100:null),out=[];let tone="ok";
+  const name=esc(w?.name||c.worst||"il peggiore");
+  if(c.dist!=null){
+    if(c.dist>=0)out.push(`Il sottostante peggiore, <b>${name}</b>, può scendere ancora del <b>${pct(c.dist,0)}</b> prima di toccare la barriera${L.bp?` (${fmt(L.bp,0)}% dello strike)`:""}.`);
+    else{out.push(`Il sottostante peggiore, <b>${name}</b>, è <b>sotto la barriera del ${fmt(-c.dist,0)}%</b>: oggi il capitale non è protetto.`);tone="ko"}
+  }
+  if(w&&v&&L.bp&&c.years){const [lo,hi]=band(w.s,v,L.T);const dn=(1-lo/w.s)*100,up=(hi/w.s-1)*100;
+    const inside=lo<L.bp;
+    out.push(`Con la sua volatilità (${fmt(v*100,0)}% l'anno), da qui alla scadenza (${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}) di solito si muove tra <b>−${fmt(dn,0)}%</b> e <b>+${fmt(up,0)}%</b>: ${c.dist<0?"per tornare sopra deve recuperare":inside?"<b>la barriera è dentro questa fascia</b>, il rischio è concreto":"la barriera resta fuori da questa fascia"}.`);
+    if(tone!=="ko"&&inside)tone="ca"}
+  if(c.couponActive===true&&c.trigDist!=null)out.push(`Oggi la cedola si paga: il peggiore è sopra il trigger con un margine del ${pct(c.trigDist,0)}.`);
+  else if(c.couponActive===false){out.push(`Oggi la cedola <b>non si paga</b> (peggiore sotto il trigger)${c.memory?", ma con la memoria si recupera se risale":""}.`);if(tone==="ok")tone="ca"}
+  if(c.callDate&&L.ap&&w)out.push(`Prossimo richiamo il ${dshort(c.callDate)}: se tutti i sottostanti sono almeno al ${fmt(L.ap,0)}% dello strike rimborsa in anticipo${w.s>=L.ap?" (oggi lo sarebbero)":` (oggi il peggiore è al ${fmt(w.s,0)}%)`}.`);
+  if(c.prob!=null)out.push(`Probabilità stimata che la barriera tenga: <b>${probTxt(c)}</b>.`);
+  if(tone==="ok"&&(c.dist??0)<15)tone="ca";
+  return `<div class="verdict v-${tone}"><div class="cap">In breve</div>${out.map(s=>`<p>${s}</p>`).join("")}</div>`;
+}
+
+function barrierMap(c,full){
+  const L=levels(c,full);if(!L.bp||!L.rows.length)return "";
+  const top=Math.min(300,Math.max(140,...L.rows.map(r=>{const b=band(r.s,r.vol,L.T);return b?Math.min(b[1],r.s*2.2):r.s*1.15})));
+  const X=v=>clamp(v/top*100,0,100).toFixed(2)+"%";
+  const ticks=[[L.bp,"Barriera","bad"]];if(L.tp&&Math.abs(L.tp-L.bp)>=.5)ticks.push([L.tp,"Cedola","ca"]);ticks.push([100,"Strike",""]);if(L.ap&&L.ap!==100)ticks.push([L.ap,"Richiamo",""]);
+  const zones=`<i class="z ko" style="width:${X(L.bp)}"></i>${L.tp&&L.tp>L.bp?`<i class="z ca" style="left:${X(L.bp)};width:calc(${X(L.tp)} - ${X(L.bp)})"></i>`:""}${L.ap?`<i class="z ok" style="left:${X(L.ap)};right:0"></i>`:""}`;
+  const marks=ticks.map(([v,,k])=>`<s class="${k}" style="left:${X(v)}"></s>`).join("");
+  const rows=L.rows.slice(0,8).map((r,i)=>{const b=band(r.s,r.vol,L.T);const m=(r.s/L.bp-1)*100,room=(1-L.bp/r.s)*100;
+    return `<div class="bm-row${i===0?" worst":""}"><div class="bm-n"><span class="t" title="${esc(r.name)}">${i===0&&L.rows.length>1?"▸ ":""}${esc(r.name)}${r.vol?`<span class="note"> · vol ${fmt(r.vol*100,0)}%</span>`:""}</span><span class="${room<0?"neg":room<15?"ca":"pos"}">${room>=0?`margine ${fmt(room,0)}%`:`sotto di ${fmt(-m,0)}%`}</span></div>
+<div class="bm-track">${zones}${marks}${b?`<u style="left:${X(b[0])};width:calc(${X(b[1])} - ${X(b[0])})" title="Fascia probabile a scadenza (68%): ${fmt(b[0],0)}–${fmt(b[1],0)}% dello strike"></u>`:""}<b class="dot" style="left:${X(r.s)}" title="${esc(r.name)}: oggi ${fmt(r.s,1)}% dello strike"></b></div></div>`}).join("");
+  // etichette sull'asse: se due livelli sono vicini si uniscono
+  const lab=[];ticks.slice().sort((a,b)=>a[0]-b[0]).forEach(([v,t,k])=>{const p=lab[lab.length-1];if(p&&(v-p.v)/top<.11){p.t+=" · "+t;p.l+="/"+fmt(v,0)}else lab.push({v,t,k,l:fmt(v,0)})});
+  return `<div class="bmap"><div class="cap">Dove sono i sottostanti rispetto alla barriera · in % dello strike</div>${rows}
+<div class="bm-axis">${lab.map(o=>`<span class="${o.k}" style="left:${X(o.v)}">${o.t} ${o.l}%</span>`).join("")}</div>
+<div class="bm-leg"><span><b class="dot"></b> oggi</span>${L.rows.some(r=>r.vol)?`<span><u></u> fascia probabile a scadenza (68%)</span>`:""}<span><i class="z ko"></i> sotto barriera</span>${L.tp&&L.tp>L.bp?`<span><i class="z ca"></i> senza cedola</span>`:""}${L.ap?`<span><i class="z ok"></i> zona di richiamo</span>`:""}</div></div>`;
+}
+
+const SERC=["var(--accent)","var(--brass)","var(--q2)","var(--muted)"];
+function undChart(c,full){
+  const L=levels(c,full),R=RET?.returns||{},wk=RET?.weeks||[];if(!L.bp||!wk.length)return "";
+  const ser=L.rows.filter(r=>r.tk&&R[r.tk]).slice(0,4).map((r,k)=>{const rr=R[r.tk],v=new Array(wk.length);v[wk.length-1]=r.s;
+    for(let i=wk.length-1;i>0;i--)v[i-1]=v[i]/Math.exp(rr[i]||0);return {name:r.name,v,col:SERC[k]}});
+  if(!ser.length)return "";
+  const all=ser.flatMap(s=>s.v).concat([L.bp,100]),mn=Math.max(0,Math.min(...all)*.92),mx=Math.max(...all)*1.04,W2=600,H2=190,P=4;
+  const X=i=>P+i*(W2-2*P)/(wk.length-1),Y=v=>H2-P-(v-mn)/(mx-mn)*(H2-2*P);
+  const hl=(v,cl,da)=>`<line x1="0" x2="${W2}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="${cl}" stroke-width="1.5" ${da?`stroke-dasharray="${da}"`:""} vector-effect="non-scaling-stroke"/>`;
+  const tag=(v,t,k)=>`<span class="lv ${k}" style="top:${(Y(v)/H2*100).toFixed(1)}%">${t} ${fmt(v,0)}%</span>`;
+  const data={wk,s:ser.map(s=>({n:s.name,v:s.v.map(x=>+x.toFixed(1)),c:s.col}))};
+  return `<div class="uchart" data-u='${esc(JSON.stringify(data))}'><div class="cap">Ultimo anno dei sottostanti · in % dello strike, settimana per settimana</div>
+<div class="uc-plot"><svg viewBox="0 0 ${W2} ${H2}" preserveAspectRatio="none" role="img" aria-label="Andamento dei sottostanti rispetto a barriera e strike">
+<rect x="0" y="${Y(L.bp).toFixed(1)}" width="${W2}" height="${(H2-Y(L.bp)).toFixed(1)}" fill="var(--bad-bg)"/>
+${hl(100,"var(--muted)","2 4")}${L.tp&&Math.abs(L.tp-L.bp)>=.5?hl(L.tp,"var(--caution)","5 4"):""}${hl(L.bp,"var(--bad)")}
+${ser.slice().reverse().map(s=>`<polyline points="${s.v.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}" fill="none" stroke="${s.col}" stroke-width="${s===ser[0]?2.2:1.6}" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`).join("")}
+<line class="xh" x1="0" x2="0" y1="0" y2="${H2}" stroke="var(--muted)" stroke-width="1" vector-effect="non-scaling-stroke" visibility="hidden"/>
+<rect width="${W2}" height="${H2}" fill="transparent" class="hit"/></svg>
+${tag(L.bp,"Barriera","bad")}${tag(100,"Strike","")}${L.tp&&Math.abs(L.tp-L.bp)>=4&&Math.abs(L.tp-100)>=4?tag(L.tp,"Cedola","ca"):""}</div>
+<div class="uc-leg">${ser.map(s=>`<span><i style="background:${s.col}"></i>${esc(s.name)}</span>`).join("")}</div>
+<div class="tip">Passa sul grafico per i valori della settimana</div></div>`;
+}
+function wireUChart(root){const ch=root.querySelector(".uchart[data-u]");if(!ch)return;const D=JSON.parse(ch.dataset.u),n=D.wk.length;const svg=ch.querySelector("svg"),xh=ch.querySelector(".xh"),tip=ch.querySelector(".tip");
+  const mv=e=>{const r=svg.getBoundingClientRect();const i=Math.round(clamp((e.clientX-r.left)/r.width,0,1)*(n-1));const x=4+i*(600-8)/(n-1);xh.setAttribute("x1",x);xh.setAttribute("x2",x);xh.setAttribute("visibility","visible");
+    tip.innerHTML=`<b>${i===n-1?"Oggi":"Settimana del "+new Date(D.wk[i]).toLocaleDateString("it-IT")}</b> · `+D.s.map(s=>`<span style="color:${s.c}">●</span> ${esc(s.n)} ${fmt(s.v[i],0)}%`).join(" · ")};
+  svg.addEventListener("pointermove",mv);svg.addEventListener("pointerleave",()=>xh.setAttribute("visibility","hidden"))}
+
+function payoff(c,full){
+  const L=levels(c,full);if(!L.bp)return "";const w=L.rows[0],top=Math.max(150,(w?.s||0)*1.1),W2=300,H2=150,P=6,ymax=Math.max(120,100+(c.couponPa||0)/4+10);
+  const X=v=>P+v/top*(W2-2*P),Y=v=>H2-P-v/ymax*(H2-2*P);
+  const last=c.freq&&c.couponPa?c.couponPa/({"1m":12,"3m":4,"6m":2,"12m":1}[c.freq]||1):0,tp=L.tp??L.bp,fin=100+last;
+  const pts=last&&tp>L.bp?[[0,0],[L.bp,L.bp],[L.bp,100],[tp,100],[tp,fin],[top,fin]]:[[0,0],[L.bp,L.bp],[L.bp,fin],[top,fin]];
+  const pl=pts.map(([x,y])=>`${X(x).toFixed(1)},${Y(y).toFixed(1)}`).join(" ");
+  return `<div class="pay"><div class="cap">Quanto rimborsa a scadenza · per 100 di nominale</div>
+<div class="pay-plot"><svg viewBox="0 0 ${W2} ${H2}" preserveAspectRatio="none" role="img" aria-label="Rimborso a scadenza in funzione del peggiore">
+<rect x="0" y="0" width="${X(L.bp).toFixed(1)}" height="${H2}" fill="var(--bad-bg)"/>
+<line x1="0" x2="${W2}" y1="${Y(100).toFixed(1)}" y2="${Y(100).toFixed(1)}" stroke="var(--line)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<polygon points="${X(0)},${Y(0)} ${pl} ${X(top)},${Y(0)}" fill="var(--accent-soft)"/>
+<polyline points="${pl}" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+${w?`<line x1="${X(w.s).toFixed(1)}" x2="${X(w.s).toFixed(1)}" y1="0" y2="${H2}" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>`:""}</svg>
+${w?`<span class="now" style="left:${(X(Math.min(w.s,top))/W2*100).toFixed(1)}%">oggi ${fmt(w.s,0)}%</span>`:""}</div>
+<div class="pay-x"><span>0%</span><span style="left:${(X(L.bp)/W2*100).toFixed(1)}%">barriera ${fmt(L.bp,0)}%</span><span style="right:0;left:auto">${fmt(top,0)}%</span></div>
+<p class="note">Sopra la barriera${tp>L.bp?" e il trigger":""}: <b>100${last?` + ultima cedola (${fmt(last,2)})`:""}</b>. Sotto: rimborso pari al valore del peggiore (es. al ${fmt(Math.round(L.bp*.8),0)}% → ${fmt(Math.round(L.bp*.8),0)}).${full.barrierType&&full.barrierType!=="scadenza"?" Barriera osservata anche durante la vita: se viene toccata la protezione può decadere.":""}</p></div>`;
+}
+
+function calendar1(c,full){
+  const today=new Date();today.setHours(0,0,0,0);const end=c.matDate;if(!end||end<=today)return "";
+  const per={"1m":1,"2m":2,"3m":3,"4m":4,"6m":6,"12m":12}[c.freq];const cps=[];
+  if(c.couponDate&&per){for(let d=new Date(c.couponDate),k=0;d<=end&&k<130;k++){cps.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth()+per,d.getDate())}}
+  const calls=(full.callSchedule||[]).map(([d,l])=>[parseDate(d),l]).filter(([d])=>d&&d>=today&&d<=end);
+  if(!cps.length&&!calls.length)return "";
+  const span=end-today,P=v=>clamp((v-today)/span*100,0,100).toFixed(2)+"%";
+  const ppy=12/(per||12),each=c.couponPa?c.couponPa/ppy:null;
+  const up=[...cps.map(d=>[d,"c"]),...calls.map(([d,l])=>[d,"a",l])].sort((a,b)=>a[0]-b[0]).slice(0,4);
+  return `<div class="cal1"><div class="cap">Calendario fino a scadenza · ${dshort(end)}</div>
+<div class="cl-track${cps.length>14?" dense":""}"><i class="cl-line"></i>${cps.map(d=>`<b class="cp" style="left:${P(d)}" title="Cedola ${dshort(d)}"></b>`).join("")}${calls.map(([d,l])=>`<b class="ac" style="left:${P(d)}" title="Richiamo ${dshort(d)}${l?" se ≥ "+fmt(l,0)+"%":""}"></b>`).join("")}<span class="cl-l">oggi</span><span class="cl-r">scadenza</span></div>
+<div class="bm-leg">${cps.length?`<span><b class="cp"></b> ${cps.length} cedole${each?` da ${fmt(each,2)}%`:""}</span>`:""}${calls.length?`<span><b class="ac"></b> ${calls.length} date di richiamo</span>`:""}</div>
+${each&&cps.length?`<p class="note">Se tutte le cedole venissero pagate: <b>${fmt(each*cps.length,1)}%</b> del nominale (${fmt(each*cps.length*10,0)} € ogni 1.000 €).</p>`:""}
+<div class="cl-next">${up.map(([d,k,l])=>`<span><b>${dshort(d)}</b> ${k==="c"?"cedola":"richiamo"+(l?" ≥ "+fmt(l,0)+"%":"")}</span>`).join("")}</div></div>`;
+}
+
 async function detailHtml(c){
-  const j=await loadDetail(c.isin);const full=j?.certificate||c;const own=full.url&&/borsaitaliana\.it/.test(full.url);
+  const [j]=await Promise.all([loadDetail(c.isin),loadReturns()]);const full=j?.certificate||c;const own=full.url&&/borsaitaliana\.it/.test(full.url);
   const F=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],
     ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
     ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
@@ -1432,10 +1600,13 @@ async function detailHtml(c){
 <div><div class="k">Peggiore dalla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div><div class="s">${esc(c.worst||"peggiore n.d.")}</div></div>
 <div><div class="k">Prob. tenuta</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div><div class="s">${c.wvol!=null?"vol peggiore "+pct(c.wvol,0):"volatilità n.d."}</div></div>
 </div>
+${verdict(c,full)}
+${barrierMap(c,full)||ladder(c,full)}
+${undChart(c,full)}
 <div class="facts">${F.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>
+<div class="duo">${payoff(c,full)}${calendar1(c,full)}</div>
 ${scenarios(c)}
 ${scoreBars(c)}
-${ladder(c,full)}
 ${chart(j?.history)}
 <div class="row" style="font-size:.88rem">${links(full)}</div>
 <details><summary>Tutti i dati</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>
@@ -1444,7 +1615,7 @@ ${chart(j?.history)}
 async function openDetail(isin){
   const c=BYISIN.get(isin);if(!c)return;
   const d=$("#drawer"),b=$("#dbody");d.hidden=false;document.body.style.overflow="hidden";b.innerHTML=`<p class="note">Caricamento ${esc(isin)}…</p>`;
-  b.innerHTML=await detailHtml(c);wireChart(b);b.querySelector("[data-close]").focus();
+  b.innerHTML=await detailHtml(c);wireChart(b);wireUChart(b);b.querySelector("[data-close]").focus();
 }
 function closeDrawers(){$("#drawer").hidden=true;$("#cmp").hidden=true;$("#pf").hidden=true;document.body.style.overflow=""}
 
@@ -1609,7 +1780,7 @@ async function renderIsinBox(){
   if(!ISIN){box.hidden=true;box.innerHTML="";return}
   box.hidden=false;
   const exact=ISIN.length===12?BYISIN.get(ISIN):(ROWS.length===1?ROWS[0]:null);
-  if(exact){if(box.dataset.isin===exact.isin)return;box.dataset.isin=exact.isin;box.innerHTML=`<div class="inline-detail">${await detailHtml(exact)}</div>`;box.querySelector("[data-close]")?.remove();wireChart(box);return}
+  if(exact){if(box.dataset.isin===exact.isin)return;box.dataset.isin=exact.isin;box.innerHTML=`<div class="inline-detail">${await detailHtml(exact)}</div>`;box.querySelector("[data-close]")?.remove();wireChart(box);wireUChart(box);return}
   box.dataset.isin="";
   if(ISIN.length===12)box.innerHTML=`<div class="panel"><b>ISIN non presente</b> nell'archivio: <span class="num">${esc(ISIN)}</span>. <a href="https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${esc(ISIN)}-SEDX.html?lang=it" target="_blank" rel="noopener">Cercalo su Borsa Italiana</a>.</div>`;
   else box.innerHTML=ROWS.length?`<p class="note">${ROWS.length} certificati iniziano con ${esc(ISIN)}: tutti i filtri sono ignorati. Completa l'ISIN o apri una riga.</p>`:`<div class="panel">Nessun ISIN in archivio inizia con <span class="num">${esc(ISIN)}</span>.</div>`;
