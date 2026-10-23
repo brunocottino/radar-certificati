@@ -35,7 +35,9 @@ async def main():
         rep["isin_absent"] = (await pg.text_content("#isinbox") or "").strip()[:200]
         await pg.fill("#q", "")
         await pg.wait_for_timeout(800)
-        await pg.click("#reset")
+        await pg.keyboard.press("Escape")  # con la ricerca vuota restano aperti gli esempi di ricerca
+        await pg.evaluate("() => document.querySelector('#q').blur()")
+        await pg.click("#reset", force=True)
         await pg.wait_for_timeout(800)
         rep["count_all"] = await pg.text_content("#count")
         await pg.select_option("#f-cat", "Leva") if await pg.locator("#f-cat option[value=Leva]").count() else None
