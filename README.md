@@ -58,12 +58,15 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 L'ultimo step controlla che entro 5 minuti dal push il sito (`radar-certificati.cottinob.workers.dev`, dove il robot
 pubblica i dati) serva il nuovo `updatedAt`, altrimenti la run fallisce.
 
+Indirizzo pubblico: **https://radarcertificati.com** (dominio Cloudflare collegato allo stesso Worker; l'indirizzo
+`workers.dev` resta attivo e il controllo usa quello, che non dipende dal DNS).
+
 Il repository è privato: GitHub Actions ha 2.000 minuti gratuiti al mese e ogni run ne usa 15-45.
 
 ## API
 
 API JSON pubblica, in sola lettura, con CORS aperto (`Access-Control-Allow-Origin: *`), rigenerata a ogni run.
-Base: `https://radar-certificati.cottinob.workers.dev/api/v1/`
+Base: `https://radarcertificati.com/api/v1/`
 
 | Indirizzo | Contenuto |
 |---|---|
@@ -74,7 +77,7 @@ Base: `https://radar-certificati.cottinob.workers.dev/api/v1/`
 | `schema.json` | descrizione in italiano di ogni campo |
 
 ```js
-const BASE = "https://radar-certificati.cottinob.workers.dev/api/v1/";
+const BASE = "https://radarcertificati.com/api/v1/";
 const { certificates } = await fetch(BASE + "certificates.json").then(r => r.json());
 const solidi = certificates.filter(c => c.probBarrierHold >= 0.85 && c.probMethod !== "solo_peggiore");
 const isin_bucket = s => { let h = 0x811c9dc5; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0; return (h % 256).toString(16).padStart(2, "0"); };

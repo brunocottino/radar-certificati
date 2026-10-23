@@ -1,2 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /data/
+
+Sitemap: https://radarcertificati.com/sitemap.xml
