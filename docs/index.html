@@ -231,6 +231,7 @@ tr.sp td{height:auto;border:none;padding:0}
 .card{gap:8px;padding:12px 14px;grid-template-columns:minmax(0,1fr)}
 .card>*{min-width:0}
 .wrap,.drawer .dbody{grid-template-columns:minmax(0,1fr)}
+.drawer .dbody{grid-auto-rows:max-content}
 .wrap>*,.drawer .dbody>*{min-width:0}
 .c-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
 .c-head .who{min-width:0;flex:1}
@@ -503,7 +504,7 @@ body{font-feature-settings:"tnum" 1;letter-spacing:-.003em}
 .isin,.sugg .k{font-family:var(--f-mono)}
 td{font-weight:500}
 /* ---------- il mio portafoglio e analisi ---------- */
-.pfmode{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:520px}
+.pfmode{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:520px;overflow:visible;min-height:min-content}
 .pfmode button{padding:9px 6px}
 .myp{display:grid;gap:12px}
 .myp-add input{font-size:1rem;padding:11px 14px 11px 40px;border-radius:12px;background:var(--surface)}
@@ -619,6 +620,7 @@ td{font-weight:500}
 .cl-track.dense .cp{width:6px;height:6px;margin-left:-3px;top:8px}
 .inline-detail .dhead .row{flex-wrap:wrap}
 .inline-detail{grid-template-columns:minmax(0,1fr)}.inline-detail>*{min-width:0}
+.cmp-table td.best{background:var(--good-bg);font-weight:700;box-shadow:inset 3px 0 0 var(--good)}
 .cl-l,.cl-r{position:absolute;top:20px;font-size:.66rem;color:var(--muted)}.cl-r{right:0}
 .cl-next{display:flex;flex-wrap:wrap;gap:6px}
 .cl-next span{font-size:.74rem;border:1px solid var(--line);border-radius:999px;padding:2px 9px;background:var(--row)}
@@ -801,7 +803,7 @@ td{font-weight:500}
 const $=s=>document.querySelector(s);
 const NF=[];const fmt=(v,d=2)=>v==null||isNaN(v)?"—":(NF[d]||(NF[d]=new Intl.NumberFormat("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d}))).format(v);
 const pct=(v,d=1)=>v==null||isNaN(v)?"—":fmt(v,d)+"%";
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2400)}
@@ -1313,7 +1315,7 @@ function myEditor(L){
 <div class="search myp-add"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
 <input id="pfq" type="text" autocomplete="off" spellcheck="false" placeholder="Aggiungi un certificato: ISIN, sottostante, emittente…" aria-label="Cerca un certificato da aggiungere"><ul id="pfsugg" class="sugg" hidden></ul></div>
 ${L.length?`<div class="myrows">${L.map(x=>`<div class="myrow"><div class="who" data-open="${esc(x.c.isin)}"><div class="c-iss"><b>${esc(x.c.issuer||"")}</b> · <span class="num">${esc(x.c.isin)}</span></div><div class="myu">${undsHtml(x.c)}</div>
-<div class="note">${pct(x.c.ytm)} annuo · cedola ${pct(x.c.couponPa,1)} · barriera a ${pct(x.c.dist,0)} · scade ${dshort(x.c.matDate)}</div></div>
+<div class="note">${pct(x.c.ytm)} annuo · cedola ${pct(x.c.couponPa,1)} · ${x.c.dist==null?"distanza n.d.":x.c.dist<0?"sotto barriera":pct(x.c.dist,0)+" dalla barriera"} · scade ${dshort(x.c.matDate)}</div></div>
 <label class="amt">€<input type="number" inputmode="numeric" min="0" step="500" value="${Math.round(x.inv)}" data-amt="${esc(x.c.isin)}" aria-label="Importo"></label>
 <button class="rm" data-myp-rm="${esc(x.c.isin)}" aria-label="Togli dal portafoglio">✕</button></div>`).join("")}</div>
 <div class="row" style="justify-content:space-between"><span class="note">Totale <b class="num">${fmt(L.reduce((a,x)=>a+x.inv,0),0)} €</b> su ${L.length} certificati</span><span class="row"><button id="pf-eq">Importi uguali</button><button id="pf-addfav">+ Preferiti</button><button id="pf-clear">Svuota</button></span></div>`
@@ -1457,13 +1459,18 @@ function ladder(c,full){
       return `<div class="lad ${w?"worst":""} ${d!=null&&d<0?"under":""}"><span class="n" title="${esc(u.name)}">${w?"▸ ":""}${esc(u.name)}<span class="note"> ${c.secOf.get(u.name)?esc(c.secOf.get(u.name))+" · ":""}${rk.ticker?esc(rk.ticker):""}${rk.vol1y!=null?" · vol "+fmt(rk.vol1y*100,0)+"% 1a"+(rk.vol3m!=null?", "+fmt(rk.vol3m*100,0)+"% 3m":""):""}</span></span><span class="bar"><i style="width:${width}%"></i></span><span class="d ${cls(d)}">${d==null?"n.d.":pct(d)}</span></div>`}).join("")+
     (det.length?"":`<p class="note">L'emittente non fornisce la distanza di ogni sottostante: è nota solo quella del peggiore.</p>`)+`</div>`;
 }
+function relTime(v){const d=new Date(v);if(isNaN(d))return "";const t=d.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
+  const day=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),n=(day(new Date())-day(d))/864e5;
+  return n===0?"oggi "+t:n===1?"ieri "+t:dshort(d)+" "+t}
 function chart(hist){
   if(!hist||hist.length<2)return `<div class="chart"><div class="cap">Storico prezzo</div><p class="note">Lo storico si costruisce un giorno alla volta: ${hist&&hist.length?"un solo giorno salvato finora":"nessun giorno salvato finora"}.</p></div>`;
   const pts=hist.map(([d,b,a])=>({d,m:(b+a)/2,b,a}));const W2=600,H2=160,P=6;
-  const mn=Math.min(...pts.map(p=>p.m)),mx=Math.max(...pts.map(p=>p.m)),span=mx-mn||1;
+  const lo=Math.min(...pts.map(p=>p.m)),hi=Math.max(...pts.map(p=>p.m)),mid=(lo+hi)/2;
+  // scala minima ±3% del prezzo: pochi centesimi di oscillazione non devono sembrare un crollo
+  const half=Math.max((hi-lo)/2,mid*.03),mn=mid-half,mx=mid+half,span=mx-mn||1;
   const X=i=>P+i*(W2-2*P)/(pts.length-1),Y=v=>H2-P-(v-mn)/span*(H2-2*P-14);
   const line=pts.map((p,i)=>`${X(i).toFixed(1)},${Y(p.m).toFixed(1)}`).join(" ");
-  return `<div class="chart" data-hist='${esc(JSON.stringify(pts))}'><div class="cap">Prezzo medio (denaro+lettera)/2 · ultimi ${pts.length} giorni · min ${fmt(mn)} · max ${fmt(mx)}</div>
+  return `<div class="chart" data-hist='${esc(JSON.stringify(pts))}'><div class="cap">Prezzo del certificato · ultimi ${pts.length} giorni · min ${fmt(lo)} · max ${fmt(hi)}</div>
 <svg viewBox="0 0 ${W2} ${H2}" preserveAspectRatio="none" role="img" aria-label="Storico del prezzo medio"><line x1="0" x2="${W2}" y1="${H2-P}" y2="${H2-P}" stroke="var(--line)" stroke-width="1"/>
 <polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
 <line class="xh" x1="0" x2="0" y1="0" y2="${H2}" stroke="var(--muted)" stroke-width="1" vector-effect="non-scaling-stroke" visibility="hidden"/>
@@ -1631,8 +1638,9 @@ function renderCmpBar(){$("#cmpbar").hidden=!CMP.size;$("#cmptxt").textContent=`
 async function openCmp(){
   const cs=[...CMP].map(i=>BYISIN.get(i)).filter(Boolean);if(cs.length<2){toast("Seleziona almeno 2 certificati");return}
   const js=await Promise.all(cs.map(c=>loadDetail(c.isin)));
-  const R=[["Emittente",c=>esc(c.issuer)],["Sottostanti",c=>esc(c.unds.join(", "))],["Categoria",c=>esc(c.cat)],["Prob. tenuta",c=>`<span class="${pcls(c.prob)}">${probTxt(c)}</span>`],["Dist. barriera peggiore",c=>`<span class="${cls(c.dist)}">${pct(c.dist)}</span>`],["Dist. trigger",c=>pct(c.trigDist)],["Barriera / trigger",c=>`${pct(c.barrierPct,0)} / ${pct(c.triggerPct,0)}`],["Cedola p.a.",c=>pct(c.couponPa,2)+" "+freqTxt(c.freq)],["Memoria",c=>c.memory?"Sì":"No"],["Richiamo",c=>esc(c.callable||"—")],["Denaro / lettera",c=>`${fmt(c.bid)} / ${fmt(c.ask)}`],["Prezzo %",c=>pct(c.pricePct,2)],["Spread",c=>pct(c.spread,2)],["Rend. a scadenza",c=>pct(c.ytm)],["Rend. a richiamo",c=>pct(c.ytc)],["Vol peggiore",c=>pct(c.wvol,0)],["Prossima cedola",c=>dshort(c.couponDate)],["Prossimo richiamo",c=>dshort(c.callDate)],["Scadenza",c=>dshort(c.matDate)],["Punteggio",c=>c.score]];
-  $("#cmpbody").innerHTML=`<div class="dhead"><b>Confronto</b><button data-close aria-label="Chiudi">✕</button></div><div class="tbl-wrap" style="overflow:auto"><table class="cmp-table"><thead><tr><th></th>${cs.map(c=>`<th><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button></th>`).join("")}</tr></thead><tbody>${R.map(([l,f])=>`<tr><td>${l}</td>${cs.map(c=>`<td>${f(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const R=[["Emittente",c=>esc(c.issuer)],["Sottostanti",c=>esc(c.unds.join(", "))],["Categoria",c=>esc(c.cat)],["Prob. tenuta",c=>`<span class="${pcls(c.prob)}">${probTxt(c)}</span>`,c=>c.prob,1],["Dist. barriera peggiore",c=>`<span class="${cls(c.dist)}">${pct(c.dist)}</span>`,c=>c.dist,1],["Dist. trigger",c=>pct(c.trigDist),c=>c.trigDist,1],["Barriera / trigger",c=>`${pct(c.barrierPct,0)} / ${pct(c.triggerPct,0)}`],["Cedola p.a.",c=>pct(c.couponPa,2)+" "+freqTxt(c.freq),c=>c.couponPa,1],["Memoria",c=>c.memory?"Sì":"No"],["Richiamo",c=>esc(c.callable||"—")],["Denaro / lettera",c=>`${fmt(c.bid)} / ${fmt(c.ask)}`],["Prezzo %",c=>pct(c.pricePct,2)],["Spread",c=>pct(c.spread,2),c=>c.spread,-1],["Rend. a scadenza",c=>pct(c.ytm),c=>c.ytmHigh?null:c.ytm,1],["Rend. a richiamo",c=>pct(c.ytc)],["Vol peggiore",c=>pct(c.wvol,0),c=>c.wvol,-1],["Prossima cedola",c=>dshort(c.couponDate)],["Prossimo richiamo",c=>dshort(c.callDate)],["Scadenza",c=>dshort(c.matDate)],["Punteggio",c=>c.score,c=>c.score,1]];
+  $("#cmpbody").innerHTML=`<div class="dhead"><b>Confronto</b><button data-close aria-label="Chiudi">✕</button></div><p class="note" style="margin:0">In verde il valore migliore di ogni riga.</p><div class="tbl-wrap" style="overflow:auto"><table class="cmp-table"><thead><tr><th></th>${cs.map(c=>`<th><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button></th>`).join("")}</tr></thead><tbody>${R.map(([l,f,v,dir])=>{const vals=v?cs.map(c=>v(c)):[];const ok=vals.filter(x=>x!=null);const best=ok.length>1&&new Set(ok).size>1?(dir>0?Math.max(...ok):Math.min(...ok)):null;
+    return `<tr><td>${l}</td>${cs.map((c,i)=>`<td${best!=null&&vals[i]===best?' class="best" title="Il migliore del confronto"':""}>${f(c)}</td>`).join("")}</tr>`}).join("")}</tbody></table></div>`;
   $("#cmp").hidden=false;document.body.style.overflow="hidden";
 }
 
@@ -1858,7 +1866,7 @@ function renderAlerts(){
 }
 function renderStatus(){
   const liq=CERTS.filter(c=>c.liq).length,up=META.updatedAt;
-  $("#status").innerHTML=`<span class="full"><b>${CERTS.length.toLocaleString("it-IT")}</b> in archivio · <b>${liq.toLocaleString("it-IT")}</b> con denaro e lettera · </span>${up?`aggiornato <b>${dtime(up)}</b>`:""}`;
+  $("#status").innerHTML=`<span class="full"><b>${CERTS.length.toLocaleString("it-IT")}</b> in archivio · <b>${liq.toLocaleString("it-IT")}</b> con denaro e lettera · </span>${up?`aggiornato <b>${relTime(up)}</b>`:""}`;
   const n=up?tradingDaysSince(up):null;const bn=$("#banner");
   if(n!=null&&n>1){bn.hidden=false;bn.textContent=`Dati non aggiornati: l'ultimo aggiornamento è del ${dtime(up)}, ${n} giorni di borsa fa. Prezzi e distanze potrebbero non essere attuali.`}else bn.hidden=true;
   const g=new Map();
@@ -1911,7 +1919,9 @@ $("#sheet-apply").addEventListener("click",()=>{openSheet(false);scrollTo({top:0
 $("#sheet-reset").addEventListener("click",()=>{resetAll();toast("Filtri azzerati")});
 $("#export2").addEventListener("click",()=>$("#export").click());
 $("#bnav").addEventListener("click",e=>{const b=e.target.closest("[data-nav]");if(!b)return;const n=b.dataset.nav;
-  if(n==="list"||n==="map"){closeDrawers();openSheet(false);state.view=n==="map"?"map":"cards";ls.set("rc-view",state.view);render(false);scrollTo({top:0,behavior:"smooth"})}
+  if(n==="list"||n==="map"){closeDrawers();openSheet(false);state.view=n==="map"?"map":"cards";ls.set("rc-view",state.view);render(false);
+    // la mappa sta sotto la tavola del giorno: si porta in vista, altrimenti il tasto sembra non fare nulla
+    requestAnimationFrame(()=>{const r=$(n==="map"?"#plot":"#results");scrollTo({top:n==="map"&&r?Math.max(0,r.getBoundingClientRect().top+scrollY-150):0,behavior:"smooth"})})}
   else if(n==="pf")openPf();
   else if(n==="filters")openSheet(true);
   else if(n==="fav"){state.f.fav=!state.f.fav;update();scrollTo({top:0});toast(state.f.fav?"Solo preferiti":"Tutti i certificati")}});
@@ -1930,7 +1940,7 @@ document.addEventListener("click",e=>{
   const cl=e.target.closest("[data-close]");if(cl){closeDrawers();return}
   const cb=e.target.closest("[data-cmpbtn]");if(cb){const i=cb.dataset.cmpbtn;toggleCmp(i);cb.classList.toggle("on",CMP.has(i));cb.textContent=CMP.has(i)?"✓ Confronto":"Confronta";return}
   const sh=e.target.closest("[data-share]");if(sh){const c=BYISIN.get(sh.dataset.share);const url=location.origin+location.pathname+"#q="+encodeURIComponent(sh.dataset.share);
-    const text=c?`${c.unds.join(", ")} · ${c.issuer||""} · rend. ${pct(c.ytm)} · barriera a ${pct(c.dist,0)}`:"";
+    const text=c?`${c.unds.join(", ")} · ${c.issuer||""} · rend. ${pct(c.ytm)} · ${c.dist==null?"distanza n.d.":c.dist<0?"sotto barriera":pct(c.dist,0)+" dalla barriera"}`:"";
     if(navigator.share)navigator.share({title:"Radar Certificati · "+sh.dataset.share,text,url}).catch(()=>{});else navigator.clipboard?.writeText(url).then(()=>toast("Link copiato")).catch(()=>toast(url));return}
   const th2=e.target.closest("[data-theme-btn]");if(th2){const T=["auto","dark","light"],cur=ls.get("rc-theme","auto"),nx=T[(T.indexOf(cur)+1)%3];ls.set("rc-theme",nx);applyTheme(nx);toast(`Tema ${nx==="auto"?"automatico (come il telefono)":nx==="dark"?"scuro":"chiaro"}`);if(state.view==="map")render(false);return}
   const cy=e.target.closest("[data-copy]");if(cy){navigator.clipboard?.writeText(cy.dataset.copy).then(()=>toast("ISIN copiato: "+cy.dataset.copy)).catch(()=>toast(cy.dataset.copy));return}
