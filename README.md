@@ -53,6 +53,14 @@ Il branch `discovery` viene aggiornato solo lanciando il workflow a mano con `de
 | Citigroup | API pubblica CitiFirst (`citivelocity.com/rcs/eppublic/v1/content/citifirst/product?...country=it`, senza parametri di paginazione): cedola (campo `manualField` o "Cpn: x%" nel nome), frequenza dal calendario dei richiami, barriera, strike dei sottostanti, prossimo richiamo, memoria. Le distanze si ricalcolano da strike e chiusure (`risk.py`), solo se strike e chiusura sono confrontabili |
 | Borsa Italiana (`borsa_scheda`) | schede per ISIN (`/scheda/<ISIN>-SEDX.html`, Cert-X `/eurotlx/scheda/<ISIN>-ETLX.html`) per i certificati ancora senza barriera: barriera capitale %, emittente (sostituisce i codici Euronext ignoti), nome commerciale (memoria), sottostanti. Niente cedola: le schede non la riportano. A rotazione, 1 richiesta/s, 5 minuti per run (~280 schede), prima cash collect/phoenix poi express; ripresa da `scraper/scheda_state.json` |
 
+### Orologio Cloudflare (avvio puntuale)
+
+GitHub ritarda di ore o salta le run programmate (il 26/10 nessuna delle 5 del mattino è partita). Un piccolo Worker
+Cloudflare (`cron/worker.js`, piano gratuito) avvia il workflow alle 09:35 e 16:15 di Roma con l'input `auto`:
+la run salta da sola se la fascia è già pubblicata o la borsa è chiusa. I cron di GitHub restano come riserva.
+Configurazione: Worker con il codice di `cron/worker.js`, Cron Triggers `35,40 7,8 * * 1-5` e `15,20 14,15 * * 1-5`,
+segreto `GH_TOKEN` (token GitHub fine-grained, solo questo repository, permesso Actions: Read and write).
+
 ### Verifica
 
 L'ultimo step controlla che entro 5 minuti dal push il sito (`radar-certificati.cottinob.workers.dev`, dove il robot

@@ -17,6 +17,11 @@ on:
         description: "Sorgenti (vuoto = tutte)"
         required: false
         default: ""
+      auto:
+        description: "Avvio dall'orologio Cloudflare: salta se la fascia è già pubblicata o la borsa è chiusa"
+        type: boolean
+        required: false
+        default: false
       debug:
         description: "Pubblica l'esplorazione sul branch discovery"
         type: boolean
@@ -54,13 +59,18 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           CRON: ${{ github.event.schedule }}
+          AUTO: ${{ inputs.auto }}
         run: |
           if [ "$EVENT" != "schedule" ]; then
             # parte sempre; se è dopo le 09:35 o le 16:15 di Roma e quella fascia non è ancora pubblicata, la occupa
             # (così i cron di recupero non rifanno lo stesso lavoro)
             HM=$(TZ=Europe/Rome date +%H%M); SLOT=manuale
             if [ $((10#$HM)) -ge 1615 ]; then SLOT="16:15"; elif [ $((10#$HM)) -ge 935 ]; then SLOT="09:35"; fi
-            if [ "$SLOT" != manuale ] && git log --since="30 hours ago" --format=%s | grep -qxF "Dati certificati $(TZ=Europe/Rome date +%F) $SLOT"; then SLOT=manuale; fi
+            if [ "$SLOT" != manuale ] && git log --since="30 hours ago" --format=%s | grep -qxF "Dati certificati $(TZ=Europe/Rome date +%F) $SLOT"; then
+              # avvio dall'orologio Cloudflare con la fascia già fatta (es. da GitHub o da un doppione): niente da fare
+              if [ "$AUTO" = "true" ]; then echo "Salta: fascia delle $SLOT di oggi già pubblicata"; echo "go=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+              SLOT=manuale
+            fi
             echo "Run manuale: nessun controllo d'orario (fascia: $SLOT)"
             echo "go=true" >> "$GITHUB_OUTPUT"; echo "slot=$SLOT" >> "$GITHUB_OUTPUT"; exit 0
           fi
@@ -95,7 +105,7 @@ jobs:
         # le run programmate partono solo nei giorni di apertura di Borsa Italiana; quelle manuali sempre
         run: |
           if [ "${{ steps.ora.outputs.go }}" != "true" ]; then echo "open=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-          if [ "${{ github.event_name }}" != "schedule" ]; then echo "open=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "${{ github.event_name }}" != "schedule" ] && [ "${{ inputs.auto }}" != "true" ]; then echo "open=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           python3 scraper/borsa.py
       - uses: actions/setup-python@v5
         if: steps.cal.outputs.open == 'true'
