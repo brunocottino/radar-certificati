@@ -11,6 +11,10 @@ on:
     # Se la fascia non è ancora pubblicata la recuperano; altrimenti si fermano al primo step (pochi secondi).
     - cron: "5 9,10,11 * * 1-5"
     - cron: "50 14,15,16 * * 1-5"
+    # Altri tentativi a minuti "insoliti" (GitHub perde soprattutto le run a inizio ora e ai quarti): il 26/10 ha
+    # saltato tutte e 5 le run del mattino. Ogni tentativo inutile si ferma in pochi secondi.
+    - cron: "23,47 9,10,11,12 * * 1-5"
+    - cron: "7,33 15,16,17 * * 1-5"
   workflow_dispatch:
     inputs:
       sources:
@@ -80,6 +84,8 @@ jobs:
             "15 14,15 * * 1-5") SLOT="16:15"; LEGALE=1415; SOLARE=1515 ;;
             "5 9,10,11 * * 1-5")  SLOT="09:35"; LEGALE=0735; SOLARE=0835; echo "Recupero della fascia 09:35" ;;
             "50 14,15,16 * * 1-5") SLOT="16:15"; LEGALE=1415; SOLARE=1515; echo "Recupero della fascia 16:15" ;;
+            "23,47 9,10,11,12 * * 1-5") SLOT="09:35"; LEGALE=0735; SOLARE=0835; echo "Recupero della fascia 09:35" ;;
+            "7,33 15,16,17 * * 1-5") SLOT="16:15"; LEGALE=1415; SOLARE=1515; echo "Recupero della fascia 16:15" ;;
             *) echo "Cron non previsto: '$CRON'"; echo "go=false" >> "$GITHUB_OUTPUT"; exit 0 ;;
           esac
           case "$OFF" in
