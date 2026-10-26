@@ -1,0 +1,25 @@
+{
+ "site": "https://radar-certificati.cottinob.workers.dev/",
+ "errors": [],
+ "status": "13.894 in archivio · 9.176 con denaro e lettera · aggiornato oggi 15:17",
+ "count_default": "706 certificati",
+ "chips": [
+  "Con denaro e lettera×",
+  "Senza leva×",
+  "Rend. annuo ≥ 12,0%×",
+  "Rend. annuo ≤ 35%×",
+  "Dist. barriera ≥ 25%×",
+  "Prob. tenuta ≥ 50%×",
+  "Scadenza ≤ 6 anni×",
+  "Spread ≤ 3,00%×",
+  "Solo con cedola×"
+ ],
+ "banner": false,
+ "count_intesa_enel": "14 certificati",
+ "isin": "DE000VK6PMC6",
+ "isin_box": "Vontobel · Multi Cash Collect\nDE000VK6PMC6☆ confronta80+ PortafoglioCondividi\n\nENI SpA · Intesa Sanpaolo SpA · Nexi SpA · STMicroelectronics NV\nMisto: Energia · Banche · Finanza…Worst-of 4Cash Collect/PhoenixMensileAutocallMemoriaSeDeXCedola in pagamento\n\nRend. annuo16,4%atteso 5,7%\nCedola p.a.13,44",
+ "isin_absent": "ISIN non presente nell'archivio: IT0000000000. Cercalo su Borsa Italiana.",
+ "count_all": "43.097 certificati",
+ "count_with_leva": "43.097 certificati",
+ "mobile_scroll_width": 390
+}
