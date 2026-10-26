@@ -166,17 +166,19 @@ jobs:
           git push
       - name: Verifica che il sito mostri i nuovi dati
         if: steps.cal.outputs.open == 'true'
-        # fallisce la run se entro 5 minuti dal push il sito non serve l'updatedAt appena pubblicato
+        # fallisce la run se entro 30 minuti dal push il sito non serve l'updatedAt appena pubblicato (o uno più recente).
+        # Il 26/10 Cloudflare ha impiegato tra 10 e 40 minuti a pubblicare: con 10 minuti la run falliva a dati già online
         run: |
           SITE=https://radar-certificati.cottinob.workers.dev  # dove il robot pubblica i dati
           SITE="${SITE%/}"
           WANT=$(python3 -c "import json;print(json.load(open('docs/data/certs.json'))['updatedAt'])")
           echo "updatedAt atteso: $WANT"
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             GOT=$(curl -s -m 30 "$SITE/data/certs.json?t=$(date +%s)" | python3 -c "import json,sys;print(json.load(sys.stdin).get('updatedAt'))" 2>/dev/null || echo "errore")
             echo "tentativo $i: sito=$GOT"
-            if [ "$GOT" = "$WANT" ]; then break; fi
-            sleep 20
+            # stesso updatedAt o più recente (una run successiva ha già pubblicato): le date ISO si confrontano come testo
+            if [ "$GOT" = "$WANT" ] || { [ "$GOT" != "errore" ] && [ "$GOT" != "None" ] && [[ "$GOT" > "$WANT" ]]; }; then OK=1; break; fi
+            sleep 30
           done
           H=$(curl -sI "$SITE/api/v1/meta.json" || true)
           {
@@ -185,7 +187,7 @@ jobs:
             echo "- updatedAt sul sito: \`$GOT\`"
             echo '```'; echo "$H" | grep -iE '^(HTTP|access-control-allow-origin|content-type)'; echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-          if [ "$GOT" != "$WANT" ]; then
-            echo "::error title=Sito non aggiornato::dopo 10 minuti $SITE mostra updatedAt=$GOT invece di $WANT (deploy non avvenuto?)"
+          if [ -z "${OK:-}" ]; then
+            echo "::error title=Sito non aggiornato::dopo 30 minuti $SITE mostra updatedAt=$GOT invece di $WANT (deploy non avvenuto?)"
             exit 1
           fi
