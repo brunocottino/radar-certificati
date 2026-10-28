@@ -2642,6 +2642,17 @@
   "type": "INDEX",
   "yahooName": "CAC 40 ESG Decrement 5%"
  },
+ "cac40 index": {
+  "checkedAt": "2026-10-28",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "CAC40 Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "cameco": {
   "checkedAt": "2026-10-15",
   "exchange": "TOR",
