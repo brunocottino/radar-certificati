@@ -107,12 +107,14 @@ def isin_bucket(isin):
     return f"{h % BUCKETS:02x}"
 LIST = ROOT / "docs" / "data" / "list.json"
 HIST_DAYS = 250
+# prima data in cui il radar ha visto ogni ISIN: "nuove emissioni" = comparsi da poco, dopo l'avvio dell'archivio
+FIRST = ROOT / "history" / "_first_seen.json"
 
 # colonne del file leggero per la lista del sito (docs/data/list.json): il dettaglio è in api/v1/isin/<gruppo>.json
 LIST_COLS = ["isin", "issuer", "platform", "type", "typeMarket", "category", "underlyings", "worstName", "distBarrier", "distAt",
              "barrierPct", "barrierType", "triggerPct", "autocallPct", "couponPa", "freq", "memory", "callable",
              "maturity", "bid", "ask", "nominal", "priceAt", "nextCouponDate", "nextCallDate", "market", "currency",
-             "probBarrierHold", "probMethod", "worstVol", "updatedAt", "sector", "sectors"]
+             "probBarrierHold", "probMethod", "worstVol", "updatedAt", "sector", "sectors", "firstSeen", "chg1d"]
 
 CATEGORIES = [  # (categoria, regex sul testo tipo/nome/richiamo) - il primo che corrisponde vince
     ("Leva", r"turbo|mini ?future|leva fissa|leverage|factor|warrant|knock.?out|\bcw\b"),
@@ -182,10 +184,17 @@ def main():
                                      "disclaimer": DISCLAIMER, "certificates": certs})
     day = updated[:10]
     groups = {}
+    first = load(FIRST, {})
     for c in certs:
         if ISIN_RE.match(c["isin"]):
             hist = update_history(c, day)
+            c["firstSeen"] = first.setdefault(c["isin"], hist[0][0] if hist else day)
+            # variazione del prezzo medio rispetto alla seduta precedente (solo con il prezzo di oggi)
+            if len(hist) >= 2 and hist[-1][0] == day:
+                m1, m0 = (hist[-1][1] + hist[-1][2]) / 2, (hist[-2][1] + hist[-2][2]) / 2
+                c["chg1d"] = round((m1 / m0 - 1) * 100, 2) if m0 else None
             groups.setdefault(isin_bucket(c["isin"]), {})[c["isin"]] = {"certificate": c, "history": hist}
+    dump(FIRST, dict(sorted(first.items())))
     for g, items in groups.items():
         dump(OUT / "isin" / f"{g}.json", {"version": 2, "updatedAt": updated, "disclaimer": DISCLAIMER, "certificates": items})
     # file leggero per la lista del sito: colonne + righe (niente chiavi ripetute)
