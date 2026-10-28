@@ -10,6 +10,9 @@ Niente token/routine di Claude per pianificare il robot. Non usare certificatied
   e verifica la sintassi estraendo lo script più lungo e `node --check`.
 - `scraper/` robot Python: `run.py` (sorgenti, merge, controlli di plausibilità), `parsers.py` (emittenti),
   `risk.py` (volatilità, distanze, probabilità), `api.py` (lista, API, storico), `sectors.py` (settori).
+- Motori di ricerca e IA: `worker/index.js` (main in `wrangler.jsonc`) crea al volo `/certificato/<ISIN>`;
+  `scraper/seo.py` (+ testi in `guida.py`) scrive `docs/certificati/`, `guida-certificati.html`, `sitemap.xml`, `llms.txt`;
+  `scraper/indexnow.py` segnala le pagine a Bing & co. (chiave in `docs/<chiave>.txt`).
 - `history/` storico prezzi per ISIN + `_first_seen.json` (non pubblicato).
 - `.github/workflows/scrape.yml` robot (09:35 e 16:15 Roma, + recuperi; GitHub ritarda anche di 6 ore);
   `diagnosi.yml` controlla dominio/sito. `cron/worker.js` orologio Cloudflare pronto ma NON attivo

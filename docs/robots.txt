@@ -1,6 +1,27 @@
+# Radar Certificati: tutte le pagine sono pubbliche e possono essere indicizzate e citate,
+# anche dagli assistenti IA. I file di dati grezzi (data/, api/) non servono ai motori: c'è /llms.txt.
 User-agent: *
 Allow: /
+Disallow: /data/
 Disallow: /api/
+
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: meta-externalagent
+User-agent: MistralAI-User
+User-agent: DuckAssistBot
+Allow: /
+Allow: /api/v1/meta.json
+Allow: /api/v1/schema.json
 Disallow: /data/
 
 Sitemap: https://radarcertificati.com/sitemap.xml

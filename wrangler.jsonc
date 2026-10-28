@@ -1,10 +1,12 @@
 // Configurazione del Worker che serve il sito (Cloudflare Workers Builds la legge a ogni push).
 // Il sito è statico: la cartella docs/ (pagina, dati, API). I domini personalizzati sono dichiarati qui,
 // così anche www.radarcertificati.com punta al sito senza passare dal pannello.
+// worker/index.js riceve solo gli indirizzi che non sono file: costruisce le schede /certificato/<ISIN>.
 {
   "name": "radar-certificati",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "./docs" },
+  "main": "worker/index.js",
+  "assets": { "directory": "./docs", "binding": "ASSETS" },
   "workers_dev": true,
   "routes": [
     { "pattern": "radarcertificati.com", "custom_domain": true },
