@@ -1623,7 +1623,7 @@
   "yahooName": null
  },
  "basket 1 x ge aerospace 0 25 x ge vernova llc": {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4529,7 +4529,7 @@
   "yahooName": null
  },
  "euro istoxx 50 carbon adaptation gr decrement 5": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4727,7 +4727,7 @@
   "yahooName": null
  },
  "euro istoxx responsibility screened select 30 index": {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5094,7 +5094,7 @@
   "yahooName": null
  },
  "eurostat eurozone hicp ex tobacco unrevised series nsa": {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13470,7 +13470,7 @@
   "yahooName": null
  },
  "leonardo stellantis telecom": {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17538,7 +17538,7 @@
   "yahooName": null
  },
  "solactive btp 10y annual comp 11am yield index": {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18297,7 +18297,7 @@
   "yahooName": null
  },
  "stoxx europe 600 telecommunications index": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18786,7 +18786,7 @@
   "yahooName": "Telefónica, S.A."
  },
  "telefonica s a": {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-10-28",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18994,12 +18994,34 @@
   "type": "EQUITY",
   "yahooName": "thyssenkrupp AG"
  },
+ "thyssenkrupp tk accelis grp bskt": {
+  "checkedAt": "2026-10-28",
+  "exchange": null,
+  "isin": "DE000A4AYEL9",
+  "manual": null,
+  "name": "THYSSENKRUPP AG TK ACCELIS GRP AG BSKT",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "thyssenkrupp tkms kga basket": {
   "checkedAt": "2026-10-27",
   "exchange": null,
   "isin": "DE000A4APUH1",
   "manual": null,
   "name": "THYSSENKRUPP AG TKMS AG& CO KGA BASKET",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "thyssenkrupp tkms tkcc basket": {
+  "checkedAt": "2026-10-28",
+  "exchange": null,
+  "isin": "DE000A4APUH1",
+  "manual": null,
+  "name": "THYSSENKRUPP AG TKMS AG TKCC AG BASKET",
   "score": null,
   "ticker": null,
   "type": null,
