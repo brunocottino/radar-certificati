@@ -723,6 +723,17 @@
   "type": "EQUITY",
   "yahooName": "Advanced Micro Devices, Inc."
  },
+ "amd intel marvell": {
+  "checkedAt": "2026-10-29",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "AMD, Intel, Marvell",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "american airlines": {
   "checkedAt": "2026-10-09",
   "exchange": "NMS",
@@ -1380,6 +1391,19 @@
   "type": "EQUITY",
   "yahooName": "Banca Mediolanum S.p.A."
  },
+ "banca mediolanum banco bpm bper banca unicredit": {
+  "checkedAt": "2026-10-29",
+  "exchange": "MIL",
+  "industry": "Banks—Regional",
+  "isin": null,
+  "manual": null,
+  "name": "Banca Mediolanum, Banco BPM, BPER Banca, UniCredit",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "BMED.MI",
+  "type": "EQUITY",
+  "yahooName": "Banca Mediolanum S.p.A."
+ },
  "banca mediolanum s p a": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -1601,7 +1625,7 @@
   "yahooName": "BASF SE"
  },
  "basket 1 x banca monte dei paschi di siena s p a": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1612,7 +1636,7 @@
   "yahooName": null
  },
  "basket 1 x continental 0 5 x aumovio": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1899,6 +1923,19 @@
   "type": "EQUITY",
   "yahooName": "Blackstone Inc."
  },
+ "blackstone kkr carlyle": {
+  "checkedAt": "2026-10-29",
+  "exchange": "NYQ",
+  "industry": "Asset Management",
+  "isin": null,
+  "manual": null,
+  "name": "Blackstone, KKR & Co, The Carlyle Group",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "BX",
+  "type": "EQUITY",
+  "yahooName": "Blackstone Inc."
+ },
  "block": {
   "checkedAt": "2026-10-09",
   "exchange": "NYQ",
@@ -1988,7 +2025,7 @@
   "yahooName": null
  },
  "bloomberg gold subindex": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2643,9 +2680,9 @@
   "yahooName": "CAC 40 ESG Decrement 5%"
  },
  "cac40 index": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-10-29",
   "exchange": null,
-  "isin": null,
+  "isin": "FR0003500008",
   "manual": null,
   "name": "CAC40 Index",
   "score": null,
@@ -4716,7 +4753,7 @@
   "yahooName": null
  },
  "euro istoxx esg leaders 50 nr decrement 5 price eur": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4831,6 +4868,17 @@
   "manual": "EXX1.DE",
   "name": "EURO STOXX Banks",
   "ticker": null
+ },
+ "euro stoxx banks euro stoxx euro stoxx euro stoxx": {
+  "checkedAt": "2026-10-29",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "EURO STOXX Banks, Euro Stoxx , Euro Stoxx , Euro Stoxx",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "euro stoxx banks index": {
   "isin": "EU0009658426",
@@ -5160,7 +5208,7 @@
   "yahooName": null
  },
  "eurostoxx sel div30": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5336,7 +5384,7 @@
   "yahooName": "Ferrari N.V."
  },
  "ferrari it": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5623,9 +5671,9 @@
   "ticker": null
  },
  "ftse 100 index": {
-  "checkedAt": "2026-10-27",
+  "checkedAt": "2026-10-29",
   "exchange": null,
-  "isin": null,
+  "isin": "GB0001383545",
   "manual": null,
   "name": "FTSE 100 INDEX",
   "score": null,
@@ -6367,7 +6415,7 @@
   "yahooName": "Iberdrola, S.A."
  },
  "ibex 35": {
-  "isin": null,
+  "isin": "ES0SI0000005",
   "manual": "^IBEX",
   "name": "IBEX 35",
   "ticker": null
@@ -14815,7 +14863,7 @@
   "yahooName": null
  },
  "msci europe smart security defense infrastructure top 50 select 4 5 decrement index": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14848,7 +14896,7 @@
   "yahooName": null
  },
  "msci world ai effect select 4 5 decrement index": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14870,7 +14918,7 @@
   "yahooName": null
  },
  "msci world gold uranium rare earth select 4 5 decrement idx eur net total return": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15657,6 +15705,19 @@
   "type": "EQUITY",
   "yahooName": "Oklo Inc."
  },
+ "okta": {
+  "checkedAt": "2026-10-29",
+  "exchange": "NMS",
+  "industry": "Software—Infrastructure",
+  "isin": "US6792951054",
+  "manual": null,
+  "name": "Okta",
+  "score": 1.0,
+  "sector": "Technology",
+  "ticker": "OKTA",
+  "type": "EQUITY",
+  "yahooName": "Okta, Inc."
+ },
  "old mutual dublin funds equity absolute return fund": {
   "checkedAt": "2026-10-23",
   "exchange": null,
@@ -15691,7 +15752,7 @@
   "yahooName": "On Holding AG"
  },
  "onemarkets fidelity world equity income fund c": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18121,7 +18182,7 @@
   "yahooName": null
  },
  "stoxx europe 600 automobiles parts price eur": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": "EU0009658681",
   "manual": null,
@@ -18297,7 +18358,7 @@
   "yahooName": null
  },
  "stoxx europe 600 technology price eur": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": "EU0009658921",
   "manual": null,
@@ -18319,7 +18380,7 @@
   "yahooName": null
  },
  "stoxx europe 600 telecommunications price eur": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": "EU0009658947",
   "manual": null,
@@ -18429,7 +18490,7 @@
   "yahooName": null
  },
  "stoxx global esg social leaders diversification select 30 index": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19328,7 +19389,7 @@
   "yahooName": null
  },
  "uc european sector rotation strategy index": {
-  "checkedAt": "2026-10-21",
+  "checkedAt": "2026-10-29",
   "exchange": null,
   "isin": null,
   "manual": null,
