@@ -684,6 +684,54 @@ td{font-weight:500}
 
 .pl-new{grid-column:1/-1;justify-self:start;margin:10px 0 0;border:1px dashed var(--brass);background:var(--brass-soft);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:.84rem}
 .pl-new b{color:var(--brass)}
+/* logo = torna all'inizio */
+.brandmark a{display:flex;align-items:center;gap:inherit;color:inherit;text-decoration:none;border-radius:10px;padding:2px 4px 2px 0}
+.brandmark a:hover .bm2{text-decoration:underline;text-underline-offset:3px}
+.brandmark a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.logo{transition:transform .2s}.brandmark a:hover .logo{transform:scale(1.06)}
+.logo.spin{animation:homespin .6s cubic-bezier(.3,1.4,.5,1)}
+@keyframes homespin{from{transform:rotate(-200deg) scale(.7)}to{transform:none}}
+/* profilo + obiettivi */
+.steprow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.seg .lab,.chiprow .lab{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;align-self:center}
+.seg .lab{padding:0 8px 0 9px}
+.chip.more{padding:3px 10px;border:1px dashed var(--accent);background:none;cursor:pointer}
+/* guida rapida */
+.howto{position:relative;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 44px 12px 14px}
+.howto ol{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:st}
+.howto li{counter-increment:st;display:grid;grid-template-columns:26px 1fr;column-gap:10px;font-size:.86rem;line-height:1.35}
+.howto li::before{content:counter(st);grid-row:span 2;width:26px;height:26px;border-radius:99px;background:var(--accent-fill,var(--accent));color:#fff;display:grid;place-items:center;font-weight:700;font-size:.8rem}
+.howto li span{color:var(--muted)}
+.howto-x{position:absolute;top:8px;right:8px;border:none;background:none;color:var(--muted);font-size:1rem;padding:4px 8px}
+@media (min-width:820px){
+  .howto ol{grid-template-columns:repeat(3,1fr);gap:18px}
+  .brand>.row{display:grid!important;gap:3px;justify-items:start}
+  .brand .status{font-size:.76rem;padding-left:39px}
+  .brand .tools{align-items:center;gap:8px}
+  .brand .tools>button,.brand .tools .seg{height:38px}
+  .brand .tools>button{padding:0 14px;display:inline-flex;align-items:center;gap:6px}
+  .brand .tools .seg button{padding:0 14px;height:100%}
+  .brand .tools .seg{padding:3px}
+  .brand .tools .info{width:38px;padding:0;justify-content:center;font-size:.9rem;border-radius:99px}
+  .brand .tools .info svg{width:17px;height:17px}
+  #view{margin-left:6px}
+  #view+.info{margin-left:6px}
+  .steprow .seg{height:36px;align-items:stretch}.steprow .seg button{padding:0 14px}
+  .steprow .objs{flex:1}
+  #chips .lab{margin-right:2px}
+  .steprow{flex-wrap:nowrap}
+  .steprow .objs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent);padding-right:24px}
+  .steprow .objs button{flex:none}
+  .resrow{flex-wrap:nowrap!important;align-items:center}
+  .resrow>#chips{flex:1}
+  .resrow>.row{flex:none;flex-wrap:nowrap}
+}
+@media (max-width:819px){
+  .howto{padding:10px 38px 10px 12px}
+  .howto ol{gap:7px}
+  .howto li{font-size:.8rem;grid-template-columns:22px 1fr;column-gap:8px}
+  .howto li::before{width:22px;height:22px;font-size:.72rem}
+}
 </style>
 </head>
 <body>
@@ -694,7 +742,7 @@ Per usarlo serve JavaScript.</p></noscript>
 <header class="top" id="top">
   <div class="top-in">
     <div class="brand">
-      <div class="row" style="gap:10px"><h1 class="brandmark"><svg class="logo" viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="rc-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14508f"/><stop offset=".55" stop-color="#0c3463"/><stop offset="1" stop-color="#071d38"/></linearGradient><radialGradient id="rc-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3d8fe0" stop-opacity=".55"/><stop offset="1" stop-color="#3d8fe0" stop-opacity="0"/></radialGradient><radialGradient id="rc-shine" cx=".3" cy="0" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient><linearGradient id="rc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a3"/><stop offset=".5" stop-color="#f2b843"/><stop offset="1" stop-color="#c98a1c"/></linearGradient><radialGradient id="rc-blip"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#7dffc0"/><stop offset="1" stop-color="#1bd388"/></radialGradient><radialGradient id="rc-halo"><stop offset="0" stop-color="#3dffa6" stop-opacity=".7"/><stop offset="1" stop-color="#3dffa6" stop-opacity="0"/></radialGradient><filter id="rc-sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#000814" flood-opacity=".45"/></filter></defs><rect width="512" height="512" rx="114" fill="url(#rc-bg)"/><circle cx="256" cy="256" r="230" fill="url(#rc-glow)"/><g transform="translate(256 256) scale(1.0) translate(-256 -256)"><circle cx="256" cy="256" r="168" fill="#0a2a52" fill-opacity=".55" stroke="#cfe3ff" stroke-opacity=".92" stroke-width="18"/><circle cx="256" cy="256" r="112" fill="none" stroke="#cfe3ff" stroke-opacity="0.32" stroke-width="9"/><circle cx="256" cy="256" r="56" fill="none" stroke="#cfe3ff" stroke-opacity="0.32" stroke-width="9"/><path d="M256 102V410M102 256H410" stroke="#cfe3ff" stroke-opacity=".16" stroke-width="5"/><g class="sweep"><path d="M256 256L128.2 159.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L132.3 154.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L136.6 149.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L141.1 144.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L145.9 139.9A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L150.8 135.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L155.9 131.2A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L161.1 127.2A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L166.5 123.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L172.1 119.8A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L177.8 116.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L183.7 113.3A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L189.6 110.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L195.7 107.8A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L201.9 105.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L208.2 103.3A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L214.6 101.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L221.0 99.9A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L227.5 98.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L234.1 97.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L240.7 96.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L247.3 96.2A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L253.9 96.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L260.5 96.1A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L267.2 96.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L273.8 97.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L280.3 97.9A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L286.9 99.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L293.4 100.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L299.8 102.1A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L306.1 104.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L312.4 106.3A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L318.5 108.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L324.6 111.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L330.5 114.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L336.3 117.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L342.0 121.1A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L347.5 124.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L352.8 128.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L358.0 132.8A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><line x1="256" y1="256" x2="363.1" y2="137.1" stroke="url(#rc-gold)" stroke-width="16" stroke-linecap="round" filter="url(#rc-sh)"/></g><circle cx="296.4" cy="145.1" r="58" fill="url(#rc-halo)"/><circle cx="296.4" cy="145.1" r="27" fill="url(#rc-blip)" stroke="#fff" stroke-width="5" filter="url(#rc-sh)"/><circle cx="219.7" cy="333.9" r="9" fill="#7dffc0" opacity=".55"/><circle cx="256" cy="256" r="20" fill="url(#rc-gold)" stroke="#fff" stroke-width="5"/></g><rect width="512" height="512" rx="114" fill="url(#rc-shine)"/><rect x="2" y="2" width="508" height="508" rx="112" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="4"/></svg><span>Radar <span class="bm2">Certificati</span></span></h1><span class="status" id="status">Caricamento…</span><span class="hbtns only-narrow"><button class="info" data-theme-btn aria-label="Tema"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button><button class="info" popovertarget="gloss" aria-label="Glossario">i</button></span></div>
+      <div class="row" style="gap:10px"><h1 class="brandmark"><a href="/" id="home" title="Torna all'inizio (azzera ricerca e filtri)" aria-label="Radar Certificati: torna all'inizio"><svg class="logo" viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="rc-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14508f"/><stop offset=".55" stop-color="#0c3463"/><stop offset="1" stop-color="#071d38"/></linearGradient><radialGradient id="rc-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3d8fe0" stop-opacity=".55"/><stop offset="1" stop-color="#3d8fe0" stop-opacity="0"/></radialGradient><radialGradient id="rc-shine" cx=".3" cy="0" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient><linearGradient id="rc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a3"/><stop offset=".5" stop-color="#f2b843"/><stop offset="1" stop-color="#c98a1c"/></linearGradient><radialGradient id="rc-blip"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#7dffc0"/><stop offset="1" stop-color="#1bd388"/></radialGradient><radialGradient id="rc-halo"><stop offset="0" stop-color="#3dffa6" stop-opacity=".7"/><stop offset="1" stop-color="#3dffa6" stop-opacity="0"/></radialGradient><filter id="rc-sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#000814" flood-opacity=".45"/></filter></defs><rect width="512" height="512" rx="114" fill="url(#rc-bg)"/><circle cx="256" cy="256" r="230" fill="url(#rc-glow)"/><g transform="translate(256 256) scale(1.0) translate(-256 -256)"><circle cx="256" cy="256" r="168" fill="#0a2a52" fill-opacity=".55" stroke="#cfe3ff" stroke-opacity=".92" stroke-width="18"/><circle cx="256" cy="256" r="112" fill="none" stroke="#cfe3ff" stroke-opacity="0.32" stroke-width="9"/><circle cx="256" cy="256" r="56" fill="none" stroke="#cfe3ff" stroke-opacity="0.32" stroke-width="9"/><path d="M256 102V410M102 256H410" stroke="#cfe3ff" stroke-opacity=".16" stroke-width="5"/><g class="sweep"><path d="M256 256L128.2 159.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L132.3 154.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L136.6 149.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L141.1 144.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L145.9 139.9A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L150.8 135.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L155.9 131.2A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L161.1 127.2A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L166.5 123.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L172.1 119.8A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L177.8 116.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L183.7 113.3A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L189.6 110.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L195.7 107.8A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L201.9 105.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L208.2 103.3A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L214.6 101.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L221.0 99.9A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L227.5 98.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L234.1 97.5A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L240.7 96.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L247.3 96.2A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L253.9 96.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L260.5 96.1A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L267.2 96.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L273.8 97.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L280.3 97.9A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L286.9 99.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L293.4 100.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L299.8 102.1A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L306.1 104.0A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L312.4 106.3A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L318.5 108.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L324.6 111.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L330.5 114.4A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L336.3 117.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L342.0 121.1A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L347.5 124.7A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L352.8 128.6A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><path d="M256 256L358.0 132.8A160 160 0 0 1 363.1 137.1Z" fill="#ffd66e" fill-opacity="0.050"/><line x1="256" y1="256" x2="363.1" y2="137.1" stroke="url(#rc-gold)" stroke-width="16" stroke-linecap="round" filter="url(#rc-sh)"/></g><circle cx="296.4" cy="145.1" r="58" fill="url(#rc-halo)"/><circle cx="296.4" cy="145.1" r="27" fill="url(#rc-blip)" stroke="#fff" stroke-width="5" filter="url(#rc-sh)"/><circle cx="219.7" cy="333.9" r="9" fill="#7dffc0" opacity=".55"/><circle cx="256" cy="256" r="20" fill="url(#rc-gold)" stroke="#fff" stroke-width="5"/></g><rect width="512" height="512" rx="114" fill="url(#rc-shine)"/><rect x="2" y="2" width="508" height="508" rx="112" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="4"/></svg><span>Radar <span class="bm2">Certificati</span></span></a></h1><span class="status" id="status">Caricamento…</span><span class="hbtns only-narrow"><button class="info" data-theme-btn aria-label="Tema"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button><button class="info" popovertarget="gloss" aria-label="Glossario">i</button></span></div>
       <div class="tools">
         <button id="b-fav" aria-pressed="false" title="Mostra solo i preferiti">★ Preferiti <span class="num" id="n-fav">0</span></button>
         <button id="b-filters" aria-expanded="false">Filtri <span class="num" id="n-filt"></span></button>
@@ -710,10 +758,12 @@ Per usarlo serve JavaScript.</p></noscript>
       <button class="clear" id="q-clear" aria-label="Svuota ricerca" hidden>×</button>
       <ul id="sugg" class="sugg" role="listbox" hidden></ul>
     </div>
-    <div class="seg seg-top only-narrow" id="profile-top" role="group" aria-label="Profilo">
+    <div class="steprow" id="steprow">
+    <div class="seg seg-top" id="profile-top" role="group" aria-label="Profilo"><span class="lab only-wide">Profilo</span>
       <button data-p="prudente">Prudente</button><button data-p="bilanciato">Bilanciato</button><button data-p="aggressivo">Aggressivo</button>
     </div>
     <div class="chiprow objs" id="objs" aria-label="Obiettivi rapidi"></div>
+    </div>
     <div class="row resrow" style="justify-content:space-between">
       <div class="chiprow only-wide" id="chips"></div>
       <button class="fsum only-narrow" id="fsum" aria-label="Modifica filtri"></button>
@@ -731,12 +781,20 @@ Per usarlo serve JavaScript.</p></noscript>
 
 <main class="wrap">
   <div id="mobbar" class="only-narrow"></div>
+  <section class="howto" id="howto" hidden aria-label="Come si usa">
+    <ol>
+      <li><b>Scegli il profilo</b><span>Prudente, Bilanciato o Aggressivo: imposta da solo rendimento minimo, distanza dalla barriera e scadenza.</span></li>
+      <li><b>Restringi</b><span>Cerca un ISIN, un sottostante o un emittente, oppure tocca un obiettivo rapido (es. Rendita mensile).</span></li>
+      <li><b>Apri un certificato</b><span>Il punteggio 0–100 mette in alto i più convenienti per il tuo profilo; la scheda mostra grafico, rischi e cedole.</span></li>
+    </ol>
+    <button class="howto-x" id="howto-x" aria-label="Chiudi la guida">✕</button>
+  </section>
   <section class="panel alerts" id="alerts" hidden></section>
 
   <section class="panel fpanel" id="fpanel" aria-label="Filtri">
     <div class="sheet-head"><b>Filtri</b><button id="sheet-close" aria-label="Chiudi filtri">✕</button></div>
     <details id="fbox">
-      <summary>Filtri e profilo</summary>
+      <summary>Tutti i filtri <span class="note">cursori, emittenti, settori e valori esatti</span></summary>
       <div style="display:grid;gap:14px;margin-top:12px">
         <div class="row">
           <span class="note">Profilo</span>
@@ -1889,13 +1947,24 @@ function chips(){
     state.sec.forEach(i=>out.push(chip("sec:"+i,"Settore: "+i)));
   }
   const any=state.q||out.length;
-  $("#chips").innerHTML=out.join("")+(any?`<button class="linkbtn" id="reset">Azzera tutto</button>`:"");
+  const MAXC=3,more=out.length-MAXC,cut=!chipsOpen&&more>1&&innerWidth>=820;
+  $("#chips").innerHTML=(out.length?`<span class="lab">Filtri attivi</span>`:"")+(cut?out.slice(0,MAXC):out).join("")
+    +(cut?`<button class="chip more" id="chips-more">+${more} altri</button>`:chipsOpen&&more>1?`<button class="linkbtn" id="chips-more">mostra meno</button>`:"")
+    +(any?`<button class="linkbtn" id="reset">Azzera tutto</button>`:"");
   $("#n-filt").textContent=out.length?`(${out.length})`:"";
   $("#nb-filt").textContent=out.length||"";$("#fsum").textContent=fsumText(out.length);
 }
 const chip=(k,t)=>`<span class="chip">${esc(t)}<button data-rm="${esc(k)}" aria-label="Rimuovi filtro ${esc(t)}">×</button></span>`;
 function rmChip(k){if(k==="illiq-off")state.f.illiq=true;else if(k==="lev-off")state.f.lev=true;else if(k.startsWith("iss:"))state.iss.delete(k.slice(4));else if(k.startsWith("sec:"))state.sec.delete(k.slice(4));
   else if(NUMF.includes(k))state.f[k]=null;else if(SELF.includes(k))state.f[k]="";else state.f[k]=false;update()}
+let chipsOpen=false;
+/* clic sul logo: torna alla situazione iniziale (profilo Bilanciato, niente ricerca, vista predefinita) */
+function goHome(){closeDrawers();openSheet(false);$("#sugg").hidden=true;
+  state.q="";state.f=neutral();applyPreset("bilanciato");state.iss.clear();state.sec.clear();state.sort={key:"score",dir:-1};chipsOpen=false;
+  state.view=innerWidth>=820?"table":"cards";ls.set("rc-view",state.view);$("#fbox").open=false;
+  rescore();pickDaily();update();history.replaceState(null,"",location.pathname);
+  scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  const lg=$("#home .logo");lg.classList.remove("spin");void lg.offsetWidth;lg.classList.add("spin");toast("Ripartito da capo: profilo Bilanciato")}
 function resetAll(){state.q="";state.f=neutral();state.f.illiq=true;state.f.lev=true;state.iss.clear();state.sec.clear();update()}
 
 /* ---------- render ---------- */
@@ -2071,7 +2140,10 @@ $("#bnav").addEventListener("click",e=>{const b=e.target.closest("[data-nav]");i
   else if(n==="fav"){state.f.fav=!state.f.fav;update();scrollTo({top:0});toast(state.f.fav?"Solo preferiti":"Tutti i certificati")}});
 $("#view").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;state.view=b.dataset.v;ls.set("rc-view",state.view);render(false)});
 $("#issuers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=b.dataset.i;state.iss.has(i)?state.iss.delete(i):state.iss.add(i);update()});
-$("#chips").addEventListener("click",e=>{const r=e.target.closest("[data-rm]");if(r){rmChip(r.dataset.rm);return}if(e.target.id==="reset")resetAll()});
+$("#chips").addEventListener("click",e=>{const r=e.target.closest("[data-rm]");if(r){rmChip(r.dataset.rm);return}if(e.target.id==="reset")resetAll();if(e.target.id==="chips-more"){chipsOpen=!chipsOpen;chips()}});
+$("#home").addEventListener("click",e=>{if(e.ctrlKey||e.metaKey||e.shiftKey)return;e.preventDefault();goHome()});
+if(!ls.get("rc-howto",false))$("#howto").hidden=false;
+$("#howto-x").addEventListener("click",()=>{$("#howto").hidden=true;ls.set("rc-howto",true)});
 $("#pl-new").addEventListener("click",()=>{Object.assign(state.f,neutral());state.f.nuovi=true;state.f.cpn=true;state.sort={key:"new",dir:-1};update();toast("Nuove emissioni degli ultimi 14 giorni, le più recenti prima")});
 $("#objs").addEventListener("click",e=>{const b=e.target.closest("[data-obj]");if(b)toggleObj(b.dataset.obj)});
 $("#sortsel").addEventListener("change",e=>{state.sort={key:e.target.value,dir:["price","mat","spread"].includes(e.target.value)?-1:-1};update()});
@@ -2104,7 +2176,7 @@ let rT=null;addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>{s
 /* telefono: profilo e obiettivi scorrono con la pagina; in alto restano fissi solo ricerca e conteggio */
 function placeBars(){const narrow=innerWidth<820,mb=$("#mobbar"),ti=$(".top-in");
   if(narrow&&$("#objs").parentNode!==mb){mb.append($("#profile-top"),$("#objs"))}
-  else if(!narrow&&$("#objs").parentNode===mb){ti.insertBefore($("#objs"),$(".resrow"));ti.insertBefore($("#profile-top"),$("#objs"))}
+  else if(!narrow&&$("#objs").parentNode===mb){$("#steprow").append($("#profile-top"),$("#objs"))}
   $("#top").style.top=narrow?-Math.max(0,$(".search").offsetTop-8)+"px":"0px"}
 function setTopH(){placeBars();document.documentElement.style.setProperty("--top-h",$("#top").offsetHeight+"px")}
 new ResizeObserver(setTopH).observe($("#top"));
