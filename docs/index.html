@@ -368,6 +368,7 @@ tr.sp td{height:auto;border:none;padding:0}
 .expo .e span:last-child{text-align:right;font-family:var(--f-num)}
 .pftab td,.pftab th{height:auto;padding:7px 8px;white-space:nowrap}
 .pftab th{position:static;cursor:default}
+.pftab tr.tot td{border-top:2px solid var(--line);font-weight:650}
 .pftab td.l{max-width:260px;overflow:hidden;text-overflow:ellipsis}
 .b.fr{background:var(--brass-soft);color:var(--brass);border-color:transparent}
 @media (max-width:819px){
@@ -513,6 +514,41 @@ body{font-feature-settings:"tnum" 1;letter-spacing:-.003em}
 .isin,.sugg .k{font-family:var(--f-mono)}
 td{font-weight:500}
 /* ---------- il mio portafoglio e analisi ---------- */
+.pff{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.pff summary{cursor:pointer;font-weight:650;font-size:.9rem;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pff summary::-webkit-details-marker{display:none}
+.pff summary::after{content:"▾";color:var(--muted)}
+.pff[open] summary::after{content:"▴"}
+.pff summary .n{font-size:.74rem;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 9px;margin-left:6px}
+.pff .pfin{margin-top:10px}
+.pftools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pftools .sp{flex:1}
+.myp-add .sugg{max-height:min(60vh,520px);overflow:auto}
+.myp-add .sugg li .v{white-space:normal}
+.ponly{display:none}
+@media (min-width:820px){
+  /* su PC il portafoglio occupa tutta la pagina */
+  #pf.drawer .dbody{width:100%;box-shadow:none;padding:16px max(28px,calc((100% - 1440px)/2)) 60px}
+  #pf .pfin{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+  #pf .pftab td.l{max-width:420px}
+  #pf .cal svg{max-height:240px}
+}
+@media print{
+  @page{size:A4 landscape;margin:12mm}
+  body{background:#fff!important;overflow:visible!important}
+  body>*:not(#pf){display:none!important}
+  #pf{position:static!important;display:block!important}
+  #pf .dbody{width:auto!important;height:auto!important;overflow:visible!important;box-shadow:none!important;padding:0!important;animation:none!important;background:#fff!important;gap:10px}
+  #pf .dhead{position:static!important;border:none!important}
+  #pf .dhead button,#pf .pfmode,#pf .pfin,#pf .pff,#pf .myp,#pf .row,#pf .pftools,#pf .noprint{display:none!important}
+  #pf .ponly{display:block}
+  #pf .pftab-wrap{overflow:visible!important}
+  #pf .pftab td.l{max-width:none;white-space:normal}
+  #pf .pftab{font-size:9.5pt}
+  #pf .cal svg{max-height:170px}
+  #pf .panel,#pf .stats>div,#pf tr{break-inside:avoid}
+  #pf .stats .v{font-size:1.05rem}
+}
 .pfmode{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:520px;overflow:visible;min-height:min-content}
 .pfmode button{padding:9px 6px}
 .myp{display:grid;gap:12px}
@@ -813,7 +849,7 @@ Per usarlo serve JavaScript.</p></noscript>
     <dt>Rendimento annuo</dt><dd>Rendimento annuo a scadenza al prezzo lettera: cedole più differenza tra rimborso (100) e prezzo, divisa per gli anni residui (almeno 3 mesi). Sotto barriera il rimborso è stimato al livello attuale del peggiore. "!" = oltre il 40%: il mercato prezza una perdita probabile. È la soglia dei profili: prudente 8%, bilanciato 12%, aggressivo 16%.</dd>
     <dt>Frontiera efficiente</dt><dd>Certificati che nessun altro, tra i risultati, batte insieme su rendimento annuo e distanza del peggiore dalla barriera: per avere di più dell'uno bisogna rinunciare all'altro. Sono i candidati migliori a parità di filtri; nella Mappa sono cerchiati e uniti dalla linea dorata.</dd>
     <dt>Mappa</dt><dd>Ogni punto è un certificato dei risultati: in orizzontale quanto è lontano il peggiore dalla barriera, in verticale il rendimento annuo, il colore la probabilità di tenuta. In alto a destra i migliori; il riquadro tratteggiato è la zona del profilo.</dd>
-    <dt>Portafoglio</dt><dd>Sceglie N certificati dai risultati (o dai preferiti) seguendo l'ordinamento, con al massimo X per emittente e senza ripetere lo stesso sottostante; capitale diviso in parti uguali. Mostra rendita, calendario cedole a 12 mesi (se le cedole vengono pagate) e concentrazione. Indicativo, non è consulenza.</dd>
+    <dt>Portafoglio</dt><dd>Sceglie N certificati dai risultati (o dai preferiti) seguendo l'ordinamento, con al massimo X per emittente e senza ripetere lo stesso sottostante; capitale diviso in parti uguali. Mostra rendita, calendario cedole a 12 mesi (se le cedole vengono pagate) e concentrazione. Filtri di ricerca (rendimento, distanza, probabilità, scadenza, spread, cedola, settore, emittente, memoria), stampa/PDF ed Excel con riepilogo, calendario ed esposizioni; su PC si apre a tutta pagina. Indicativo, non è consulenza.</dd>
     <dt>Cedola e distanza</dt><dd>Ordinamento: rendimento annuo × distanza del peggiore dalla barriera / 50% (oltre il 50% conta pieno). Premia chi paga molto con la barriera lontana; i rendimenti sospetti (oltre 40%) restano fuori.</dd>
     <dt>Rendimento atteso</dt><dd>Media, pesata con la probabilità di tenuta, tra il rendimento se la barriera tiene e una stima se viene rotta (rimborso ≈ 85% del livello barriera, metà delle cedole). Con "~" la probabilità non è nota: si usa il rendimento a scadenza (al massimo 25%) scontato in base alla distanza del peggiore.</dd>
     <dt>Punteggio</dt><dd>0-100, somma pesata secondo il profilo di rendimento annuo (pieno a 14% prudente, 20% bilanciato, 28% aggressivo), sicurezza del peggiore, affidabilità della cedola, liquidità e qualità (classe dell'emittente, memoria, dati completi). Apri la scheda per vedere il dettaglio.</dd>
@@ -1287,12 +1323,37 @@ document.addEventListener("pointerdown",e=>{if(!e.target.closest?.("#plot svg"))
 
 /* ---------- portafoglio ---------- */
 const PFD={cap:50000,n:6,iss:2,src:"rows",key:"score",uniq:true};
+const PFFD={ytmMin:null,distMin:null,probMin:null,yrsMax:null,spreadMax:null,freq:"",sec:"",issuer:"",mem:false,cpn:false};
+let PFF=Object.assign({},PFFD,ls.get("rc-pff",{}));
+const START_PF=/(^|[#&])portafoglio\b/.test(location.hash);
+/* filtri di ricerca del portafoglio: valgono per il costruttore automatico e per i suggerimenti del mio portafoglio */
+function pfOk(c,o=PFF){return (o.ytmMin==null||(c.ytm!=null&&!c.ytmHigh&&c.ytm>=o.ytmMin))&&(o.distMin==null||(c.dist!=null&&c.dist>=o.distMin))
+  &&(o.probMin==null||(c.prob!=null&&c.prob>=o.probMin))&&(o.yrsMax==null||(c.years!=null&&c.years<=o.yrsMax))&&(o.spreadMax==null||(c.spread!=null&&c.spread<=o.spreadMax))
+  &&(!o.freq||c.freq===o.freq)&&(!o.sec||c.secU.includes(o.sec))&&(!o.issuer||c.issuer===o.issuer)&&(!o.mem||c.memory===true)&&(!o.cpn||c.couponActive!==false)}
+const pffN=()=>Object.keys(PFFD).filter(k=>PFF[k]!==PFFD[k]&&PFF[k]!=="").length;
+function pffHtml(){const opt=(v,t,cur)=>`<option value="${v}" ${String(cur??"")===String(v)?"selected":""}>${t}</option>`;
+  const sel=(id,lab,vals,fmtv)=>`<label>${lab}<select id="pff-${id}">${opt("","qualsiasi",PFF[id])}${vals.map(v=>opt(v,fmtv(v),PFF[id])).join("")}</select></label>`;
+  const secs=[...new Set(CERTS.flatMap(c=>c.secU))].sort((a,b)=>a.localeCompare(b,"it")),isss=[...new Set(CERTS.filter(c=>!c.lev).map(c=>c.issuer).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"it"));
+  const n=pffN();
+  return `<details class="pff" ${PFF.open?"open":""}><summary><span>Filtri di ricerca${n?`<span class="n">${n} attivi</span>`:""}</span></summary><div class="pfin">
+${sel("ytmMin","Rendimento annuo almeno",[2,3,4,5,6,7,8,10,12],v=>v+"%")}
+${sel("distMin","Distanza barriera almeno",[10,15,20,25,30,40,50],v=>v+"%")}
+${sel("probMin","Prob. di tenuta almeno",[60,70,80,85,90,95],v=>v+"%")}
+${sel("yrsMax","Scadenza entro",[0.5,1,2,3,4,5,7,10],v=>v<1?"6 mesi":v===1?"1 anno":v+" anni")}
+${sel("spreadMax","Spread al massimo",[0.5,1,1.5,2,3],v=>String(v).replace(".",",")+"%")}
+${sel("freq","Cedola",["1m","3m","6m","12m"],v=>freqTxt(v))}
+${sel("sec","Settore",secs,v=>esc(v))}
+${sel("issuer","Emittente",isss,v=>esc(v))}
+<label class="check" style="align-self:end"><input type="checkbox" id="pff-mem" ${PFF.mem?"checked":""}> Solo con memoria</label>
+<label class="check" style="align-self:end"><input type="checkbox" id="pff-cpn" ${PFF.cpn?"checked":""}> Cedola oggi pagata</label>
+${n?`<button id="pff-reset" style="align-self:end">Azzera filtri</button>`:""}
+</div></details>`}
 let PF=Object.assign({},PFD,ls.get("rc-pf",{}));
 const GENERIC=new Set(["banco","banca","bank","deutsche","the","credit","societe","royal","general","first","united","international","american"]);
 function undKey(u){const w=norm(u).split(" ").filter(x=>x.length>1&&!/^(spa|ag|se|sa|nv|plc|inc|corp|co|group|holding|holdings|ltd)$/.test(x));return GENERIC.has(w[0])?w.slice(0,2).join(" "):w[0]||norm(u)}
 function buildPf(o){
-  const base=o.src==="fav"?Object.keys(FAV).map(i=>BYISIN.get(i)).filter(Boolean):ROWS;
-  const src=base.filter(c=>c.liq&&!c.priceBad&&c.couponPa!=null&&c.ytm!=null&&!c.ytmHigh&&!c.belowBarrier&&c.pricePct);
+  const base=o.src==="fav"?Object.keys(FAV).map(i=>BYISIN.get(i)).filter(Boolean):o.src==="all"?CERTS.filter(c=>!c.lev):ROWS;
+  const src=base.filter(c=>c.liq&&!c.priceBad&&c.couponPa!=null&&c.ytm!=null&&!c.ytmHigh&&!c.belowBarrier&&c.pricePct&&pfOk(c));
   const key=o.key==="cd"?(c=>c.cdScore??-99):o.key==="ytm"?(c=>c.ytm):o.key==="prob"?(c=>c.prob??-1):(c=>c.score);
   src.sort((a,b)=>key(b)-key(a));
   const pick=[],iss={},und=new Set();
@@ -1322,14 +1383,18 @@ function renderPf(){
   const M=calendar(L),cal12=M.reduce((a,x)=>a+x.v,0),minD=L.length?Math.min(...L.map(x=>x.c.dist??99)):null;
   const byIss=new Map(),byUnd=new Map(),bySec=new Map();L.forEach(x=>{x.c.unds.forEach(u=>{const k=x.c.secOf.get(u)||"Non classificato";bySec.set(k,(bySec.get(k)||0)+x.inv/Math.max(1,x.c.unds.length))});byIss.set(x.c.issuer,(byIss.get(x.c.issuer)||0)+x.inv);x.c.unds.forEach(u=>byUnd.set(u,(byUnd.get(u)||0)+x.inv/Math.max(1,x.c.unds.length)))});
   const opt=(v,t,cur)=>`<option value="${v}" ${String(cur)===String(v)?"selected":""}>${t}</option>`;
+  const today2=new Date().toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"});
   $("#pfbody").innerHTML=`<div class="dhead"><div><div class="eyebrow">${mine?"Le tue scelte":"Costruttore"}</div><b style="font-size:1.1rem">Portafoglio di certificati</b></div><button data-close aria-label="Chiudi">✕</button></div>
-<div class="seg pfmode" role="group" aria-label="Modalità"><button data-pfmode="mine" aria-pressed="${mine}">Il mio portafoglio${MYP.length?` (${MYP.length})`:""}</button><button data-pfmode="auto" aria-pressed="${!mine}">Automatico</button></div>
+<div class="ponly"><b>Radar Certificati</b> · portafoglio al ${today2} · prezzi del radar · radarcertificati.com</div>
+<div class="pftools"><div class="seg pfmode" role="group" aria-label="Modalità"><button data-pfmode="mine" aria-pressed="${mine}">Il mio portafoglio${MYP.length?` (${MYP.length})`:""}</button><button data-pfmode="auto" aria-pressed="${!mine}">Automatico</button></div><span class="sp"></span>
+${L.length?`<button id="pf-print2" title="Stampa o salva in PDF">🖨 Stampa</button><button id="pf-xls2" title="Scarica il portafoglio in Excel">Excel</button>`:""}<a class="only-wide" href="${location.pathname}#portafoglio" target="_blank" rel="noopener" style="font-size:.85rem">Apri in nuova scheda ↗</a></div>
+${pffHtml()}
 ${mine?myEditor(L):`<div class="pfin">
 <label>Capitale (€)<input id="pf-cap" type="number" step="1000" min="1000" inputmode="numeric" value="${PF.cap}"></label>
 <label>Certificati<select id="pf-n">${[3,4,5,6,8,10,12].map(n=>opt(n,n,PF.n)).join("")}</select></label>
 <label>Max per emittente<select id="pf-iss">${[1,2,3,99].map(n=>opt(n,n===99?"senza limite":n,PF.iss)).join("")}</select></label>
 <label>Scegli per<select id="pf-key">${opt("score","Punteggio",PF.key)}${opt("cd","Cedola e distanza",PF.key)}${opt("ytm","Rendimento annuo",PF.key)}${opt("prob","Probabilità di tenuta",PF.key)}</select></label>
-<label>Da<select id="pf-src">${opt("rows",`Risultati filtrati (${ROWS.length.toLocaleString("it-IT")})`,PF.src)}${opt("fav",`Preferiti (${Object.keys(FAV).length})`,PF.src)}</select></label>
+<label>Da<select id="pf-src">${opt("rows",`Risultati filtrati (${ROWS.length.toLocaleString("it-IT")})`,PF.src)}${opt("all","Tutto il radar",PF.src)}${opt("fav",`Preferiti (${Object.keys(FAV).length})`,PF.src)}</select></label>
 <label class="check" style="align-self:end"><input type="checkbox" id="pf-uniq" ${PF.uniq?"checked":""}> Un sottostante una volta sola</label>
 </div>`}
 ${L.length?`<div class="stats">
@@ -1342,21 +1407,25 @@ ${L.length?`<div class="stats">
 </div>
 <div class="panel"><div class="cap" style="margin-bottom:6px">Cedole attese nei prossimi 12 mesi · ≈ ${fmt(cal12,0)} € se i trigger vengono rispettati</div><div class="cal">${calSvg(M)}</div>
 <p class="note" style="margin:6px 0 0">Stima dalle frequenze e dalle prossime date di pagamento note; un richiamo anticipato chiude prima i flussi (e rimborsa il capitale).</p></div>
-<div class="panel pftab-wrap"><table class="pftab"><thead><tr><th class="l">Certificato</th><th>Rend.</th><th>Cedola</th><th>Dist.</th><th>Prob.</th><th>Lettera</th><th>Pezzi</th><th>Investito</th><th>Cedole/anno</th></tr></thead><tbody>
-${L.map(x=>`<tr class="r" data-open="${esc(x.c.isin)}"><td class="l t"><b>${esc(x.c.issuer||"")}</b> <span class="num note">${esc(x.c.isin)}</span><br><span class="note">${esc(x.c.unds.join(", "))}</span></td><td class="hi">${pct(x.c.ytm)}</td><td>${pct(x.c.couponPa,1)}</td><td class="${cls(x.c.dist)}">${pct(x.c.dist,0)}</td><td class="${pcls(x.c.prob)}">${probTxt(x.c)}</td><td>${fmt(x.unit)}</td><td>${x.mine?fmt(x.q,x.q<10?1:0):x.q}</td><td>${fmt(x.inv,0)}</td><td>${fmt(x.inc,0)}</td></tr>`).join("")}</tbody></table></div>
+<div class="panel pftab-wrap"><table class="pftab"><thead><tr><th class="l">Certificato</th><th>Rend.</th><th>Cedola</th><th>Dist.</th><th>Prob.</th><th>Lettera</th><th>Scadenza</th><th>Pezzi</th><th>Investito</th><th>Peso</th><th>Cedole/anno</th></tr></thead><tbody>
+${L.map(x=>`<tr class="r" data-open="${esc(x.c.isin)}"><td class="l t"><b>${esc(x.c.issuer||"")}</b> <span class="num note">${esc(x.c.isin)}</span><br><span class="note">${esc(x.c.unds.join(", "))}</span></td><td class="hi">${pct(x.c.ytm)}</td><td>${pct(x.c.couponPa,1)}</td><td class="${cls(x.c.dist)}">${pct(x.c.dist,0)}</td><td class="${pcls(x.c.prob)}">${probTxt(x.c)}</td><td>${fmt(x.unit)}</td><td>${dshort(x.c.matDate)}</td><td>${x.mine?fmt(x.q,x.q<10?1:0):x.q}</td><td>${fmt(x.inv,0)}</td><td>${pct(inv?x.inv/inv*100:null,1)}</td><td>${fmt(x.inc,0)}</td></tr>`).join("")}
+<tr class="tot"><td class="l"><b>Totale</b></td><td class="hi">${pct(w(c=>c.ytm))}</td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>${fmt(inv,0)}</b></td><td>100%</td><td><b>${fmt(inc,0)}</b></td></tr></tbody></table></div>
 <div id="pf-ana" data-tag="${pfTag(L)}"></div>
 <div class="panel" style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${expoHtml("Esposizione per settore",bySec,inv)}${expoHtml("Esposizione per emittente",byIss,inv)}${expoHtml("Esposizione per sottostante",byUnd,inv)}</div>
-<div class="row"><button class="primary" id="pf-xls">Esporta in Excel</button><button id="pf-fav">★ Salva tutti nei preferiti</button>${mine?"":`<button id="pf-adopt">Copia nel mio portafoglio</button>`}</div>`:mine?"":`<div class="panel empty">Nessun certificato adatto: servono prezzo, cedola e rendimento noti, non sotto barriera. Allarga i filtri o scegli "Risultati filtrati".</div>`}
+<div class="row"><button class="primary" id="pf-xls">Esporta in Excel</button><button id="pf-print">🖨 Stampa / PDF</button><button id="pf-fav">★ Salva tutti nei preferiti</button>${mine?"":`<button id="pf-adopt">Copia nel mio portafoglio</button>`}</div>`:mine?"":`<div class="panel empty">Nessun certificato adatto: servono prezzo, cedola e rendimento noti, non sotto barriera. Allarga i filtri o scegli "Risultati filtrati".</div>`}
 <p class="note">${mine?"Analisi indicativa delle tue scelte":"Selezione automatica e indicativa sui dati del radar"}: non è una raccomandazione d'investimento. Verifica sempre KID, term sheet e rischio emittente.</p>`;
-  window._PF=L;clearTimeout(renderPf._t);renderPf._t=setTimeout(()=>analyzePf(L,pfTag(L)),60);
+  window._PF=L;window._PFX={mine,inv,inc,yld:w(c=>c.ytm),prob:w(c=>c.prob),allP,minD,M,byIss,bySec,byUnd};clearTimeout(renderPf._t);renderPf._t=setTimeout(()=>analyzePf(L,pfTag(L)),60);
 }
-function openPf(){$("#pf").hidden=false;document.body.style.overflow="hidden";renderPf()}
+function openPf(){$("#pf").hidden=false;document.body.style.overflow="hidden";renderPf();$("#pfbody").scrollTop=0}
+function printPf(){const th=ls.get("rc-theme","auto");applyTheme("light");const back=()=>{applyTheme(th);removeEventListener("afterprint",back)};addEventListener("afterprint",back);
+  // l'analisi globale arriva dopo un attimo: si stampa quando è pronta
+  setTimeout(()=>{window.print();setTimeout(back,1500)},$("#pf-ana")?.textContent.includes("Calcolo")?900:50)}
 
 const pfTag=L=>L.map(x=>x.c.isin+":"+Math.round(x.inv)).join("|");
 function myEditor(L){
   return `<div class="myp">
 <div class="search myp-add"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-<input id="pfq" type="text" autocomplete="off" spellcheck="false" placeholder="Aggiungi un certificato: ISIN, sottostante, emittente…" aria-label="Cerca un certificato da aggiungere"><ul id="pfsugg" class="sugg" hidden></ul></div>
+<input id="pfq" type="text" autocomplete="off" spellcheck="false" placeholder="Aggiungi un certificato: ISIN, sottostante, emittente… (o usa i filtri)" aria-label="Cerca un certificato da aggiungere"><ul id="pfsugg" class="sugg" hidden></ul></div>
 ${L.length?`<div class="myrows">${L.map(x=>`<div class="myrow"><div class="who" data-open="${esc(x.c.isin)}"><div class="c-iss"><b>${esc(x.c.issuer||"")}</b> · <span class="num">${esc(x.c.isin)}</span></div><div class="myu">${undsHtml(x.c)}</div>
 <div class="note">${pct(x.c.ytm)} annuo · cedola ${pct(x.c.couponPa,1)} · ${x.c.dist==null?"distanza n.d.":x.c.dist<0?"sotto barriera":pct(x.c.dist,0)+" dalla barriera"} · scade ${dshort(x.c.matDate)}</div></div>
 <label class="amt">€<input type="number" inputmode="numeric" min="0" step="500" value="${Math.round(x.inv)}" data-amt="${esc(x.c.isin)}" aria-label="Importo"></label>
@@ -1364,10 +1433,12 @@ ${L.length?`<div class="myrows">${L.map(x=>`<div class="myrow"><div class="who" 
 <div class="row" style="justify-content:space-between"><span class="note">Totale <b class="num">${fmt(L.reduce((a,x)=>a+x.inv,0),0)} €</b> su ${L.length} certificati</span><span class="row"><button id="pf-eq">Importi uguali</button><button id="pf-addfav">+ Preferiti</button><button id="pf-clear">Svuota</button></span></div>`
 :`<div class="panel empty myempty"><b>Il tuo portafoglio è vuoto</b><br>Cerca qui sopra un certificato oppure apri una scheda e tocca <b>+ Portafoglio</b>.${Object.keys(FAV).length?`<br><button id="pf-addfav" style="margin-top:10px">Aggiungi i ${Object.keys(FAV).length} preferiti</button>`:""}</div>`}
 </div>`}
-function pfSuggest(){const v=$("#pfq").value.trim(),ul=$("#pfsugg");if(!v){ul.hidden=true;return}
-  const S=searchSet(v),isin=isinMode(v);let list=isin?CERTS.filter(c=>c.isin.startsWith(isin)):S?[...S.set].map(i=>CERTS[i]):[];
-  list=list.filter(c=>!inMyp(c.isin)&&!c.lev).sort((a,b)=>(b.liq-a.liq)||((b.score??0)-(a.score??0))).slice(0,8);
-  ul.innerHTML=list.length?list.map(c=>`<li data-pfadd="${esc(c.isin)}"><span class="v"><b>${esc(c.issuer||"")}</b> · ${esc(c.unds.slice(0,3).join(", "))}</span><span class="k">${pct(c.ytm)} · ${pct(c.dist,0)}</span></li>`).join(""):`<li class="sg-h">Nessun certificato trovato</li>`;ul.hidden=false}
+function pfSuggest(){const el=$("#pfq");if(!el)return;const v=el.value.trim(),ul=$("#pfsugg"),nf=pffN();if(!v&&!nf){ul.hidden=true;return}
+  const S=v?searchSet(v):null,isin=v?isinMode(v):null;
+  let list=!v?CERTS.filter(c=>c.liq&&c.ytm!=null&&!c.ytmHigh&&!c.belowBarrier):isin?CERTS.filter(c=>c.isin.startsWith(isin)):S?[...S.set].map(i=>CERTS[i]):[];
+  list=list.filter(c=>!inMyp(c.isin)&&!c.lev&&pfOk(c));const tot=list.length;
+  list=list.sort((a,b)=>(b.liq-a.liq)||((b.score??0)-(a.score??0))).slice(0,15);
+  ul.innerHTML=(nf?`<li class="sg-h">${tot.toLocaleString("it-IT")} certificati con i filtri${tot>15?" · i 15 migliori":""}</li>`:"")+(list.length?list.map(c=>`<li data-pfadd="${esc(c.isin)}"><span class="v"><b>${esc(c.issuer||"")}</b> · ${esc(c.unds.slice(0,3).join(", "))}<br><span class="note">${esc(c.isin)} · cedola ${pct(c.couponPa,1)} ${freqTxt(c.freq)||""}${c.memory?" · memoria":""} · scade ${dshort(c.matDate)}</span></span><span class="k">${pct(c.ytm)} · ${pct(c.dist,0)}</span></li>`).join(""):`<li class="sg-h">Nessun certificato trovato</li>`);ul.hidden=false}
 /* ---------- il mio portafoglio: scelte a mano, importo per certificato (salvato nel browser) ---------- */
 let MYP=ls.get("rc-myp",[]);if(!Array.isArray(MYP))MYP=[];
 const saveMyp=()=>{ls.set("rc-myp",MYP);const b=$("#nb-pf-n");if(b)b.textContent=MYP.length||""};
@@ -1463,10 +1534,18 @@ ${avg!=null&&n>1?`<p><b>Decorrelazione:</b> ${avg>0.6?"bassa, i certificati si m
 }
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset&&t.dataset.amt!==undefined){const it=MYP.find(x=>x.isin===t.dataset.amt);if(it){it.amt=Math.max(0,+t.value||0);PF.amt=it.amt||PF.amt;ls.set("rc-pf",PF);saveMyp();renderPf()}return}
+  if(t.id&&t.id.startsWith("pff-")){const k=t.id.slice(4);PFF[k]=t.type==="checkbox"?t.checked:t.value===""?(typeof PFFD[k]==="string"?"":null):(typeof PFFD[k]==="string"?t.value:+t.value);
+    PFF.open=true;ls.set("rc-pff",PFF);const q=$("#pfq")?.value;renderPf();if(q!=null&&$("#pfq")){$("#pfq").value=q}if(PF.mode==="mine")pfSuggest();return}
   if(!t.id||!t.id.startsWith("pf-")||!$("#pf-cap"))return;
   PF={...PF,cap:Math.max(1000,+$("#pf-cap").value||PFD.cap),n:+$("#pf-n").value,iss:+$("#pf-iss").value,key:$("#pf-key").value,src:$("#pf-src").value,uniq:$("#pf-uniq").checked};ls.set("rc-pf",PF);renderPf()});
 document.addEventListener("input",e=>{if(e.target.id==="pfq")pfSuggest()});
+document.addEventListener("focusin",e=>{if(e.target.id==="pfq")pfSuggest()});
+document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("pff")){PFF.open=e.target.open;ls.set("rc-pff",PFF)}},true);
 document.addEventListener("click",e=>{
+  if(!e.target.closest(".myp-add")){const u=$("#pfsugg");if(u)u.hidden=true}
+  if(e.target.id==="pff-reset"){PFF={...PFFD,open:true};ls.set("rc-pff",PFF);renderPf();return}
+  if(e.target.id==="pf-print"||e.target.id==="pf-print2"){printPf();return}
+  if(e.target.id==="pf-xls2"){$("#pf-xls")?.click();return}
   const pm=e.target.closest("[data-pfmode]");if(pm){PF.mode=pm.dataset.pfmode;ls.set("rc-pf",PF);renderPf();return}
   const pa=e.target.closest("[data-pfadd]");if(pa){MYP.push({isin:pa.dataset.pfadd,amt:PF.amt||5000});saveMyp();renderPf();setTimeout(()=>$("#pfq")?.focus(),0);return}
   const pr=e.target.closest("[data-myp-rm]");if(pr){MYP=MYP.filter(x=>x.isin!==pr.dataset.mypRm);saveMyp();renderPf();return}
@@ -1477,9 +1556,26 @@ document.addEventListener("click",e=>{
   if(e.target.id==="pf-clear"){if(confirm("Svuotare il tuo portafoglio?")){MYP=[];saveMyp();renderPf()}return}
   if(e.target.id==="pf-fav"){(window._PF||[]).forEach(x=>{if(!FAV[x.c.isin])FAV[x.c.isin]={ask:x.c.ask,at:new Date().toISOString()}});ls.set("rc-fav",FAV);render(false);toast("Salvati nei preferiti");return}
   if(e.target.id==="pf-xls"){if(!window.XLSX){toast("Preparo l'Excel…");loadXLSX().then(()=>e.target.click()).catch(()=>toast("Esportazione non disponibile"));return}
-    const rows=(window._PF||[]).map(x=>({ISIN:x.c.isin,Emittente:x.c.issuer,Sottostanti:x.c.unds.join(", "),"Rend. annuo %":+(x.c.ytm??0).toFixed(2),"Cedola p.a. %":x.c.couponPa,Frequenza:freqTxt(x.c.freq),"Dist. barriera %":x.c.dist,"Prob. tenuta %":x.c.prob==null?null:+x.c.prob.toFixed(1),"Prezzo unitario €":+x.unit.toFixed(2),Pezzi:x.q,"Investito €":+x.inv.toFixed(2),"Cedole/anno €":+x.inc.toFixed(2),Scadenza:x.c.maturity||""}));
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),"Portafoglio");const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
-    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf]));a.download=`portafoglio-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+    const L=window._PF||[],X=window._PFX||{},tot=X.inv||1,r2=v=>v==null||isNaN(v)?null:+(+v).toFixed(2);
+    const rows=L.map(x=>({ISIN:x.c.isin,Emittente:x.c.issuer||"",Sottostanti:x.c.unds.join(", "),Peggiore:x.c.worst||"",Settore:x.c.sector==="Misto"?"Misto ("+x.c.secU.join(", ")+")":(x.c.sector||""),Categoria:x.c.cat||"",
+      "Cedola p.a. %":x.c.couponPa,Frequenza:freqTxt(x.c.freq),Memoria:x.c.memory?"Sì":"No","Barriera %":x.c.barrierPct??null,"Trigger %":x.c.triggerPct??null,"Dist. barriera %":r2(x.c.dist),"Prob. tenuta %":x.c.prob==null?null:+x.c.prob.toFixed(1),
+      "Rend. annuo %":r2(x.c.ytm),"Spread %":r2(x.c.spread),"Prezzo %":r2(x.c.pricePct),"Prezzo unitario €":r2(x.unit),Pezzi:x.mine?+x.q.toFixed(2):x.q,"Investito €":r2(x.inv),"Peso %":r2(x.inv/tot*100),"Cedole/anno €":r2(x.inc),
+      "Prossima cedola":x.c.nextCouponDate||"","Prossimo richiamo":x.c.nextCallDate||"",Scadenza:x.c.maturity||"",Scheda:"https://radarcertificati.com/certificato/"+x.c.isin}));
+    rows.push({ISIN:"TOTALE","Rend. annuo %":r2(X.yld),"Investito €":r2(X.inv),"Peso %":100,"Cedole/anno €":r2(X.inc)});
+    const sheet=(data,w)=>{const ws=XLSX.utils.json_to_sheet(data);ws["!cols"]=w.map(n=>({wch:n}));return ws};
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,sheet(rows,[14,16,34,18,18,14,10,12,9,10,9,12,12,11,9,9,14,8,12,8,13,14,14,12,46]),"Portafoglio");
+    const FLN={ytmMin:"rendimento min %",distMin:"distanza min %",probMin:"prob. min %",yrsMax:"scadenza max anni",spreadMax:"spread max %",freq:"cedola",sec:"settore",issuer:"emittente",mem:"solo memoria",cpn:"cedola oggi pagata"};
+    const fl=Object.keys(PFFD).filter(k=>PFF[k]!==PFFD[k]&&PFF[k]!=="").map(k=>FLN[k]+(PFF[k]===true?"":": "+(k==="freq"?freqTxt(PFF[k]):PFF[k]))).join(", ");
+    const sum=[["Data",new Date().toLocaleDateString("it-IT")],["Tipo",X.mine?"Il mio portafoglio":"Automatico ("+PF.n+" certificati, scelti per "+({score:"punteggio",cd:"cedola e distanza",ytm:"rendimento annuo",prob:"probabilità di tenuta"}[PF.key]||PF.key)+")"],["Filtri di ricerca",fl||"nessuno"],
+      ["Certificati",L.length],["Investito €",r2(X.inv)],["Rendimento annuo medio pesato %",r2(X.yld)],["Cedole all'anno €",r2(X.inc)],["Cedole al mese €",r2((X.inc||0)/12)],
+      ["Distanza minima dalla barriera %",r2(X.minD)],["Prob. media di tenuta %",r2(X.prob)],["Prob. che tengano tutti (indip.) %",r2(X.allP)],["Avvertenza","Stime indicative dal Radar Certificati, non è consulenza. Verifica KID, term sheet e rischio emittente."]].map(([a,b])=>({Voce:a,Valore:b}));
+    XLSX.utils.book_append_sheet(wb,sheet(sum,[36,70]),"Riepilogo");
+    if(X.M)XLSX.utils.book_append_sheet(wb,sheet(X.M.map(m=>({Mese:MESI[m.d.getMonth()]+" "+m.d.getFullYear(),"Cedole attese €":r2(m.v),"Pagamenti":m.n})),[12,16,11]),"Calendario cedole");
+    const ex=[];[["Settore",X.bySec],["Emittente",X.byIss],["Sottostante",X.byUnd]].forEach(([t,m])=>m&&[...m.entries()].sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>ex.push({Tipo:t,Nome:k,"Importo €":r2(v),"Peso %":r2(v/tot*100)})));
+    XLSX.utils.book_append_sheet(wb,sheet(ex,[12,32,12,9]),"Esposizione");
+    const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`portafoglio-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
 });
 
 /* ---------- dettaglio ---------- */
@@ -2069,6 +2165,7 @@ async function load(){
   rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();ensureLeva();
   // arrivo dalla scheda statica /certificato/<ISIN>: apre subito il dettaglio
   const di=new URLSearchParams(location.hash.slice(1)).get("isin");if(di&&BYISIN.has(di))openDetail(di);
+  if(START_PF)openPf();
 }
 load();
 })();
