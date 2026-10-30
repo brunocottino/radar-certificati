@@ -655,7 +655,7 @@
   "yahooName": "Altria Group, Inc."
  },
  "aluminium copper zinc": {
-  "checkedAt": "2026-10-15",
+  "checkedAt": "2026-10-30",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -733,6 +733,19 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "amd marvell taiwan semiconductor": {
+  "checkedAt": "2026-10-30",
+  "exchange": "NYQ",
+  "industry": "Semiconductors",
+  "isin": null,
+  "manual": null,
+  "name": "AMD, Marvell, Taiwan Semiconductor",
+  "score": 0.635,
+  "sector": "Technology",
+  "ticker": "TSM",
+  "type": "EQUITY",
+  "yahooName": "Taiwan Semiconductor Manufacturing Company Limited"
  },
  "american airlines": {
   "checkedAt": "2026-10-09",
@@ -887,6 +900,19 @@
   "manual": null,
   "name": "ANGLO AMERICAN",
   "score": 1.0,
+  "ticker": "AAL.L",
+  "type": "EQUITY",
+  "yahooName": "Anglo American plc"
+ },
+ "anglo american arcelor mittal rio tinto southern copper": {
+  "checkedAt": "2026-10-30",
+  "exchange": "LSE",
+  "industry": "Other Industrial Metals & Mining",
+  "isin": null,
+  "manual": null,
+  "name": "Anglo American, Arcelor Mittal, Rio Tinto, Southern Copper",
+  "score": 0.8,
+  "sector": "Basic Materials",
   "ticker": "AAL.L",
   "type": "EQUITY",
   "yahooName": "Anglo American plc"
@@ -1146,6 +1172,30 @@
   "type": "EQUITY",
   "yahooName": "Assicurazioni Generali S.p.A."
  },
+ "assicurazioni generali bper banca unicredit unipol assicurazioni": {
+  "checkedAt": "2026-10-30",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Assicurazioni Generali, BPER Banca, UniCredit, Unipol Assicurazioni",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "assicurazioni generali enel eni poste italiane": {
+  "checkedAt": "2026-10-30",
+  "exchange": "MIL",
+  "industry": "Insurance—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Assicurazioni Generali, Enel, Eni, Poste Italiane",
+  "score": 0.73,
+  "sector": "Financial Services",
+  "ticker": "G.MI",
+  "type": "EQUITY",
+  "yahooName": "Assicurazioni Generali S.p.A."
+ },
  "assicurazioni generali enel saipem": {
   "checkedAt": "2026-10-21",
   "exchange": "MIL",
@@ -1153,6 +1203,19 @@
   "manual": null,
   "name": "Assicurazioni Generali, Enel, Saipem",
   "score": 0.806,
+  "ticker": "G.MI",
+  "type": "EQUITY",
+  "yahooName": "Assicurazioni Generali S.p.A."
+ },
+ "assicurazioni generali prudential swiss re unipol assicurazioni": {
+  "checkedAt": "2026-10-30",
+  "exchange": "MIL",
+  "industry": "Insurance—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Assicurazioni Generali, Prudential, Swiss Re, Unipol Assicurazioni",
+  "score": 0.615,
+  "sector": "Financial Services",
   "ticker": "G.MI",
   "type": "EQUITY",
   "yahooName": "Assicurazioni Generali S.p.A."
@@ -1536,6 +1599,19 @@
   "type": "EQUITY",
   "yahooName": "Banco BPM S.p.A."
  },
+ "banco bpm bper banca fineco unicredit": {
+  "checkedAt": "2026-10-30",
+  "exchange": "MIL",
+  "industry": "Banks—Regional",
+  "isin": null,
+  "manual": null,
+  "name": "Banco BPM, BPER Banca, Fineco, UniCredit",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "BAMI.MI",
+  "type": "EQUITY",
+  "yahooName": "Banco BPM S.p.A."
+ },
  "banco bpm s p a": {
   "checkedAt": "2026-10-15",
   "exchange": "MIL",
@@ -1599,6 +1675,19 @@
   "name": "Barclays Plc",
   "score": 1.0,
   "ticker": "BARC.L",
+  "type": "EQUITY",
+  "yahooName": "Barclays PLC"
+ },
+ "barclays deutsche bank mitsubishi societe generale": {
+  "checkedAt": "2026-10-30",
+  "exchange": "NYQ",
+  "industry": "Banks—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Barclays, Deutsche Bank, Mitsubishi, Société Générale",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "BCS",
   "type": "EQUITY",
   "yahooName": "Barclays PLC"
  },
@@ -1690,6 +1779,17 @@
   "type": "EQUITY",
   "yahooName": "Bayer Aktiengesellschaft"
  },
+ "bayer eli lilly galderma sanofi": {
+  "checkedAt": "2026-10-30",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Bayer, Eli Lilly, Galderma, Sanofi",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "bayerische motoren werke": {
   "checkedAt": "2026-10-15",
   "exchange": "GER",
@@ -1722,6 +1822,17 @@
   "ticker": "BBVA.MC",
   "type": "EQUITY",
   "yahooName": "Banco Bilbao Vizcaya Argentaria, S.A."
+ },
+ "bbva banco bpm commerzbank": {
+  "checkedAt": "2026-10-30",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "BBVA, Banco BPM, Commerzbank",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "bbva deutsche bank ubs": {
   "checkedAt": "2026-10-15",
@@ -4067,6 +4178,19 @@
   "type": "EQUITY",
   "yahooName": "Enel SpA"
  },
+ "enel leonardo prysmian": {
+  "checkedAt": "2026-10-30",
+  "exchange": "MIL",
+  "industry": "Utilities—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Enel, Leonardo, Prysmian",
+  "score": 0.8,
+  "sector": "Utilities",
+  "ticker": "ENEL.MI",
+  "type": "EQUITY",
+  "yahooName": "Enel SpA"
+ },
  "enel rsted a s": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -4118,6 +4242,19 @@
   "manual": null,
   "name": "ENGIE SA",
   "score": 1.0,
+  "ticker": "ENGI.PA",
+  "type": "EQUITY",
+  "yahooName": "Engie SA"
+ },
+ "engie veolia vistra": {
+  "checkedAt": "2026-10-30",
+  "exchange": "PAR",
+  "industry": "Utilities—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Engie, Veolia, Vistra",
+  "score": 0.8,
+  "sector": "Utilities",
   "ticker": "ENGI.PA",
   "type": "EQUITY",
   "yahooName": "Engie SA"
@@ -4207,6 +4344,19 @@
   "name": "EQUINOR ASA",
   "score": 1.0,
   "ticker": "EQNR.OL",
+  "type": "EQUITY",
+  "yahooName": "Equinor ASA"
+ },
+ "equinor marathon petroleum repsol": {
+  "checkedAt": "2026-10-30",
+  "exchange": "NYQ",
+  "industry": "Oil & Gas Integrated",
+  "isin": null,
+  "manual": null,
+  "name": "Equinor, Marathon Petroleum, Repsol",
+  "score": 0.8,
+  "sector": "Energy",
+  "ticker": "EQNR",
   "type": "EQUITY",
   "yahooName": "Equinor ASA"
  },
@@ -4456,7 +4606,7 @@
   "yahooName": null
  },
  "euribor 3 mesi": {
-  "checkedAt": "2026-10-22",
+  "checkedAt": "2026-10-30",
   "exchange": null,
   "isin": "EU0009652783",
   "manual": null,
@@ -5433,6 +5583,19 @@
   "type": "EQUITY",
   "yahooName": "Fincantieri S.p.A."
  },
+ "fincantieri hensoldt saab": {
+  "checkedAt": "2026-10-30",
+  "exchange": "MIL",
+  "industry": "Aerospace & Defense",
+  "isin": null,
+  "manual": null,
+  "name": "Fincantieri, Hensoldt, Saab",
+  "score": 0.8,
+  "sector": "Industrials",
+  "ticker": "FCT.MI",
+  "type": "EQUITY",
+  "yahooName": "Fincantieri S.p.A."
+ },
  "fincantieri s p a": {
   "checkedAt": "2026-10-15",
   "exchange": "MIL",
@@ -5566,7 +5729,7 @@
   "yahooName": "Ford Motor Company"
  },
  "ford renault stellantis": {
-  "checkedAt": "2026-10-15",
+  "checkedAt": "2026-10-30",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -6022,6 +6185,17 @@
   "ticker": "GT",
   "type": "EQUITY",
   "yahooName": "The Goodyear Tire & Rubber Company"
+ },
+ "google meta palantir": {
+  "checkedAt": "2026-10-30",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Google, Meta, Palantir",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "gopro": {
   "checkedAt": "2026-10-15",
@@ -14907,7 +15081,7 @@
   "yahooName": null
  },
  "msci world ex usa with minimum economic exposure to usa top 50 select 3 5 decrement idx eur net return": {
-  "checkedAt": "2026-10-22",
+  "checkedAt": "2026-10-30",
   "exchange": null,
   "isin": null,
   "manual": null,
