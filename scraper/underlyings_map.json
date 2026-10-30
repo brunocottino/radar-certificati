@@ -14354,6 +14354,19 @@
   "type": "EQUITY",
   "yahooName": "Linde plc"
  },
+ "lloyds banking": {
+  "checkedAt": "2026-10-30",
+  "exchange": "LSE",
+  "industry": "Banks—Regional",
+  "isin": "GB0008706128",
+  "manual": null,
+  "name": "Lloyds Banking Group PLC",
+  "score": 1.0,
+  "sector": "Financial Services",
+  "ticker": "LLOY.L",
+  "type": "EQUITY",
+  "yahooName": "Lloyds Banking Group plc"
+ },
  "lockheed martin": {
   "checkedAt": "2026-10-15",
   "exchange": "NYQ",
