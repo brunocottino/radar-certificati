@@ -127,9 +127,52 @@ function notFound(isin) {
     { status: 404, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=600" } });
 }
 
+// Prezzo "live" di una scheda: denaro/lettera dal book di Borsa Italiana (ritardo 15 min, gratis),
+// chiesto solo quando qualcuno apre il certificato e tenuto 2 minuti nella cache di Cloudflare.
+// Se Borsa non risponde si restituisce {ok:false} e il sito mostra il prezzo del robot.
+const LIVE_URL = {
+  SEDX: i => `https://www.borsaitaliana.it/borsa/cw-e-certificates/dati-mercato.html?isin=${i}&mic=SEDX&lang=it`,
+  ETLX: i => `https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/dati-completi.html?isin=${i}&mic=ETLX&lang=it`,
+};
+const itNum = s => { const v = parseFloat(String(s || "").replace(/\./g, "").replace(",", ".")); return isFinite(v) && v > 0 ? v : null; };
+
+function parseBook(html) {
+  const t = html.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<[^>]+>/g, "|").replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ").split("|").map(x => x.trim()).filter(Boolean);
+  const a = t.indexOf("Prezzo Acquisto");
+  if (a < 0) return null;
+  let h = a; while (h > 0 && /^(N|Numero Proposte|Volume Acquisto)$/.test(t[h - 1])) h--;
+  let e = a; while (/^(Prezzo Acquisto|Prezzo Vendita|Volume Vendita|Numero Proposte)$/.test(t[e])) e++;
+  const head = t.slice(h, e), row = t.slice(e, e + head.length);
+  const bid = itNum(row[head.indexOf("Prezzo Acquisto")]), ask = itNum(row[head.indexOf("Prezzo Vendita")]);
+  const after = k => { const i = t.indexOf(k); return i < 0 ? null : t[i + 1]; };
+  const last = itNum(after("Prezzo Ultimo Contratto")), lastAt = (after("Data - Ora Ultimo Contratto") || "").match(/^\d\d\/\d\d\/\d\d - [\d.]+$/)?.[0] || null;
+  if (bid && ask && (bid > ask || ask / bid > 1.5)) return null;  // book incoerente: meglio niente
+  return bid || ask || last ? { bid, ask, last, lastAt } : null;
+}
+
+async function live(isin, mic, ctx) {
+  const key = new Request(`${SITE}/api/live/${isin}?m=${mic}`), cache = caches.default;
+  const hit = await cache.match(key);
+  if (hit) return hit;
+  let out = { ok: false };
+  try {
+    const r = await fetch(LIVE_URL[mic](isin), { headers: { "user-agent": "Mozilla/5.0 (compatible; RadarCertificati/1.0)", "accept-language": "it-IT" }, signal: AbortSignal.timeout(6000) });
+    const b = r.ok && parseBook(await r.text());
+    if (b) out = { ok: true, isin, ...b, at: new Date().toISOString(), delayMin: 15, source: "Borsa Italiana" };
+  } catch (e) { /* Borsa lenta o irraggiungibile: resta il prezzo del robot */ }
+  const res = new Response(JSON.stringify(out), { headers: { "content-type": "application/json; charset=utf-8",
+    "cache-control": `public, max-age=${out.ok ? 120 : 600}`, "access-control-allow-origin": "*", "x-robots-tag": "noindex" } });
+  ctx.waitUntil(cache.put(key, res.clone()));
+  return res;
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const u = new URL(request.url);
+    const l = u.pathname.match(/^\/api\/live\/([A-Z0-9]{12})$/);
+    if (l) return ISIN_RE.test(l[1]) && LIVE_URL[u.searchParams.get("m")] ? live(l[1], u.searchParams.get("m"), ctx)
+      : new Response('{"ok":false}', { status: 400, headers: { "content-type": "application/json" } });
     const m = u.pathname.match(/^\/certificato\/([A-Za-z0-9]{12})\/?$/);
     if (!m) return notFound(null);
     const isin = m[1].toUpperCase();

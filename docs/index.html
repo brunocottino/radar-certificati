@@ -273,6 +273,8 @@ tr.sp td{height:auto;border:none;padding:0}
 .facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 14px;font-size:.84rem}
 .facts div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:5px 0}
 .facts span:first-child{color:var(--muted)}
+.live{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;font-size:.86rem;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:7px 10px;margin:0 0 10px}
+.live .lt{color:var(--muted);font-size:.78rem}.live button{font:inherit;font-size:.78rem;padding:2px 8px}
 .facts span:last-child{font-family:var(--f-num);text-align:right}
 .dact{display:none}
 .fsum{font-size:.82rem;padding:6px 12px;border-radius:99px;background:var(--accent-soft);color:var(--accent);border-color:transparent;max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1816,6 +1818,7 @@ async function detailHtml(c){
 ${verdict(c,full)}
 ${barrierMap(c,full)||ladder(c,full)}
 ${undChart(c,full)}
+${LIVE_MIC[c.market]?`<div class="live" data-live="${esc(c.isin)}" data-m="${LIVE_MIC[c.market]}" hidden></div>`:""}
 <div class="facts">${F.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>
 <div class="duo">${payoff(c,full)}${calendar1(c,full)}</div>
 ${scenarios(c)}
@@ -1825,10 +1828,24 @@ ${chart(j?.history)}
 <details><summary>Tutti i dati</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>
 <div class="dact"><button data-myp="${esc(c.isin)}" class="${inMyp(c.isin)?"on":""}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button data-fav="${esc(c.isin)}" class="${FAV[c.isin]?"on":""}">${FAV[c.isin]?"★ Preferito":"☆ Preferito"}</button><button data-cmpbtn="${esc(c.isin)}" class="${CMP.has(c.isin)?"on":""}">${CMP.has(c.isin)?"✓ Confronto":"Confronta"}</button><a href="${esc(own?full.url:bi(c))}" target="_blank" rel="noopener">Borsa ↗</a></div>`;
 }
+// prezzo di borsa del momento (Worker /api/live, book di Borsa Italiana con 15 min di ritardo): se non risponde non si vede nulla
+const LIVE_MIC={"SeDeX":"SEDX","Cert-X":"ETLX"};
+async function wireLive(root){
+  const el=root.querySelector("[data-live]");if(!el)return;
+  const c=BYISIN.get(el.dataset.live);
+  try{
+    const j=await (await fetch(`/api/live/${el.dataset.live}?m=${el.dataset.m}`)).json();
+    if(!j.ok||!(j.bid||j.ask))return;
+    const t=new Date(Date.parse(j.at)-15*60000).toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
+    const d=c?.ask&&j.ask?(j.ask/c.ask-1)*100:null;
+    el.innerHTML=`<b>In borsa ora</b><span>denaro <b>${fmt(j.bid)}</b></span><span>lettera <b>${fmt(j.ask)}</b></span>${d!=null&&Math.abs(d)>=0.05?`<span>${chgHtml(d)} sul radar</span>`:""}<span class="lt">ore ${t} · ritardo 15 min · Borsa Italiana</span><button data-relive>Aggiorna</button>`;
+    el.hidden=false;el.querySelector("[data-relive]").onclick=()=>{el.querySelector("[data-relive]").disabled=true;wireLive(root)};
+  }catch(e){}
+}
 async function openDetail(isin){
   const c=BYISIN.get(isin);if(!c)return;
   const d=$("#drawer"),b=$("#dbody");d.hidden=false;document.body.style.overflow="hidden";b.innerHTML=`<p class="note">Caricamento ${esc(isin)}…</p>`;
-  b.innerHTML=await detailHtml(c);wireChart(b);wireUChart(b);b.querySelector("[data-close]").focus();
+  b.innerHTML=await detailHtml(c);wireChart(b);wireUChart(b);wireLive(b);b.querySelector("[data-close]").focus();
 }
 function closeDrawers(){$("#drawer").hidden=true;$("#cmp").hidden=true;$("#pf").hidden=true;document.body.style.overflow=""}
 
@@ -2008,7 +2025,7 @@ async function renderIsinBox(){
   if(!ISIN){box.hidden=true;box.innerHTML="";return}
   box.hidden=false;
   const exact=ISIN.length===12?BYISIN.get(ISIN):(ROWS.length===1?ROWS[0]:null);
-  if(exact){if(box.dataset.isin===exact.isin)return;box.dataset.isin=exact.isin;box.innerHTML=`<div class="inline-detail">${await detailHtml(exact)}</div>`;box.querySelector("[data-close]")?.remove();wireChart(box);wireUChart(box);return}
+  if(exact){if(box.dataset.isin===exact.isin)return;box.dataset.isin=exact.isin;box.innerHTML=`<div class="inline-detail">${await detailHtml(exact)}</div>`;box.querySelector("[data-close]")?.remove();wireChart(box);wireUChart(box);wireLive(box);return}
   box.dataset.isin="";
   if(ISIN.length===12)box.innerHTML=`<div class="panel"><b>ISIN non presente</b> nell'archivio: <span class="num">${esc(ISIN)}</span>. <a href="https://www.borsaitaliana.it/borsa/cw-e-certificates/scheda/${esc(ISIN)}-SEDX.html?lang=it" target="_blank" rel="noopener">Cercalo su Borsa Italiana</a>.</div>`;
   else box.innerHTML=ROWS.length?`<p class="note">${ROWS.length} certificati iniziano con ${esc(ISIN)}: tutti i filtri sono ignorati. Completa l'ISIN o apri una riga.</p>`:`<div class="panel">Nessun ISIN in archivio inizia con <span class="num">${esc(ISIN)}</span>.</div>`;
