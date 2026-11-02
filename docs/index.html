@@ -537,8 +537,18 @@ td{font-weight:500}
 }
 @media print{
   @page{size:A4 landscape;margin:12mm}
+  @page cert{size:A4 portrait;margin:12mm}
   body{background:#fff!important;overflow:visible!important}
-  body>*:not(#pf){display:none!important}
+  body:not(.pcert)>*:not(#pf){display:none!important}
+  body.pcert>*:not(#drawer){display:none!important}
+  body.pcert #drawer{position:static!important;display:block!important;page:cert}
+  body.pcert #drawer .dbody{width:auto!important;height:auto!important;overflow:visible!important;box-shadow:none!important;padding:0!important;animation:none!important;background:#fff!important}
+  body.pcert .dtabs,body.pcert .dact,body.pcert .dhead .row,body.pcert [data-close],body.pcert .dtools,body.pcert [data-pane="d"] details,body.pcert .uchart .tip,body.pcert .live{display:none!important}
+  body.pcert .dtop{position:static!important;border:0!important;background:none!important}
+  body.pcert{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.pcert .dview .ponly{display:block}
+  body.pcert .dpane{display:grid!important}
+  body.pcert .judge,body.pcert .checks,body.pcert .sim,body.pcert .kp4>div,body.pcert .bmap,body.pcert .chart,body.pcert .uchart{break-inside:avoid;box-shadow:none}
   #pf{position:static!important;display:block!important}
   #pf .dbody{width:auto!important;height:auto!important;overflow:visible!important;box-shadow:none!important;padding:0!important;animation:none!important;background:#fff!important;gap:10px}
   #pf .dhead{position:static!important;border:none!important}
@@ -615,6 +625,53 @@ td{font-weight:500}
 .verdict{border:1px solid var(--line);border-left:4px solid var(--good);border-radius:10px;padding:10px 14px;background:var(--surface);display:grid;gap:4px}
 .verdict.v-ca{border-left-color:var(--caution)}.verdict.v-ko{border-left-color:var(--bad)}
 .cw{margin-left:4px;color:var(--caution);font-size:.8rem;cursor:help}.cw.hot{color:var(--bad)}
+/* scheda certificato */
+.dview{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}.dview>*,.dpane>*{min-width:0}
+.dpane{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.dtop{position:sticky;top:-16px;z-index:3;background:var(--bg);padding:8px 0 0;display:grid;gap:8px}
+.dtop .dhead{position:static;padding:0;margin:0;border:0;background:none}
+.dtabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.dtabs button{flex:1 0 auto;background:none;border:0;border-bottom:2.5px solid transparent;border-radius:0;padding:9px 12px;font-weight:600;color:var(--muted);font-size:.9rem}
+.dtabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.dsub{font-size:.84rem;color:var(--muted);margin-top:-8px}
+.judge{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--good);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.judge.v-ca{border-left-color:var(--caution)}.judge.v-ko{border-left-color:var(--bad)}
+.judge .ring{width:58px;height:58px;font-size:1.1rem}
+.j-h{font-family:var(--f-disp);font-weight:700;font-size:1.15rem;line-height:1.25;letter-spacing:-.01em}
+.v-ok .j-h{color:var(--good)}.v-ca .j-h{color:var(--caution)}.v-ko .j-h{color:var(--bad)}
+.j-s{font-size:.9rem;line-height:1.45;margin-top:3px}
+.kp4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.kp4>div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.kp4 .k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.kp4 .v{font-family:var(--f-disp);font-weight:700;font-size:1.35rem;line-height:1.2;font-variant-numeric:tabular-nums}
+.kp4 .s{font-size:.74rem;color:var(--muted)}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.checks li{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:start}
+.checks li:last-child{border-bottom:0}
+.checks i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-style:normal;font-weight:700;font-size:.8rem;background:var(--line);color:var(--muted)}
+.checks .ok i{background:var(--good-bg);color:var(--good)}.checks .ca i{background:var(--caution-bg);color:var(--caution)}.checks .ko i{background:var(--bad-bg);color:var(--bad)}
+.checks .cl{display:block;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:1px}
+.checks span{font-size:.9rem;line-height:1.4}
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:10px}
+.sim-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.amt{display:flex;align-items:center;gap:6px;font-weight:600}
+.amt input{width:130px;font-size:1.05rem;font-weight:700;text-align:right;padding:7px 10px;border-radius:10px}
+.sim-buy{font-size:.9rem;line-height:1.45}
+.pbar{height:8px;border-radius:4px;background:var(--bad-bg);overflow:hidden}.pbar i{display:block;height:100%;background:var(--good)}
+.scn{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.scn-i{border:1px solid var(--line);border-top:3px solid var(--good);border-radius:10px;padding:9px 11px;display:grid;gap:3px;align-content:start}
+.scn-i.ca{border-top-color:var(--caution)}.scn-i.ko{border-top-color:var(--bad)}
+.scn-h{display:flex;justify-content:space-between;gap:6px;font-size:.84rem;font-weight:600;flex-wrap:wrap}.scn-h small{color:var(--muted);font-weight:500}
+.scn-v{font-family:var(--f-disp);font-weight:700;font-size:1.35rem;font-variant-numeric:tabular-nums}
+.scn-i p{margin:0;font-size:.8rem;color:var(--muted);line-height:1.4}
+.dtools{gap:8px}.dtools button{font-size:.88rem}
+.inline-detail .dtop{position:static;background:none}
+@media (max-width:819px){
+  .dtop{top:0;margin:0 -14px;padding:10px 14px 0;border-bottom:1px solid var(--line)}.dtabs{border-bottom:0}
+  .kp4{grid-template-columns:1fr 1fr}.kp4 .v{font-size:1.25rem}
+  .judge{padding:12px}.judge .ring{width:50px;height:50px;font-size:1rem}
+  .dtitle{font-size:1.15rem}
+}
 .c-warn{margin:8px 0 2px;padding:6px 10px;border-radius:8px;font-size:.8rem;line-height:1.35;background:var(--caution-bg);color:var(--caution)}.c-warn.ko{background:var(--bad-bg);color:var(--bad)}
 .verdict p{margin:0;font-size:.9rem;line-height:1.45}
 .bmap,.uchart,.pay,.cal1{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);display:grid;gap:8px;min-width:0}
@@ -1269,7 +1326,7 @@ function scoreBars(c){if(!c.sc)return "";const w=W[state.profile];
   return `<div class="ladder"><div class="cap">Perché ${c.score} punti (profilo ${esc(state.profile)}, peso tra parentesi)</div>${Object.entries(c.sc).map(([k,v])=>`<div class="sbar"><span>${COMP[k]} <span class="note">(${Math.round(w[k]*100)}%)</span></span><span class="bar"><i style="width:${Math.round(v*100)}%"></i></span><span class="num">${Math.round(v*100)}</span></div>`).join("")}
   ${c.belowBarrier?`<p class="note">Sotto barriera: punteggio ridotto al 35%.</p>`:c.couponActive===false?`<p class="note">Cedola sospesa: punteggio ridotto all'80%.</p>`:""}</div>`}
 function scenarios(c){if(c.ytmGood==null)return "";
-  return `<div><div class="cap" style="margin-bottom:6px">Scenari di rendimento annuo sul prezzo lettera</div><div class="scen">
+  return `<div><div class="cap" style="margin-bottom:6px">Come il radar calcola il rendimento atteso (annuo, sul prezzo lettera)</div><div class="scen">
   <div>Se la barriera tiene<b class="pos">${pct(c.ytmGood)}</b><span class="note">cedole + rimborso a 100</span></div>
   ${c.ytmBad!=null?`<div>Se la barriera viene rotta<b class="neg">${pct(c.ytmBad)}</b><span class="note">stima: rimborso ≈ 85% del livello barriera, metà delle cedole</span></div>`:""}
   <div>Rendimento atteso<b class="hi">${pct(c.retProxy)}</b><span class="note">${c.expRet!=null?`pesato con prob. ${probTxt(c)}`:"probabilità ignota: rend. a scadenza (max 25%) scontato in base alla distanza del peggiore"}</span></div>
@@ -1650,7 +1707,8 @@ document.addEventListener("change",e=>{const t=e.target;
     PFF.open=true;ls.set("rc-pff",PFF);const q=$("#pfq")?.value;renderPf();if(q!=null&&$("#pfq")){$("#pfq").value=q}if(PF.mode==="mine")pfSuggest();return}
   if(!t.id||!t.id.startsWith("pf-")||!$("#pf-cap"))return;
   PF={...PF,cap:Math.max(1000,+$("#pf-cap").value||PFD.cap),n:+$("#pf-n").value,iss:+$("#pf-iss").value,key:$("#pf-key").value,src:$("#pf-src").value,uniq:$("#pf-uniq").checked};ls.set("rc-pf",PF);renderPf()});
-document.addEventListener("input",e=>{if(e.target.id==="pfq")pfSuggest()});
+document.addEventListener("input",e=>{if(e.target.id==="pfq")pfSuggest();
+  const a=e.target.dataset?.amt;if(a){const c=BYISIN.get(a),v=+e.target.value;if(c&&v>0){ls.set("rc-amt",v);e.target.closest(".sim").querySelector(".sim-body").innerHTML=simBody(c,v)}}});
 document.addEventListener("focusin",e=>{if(e.target.id==="pfq")pfSuggest()});
 document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("pff")){PFF.open=e.target.open;ls.set("rc-pff",PFF)}},true);
 document.addEventListener("click",e=>{
@@ -1850,41 +1908,119 @@ ${each&&cps.length?`<p class="note">Se tutte le cedole venissero pagate: <b>${fm
 <div class="cl-next">${up.map(([d,k,l])=>`<span><b>${dshort(d)}</b> ${k==="c"?"cedola":"richiamo"+(l?" ≥ "+fmt(l,0)+"%":"")}</span>`).join("")}</div></div>`;
 }
 
+/* ---------- scheda certificato: giudizio, semafori, simulatore, linguette ---------- */
+const PERM={"1m":1,"2m":2,"3m":3,"4m":4,"6m":6,"12m":12};
+const perTxt=m=>m===1?"ogni mese":m===12?"ogni anno":`ogni ${m} mesi`;
+// date delle cedole da oggi a una data (stima dalla prossima data nota e dalla frequenza)
+function cpDates(c,end){const per=PERM[c.freq],out=[];if(!per||!c.couponDate||!end)return out;
+  for(let d=new Date(c.couponDate),k=0;d<=end&&k<130;k++){out.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth()+per,d.getDate())}return out}
+const eur=v=>v==null||!isFinite(v)?"—":fmt(Math.round(v),0)+" €";
+const seur=v=>v==null||!isFinite(v)?"—":(v>=0?"+":"−")+fmt(Math.abs(Math.round(v)),0)+" €";
+// giudizio in parole, per il profilo scelto
+function judge(c){const pr=state.profile,w=esc(c.worst||"il peggiore");
+  if(c.priceBad)return {t:"ko",h:"Dati da verificare",s:"Il prezzo pubblicato non è coerente: controlla su Borsa Italiana prima di qualsiasi valutazione."};
+  if(c.belowBarrier)return {t:"ko",h:"Capitale a rischio",s:`${w} è sotto la barriera: se a scadenza resta lì, il rimborso sarà pari al suo valore, cioè meno del capitale.`};
+  if(c.call?.lvl==="alto"&&c.call.poor)return {t:"ko",h:"Sta per essere rimborsato",s:`Il ${dshort(c.callDate)} probabilmente rimborsa: comprando oggi incassi circa ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto. Il rendimento annuo a scadenza non è realistico.`};
+  const sc=c.score??0;
+  const h=sc>=75?`Interessante per il profilo ${pr}`:sc>=60?`Buono per il profilo ${pr}`:sc>=45?"Da valutare con attenzione":`Poco adatto al profilo ${pr}`;
+  const t=sc>=60?"ok":sc>=45?"ca":"ko";
+  const s=c.ytm!=null&&c.dist!=null?`Rende <b>${pct(c.ytm)} l'anno</b> se a scadenza ${w} non ha perso più del <b>${pct(c.dist,0)}</b> da oggi${c.prob!=null?`; la probabilità stimata è <b>${probTxt(c)}</b>`:""}.`
+    :c.ytm!=null?`Rende ${pct(c.ytm)} l'anno se tutte le cedole sono pagate e rimborsa 100 a scadenza.`:"Mancano prezzo o distanza dalla barriera: il radar non può stimare il rendimento.";
+  return {t,h,s};
+}
+// semafori: capitale, cedola, richiamo, prezzo, emittente
+function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=full.barrierType&&full.barrierType!=="scadenza"?" (osservata anche durante la vita)":c.barrierPct?" (osservata a scadenza)":"";
+  if(c.dist==null)o.push(["na","Capitale",c.barrierPct&&+c.barrierPct>100?"Struttura senza barriera classica: leggi il term sheet.":"Distanza dalla barriera non disponibile."]);
+  else if(c.dist<0)o.push(["ko","Capitale",`${w} è <b>sotto la barriera</b> del ${fmt(-c.dist,0)}%${bt}.`]);
+  else o.push([c.dist>=30?"ok":"ca","Capitale",`${w} può scendere ancora del <b>${pct(c.dist,0)}</b> prima della barriera al ${fmt(+c.barrierPct,0)}%${bt}.`]);
+  if(c.couponPa==null)o.push(["na","Cedola","Nessuna cedola periodica nota."]);
+  else if(c.couponActive===false)o.push([c.memory?"ca":"ko","Cedola",`Oggi <b>non si pagherebbe</b>: il peggiore è sotto il trigger${c.memory?"; con la memoria si recupera se risale":""}.`]);
+  else if(c.couponActive===true)o.push([c.trigDist>=15?"ok":"ca","Cedola",`Oggi si paga: ${pct(c.couponPa,2)} l'anno${PERM[c.freq]?", "+perTxt(PERM[c.freq]):""}, margine del ${pct(c.trigDist,0)} sul trigger${c.memory?" · con memoria":""}.`]);
+  else o.push(["na","Cedola",`${pct(c.couponPa,2)} l'anno${c.freq?", "+freqTxt(c.freq).toLowerCase():""}: condizione di pagamento non verificabile.`]);
+  if(c.call)o.push([c.call.lvl==="alto"&&c.call.poor?"ko":"ca","Rimborso anticipato",callTxt(c)]);
+  else if(c.callDate)o.push(["ok","Rimborso anticipato",`Prossima data ${dshort(c.callDate)}: oggi il rimborso non è probabile.`]);
+  else if(c.callKind)o.push(["na","Rimborso anticipato",`${esc(c.callable)}: date non disponibili.`]);
+  if(!c.ask)o.push(["ko","Prezzo","Nessun prezzo in lettera: oggi non si può comprare."]);
+  else{const sp=c.spread;o.push([sp==null?"na":sp<=1?"ok":sp<=2?"ca":"ko","Prezzo",`${c.pricePct?`Quota <b>${fmt(c.pricePct,1)}%</b>${c.pricePct<98?" (sotto la pari: guadagno extra se rimborsa 100)":c.pricePct>101?" (sopra la pari: a scadenza riavrai 100)":""}`:"Prezzo"} · spread ${pct(sp,2)}${sp>2?": comprare e rivendere costa caro":""}${c.stale?` · <span class="ca">dato del ${dtime(c.priceAt)}</span>`:""}.`])}
+  o.push([c.tier==="A"?"ok":c.tier==="B"?"ok":c.tier==="C"?"ca":"na","Emittente",`${esc(c.issuer||"n.d.")}${c.tier?` · classe ${c.tier}`:""}: se l'emittente fallisce si può perdere il capitale anche con la barriera intatta.`]);
+  return o;
+}
+const ICO={ok:"✓",ca:"!",ko:"✕",na:"·"};
+// simulatore in euro con l'importo scelto
+function simBody(c,amt){
+  if(!c.ask||!c.nominal)return `<p class="note">Senza prezzo in lettera non si può simulare l'acquisto.</p>`;
+  const q=Math.floor(amt/c.ask);if(q<1)return `<p class="note">Un certificato costa ${eur(c.ask)}: aumenta l'importo.</p>`;
+  const inv=q*c.ask,nom=q*c.nominal,per=PERM[c.freq],cp=c.couponPa??0;
+  const cps=c.matDate?cpDates(c,c.matDate):[];const n=cps.length||(per&&c.years?Math.max(1,Math.round(c.years*12/per)):0);
+  const each=per?nom*cp/100*per/12:null,all=per?each*n:nom*cp/100*(c.years||0);
+  const good=nom+all-inv;const bp=+c.barrierPct>0&&+c.barrierPct<=100?+c.barrierPct:null;
+  const badRed=nom*((bp||60)*.85)/100,bad=badRed-inv;
+  const P=c.prob!=null?c.prob/100:null;
+  const sc=[];
+  if(c.call)sc.push(["ca",`Rimborso anticipato il ${dshort(c.callDate)}`,`stima ${fmt(c.call.p*100,0)}%`,nom*(100+c.call.cps)/100-inv,`Riavrai ${eur(nom)} più le cedole fino a quella data, poi dovrai reinvestire.`]);
+  sc.push(["ok","Va bene: la barriera tiene",P!=null?`probabilità ${fmt(P*100,0)}%`:"probabilità n.d.",good,`${n?`${n} cedole${each?` da ${eur(each)}`:""} e `:all?`cedole ≈ ${eur(all)} e `:""}rimborso di ${eur(nom)} il ${dshort(c.matDate)}.`]);
+  if(bp)sc.push(["ko","Va male: barriera rotta a scadenza",P!=null?`probabilità ${fmt((1-P)*100,0)}%`:"",bad,`Esempio: il peggiore chiude al ${fmt(Math.round(bp*.85),0)}% dello strike → rimborso ${eur(badRed)}. Le cedole incassate prima${all?` (fino a ${eur(all)})`:""} riducono la perdita: dipende da quando scende.`]);
+  return `<div class="sim-buy">Compri <b>${q.toLocaleString("it-IT")}</b> certificat${q===1?"o":"i"} a ${eur(c.ask)} = <b>${eur(inv)}</b>${each?` · cedola di <b>${eur(each)}</b> ${perTxt(per)}`:cp?` · cedole ≈ ${eur(nom*cp/100)} l'anno`:""}</div>
+${P!=null?`<div class="pbar" title="Probabilità stimata che la barriera tenga"><i style="width:${(P*100).toFixed(0)}%"></i></div>`:""}
+<div class="scn">${sc.map(([t,h,p,v,s])=>`<div class="scn-i ${t}"><div class="scn-h"><span>${h}</span><small>${p}</small></div><div class="scn-v ${v>=0?"pos":"neg"}">${seur(v)}</div><p>${s}</p></div>`).join("")}</div>`;
+}
+function simHtml(c){const amt=ls.get("rc-amt",10000);
+  return `<div class="sim"><div class="sim-top"><div class="cap">Cosa succede con</div><label class="amt"><input type="number" inputmode="numeric" min="100" step="1000" value="${amt}" data-amt="${esc(c.isin)}" aria-label="Importo da investire"> €</label></div>
+<div class="sim-body">${simBody(c,amt)}</div><p class="note">Importi lordi, prima di tasse e commissioni. Stime statistiche, non previsioni.</p></div>`}
+// sintesi in parole semplici da incollare in un messaggio al cliente
+function clientText(c){const L=[];
+  L.push(`${c.unds.join(", ")}`);L.push(`${c.issuer||""}${c.type?" · "+c.type:""} · ISIN ${c.isin}`);L.push("");
+  if(c.couponPa!=null)L.push(`• Cedola ${fmt(c.couponPa,2)}% l'anno${c.freq?", "+freqTxt(c.freq).toLowerCase():""}${c.memory?", con memoria":""}.`);
+  if(c.matDate)L.push(`• Scadenza ${dshort(c.matDate)}${c.years?` (${yrs(c.years<1?c.years:Math.round(c.years*10)/10)})`:""}.`);
+  if(c.dist!=null&&c.barrierPct)L.push(c.dist>=0?`• Capitale protetto se a scadenza ${c.worst||"il sottostante peggiore"} non ha perso più del ${fmt(c.dist,0)}% da oggi (barriera al ${fmt(+c.barrierPct,0)}% del valore iniziale).`:`• Attenzione: ${c.worst||"il peggiore"} è sotto la barriera.`);
+  if(c.ytm!=null)L.push(`• Rendimento annuo se la barriera tiene: ${pct(c.ytm)} al prezzo di oggi (${fmt(c.pricePct,1)}%).`);
+  if(c.prob!=null)L.push(`• Probabilità stimata che la barriera tenga: ${probTxt(c)}.`);
+  if(c.call)L.push(`• ${callTxt(c).replace(/<[^>]+>/g,"")}`);
+  L.push(`• Rischio emittente: ${c.issuer||"n.d."}.`);L.push("");
+  L.push("Stime statistiche, non una raccomandazione: leggere KID e term sheet.");L.push(`https://radarcertificati.com/certificato/${c.isin}`);
+  return L.join("\n")}
+function printCert(){const th=ls.get("rc-theme","auto");applyTheme("light");document.body.classList.add("pcert");
+  const back=()=>{document.body.classList.remove("pcert");applyTheme(th);removeEventListener("afterprint",back)};addEventListener("afterprint",back);setTimeout(()=>print(),60)}
+
 async function detailHtml(c){
   const [j]=await Promise.all([loadDetail(c.isin),loadReturns()]);const full=j?.certificate||c;const own=full.url&&/borsaitaliana\.it/.test(full.url);
-  const F=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],["Da ieri",c.chg==null?"—":chgHtml(c.chg)||"invariato"],
-    ...(FAV[c.isin]?.ask&&c.ask?[["Da quando l'hai salvato",chgHtml((c.ask/FAV[c.isin].ask-1)*100)||"invariato"]]:[]),
-    ...(c.isNew?[["Nel radar dal",dshort(parseDate(c.firstSeen))]]:[]),
+  const J=judge(c),CK=checks(c,full);
+  const PRICE=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],["Da ieri",c.chg==null?"—":chgHtml(c.chg)||"invariato"],
+    ...(FAV[c.isin]?.ask&&c.ask?[["Da quando l'hai salvato",chgHtml((c.ask/FAV[c.isin].ask-1)*100)||"invariato"]]:[]),["Nominale",fmt(c.nominal,0)+" "+esc(full.currency||"EUR")],["Mercato",esc(c.market||"—")]];
+  const F=[...(c.isNew?[["Nel radar dal",dshort(parseDate(c.firstSeen))]]:[]),
     ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
-    ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],...(c.call?[["Prob. richiamo",`<span class="${c.call.lvl==="alto"?"neg":"ca"}">${fmt(c.call.p*100,0)}% il ${dshort(c.callDate)}</span>`],["Se richiamato",`${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto`]]:[]),["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
-  return `<div class="dhead"><div style="min-width:0"><div class="c-iss"><b>${esc(c.issuer||"")}</b>${c.type?" · "+esc(c.type):""}</div>
-<div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><button class="share only-wide ${inMyp(c.isin)?"on":""}" data-myp="${esc(c.isin)}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
-<button data-close aria-label="Chiudi">✕</button></div>
-<div class="dtitle">${undsHtml(c)}</div>
-<div class="badges">${badges(c)}</div>
-<div class="hero">
-<div><div class="k">Rend. annuo</div><div class="v hi">${pct(c.ytm)}</div><div class="s">${c.call?.lvl==="alto"?`<span class="${c.call.poor?"neg":"ca"}">se richiamato ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto</span>`:c.expRet!=null?"atteso "+pct(c.expRet):"a scadenza, al prezzo lettera"}</div></div>
-<div><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div><div class="s">${freqTxt(c.freq)}${c.memory?" · memoria":""}</div></div>
-<div><div class="k">Peggiore dalla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div><div class="s">${esc(c.worst||"peggiore n.d.")}</div></div>
-<div><div class="k">Prob. tenuta</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div><div class="s">${c.wvol!=null?"vol peggiore "+pct(c.wvol,0):"volatilità n.d."}</div></div>
+    ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],...(c.call?[["Prob. richiamo",`<span class="${c.call.lvl==="alto"?"neg":"ca"}">${fmt(c.call.p*100,0)}% il ${dshort(c.callDate)}</span>`],["Se richiamato",`${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto`]]:[]),
+    ["Scadenza",dshort(c.matDate)],["Rend. a scadenza",pct(c.ytm)],["Rend. a richiamo",pct(c.ytc)],["Rend. atteso",pct(c.retProxy)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Vol peggiore",pct(c.wvol,0)],["Classe emittente",c.tier||"n.d."]];
+  const sub=[c.matDate?`Scade ${dshort(c.matDate)}${c.years!=null&&c.years>0?` · ${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}`:""}`:"",c.n>1?`Worst-of ${c.n}`:c.n===1?"Singolo sottostante":"",c.freq?"Cedola "+freqTxt(c.freq).toLowerCase():"",c.memory?"Memoria":"",c.isNew?"Nuovo":""].filter(Boolean);
+  const pane=(id,html,on)=>`<section class="dpane" data-pane="${id}" ${on?"":"hidden"}>${html}</section>`;
+  const ov=`<div class="judge v-${J.t}"><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><div><div class="j-h">${J.h}</div><div class="j-s">${J.s}</div></div></div>
+<div class="kp4">
+<div><div class="k">Rendimento annuo</div><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="s">${c.call?.lvl==="alto"?`<span class="${c.call.poor?"neg":"ca"}">se richiamato ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto</span>`:"se la barriera tiene"}</div></div>
+<div><div class="k">Cedola</div><div class="v">${pct(c.couponPa,2)}</div><div class="s">l'anno${c.freq?" · "+freqTxt(c.freq).toLowerCase():""}</div></div>
+<div><div class="k">Margine sulla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div><div class="s">${c.dist!=null&&c.dist<0?"sotto barriera":"di calo del peggiore"}</div></div>
+<div><div class="k">Prob. che tenga</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div><div class="s">stima a scadenza</div></div>
 </div>
-${verdict(c,full)}
-${barrierMap(c,full)||ladder(c,full)}
-${undChart(c,full)}
-${LIVE_MIC[c.market]?`<div class="live" data-live="${esc(c.isin)}" data-m="${LIVE_MIC[c.market]}" hidden></div>`:""}
-<div class="facts">${F.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>
-<div class="duo">${payoff(c,full)}${calendar1(c,full)}</div>
-${scenarios(c)}
-${scoreBars(c)}
-${chart(j?.history)}
-<div class="row" style="font-size:.88rem">${links(full)}</div>
-<details><summary>Tutti i dati</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>
-<div class="dact"><button data-myp="${esc(c.isin)}" class="${inMyp(c.isin)?"on":""}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button data-fav="${esc(c.isin)}" class="${FAV[c.isin]?"on":""}">${FAV[c.isin]?"★ Preferito":"☆ Preferito"}</button><button data-cmpbtn="${esc(c.isin)}" class="${CMP.has(c.isin)?"on":""}">${CMP.has(c.isin)?"✓ Confronto":"Confronta"}</button><a href="${esc(own?full.url:bi(c))}" target="_blank" rel="noopener">Borsa ↗</a></div>`;
+<ul class="checks">${CK.map(([t,l,s])=>`<li class="${t}"><i>${ICO[t]}</i><div><strong class="cl">${l}</strong><span>${s}</span></div></li>`).join("")}</ul>
+${simHtml(c)}
+${calendar1(c,full)}
+<div class="row dtools"><button data-ctext="${esc(c.isin)}">📋 Copia sintesi per il cliente</button><button data-pcert class="only-wide">🖨 Stampa scheda</button></div>`;
+  const und=`${verdict(c,full)}${barrierMap(c,full)||ladder(c,full)}${undChart(c,full)}${barrierMap(c,full)?ladder(c,full):""}<div class="duo">${payoff(c,full)}</div>`;
+  const pr=`${LIVE_MIC[c.market]?`<div class="live" data-live="${esc(c.isin)}" data-m="${LIVE_MIC[c.market]}" hidden></div>`:""}<div class="facts">${PRICE.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>${chart(j?.history)||`<p class="note">Storico prezzi non ancora disponibile.</p>`}<div class="row" style="font-size:.88rem">${links(full)}</div>`;
+  const det=`<div class="badges">${badges(c)}</div><div class="facts">${F.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>${scenarios(c)}${scoreBars(c)}
+<details open><summary>Tutti i dati dell'emittente</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>
+<p class="note">Probabilità e scenari sono stime statistiche (volatilità storica, nessun salto di mercato, nessun rischio emittente): non sono previsioni né consulenza. Verificare sempre KID e term sheet.</p>`;
+  return `<div class="dview"><div class="ponly"><b>Radar Certificati</b> · scheda al ${new Date().toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})} · prezzi del ${c.priceAt?dtime(c.priceAt):"n.d."} · radarcertificati.com/certificato/${esc(c.isin)}</div><div class="dtop"><div class="dhead"><div style="min-width:0"><div class="c-iss"><b>${esc(c.issuer||"")}</b>${c.type?" · "+esc(c.type):""}</div>
+<div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><button class="share only-wide ${inMyp(c.isin)?"on":""}" data-myp="${esc(c.isin)}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
+<button data-close aria-label="Chiudi">✕</button></div>
+<nav class="dtabs" role="tablist">${[["o","Panoramica"],["u","Sottostanti"],["p","Prezzo"],["d","Dettagli"]].map(([k,t],i)=>`<button role="tab" data-dtab="${k}" aria-selected="${!i}">${t}</button>`).join("")}</nav></div>
+<div class="dtitle">${undsHtml(c)}</div>${sub.length?`<div class="dsub">${sub.map(esc).join(" · ")}</div>`:""}
+${pane("o",ov,1)}${pane("u",und)}${pane("p",pr)}${pane("d",det)}
+<div class="dact"><button data-myp="${esc(c.isin)}" class="${inMyp(c.isin)?"on":""}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button data-fav="${esc(c.isin)}" class="${FAV[c.isin]?"on":""}">${FAV[c.isin]?"★ Preferito":"☆ Preferito"}</button><button data-cmpbtn="${esc(c.isin)}" class="${CMP.has(c.isin)?"on":""}">${CMP.has(c.isin)?"✓ Confronto":"Confronta"}</button><a href="${esc(own?full.url:bi(c))}" target="_blank" rel="noopener">Borsa ↗</a></div></div>`;
 }
 // prezzo di borsa del momento (Worker /api/live, book di Borsa Italiana con 15 min di ritardo): se non risponde non si vede nulla
 const LIVE_MIC={"SeDeX":"SEDX","Cert-X":"ETLX"};
 async function wireLive(root){
-  const el=root.querySelector("[data-live]");if(!el)return;
+  const el=root.querySelector("[data-live]");if(!el||el.dataset.done&&!el.querySelector("[data-relive][disabled]"))return;el.dataset.done=1;
   const c=BYISIN.get(el.dataset.live);
   try{
     const j=await (await fetch(`/api/live/${el.dataset.live}?m=${el.dataset.m}`)).json();
@@ -1898,7 +2034,7 @@ async function wireLive(root){
 async function openDetail(isin){
   const c=BYISIN.get(isin);if(!c)return;
   const d=$("#drawer"),b=$("#dbody");d.hidden=false;document.body.style.overflow="hidden";b.innerHTML=`<p class="note">Caricamento ${esc(isin)}…</p>`;
-  b.innerHTML=await detailHtml(c);wireChart(b);wireUChart(b);wireLive(b);b.querySelector("[data-close]").focus();
+  b.innerHTML=await detailHtml(c);b.scrollTop=0;wireChart(b);wireUChart(b);wireLive(b);b.querySelector("[data-close]").focus();
 }
 function closeDrawers(){$("#drawer").hidden=true;$("#cmp").hidden=true;$("#pf").hidden=true;document.body.style.overflow=""}
 
@@ -2227,6 +2363,12 @@ document.addEventListener("click",e=>{
   const st=e.target.closest("[data-fav]");if(st){e.stopPropagation();toggleFav(st.dataset.fav);return}
   const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};update();return}
   const cl=e.target.closest("[data-close]");if(cl){closeDrawers();return}
+  const dt=e.target.closest("[data-dtab]");if(dt){const v=dt.closest(".dview");v.querySelectorAll("[data-dtab]").forEach(b=>b.setAttribute("aria-selected",b===dt));
+    v.querySelectorAll("[data-pane]").forEach(p=>p.hidden=p.dataset.pane!==dt.dataset.dtab);const db=dt.closest(".dbody"),tt=v.querySelector(".dtitle");
+    if(db&&tt&&db.scrollTop>tt.offsetTop)db.scrollTop=tt.offsetTop-8;if(dt.dataset.dtab==="p")wireLive(v);return}
+  const ct=e.target.closest("[data-ctext]");if(ct){const c=BYISIN.get(ct.dataset.ctext);if(!c)return;const t=clientText(c);
+    navigator.clipboard?.writeText(t).then(()=>toast("Sintesi copiata: incollala in un messaggio o in una mail")).catch(()=>{if(navigator.share)navigator.share({text:t}).catch(()=>{});else toast("Copia non riuscita")});return}
+  if(e.target.closest("[data-pcert]")){printCert();return}
   const cb=e.target.closest("[data-cmpbtn]");if(cb){const i=cb.dataset.cmpbtn;toggleCmp(i);cb.classList.toggle("on",CMP.has(i));cb.textContent=CMP.has(i)?"✓ Confronto":"Confronta";return}
   const sh=e.target.closest("[data-share]");if(sh){const c=BYISIN.get(sh.dataset.share);const url=location.origin+location.pathname+"#q="+encodeURIComponent(sh.dataset.share);
     const text=c?`${c.unds.join(", ")} · ${c.issuer||""} · rend. ${pct(c.ytm)} · ${c.dist==null?"distanza n.d.":c.dist<0?"sotto barriera":pct(c.dist,0)+" dalla barriera"}`:"";
