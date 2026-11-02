@@ -548,7 +548,7 @@ td{font-weight:500}
   body.pcert{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.pcert .dview .ponly{display:block}
   body.pcert .dpane{display:grid!important}
-  body.pcert .judge,body.pcert .checks,body.pcert .sim,body.pcert .kp4>div,body.pcert .bmap,body.pcert .chart,body.pcert .uchart{break-inside:avoid;box-shadow:none}
+  body.pcert .judge,body.pcert .checks,body.pcert .sim,body.pcert .rd-i,body.pcert .pplot,body.pcert .bmap,body.pcert .chart,body.pcert .uchart{break-inside:avoid;box-shadow:none}
   #pf{position:static!important;display:block!important}
   #pf .dbody{width:auto!important;height:auto!important;overflow:visible!important;box-shadow:none!important;padding:0!important;animation:none!important;background:#fff!important;gap:10px}
   #pf .dhead{position:static!important;border:none!important}
@@ -624,6 +624,7 @@ td{font-weight:500}
 /* scheda: grafici per decidere */
 .verdict{border:1px solid var(--line);border-left:4px solid var(--good);border-radius:10px;padding:10px 14px;background:var(--surface);display:grid;gap:4px}
 .verdict.v-ca{border-left-color:var(--caution)}.verdict.v-ko{border-left-color:var(--bad)}
+.kpi .xr{font-size:.66rem;font-weight:600;margin-top:1px;white-space:nowrap}
 .cw{margin-left:4px;color:var(--caution);font-size:.8rem;cursor:help}.cw.hot{color:var(--bad)}
 /* scheda certificato */
 .dview{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}.dview>*,.dpane>*{min-width:0}
@@ -640,11 +641,21 @@ td{font-weight:500}
 .j-h{font-family:var(--f-disp);font-weight:700;font-size:1.15rem;line-height:1.25;letter-spacing:-.01em}
 .v-ok .j-h{color:var(--good)}.v-ca .j-h{color:var(--caution)}.v-ko .j-h{color:var(--bad)}
 .j-s{font-size:.9rem;line-height:1.45;margin-top:3px}
-.kp4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.kp4>div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
-.kp4 .k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.kp4 .v{font-family:var(--f-disp);font-weight:700;font-size:1.35rem;line-height:1.2;font-variant-numeric:tabular-nums}
-.kp4 .s{font-size:.74rem;color:var(--muted)}
+.rd{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rd-i{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px;align-content:start;box-shadow:var(--shadow)}
+.rd-i .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.rd-i .v{font-family:var(--f-disp);font-weight:700;font-size:2.1rem;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.rd-i .s{font-size:.8rem;color:var(--muted)}
+.rd-i .ruler{width:100%;margin:4px 0 0}
+.peer{font-size:.82rem;line-height:1.4;border-top:1px dashed var(--line);padding-top:6px;margin-top:4px}
+.kmini{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.86rem;color:var(--muted);padding:0 4px}.kmini b{color:var(--ink);font-family:var(--f-num)}
+.pplot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.pplot svg{width:100%;height:auto;display:block;margin:6px 0}
+.pplot text{font-size:11px;fill:var(--muted)}.pplot .g{stroke:var(--line);stroke-width:1}
+.pplot .dots{fill:var(--muted);opacity:.28}.pplot .med{fill:none;stroke:var(--brass);stroke-width:2;stroke-dasharray:5 4}
+.pplot .me{fill:var(--accent);stroke:var(--surface);stroke-width:3}
+.lg-me,.lg-med{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--accent);vertical-align:-2px}.lg-med{height:0;border-radius:0;border-top:2px dashed var(--brass);background:none;vertical-align:3px}
+@media (max-width:819px){.rd-i .v{font-size:1.7rem}.rd-i{padding:10px 12px}}
 .checks{list-style:none;margin:0;padding:0;display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .checks li{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:start}
 .checks li:last-child{border-bottom:0}
@@ -668,7 +679,7 @@ td{font-weight:500}
 .inline-detail .dtop{position:static;background:none}
 @media (max-width:819px){
   .dtop{top:0;margin:0 -14px;padding:10px 14px 0;border-bottom:1px solid var(--line)}.dtabs{border-bottom:0}
-  .kp4{grid-template-columns:1fr 1fr}.kp4 .v{font-size:1.25rem}
+
   .judge{padding:12px}.judge .ring{width:50px;height:50px;font-size:1rem}
   .dtitle{font-size:1.15rem}
 }
@@ -831,7 +842,7 @@ Per usarlo serve JavaScript.</p></noscript>
       <div class="row">
         <span class="count" id="count" aria-live="polite"></span>
         <label class="note" style="display:flex;gap:6px;align-items:center">Ordina<select id="sortsel" style="width:auto;padding:5px 8px">
-          <option value="score">Punteggio</option><option value="cd">Cedola e distanza</option><option value="ytm">Rendimento annuo</option><option value="er">Rendimento atteso</option>
+          <option value="score">Punteggio</option><option value="xr">Rendimento extra a parità di distanza</option><option value="cd">Cedola e distanza</option><option value="ytm">Rendimento annuo</option><option value="er">Rendimento atteso</option>
           <option value="prob">Prob. tenuta barriera</option><option value="dist">Distanza del peggiore</option><option value="sigma">Margine in dev. std</option>
           <option value="coupon">Cedola</option><option value="new">Più recenti</option><option value="price">Prezzo (più basso)</option><option value="mat">Scadenza (più vicina)</option><option value="matfar">Scadenza (più lontana)</option><option value="spread">Spread (più stretto)</option></select></label>
         <button id="export" class="only-wide" title="Esporta in Excel esattamente i risultati filtrati">Esporta Excel</button>
@@ -1255,7 +1266,7 @@ function toggleFav(isin){const c=BYISIN.get(isin);if(FAV[isin])delete FAV[isin];
 function toggleCmp(isin){if(CMP.has(isin))CMP.delete(isin);else{if(CMP.size>=4){toast("Massimo 4 certificati nel confronto");return}CMP.add(isin)}renderCmpBar();render(false)}
 
 /* ---------- filtro e ordinamento ---------- */
-const SORT={cd:c=>c.cdScore,er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,matfar:c=>c.years,coupon:c=>c.couponPa,new:c=>c.firstSeen?Date.parse(c.firstSeen):null,call:c=>c.callDate?-c.callDate.getTime():null};
+const SORT={xr:c=>c.xr,cd:c=>c.cdScore,er:c=>c.retProxy,sigma:c=>c.sigma,prob:c=>c.prob,vol:c=>c.wvol,score:c=>c.score,ytm:c=>c.ytm==null?null:c.ytmHigh?c.ytm/1e4-100:c.ytm,ytc:c=>c.ytc,cy:c=>c.cy,dist:c=>c.dist,trig:c=>c.trigDist,spread:c=>c.spread==null?null:-c.spread,price:c=>c.pricePct==null?null:-c.pricePct,mat:c=>c.years==null?null:-c.years,matfar:c=>c.years,coupon:c=>c.couponPa,new:c=>c.firstSeen?Date.parse(c.firstSeen):null,call:c=>c.callDate?-c.callDate.getTime():null};
 let ROWS=[],ISIN=null,FRONT=[];
 // frontiera efficiente (Pareto) tra i risultati: nessun altro ha insieme più rendimento annuo e più distanza dalla barriera
 function markFrontier(list){
@@ -1363,7 +1374,7 @@ const starBtn=c=>`<button class="star" data-fav="${esc(c.isin)}" aria-pressed="$
 const cmpBox=c=>`<label class="check" title="Confronta"><input type="checkbox" class="sel" data-cmp="${esc(c.isin)}" ${CMP.has(c.isin)?"checked":""}></label>`;
 
 /* ---------- tabella virtualizzata ---------- */
-const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Settore","l",null],["Peggiore","l",null],["Dist. barr.","","dist"],["Rend. annuo","","ytm"],["Cedola","","coupon"],["Prob. tenuta","","prob"],["Rend. atteso","","er"],["Vol pegg.","","vol"],["Dist. trigger","","trig"],["Barr.","",null],["Lettera %","","price"],["Spread","","spread"],["Rend. ced.","","cy"],["Rend. rich.","","ytc"],["Richiamo","","call"],["Scadenza","","mat"]];
+const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sottostanti","l",null],["Settore","l",null],["Peggiore","l",null],["Dist. barr.","","dist"],["Rend. annuo","","ytm"],["vs simili","","xr"],["Cedola","","coupon"],["Prob. tenuta","","prob"],["Rend. atteso","","er"],["Vol pegg.","","vol"],["Dist. trigger","","trig"],["Barr.","",null],["Lettera %","","price"],["Spread","","spread"],["Rend. ced.","","cy"],["Rend. rich.","","ytc"],["Richiamo","","call"],["Scadenza","","mat"]];
 function rowHtml(c){
   return `<tr class="r" data-open="${esc(c.isin)}">
 <td class="t">${starBtn(c)}${cmpBox(c)}</td><td class="pt ${c.score>=70?"pos":c.score>=50?"ca":"neg"}" title="${esc(scoreTitle(c))}">${c.score}</td>
@@ -1373,6 +1384,7 @@ function rowHtml(c){
 <td class="l t w" style="max-width:150px">${esc(c.worst||"—")}</td>
 <td class="${cls(c.dist)} w">${pct(c.dist)}</td>
 <td class="hi w" title="${esc(c.ytmNote||"Cedole + rimborso a 100 a scadenza, sul prezzo lettera, annuo")}">${pct(c.ytm)}${c.ytmHigh?"!":""}</td>
+<td class="${c.xr==null?"":c.xr>=2?"pos":c.xr<=-2?"neg":""}" title="${c.xr==null?"Non confrontabile":`Rendimento rispetto alla mediana dei certificati con distanza ${dBandTxt(dBand(c.dist))} (${pct(c.ymed)})`}">${c.xr==null?"—":sgn(c.xr)}</td>
 <td>${pct(c.couponPa,2)}<span class="note"> ${c.freq==="1m"?"m":c.freq==="3m"?"t":""}${c.memory?" ·M":""}</span></td>
 <td class="${pcls(c.prob)} w" title="${esc(probTitle(c))}">${probTxt(c)}</td>
 <td title="${c.expRet!=null?"Media tra barriera che tiene ("+pct(c.ytmGood)+") e barriera rotta ("+pct(c.ytmBad)+")":"Senza probabilità: rendimento a scadenza (max 25%) scontato in base alla distanza del peggiore"}">${pct(c.retProxy)}${c.expRet==null&&c.retProxy!=null?"~":""}</td>
@@ -1418,7 +1430,7 @@ function cardHtml(c,i){const sp=pcol(c.prob);
 <div class="c-head"><div class="who"><div class="c-iss"><b>${esc(c.issuer||"Emittente n.d.")}</b>${c.type?" · "+esc(c.type):""}</div><div class="c-unds">${undsHtml(c)}</div></div>
 <div class="c-side">${starBtn(c)}<span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span></div></div>
 <div class="kpis">
-<div class="kpi"><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="k">Rend. annuo</div></div>
+<div class="kpi"><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="k">Rend. annuo</div>${c.xr!=null&&Math.abs(c.xr)>=1?`<div class="xr ${c.xr>0?"pos":"neg"}" title="Rispetto alla mediana dei certificati con distanza simile">${sgn(c.xr)} vs simili</div>`:""}</div>
 <div class="kpi"><div class="v">${pct(c.couponPa,1)}</div><div class="k">Cedola</div></div>
 <div class="kpi"><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div>${c.dist!=null?`<span class="ruler ${cls(c.dist)}" style="--d:${(clamp(c.dist,0,60)/60*100).toFixed(0)}%" title="Distanza del peggiore dalla barriera, scala 0–60%"><i></i></span>`:""}<div class="k">Dist. barr.</div></div>
 <div class="kpi"><div class="v ${pcls(c.prob)}">${probTxt(c)}</div><div class="k">Prob.</div></div>
@@ -1908,6 +1920,41 @@ ${each&&cps.length?`<p class="note">Se tutte le cedole venissero pagate: <b>${fm
 <div class="cl-next">${up.map(([d,k,l])=>`<span><b>${dshort(d)}</b> ${k==="c"?"cedola":"richiamo"+(l?" ≥ "+fmt(l,0)+"%":"")}</span>`).join("")}</div></div>`;
 }
 
+/* ---------- confronto con i simili: rendimento a parità di distanza, distanza a parità di rendimento ---------- */
+let PEER=null;
+const dBand=d=>Math.min(7,Math.floor(d/10)),yBand=y=>Math.min(7,Math.floor(Math.max(0,y)/5));
+const dBandTxt=k=>k>=7?"oltre il 70%":`tra ${k*10}% e ${k*10+10}%`,yBandTxt=k=>k>=7?"oltre il 35%":`tra ${k*5}% e ${k*5+5}%`;
+const peerOk=c=>c.liq&&!c.lev&&!c.priceBad&&c.couponPa!=null&&c.yEff!=null&&!c.ytmHigh&&c.dist!=null&&c.dist>=0&&c.dist<100;
+function peerStats(){
+  const byD=Array.from({length:8},()=>[]),byY=Array.from({length:8},()=>[]),pts=[];
+  for(const c of CERTS)if(peerOk(c)){byD[dBand(c.dist)].push(c.yEff);byY[yBand(c.yEff)].push(c.dist);pts.push(c)}
+  byD.forEach(a=>a.sort((x,y)=>x-y));byY.forEach(a=>a.sort((x,y)=>x-y));
+  const below=(a,v)=>{let lo=0,hi=a.length;while(lo<hi){const m=lo+hi>>1;if(a[m]<v)lo=m+1;else hi=m}return lo};
+  for(const c of CERTS){c.xr=c.xd=c.pctl=c.ymed=c.dmed=null;if(!peerOk(c))continue;
+    const a=byD[dBand(c.dist)];if(a.length>=15){c.ymed=a[a.length>>1];c.xr=c.yEff-c.ymed;c.pctl=below(a,c.yEff)/a.length*100}
+    const b=byY[yBand(c.yEff)];if(b.length>=15){c.dmed=b[b.length>>1];c.xd=c.dist-c.dmed}}
+  PEER={byD,byY,pts};
+}
+const sgn=(v,d=1)=>v==null?"—":(v>=0?"+":"−")+fmt(Math.abs(v),d);
+// grafico rendimento / distanza con il certificato evidenziato tra tutti i simili
+function peerPlot(c){if(!PEER||c.xr==null)return "";
+  const W2=600,H2=230,P={l:34,r:10,t:10,b:26},XM=80,YM=Math.max(30,Math.min(45,Math.ceil((c.yEff+5)/5)*5));
+  const X=v=>P.l+clamp(v,0,XM)/XM*(W2-P.l-P.r),Y=v=>H2-P.b-clamp(v,0,YM)/YM*(H2-P.t-P.b);
+  const step=Math.max(1,Math.floor(PEER.pts.length/1800));let dots="";
+  for(let i=0;i<PEER.pts.length;i+=step){const q=PEER.pts[i];dots+=`<circle cx="${X(q.dist).toFixed(1)}" cy="${Y(q.yEff).toFixed(1)}" r="1.8"/>`}
+  const md=PEER.byD.map((a,k)=>a.length>=15?[X(Math.min(k*10+5,XM-2)),Y(a[a.length>>1])]:null).filter(Boolean);
+  const gx=[0,20,40,60,80].map(v=>`<line x1="${X(v)}" x2="${X(v)}" y1="${P.t}" y2="${H2-P.b}" class="g"/><text x="${X(v)}" y="${H2-8}" text-anchor="middle">${v}%</text>`).join("");
+  const gy=Array.from({length:YM/10+1},(_,i)=>i*10).map(v=>`<line x1="${P.l}" x2="${W2-P.r}" y1="${Y(v)}" y2="${Y(v)}" class="g"/><text x="${P.l-6}" y="${Y(v)+4}" text-anchor="end">${v}%</text>`).join("");
+  return `<div class="pplot"><div class="cap">Dove si colloca · rendimento annuo e distanza dalla barriera di tutti i certificati quotati</div>
+<svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Rendimento e distanza rispetto agli altri certificati">${gx}${gy}<g class="dots">${dots}</g>
+<polyline points="${md.map(([x,y])=>x.toFixed(1)+","+y.toFixed(1)).join(" ")}" class="med"/>
+<circle cx="${X(c.dist).toFixed(1)}" cy="${Y(c.yEff).toFixed(1)}" r="7" class="me"/></svg>
+<div class="bm-leg"><span><b class="lg-me"></b> questo certificato</span><span><b class="lg-med"></b> rendimento mediano per distanza</span><span class="note">più in alto e più a destra = meglio</span></div></div>`}
+function peerLineY(c){if(c.xr==null)return "";const t=c.xr>=2?"pos":c.xr<=-2?"neg":"";
+  return `<div class="peer">Con distanza ${dBandTxt(dBand(c.dist))} il rendimento mediano è ${pct(c.ymed)}: questo <b class="${t}">${sgn(c.xr)} punti</b>${c.pctl!=null?` · meglio del ${fmt(Math.min(99,c.pctl),0)}%`:""}</div>`}
+function peerLineD(c){if(c.xd==null)return "";const t=c.xd>=5?"pos":c.xd<=-5?"neg":"";
+  return `<div class="peer">Chi rende ${yBandTxt(yBand(c.yEff))} ha in mediana ${pct(c.dmed,0)} di distanza: questo <b class="${t}">${sgn(c.xd,0)} punti</b></div>`}
+
 /* ---------- scheda certificato: giudizio, semafori, simulatore, linguette ---------- */
 const PERM={"1m":1,"2m":2,"3m":3,"4m":4,"6m":6,"12m":12};
 const perTxt=m=>m===1?"ogni mese":m===12?"ogni anno":`ogni ${m} mesi`;
@@ -1926,7 +1973,8 @@ function judge(c){const pr=state.profile,w=esc(c.worst||"il peggiore");
   const t=sc>=60?"ok":sc>=45?"ca":"ko";
   const s=c.ytm!=null&&c.dist!=null?`Rende <b>${pct(c.ytm)} l'anno</b> se a scadenza ${w} non ha perso più del <b>${pct(c.dist,0)}</b> da oggi${c.prob!=null?`; la probabilità stimata è <b>${probTxt(c)}</b>`:""}.`
     :c.ytm!=null?`Rende ${pct(c.ytm)} l'anno se tutte le cedole sono pagate e rimborsa 100 a scadenza.`:"Mancano prezzo o distanza dalla barriera: il radar non può stimare il rendimento.";
-  return {t,h,s};
+  const px=c.xr==null?"":c.xr>=3&&c.prob!=null&&c.prob<75?` Rende più dei simili a parità di distanza <b>perché i sottostanti oscillano molto</b>${c.wvol!=null?` (volatilità del peggiore ${pct(c.wvol,0)})`:""}: la distanza da sola non basta.`:c.xr>=3&&(c.xd??0)>=0?" Rispetto ai simili <b>rende di più a parità di rischio</b>.":c.xr<=-3?" Rispetto ai simili <b>rende meno</b> a parità di distanza.":"";
+  return {t,h,s:s+px};
 }
 // semafori: capitale, cedola, richiamo, prezzo, emittente
 function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=full.barrierType&&full.barrierType!=="scadenza"?" (osservata anche durante la vita)":c.barrierPct?" (osservata a scadenza)":"";
@@ -1994,12 +2042,12 @@ async function detailHtml(c){
   const sub=[c.matDate?`Scade ${dshort(c.matDate)}${c.years!=null&&c.years>0?` · ${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}`:""}`:"",c.n>1?`Worst-of ${c.n}`:c.n===1?"Singolo sottostante":"",c.freq?"Cedola "+freqTxt(c.freq).toLowerCase():"",c.memory?"Memoria":"",c.isNew?"Nuovo":""].filter(Boolean);
   const pane=(id,html,on)=>`<section class="dpane" data-pane="${id}" ${on?"":"hidden"}>${html}</section>`;
   const ov=`<div class="judge v-${J.t}"><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><div><div class="j-h">${J.h}</div><div class="j-s">${J.s}</div></div></div>
-<div class="kp4">
-<div><div class="k">Rendimento annuo</div><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="s">${c.call?.lvl==="alto"?`<span class="${c.call.poor?"neg":"ca"}">se richiamato ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto</span>`:"se la barriera tiene"}</div></div>
-<div><div class="k">Cedola</div><div class="v">${pct(c.couponPa,2)}</div><div class="s">l'anno${c.freq?" · "+freqTxt(c.freq).toLowerCase():""}</div></div>
-<div><div class="k">Margine sulla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div><div class="s">${c.dist!=null&&c.dist<0?"sotto barriera":"di calo del peggiore"}</div></div>
-<div><div class="k">Prob. che tenga</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div><div class="s">stima a scadenza</div></div>
+<div class="rd">
+<div class="rd-i"><div class="k">Rendimento annuo</div><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="s">${c.call?.lvl==="alto"?`<span class="${c.call.poor?"neg":"ca"}">se richiamato ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto · realistico ${pct(c.yEff)}</span>`:c.ytmHigh?"troppo alto: il mercato prezza una perdita":"cedole + rimborso a 100, sul prezzo di oggi"}</div>${peerLineY(c)}</div>
+<div class="rd-i"><div class="k">Distanza dalla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div><div class="s">${c.dist==null?"non disponibile":c.dist<0?"il peggiore è sotto la barriera":`quanto può scendere ${esc(c.worst||"il peggiore")}`}${c.sigma!=null?` · ${fmt(c.sigma,1)} dev. std`:""}</div>${c.dist!=null&&c.dist>=0?`<span class="ruler ${cls(c.dist)}" style="--d:${(clamp(c.dist,0,60)/60*100).toFixed(0)}%"><i></i></span>`:""}${peerLineD(c)}</div>
 </div>
+<div class="kmini"><span>Cedola <b>${pct(c.couponPa,2)}</b>${c.freq?" "+freqTxt(c.freq).toLowerCase():""}</span><span>Prob. tenuta <b class="${pcls(c.prob)}">${probTxt(c)}</b></span><span>Prezzo <b>${c.pricePct?fmt(c.pricePct,1)+"%":"—"}</b></span><span>Scadenza <b>${c.years!=null&&c.years>0?yrs(c.years<1?c.years:Math.round(c.years*10)/10):"—"}</b></span></div>
+${peerPlot(c)}
 <ul class="checks">${CK.map(([t,l,s])=>`<li class="${t}"><i>${ICO[t]}</i><div><strong class="cl">${l}</strong><span>${s}</span></div></li>`).join("")}</ul>
 ${simHtml(c)}
 ${calendar1(c,full)}
@@ -2308,7 +2356,7 @@ function loadXLSX(){return XP||(XP=new Promise((ok,ko)=>{const s=document.create
 $("#export").addEventListener("click",()=>{
   if(!ROWS.length){toast("Niente da esportare");return}
   if(!window.XLSX){toast("Preparo l'Excel…");loadXLSX().then(()=>$("#export").click()).catch(()=>toast("Esportazione non disponibile"));return}
-  const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Settore:c.sector==="Misto"?"Misto ("+c.secU.join(", ")+")":(c.sector||""),Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Rend. atteso %":c.retProxy==null?null:+c.retProxy.toFixed(2),"Classe emittente":c.tier||"","Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"","Prob. richiamo %":c.call?+(c.call.p*100).toFixed(0):null,"Se richiamato, in tutto %":c.call?+c.call.tot.toFixed(2):null,Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
+  const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Settore:c.sector==="Misto"?"Misto ("+c.secU.join(", ")+")":(c.sector||""),Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Rend. atteso %":c.retProxy==null?null:+c.retProxy.toFixed(2),"Classe emittente":c.tier||"","Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. vs simili (punti)":c.xr==null?null:+c.xr.toFixed(2),"Dist. vs simili (punti)":c.xd==null?null:+c.xd.toFixed(1),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"","Prob. richiamo %":c.call?+(c.call.p*100).toFixed(0):null,"Se richiamato, in tutto %":c.call?+c.call.tot.toFixed(2):null,Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`radar-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
@@ -2447,7 +2495,7 @@ async function load(){
   catch(e){ // ripiego: archivio completo
     try{const r=await fetch("data/certs.json?t="+Date.now(),{cache:"no-store"});j=await r.json();CERTS=j.certs||[]}
     catch(e2){$("#results").innerHTML=`<div class="empty">Dati non disponibili: riprova tra poco.</div>`;$("#status").textContent="Dati non disponibili";return}}
-  META=j;CERTS.forEach(enrich);BYISIN=new Map(CERTS.map(c=>[c.isin,c]));
+  META=j;CERTS.forEach(enrich);peerStats();BYISIN=new Map(CERTS.map(c=>[c.isin,c]));
   rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();ensureLeva();
   // arrivo dalla scheda statica /certificato/<ISIN>: apre subito il dettaglio
   const di=new URLSearchParams(location.hash.slice(1)).get("isin");if(di&&BYISIN.has(di))openDetail(di);
