@@ -1,8 +1,8 @@
 # Radar Certificati
 
-> Screener gratuito e indipendente dei certificati d'investimento quotati in Italia (SeDeX di Borsa Italiana, Cert-X/EuroTLX di Euronext): 14010 certificati di 33 emittenti con cedola annua, frequenza, effetto memoria, barriera capitale, distanza del sottostante peggiore dalla barriera, scadenza, prezzo denaro/lettera e probabilità stimata di tenuta della barriera (simulazione Monte Carlo sulla volatilità storica). Aggiornato ogni giorno di borsa alle 09:35 e alle 16:15 ora di Roma. Senza registrazione.
+> Screener gratuito e indipendente dei certificati d'investimento quotati in Italia (SeDeX di Borsa Italiana, Cert-X/EuroTLX di Euronext): 14012 certificati di 33 emittenti con cedola annua, frequenza, effetto memoria, barriera capitale, distanza del sottostante peggiore dalla barriera, scadenza, prezzo denaro/lettera e probabilità stimata di tenuta della barriera (simulazione Monte Carlo sulla volatilità storica). Aggiornato ogni giorno di borsa alle 09:35 e alle 16:15 ora di Roma. Senza registrazione.
 
-Dati aggiornati al 02/11/2026. I dati sono indicativi e raccolti da fonti pubbliche (siti degli emittenti, Borsa Italiana, Euronext); non sono consulenza. In italiano.
+Dati aggiornati al 03/11/2026. I dati sono indicativi e raccolti da fonti pubbliche (siti degli emittenti, Borsa Italiana, Euronext); non sono consulenza. In italiano.
 
 ## Pagine principali
 - [Radar (app di ricerca)](https://radarcertificati.com/): ricerca per ISIN, sottostante, emittente, tipologia; filtri, profili di rischio, confronto, portafoglio, esportazione Excel
@@ -11,20 +11,20 @@ Dati aggiornati al 02/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - Scheda di ogni certificato: https://radarcertificati.com/certificato/{ISIN} (es. https://radarcertificati.com/certificato/CA32076V1031)
 
 ## Liste
-- [Certificati con le cedole più alte](https://radarcertificati.com/certificati/cedole-piu-alte): 2676 certificati
-- [Certificati difensivi con cedola](https://radarcertificati.com/certificati/difensivi): 1578 certificati
-- [Certificati con cedola mensile](https://radarcertificati.com/certificati/cedola-mensile): 3028 certificati
-- [Certificati con effetto memoria](https://radarcertificati.com/certificati/effetto-memoria): 3674 certificati
-- [Nuove emissioni di certificati](https://radarcertificati.com/certificati/nuove-emissioni): 403 certificati
+- [Certificati con le cedole più alte](https://radarcertificati.com/certificati/cedole-piu-alte): 2661 certificati
+- [Certificati difensivi con cedola](https://radarcertificati.com/certificati/difensivi): 1556 certificati
+- [Certificati con cedola mensile](https://radarcertificati.com/certificati/cedola-mensile): 3031 certificati
+- [Certificati con effetto memoria](https://radarcertificati.com/certificati/effetto-memoria): 3683 certificati
+- [Nuove emissioni di certificati](https://radarcertificati.com/certificati/nuove-emissioni): 405 certificati
 
 ## Per tipologia
-- [Certificati Cash Collect](https://radarcertificati.com/certificati/cash-collect): 2747 certificati
-- [Certificati Phoenix](https://radarcertificati.com/certificati/phoenix): 1046 certificati
-- [Certificati Express e Autocallable](https://radarcertificati.com/certificati/express-autocallable): 6812 certificati
+- [Certificati Cash Collect](https://radarcertificati.com/certificati/cash-collect): 3203 certificati
+- [Certificati Phoenix](https://radarcertificati.com/certificati/phoenix): 1048 certificati
+- [Certificati Express e Autocallable](https://radarcertificati.com/certificati/express-autocallable): 6815 certificati
 - [Certificati Credit Linked](https://radarcertificati.com/certificati/credit-linked): 2080 certificati
-- [Certificati a capitale protetto](https://radarcertificati.com/certificati/capitale-protetto): 2521 certificati
+- [Certificati a capitale protetto](https://radarcertificati.com/certificati/capitale-protetto): 2522 certificati
 - [Certificati Bonus Cap](https://radarcertificati.com/certificati/bonus-cap): 692 certificati
-- [Certificati Reverse Convertible](https://radarcertificati.com/certificati/reverse-convertible): 1443 certificati
+- [Certificati Reverse Convertible](https://radarcertificati.com/certificati/reverse-convertible): 880 certificati
 - [Certificati Discount](https://radarcertificati.com/certificati/discount): 320 certificati
 - [Certificati Twin Win](https://radarcertificati.com/certificati/twin-win): 61 certificati
 - [Certificati Airbag](https://radarcertificati.com/certificati/airbag): 114 certificati
@@ -35,9 +35,9 @@ Dati aggiornati al 02/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati BNP Paribas](https://radarcertificati.com/certificati/emittente-bnp-paribas): 2647 certificati
 - [Certificati UniCredit](https://radarcertificati.com/certificati/emittente-unicredit): 1433 certificati
 - [Certificati Vontobel](https://radarcertificati.com/certificati/emittente-vontobel): 1309 certificati
-- [Certificati Barclays](https://radarcertificati.com/certificati/emittente-barclays): 1237 certificati
+- [Certificati Barclays](https://radarcertificati.com/certificati/emittente-barclays): 1240 certificati
 - [Certificati Société Générale](https://radarcertificati.com/certificati/emittente-societe-generale): 1074 certificati
-- [Certificati Leonteq Securities](https://radarcertificati.com/certificati/emittente-leonteq-securities): 947 certificati
+- [Certificati Leonteq Securities](https://radarcertificati.com/certificati/emittente-leonteq-securities): 949 certificati
 - [Certificati Intesa Sanpaolo](https://radarcertificati.com/certificati/emittente-intesa-sanpaolo): 946 certificati
 - [Certificati Mediobanca](https://radarcertificati.com/certificati/emittente-mediobanca): 894 certificati
 - [Certificati Citigroup](https://radarcertificati.com/certificati/emittente-citigroup): 639 certificati
@@ -57,7 +57,7 @@ Dati aggiornati al 02/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati J.P. Morgan](https://radarcertificati.com/certificati/emittente-j-p-morgan): 32 certificati
 - [Certificati BBVA](https://radarcertificati.com/certificati/emittente-bbva): 31 certificati
 - [Certificati Dynamic Certificates And Notes Plc](https://radarcertificati.com/certificati/emittente-dynamic-certificates-and-notes-plc): 19 certificati
-- [Certificati codice BBI](https://radarcertificati.com/certificati/emittente-codice-bbi): 12 certificati
+- [Certificati codice BBI](https://radarcertificati.com/certificati/emittente-codice-bbi): 9 certificati
 - [Certificati Banca Cesare Ponti](https://radarcertificati.com/certificati/emittente-banca-cesare-ponti): 7 certificati
 - [Certificati Defensive Certificates Plc](https://radarcertificati.com/certificati/emittente-defensive-certificates-plc): 6 certificati
 - [Certificati Exane](https://radarcertificati.com/certificati/emittente-exane): 5 certificati
@@ -67,10 +67,10 @@ Dati aggiornati al 02/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati su Stellantis](https://radarcertificati.com/certificati/su-stellantis): 1199 certificati
 - [Certificati su UniCredit](https://radarcertificati.com/certificati/su-unicredit): 982 certificati
 - [Certificati su Intesa Sanpaolo](https://radarcertificati.com/certificati/su-intesa-sanpaolo): 877 certificati
-- [Certificati su STMicroelectronics](https://radarcertificati.com/certificati/su-stmicroelectronics): 769 certificati
+- [Certificati su STMicroelectronics](https://radarcertificati.com/certificati/su-stmicroelectronics): 770 certificati
 - [Certificati su Enel](https://radarcertificati.com/certificati/su-enel): 728 certificati
 - [Certificati su Eni](https://radarcertificati.com/certificati/su-eni): 688 certificati
-- [Certificati su Banco BPM](https://radarcertificati.com/certificati/su-banco-bpm): 650 certificati
+- [Certificati su Banco BPM](https://radarcertificati.com/certificati/su-banco-bpm): 651 certificati
 - [Certificati su Leonardo](https://radarcertificati.com/certificati/su-leonardo): 625 certificati
 - [Certificati su Banca Monte dei Paschi di Siena](https://radarcertificati.com/certificati/su-banca-monte-dei-paschi-di-siena): 535 certificati
 - [Certificati su EURO STOXX Banks](https://radarcertificati.com/certificati/su-euro-stoxx-banks): 518 certificati
@@ -97,10 +97,10 @@ Dati aggiornati al 02/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati su Advanced Micro Devices](https://radarcertificati.com/certificati/su-advanced-micro-devices): 183 certificati
 - [Certificati su AXA](https://radarcertificati.com/certificati/su-axa): 171 certificati
 - [Certificati su BNP Paribas](https://radarcertificati.com/certificati/su-bnp-paribas): 169 certificati
-- [Certificati su Bayer](https://radarcertificati.com/certificati/su-bayer): 167 certificati
+- [Certificati su Bayer](https://radarcertificati.com/certificati/su-bayer): 168 certificati
 - [Certificati su Meta Platforms](https://radarcertificati.com/certificati/su-meta-platforms): 162 certificati
 - [Certificati su Renault](https://radarcertificati.com/certificati/su-renault): 161 certificati
-- [Certificati su BPM](https://radarcertificati.com/certificati/su-bpm): 155 certificati
+- [Certificati su BPM](https://radarcertificati.com/certificati/su-bpm): 154 certificati
 - [Certificati su EURO STOXX® Select Dividend 30](https://radarcertificati.com/certificati/su-euro-stoxx-select-dividend-30): 144 certificati
 - [Certificati su Banco Bilbao Vizcaya Argentaria](https://radarcertificati.com/certificati/su-banco-bilbao-vizcaya-argentaria): 141 certificati
 - [Certificati su Rheinmetall](https://radarcertificati.com/certificati/su-rheinmetall): 140 certificati
