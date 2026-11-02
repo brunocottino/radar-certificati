@@ -614,6 +614,8 @@ td{font-weight:500}
 /* scheda: grafici per decidere */
 .verdict{border:1px solid var(--line);border-left:4px solid var(--good);border-radius:10px;padding:10px 14px;background:var(--surface);display:grid;gap:4px}
 .verdict.v-ca{border-left-color:var(--caution)}.verdict.v-ko{border-left-color:var(--bad)}
+.cw{margin-left:4px;color:var(--caution);font-size:.8rem;cursor:help}.cw.hot{color:var(--bad)}
+.c-warn{margin:8px 0 2px;padding:6px 10px;border-radius:8px;font-size:.8rem;line-height:1.35;background:var(--caution-bg);color:var(--caution)}.c-warn.ko{background:var(--bad-bg);color:var(--bad)}
 .verdict p{margin:0;font-size:.9rem;line-height:1.45}
 .bmap,.uchart,.pay,.cal1{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);display:grid;gap:8px;min-width:0}
 .bm-row{display:grid;gap:5px;padding:6px 0;border-top:1px solid var(--line)}
@@ -905,6 +907,7 @@ Per usarlo serve JavaScript.</p></noscript>
     <dt>Memoria</dt><dd>Le cedole non pagate si accumulano e vengono pagate alla prima data in cui il trigger è rispettato.</dd>
     <dt>Autocall</dt><dd>Rimborso anticipato automatico se tutti i sottostanti sono sopra il livello di richiamo a una data di osservazione.</dd>
     <dt>Softcallable</dt><dd>L'emittente può decidere di rimborsare in anticipo (callable emittente): di solito lo fa quando il certificato gli costa troppo.</dd>
+    <dt>⚠ Richiamo probabile</dt><dd>Il radar stima che il certificato venga rimborsato alla prossima data utile: per gli autocall dalla posizione e dalla volatilità del peggiore rispetto al livello di richiamo, per i softcallable dal prezzo (sopra la pari l'emittente tende a rimborsare). Mostra quanto si incasserebbe in tutto: se è poco, il rendimento annuo a scadenza è un miraggio e il punteggio viene ridotto. Il filtro “Escludi richiamo vicino” li toglie.</dd>
     <dt>Denaro / lettera</dt><dd>Prezzo a cui il market maker compra (denaro) e vende (lettera). Si compra alla lettera; la differenza è lo spread.</dd>
     <dt>Rendimento annuo</dt><dd>Rendimento annuo a scadenza al prezzo lettera: cedole più differenza tra rimborso (100) e prezzo, divisa per gli anni residui (almeno 3 mesi). Sotto barriera il rimborso è stimato al livello attuale del peggiore. "!" = oltre il 40%: il mercato prezza una perdita probabile. È la soglia dei profili: prudente 8%, bilanciato 12%, aggressivo 16%.</dd>
     <dt>Frontiera efficiente</dt><dd>Certificati che nessun altro, tra i risultati, batte insieme su rendimento annuo e distanza del peggiore dalla barriera: per avere di più dell'uno bisogna rinunciare all'altro. Sono i candidati migliori a parità di filtri; nella Mappa sono cerchiati e uniti dalla linea dorata.</dd>
@@ -974,11 +977,11 @@ const TIER={"BNP Paribas":"A","Crédit Agricole":"A","Santander":"A","UBS":"A","
 const TIERV={A:1,B:.8,C:.55};
 const NUMF=["er","y","ym","cmin","b","t","prob","matmin","mat","price","sp"],SELF=["n","freq","call","cat","acall"],BOOLF=["cpn","probx","active","mem","illiq","lev","excl","fav","front","nuovi"];
 // obiettivi rapidi: un clic imposta (o toglie) un gruppo di filtri
-const OBJ={nuovi:["Nuove emissioni",{nuovi:true}],frontiera:["Frontiera efficiente",{front:true}],mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}]};
+const OBJ={nuovi:["Nuove emissioni",{nuovi:true}],frontiera:["Frontiera efficiente",{front:true}],mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}],nocall:["Niente richiamo vicino",{acall:"far"}]};
 /* durata in parole: 0,5 -> "6 mesi", 1 -> "1 anno", 2,5 -> "2,5 anni" */
 const yrs=v=>v<1?Math.round(v*12)+" mesi":fmt(v,v%1?1:0)+(v===1?" anno":" anni");
-const ACALL={"3":"entro 3 mesi","6":"entro 6 mesi","12":"entro 1 anno","no":"Senza autocall"};
-const LABEL={cmin:v=>`Cedola ≥ ${fmt(v,v%1?1:0)}%`,acall:v=>v==="no"?"Senza autocall":"Richiamo "+ACALL[v],matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${yrs(v)}`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
+const ACALL={"3":"entro 3 mesi","6":"entro 6 mesi","12":"entro 1 anno","no":"Senza autocall","far":"Escludi richiamo vicino","near":"Solo richiamo vicino"};
+const LABEL={cmin:v=>`Cedola ≥ ${fmt(v,v%1?1:0)}%`,acall:v=>v==="no"||v==="far"||v==="near"?ACALL[v]:"Richiamo "+ACALL[v],matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${yrs(v)}`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
   active:()=>"Cedola in pagamento",front:()=>"Solo frontiera efficiente",mem:()=>"Con memoria",illiq:()=>"Anche senza prezzo",lev:()=>"Leva inclusa",excl:()=>"Solo panieri esclusivi",fav:()=>"Solo preferiti",nuovi:()=>"Nuove emissioni (14 giorni)"};
 const state={q:"",profile:"bilanciato",f:{},iss:new Set(),sec:new Set(),sort:{key:"score",dir:-1},view:null};
@@ -1056,6 +1059,9 @@ function enrich(c){
   r.priceAt=c.priceAt||(ask&&bid?c.updatedAt:null);
   r.stale=!!(ask&&bid&&r.priceAt&&bizDaysSince(r.priceAt)>2);
   r.callKind=/autocall/i.test(c.callable||"")?"autocall":/callable|soft/i.test(c.callable||"")?"callable":null;
+  r.call=callRisk(r,c);
+  // rendimento "realistico": se il richiamo è probabile conta quanto si incassa fino al richiamo, non fino a scadenza
+  r.yEff=r.call&&r.ytm!=null&&r.call.ann!=null?r.call.p*Math.min(r.call.ann,r.ytm)+(1-r.call.p)*r.ytm:r.ytm;
   r.cat=c.category||"Altro";
   r.lev=r.cat==="Leva";
   r.liq=!!(ask&&bid)&&!r.priceBad;
@@ -1065,10 +1071,51 @@ function enrich(c){
   r.chg=c.chg1d??null;
   return r;
 }
+/* ---------- richiamo anticipato vicino ----------
+   autocall: probabilità che il peggiore sia sopra il livello di richiamo alla prossima data (lognormale, volatilità del peggiore);
+   softcallable: l'emittente rimborsa quando il certificato gli costa caro, cioè quando quota intorno o sopra la pari (stima indicativa).
+   Restituisce anche quanto si incassa in tutto se rimborsa: cedole fino a quella data + 100 − prezzo pagato. */
+const ncdf=x=>{const t=1/(1+.2316419*Math.abs(x)),d=.3989423*Math.exp(-x*x/2),p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return x>0?1-p:p};
+function callRisk(r,c){
+  if(!r.callDate||!r.callKind||r.priceBad||!r.pricePct||r.pricePct<60||r.pricePct>160)return null;
+  const days=Math.max(1,Math.round((r.callDate-today)/864e5));if(days>190)return null;
+  const t=days/365.25;let p,lv=null;
+  if(r.callKind==="autocall"){
+    lv=+c.autocallPct>=30&&+c.autocallPct<=130?+c.autocallPct:100;
+    if(!r.spotPct)return null;
+    const v=r.wvol?r.wvol/100:null;
+    p=v?ncdf(Math.log(r.spotPct/lv)/(v*Math.sqrt(t))):(r.spotPct>=lv?.75:.2);
+    if(r.n>1)p*=.92; // worst-of: anche gli altri sottostanti devono essere sopra
+  }else{
+    if(r.belowBarrier||r.couponActive===false)p=.05;
+    else p=r.pricePct>=101?.7:r.pricePct>=99.5?.55:r.pricePct>=98?.35:.15;
+  }
+  // cedole incassate fino al richiamo (incluse quelle della data stessa)
+  const per={"1m":1,"2m":2,"3m":3,"4m":4,"6m":6,"12m":12}[r.freq];let k=0;
+  if(r.couponPa!=null&&r.couponActive!==false){
+    if(per&&r.couponDate){for(let d=new Date(r.couponDate);d<=r.callDate&&k<30;k++)d=new Date(d.getFullYear(),d.getMonth()+per,d.getDate())}
+    else if(per)k=Math.max(1,Math.round(days/30.4/per));}
+  // frequenza ignota (molti Express): si ipotizza una cedola trimestrale pagata alla data di richiamo
+  const est=!per&&r.couponPa!=null&&r.couponActive!==false;
+  const cps=per?k*r.couponPa*per/12:est?r.couponPa*Math.max(days,91)/365.25:0;
+  const tot=(100+cps-r.pricePct)/r.pricePct*100;
+  const ann=tot/Math.max(t,1/12);
+  const lvl=p>=.6&&days<=100?"alto":p>=.35?"medio":null;
+  if(!lvl)return null;
+  return {p,days,lv,tot,ann,lvl,cps,est,poor:tot<.75||(days>45&&ann<(r.ytm??0)-3)};
+}
+const ggTxt=d=>d<=1?"domani":d<=45?`tra ${d} giorni`:`tra ${Math.round(d/30.4)} mesi`;
+// frase per consulente e cliente
+function callTxt(c,short){const k=c.call;if(!k)return "";
+  const who=c.callKind==="autocall"?`il peggiore${k.lv?` è al ${fmt(c.spotPct,0)}% dello strike, il livello di richiamo è ${fmt(k.lv,0)}%`:""}`:`quota ${fmt(c.pricePct,1)}%: per l'emittente rimborsare conviene`;
+  const head=`${k.lvl==="alto"?"Richiamo probabile":"Possibile richiamo"} il ${dshort(c.callDate)} (${ggTxt(k.days)}, stima ${fmt(k.p*100,0)}%)`;
+  if(short)return head;
+  return `${head}: ${who}. Se rimborsa incassi circa <b>${k.tot>=0?"+":""}${fmt(k.tot,1)}% in tutto</b>${k.est?" (cedola ipotizzata trimestrale)":""}${k.days>45?` (${pct(k.ann)} annuo)`:""}${c.pricePct>100.3?`, pagando ${fmt(c.pricePct,1)}% per riavere 100`:""}${k.poor?". <b>Il rendimento a scadenza qui conta poco</b>: poi bisogna reinvestire.":"."}`}
+const callBadge=c=>c.call?`<span class="b ${c.call.lvl==="alto"&&c.call.poor?"ko":"ca"}" title="${esc(callTxt(c).replace(/<[^>]+>/g,""))}">${c.call.lvl==="alto"?"⚠ Richiamo probabile":"Possibile richiamo"} ${dshort(c.callDate)}</span>`:"";
 function score(c,w){
   if(c.priceBad){c.sc=null;return 0}
   const top=RTOP[state.profile]||20;
-  const R=c.ytm==null?0:clamp(c.ytm/top,0,1)*(c.ytmHigh?.6:1); // rendimento annuo rispetto all'obiettivo del profilo; oltre il 40% è sospetto
+  const R=c.ytm==null?0:clamp((c.yEff??c.ytm)/top,0,1)*(c.ytmHigh?.6:1)*(c.call?.lvl==="alto"&&c.call.poor?.7:1); // rendimento annuo rispetto all'obiettivo del profilo; oltre il 40% è sospetto
   let S;
   if(c.belowBarrier)S=0;
   else if(c.prob!=null)S=.65*clamp((c.prob-40)/55,0,1)+.35*clamp((c.dist??0)/50,0,1)-(c.probUpper?.05:0);
@@ -1193,6 +1240,8 @@ function compute(){
     if(f.matmin!=null&&c.years!=null&&c.years<f.matmin)continue;
     if(f.acall){ /* richiamo anticipato: prossima data di autocall entro N mesi, oppure nessun autocall */
       if(f.acall==="no"){if(c.callKind==="autocall")continue}
+      else if(f.acall==="far"){if(c.call)continue}
+      else if(f.acall==="near"){if(!c.call)continue}
       else{if(c.callKind!=="autocall"||!c.callDate)continue;const lim=new Date(today);lim.setMonth(lim.getMonth()+(+f.acall));if(c.callDate>lim)continue}}
     if(f.price!=null&&c.pricePct!=null&&c.pricePct>f.price)continue;
     if(f.sp!=null&&c.spread!=null&&c.spread>f.sp)continue;
@@ -1235,6 +1284,7 @@ function badges(c){
   b.push(`<span class="b">${esc(c.cat)}</span>`);
   if(c.freq)b.push(`<span class="b ${c.freq==="1m"?"pk":""}">${freqTxt(c.freq)}</span>`);
   if(c.callable)b.push(`<span class="b pk">${esc(c.callable)}</span>`);
+  if(c.call)b.push(callBadge(c));
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
   if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
   if(c.platform)b.push(`<span class="b">via ${esc(c.platform)}</span>`);
@@ -1260,7 +1310,7 @@ const COLS=[["","",null],["Pt.","","score"],["ISIN / emittente","l",null],["Sott
 function rowHtml(c){
   return `<tr class="r" data-open="${esc(c.isin)}">
 <td class="t">${starBtn(c)}${cmpBox(c)}</td><td class="pt ${c.score>=70?"pos":c.score>=50?"ca":"neg"}" title="${esc(scoreTitle(c))}">${c.score}</td>
-<td class="l"><span class="num" style="font-size:.82rem">${esc(c.isin)}</span><span class="note"> ${esc(c.issuer||"")}</span></td>
+<td class="l"><span class="num" style="font-size:.82rem">${esc(c.isin)}</span>${c.call?`<span class="cw ${c.call.lvl==="alto"?"hot":""}" title="${esc(callTxt(c).replace(/<[^>]+>/g,""))}">⚠</span>`:""}<span class="note"> ${esc(c.issuer||"")}</span></td>
 <td class="l t unds-cell" title="${esc(c.unds.join(", "))}">${esc(c.unds.join(", "))}</td>
 <td class="l t" style="max-width:150px" title="${esc(c.sector==="Misto"?"Misto: "+c.secU.join(", "):c.sector||"")}">${esc(c.sector?secTxt(c):"—")}</td>
 <td class="l t w" style="max-width:150px">${esc(c.worst||"—")}</td>
@@ -1274,7 +1324,7 @@ function rowHtml(c){
 <td>${c.barrierPct?fmt(c.barrierPct,0)+"%":"—"}</td>
 <td class="${c.stale?"stale":""}" title="${c.priceAt?"Prezzo del "+dtime(c.priceAt):""}">${c.pricePct?fmt(c.pricePct,2):"—"}</td>
 <td>${pct(c.spread,2)}</td><td>${pct(c.cy)}</td><td>${pct(c.ytc)}</td>
-<td class="t">${c.callKind==="callable"?"Soft ":c.callKind==="autocall"?"Auto ":""}${dshort(c.callDate)}</td><td>${dshort(c.matDate)}</td></tr>`}
+<td class="t ${c.call?c.call.lvl==="alto"?"neg":"ca":""}" ${c.call?`title="${esc(callTxt(c).replace(/<[^>]+>/g,""))}"`:""}>${c.call?.lvl==="alto"?"⚠ ":""}${c.callKind==="callable"?"Soft ":c.callKind==="autocall"?"Auto ":""}${dshort(c.callDate)}</td><td>${dshort(c.matDate)}</td></tr>`}
 let vt=null;
 function renderTable(){
   const res=$("#results");
@@ -1298,13 +1348,13 @@ const fshort=f=>({"1m":"mens.","3m":"trim.","6m":"sem.","12m":"ann."}[f]||"");
 const scls=v=>v>=70?"":v>=50?"ca":"neg";
 // variazione del prezzo dalla seduta precedente: piccola freccia, verde/rossa, nascosta sotto lo 0,05%
 const chgHtml=(v,lab="")=>v==null||Math.abs(v)<.05?"":`<span class="chg ${v>0?"up":"dn"}" title="Variazione del prezzo dalla seduta precedente">${lab}${v>0?"▲":"▼"}${fmt(Math.abs(v),Math.abs(v)<10?1:0)}%</span>`;
-function keyBadges(c){const b=[];if(c.isNew)b.push(`<span class="b nw" title="Comparso nel radar il ${dshort(parseDate(c.firstSeen))}: probabilmente una nuova emissione">Nuovo</span>`);if(c.front)b.push(`<span class="b fr" title="Frontiera efficiente: nessun altro risultato ha insieme più rendimento e più distanza dalla barriera">Frontiera</span>`);
+function keyBadges(c){const b=[];if(c.call)b.push(callBadge(c));if(c.isNew)b.push(`<span class="b nw" title="Comparso nel radar il ${dshort(parseDate(c.firstSeen))}: probabilmente una nuova emissione">Nuovo</span>`);if(c.front)b.push(`<span class="b fr" title="Frontiera efficiente: nessun altro risultato ha insieme più rendimento e più distanza dalla barriera">Frontiera</span>`);
   if(c.priceBad)b.push(`<span class="b ko">Prezzo anomalo</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
   if(c.ytmHigh)b.push(`<span class="b ca">Rend. sospetto</span>`);
   if(c.stale)b.push(`<span class="b st">Prezzo vecchio</span>`);
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
-  if(c.callKind==="autocall")b.push(`<span class="b" title="Prossima data di possibile rimborso anticipato">Autocall${c.callDate?" "+dshort(c.callDate):""}</span>`);
+  if(c.callKind==="autocall"&&!c.call)b.push(`<span class="b" title="Prossima data di possibile rimborso anticipato">Autocall${c.callDate?" "+dshort(c.callDate):""}</span>`);
   return b.slice(0,3).join("")}
 function cardHtml(c,i){const sp=pcol(c.prob);
   return `<article class="card${(i||0)<8?" anim":""}" data-open="${esc(c.isin)}" style="--i:${i||0};--spine:${sp==="none"?"var(--line)":sp}">
@@ -1316,6 +1366,7 @@ function cardHtml(c,i){const sp=pcol(c.prob);
 <div class="kpi"><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div>${c.dist!=null?`<span class="ruler ${cls(c.dist)}" style="--d:${(clamp(c.dist,0,60)/60*100).toFixed(0)}%" title="Distanza del peggiore dalla barriera, scala 0–60%"><i></i></span>`:""}<div class="k">Dist. barr.</div></div>
 <div class="kpi"><div class="v ${pcls(c.prob)}">${probTxt(c)}</div><div class="k">Prob.</div></div>
 </div>
+${c.call?.lvl==="alto"?`<div class="c-warn ${c.call.poor?"ko":""}">⚠ ${callTxt(c,1)} · se rimborsa incassi <b>${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}%</b> in tutto</div>`:""}
 <div class="c-foot">${c.sector?`<span class="sec ${c.sector==="Misto"?"mix":""}" title="Settore dei sottostanti">${esc(secTxt(c))}</span>`:""}${c.freq?`<span><b style="font-family:var(--f-ui)">${freqTxt(c.freq)}</b></span>`:""}<span>Lettera <b class="${c.stale?"stale":""}">${c.pricePct?fmt(c.pricePct,1)+"%":"—"}</b>${chgHtml(c.chg)}</span><span>Spread <b>${pct(c.spread,1)}</b></span><span>Scade <b>${dshort(c.matDate)}</b>${c.years!=null&&c.years>0?` <span class="yl">· ${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}</span>`:""}</span><span class="badges">${keyBadges(c)}</span></div>
 </article>`}
 function renderCards(){
@@ -1413,7 +1464,7 @@ const GENERIC=new Set(["banco","banca","bank","deutsche","the","credit","societe
 function undKey(u){const w=norm(u).split(" ").filter(x=>x.length>1&&!/^(spa|ag|se|sa|nv|plc|inc|corp|co|group|holding|holdings|ltd)$/.test(x));return GENERIC.has(w[0])?w.slice(0,2).join(" "):w[0]||norm(u)}
 function buildPf(o){
   const base=o.src==="fav"?Object.keys(FAV).map(i=>BYISIN.get(i)).filter(Boolean):o.src==="all"?CERTS.filter(c=>!c.lev):ROWS;
-  const src=base.filter(c=>c.liq&&!c.priceBad&&c.couponPa!=null&&c.ytm!=null&&!c.ytmHigh&&!c.belowBarrier&&c.pricePct&&pfOk(c));
+  const src=base.filter(c=>c.liq&&!c.priceBad&&c.couponPa!=null&&c.ytm!=null&&!c.ytmHigh&&!c.belowBarrier&&c.pricePct&&!(c.call?.lvl==="alto"&&c.call.poor)&&pfOk(c));
   const key=o.key==="cd"?(c=>c.cdScore??-99):o.key==="ytm"?(c=>c.ytm):o.key==="prob"?(c=>c.prob??-1):(c=>c.score);
   src.sort((a,b)=>key(b)-key(a));
   const pick=[],iss={},und=new Set();
@@ -1457,6 +1508,7 @@ ${mine?myEditor(L):`<div class="pfin">
 <label>Da<select id="pf-src">${opt("rows",`Risultati filtrati (${ROWS.length.toLocaleString("it-IT")})`,PF.src)}${opt("all","Tutto il radar",PF.src)}${opt("fav",`Preferiti (${Object.keys(FAV).length})`,PF.src)}</select></label>
 <label class="check" style="align-self:end"><input type="checkbox" id="pf-uniq" ${PF.uniq?"checked":""}> Un sottostante una volta sola</label>
 </div>`}
+${L.some(x=>x.c.call)?`<div class="verdict v-ca"><div class="cap">Richiami in arrivo</div>${L.filter(x=>x.c.call).sort((a,b)=>a.c.callDate-b.c.callDate).map(x=>`<p><button class="isin" data-open="${esc(x.c.isin)}">${esc(x.c.isin)}</button> ${esc(x.c.unds.join(", "))}: ${callTxt(x.c)}</p>`).join("")}<p class="note">Se rimborsano, il capitale torna disponibile: conviene pensare per tempo a dove reinvestirlo.</p></div>`:""}
 ${L.length?`<div class="stats">
 <div><div class="k">Investito</div><div class="v">${fmt(inv,0)} €</div><div class="s">${L.length} certificati · profilo ${esc(state.profile)}</div></div>
 <div><div class="k">Rendimento annuo</div><div class="v hi">${pct(w(c=>c.ytm))}</div><div class="s">medio pesato, se le barriere tengono</div></div>
@@ -1711,7 +1763,8 @@ function verdict(c,full){
     if(tone!=="ko"&&inside)tone="ca"}
   if(c.couponActive===true&&c.trigDist!=null)out.push(`Oggi la cedola si paga: il peggiore è sopra il trigger con un margine del ${pct(c.trigDist,0)}.`);
   else if(c.couponActive===false){out.push(`Oggi la cedola <b>non si paga</b> (peggiore sotto il trigger)${c.memory?", ma con la memoria si recupera se risale":""}.`);if(tone==="ok")tone="ca"}
-  if(c.callDate&&L.ap&&w)out.push(`Prossimo richiamo il ${dshort(c.callDate)}: se tutti i sottostanti sono almeno al ${fmt(L.ap,0)}% dello strike rimborsa in anticipo${w.s>=L.ap?" (oggi lo sarebbero)":` (oggi il peggiore è al ${fmt(w.s,0)}%)`}.`);
+  if(c.call){out.push(`⚠ ${callTxt(c)}`);if(tone==="ok"||(c.call.lvl==="alto"&&c.call.poor&&tone!=="ko"))tone="ca"}
+  else if(c.callDate&&L.ap&&w)out.push(`Prossimo richiamo il ${dshort(c.callDate)}: se tutti i sottostanti sono almeno al ${fmt(L.ap,0)}% dello strike rimborsa in anticipo${w.s>=L.ap?" (oggi lo sarebbero)":` (oggi il peggiore è al ${fmt(w.s,0)}%)`}.`);
   if(c.prob!=null)out.push(`Probabilità stimata che la barriera tenga: <b>${probTxt(c)}</b>.`);
   if(tone==="ok"&&(c.dist??0)<15)tone="ca";
   return `<div class="verdict v-${tone}"><div class="cap">In breve</div>${out.map(s=>`<p>${s}</p>`).join("")}</div>`;
@@ -1803,14 +1856,14 @@ async function detailHtml(c){
     ...(FAV[c.isin]?.ask&&c.ask?[["Da quando l'hai salvato",chgHtml((c.ask/FAV[c.isin].ask-1)*100)||"invariato"]]:[]),
     ...(c.isNew?[["Nel radar dal",dshort(parseDate(c.firstSeen))]]:[]),
     ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
-    ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
+    ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],["Scadenza",dshort(c.matDate)],["Rend. a richiamo",pct(c.ytc)],...(c.call?[["Prob. richiamo",`<span class="${c.call.lvl==="alto"?"neg":"ca"}">${fmt(c.call.p*100,0)}% il ${dshort(c.callDate)}</span>`],["Se richiamato",`${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto`]]:[]),["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Classe emittente",c.tier||"n.d."],["Mercato",esc(c.market||"—")]];
   return `<div class="dhead"><div style="min-width:0"><div class="c-iss"><b>${esc(c.issuer||"")}</b>${c.type?" · "+esc(c.type):""}</div>
 <div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><button class="share only-wide ${inMyp(c.isin)?"on":""}" data-myp="${esc(c.isin)}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
 <button data-close aria-label="Chiudi">✕</button></div>
 <div class="dtitle">${undsHtml(c)}</div>
 <div class="badges">${badges(c)}</div>
 <div class="hero">
-<div><div class="k">Rend. annuo</div><div class="v hi">${pct(c.ytm)}</div><div class="s">${c.expRet!=null?"atteso "+pct(c.expRet):"a scadenza, al prezzo lettera"}</div></div>
+<div><div class="k">Rend. annuo</div><div class="v hi">${pct(c.ytm)}</div><div class="s">${c.call?.lvl==="alto"?`<span class="${c.call.poor?"neg":"ca"}">se richiamato ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto</span>`:c.expRet!=null?"atteso "+pct(c.expRet):"a scadenza, al prezzo lettera"}</div></div>
 <div><div class="k">Cedola p.a.</div><div class="v">${pct(c.couponPa,2)}</div><div class="s">${freqTxt(c.freq)}${c.memory?" · memoria":""}</div></div>
 <div><div class="k">Peggiore dalla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist)}</div><div class="s">${esc(c.worst||"peggiore n.d.")}</div></div>
 <div><div class="k">Prob. tenuta</div><div class="v ${pcls(c.prob)}" title="${esc(probTitle(c))}">${probTxt(c)}</div><div class="s">${c.wvol!=null?"vol peggiore "+pct(c.wvol,0):"volatilità n.d."}</div></div>
@@ -1854,7 +1907,7 @@ function renderCmpBar(){$("#cmpbar").hidden=!CMP.size;$("#cmptxt").textContent=`
 async function openCmp(){
   const cs=[...CMP].map(i=>BYISIN.get(i)).filter(Boolean);if(cs.length<2){toast("Seleziona almeno 2 certificati");return}
   const js=await Promise.all(cs.map(c=>loadDetail(c.isin)));
-  const R=[["Emittente",c=>esc(c.issuer)],["Sottostanti",c=>esc(c.unds.join(", "))],["Categoria",c=>esc(c.cat)],["Prob. tenuta",c=>`<span class="${pcls(c.prob)}">${probTxt(c)}</span>`,c=>c.prob,1],["Dist. barriera peggiore",c=>`<span class="${cls(c.dist)}">${pct(c.dist)}</span>`,c=>c.dist,1],["Dist. trigger",c=>pct(c.trigDist),c=>c.trigDist,1],["Barriera / trigger",c=>`${pct(c.barrierPct,0)} / ${pct(c.triggerPct,0)}`],["Cedola p.a.",c=>pct(c.couponPa,2)+" "+freqTxt(c.freq),c=>c.couponPa,1],["Memoria",c=>c.memory?"Sì":"No"],["Richiamo",c=>esc(c.callable||"—")],["Denaro / lettera",c=>`${fmt(c.bid)} / ${fmt(c.ask)}`],["Prezzo %",c=>pct(c.pricePct,2)],["Spread",c=>pct(c.spread,2),c=>c.spread,-1],["Rend. a scadenza",c=>pct(c.ytm),c=>c.ytmHigh?null:c.ytm,1],["Rend. a richiamo",c=>pct(c.ytc)],["Vol peggiore",c=>pct(c.wvol,0),c=>c.wvol,-1],["Prossima cedola",c=>dshort(c.couponDate)],["Prossimo richiamo",c=>dshort(c.callDate)],["Scadenza",c=>dshort(c.matDate)],["Punteggio",c=>c.score,c=>c.score,1]];
+  const R=[["Emittente",c=>esc(c.issuer)],["Sottostanti",c=>esc(c.unds.join(", "))],["Categoria",c=>esc(c.cat)],["Prob. tenuta",c=>`<span class="${pcls(c.prob)}">${probTxt(c)}</span>`,c=>c.prob,1],["Dist. barriera peggiore",c=>`<span class="${cls(c.dist)}">${pct(c.dist)}</span>`,c=>c.dist,1],["Dist. trigger",c=>pct(c.trigDist),c=>c.trigDist,1],["Barriera / trigger",c=>`${pct(c.barrierPct,0)} / ${pct(c.triggerPct,0)}`],["Cedola p.a.",c=>pct(c.couponPa,2)+" "+freqTxt(c.freq),c=>c.couponPa,1],["Memoria",c=>c.memory?"Sì":"No"],["Richiamo",c=>esc(c.callable||"—")],["Denaro / lettera",c=>`${fmt(c.bid)} / ${fmt(c.ask)}`],["Prezzo %",c=>pct(c.pricePct,2)],["Spread",c=>pct(c.spread,2),c=>c.spread,-1],["Rend. a scadenza",c=>pct(c.ytm),c=>c.ytmHigh?null:c.ytm,1],["Rend. a richiamo",c=>pct(c.ytc)],["Vol peggiore",c=>pct(c.wvol,0),c=>c.wvol,-1],["Prossima cedola",c=>dshort(c.couponDate)],["Prossimo richiamo",c=>c.call?`<span class="${c.call.lvl==="alto"?"neg":"ca"}">${dshort(c.callDate)} · ${fmt(c.call.p*100,0)}%</span>`:dshort(c.callDate)],["Se richiamato, in tutto",c=>c.call?pct(c.call.tot):"—"],["Scadenza",c=>dshort(c.matDate)],["Punteggio",c=>c.score,c=>c.score,1]];
   $("#cmpbody").innerHTML=`<div class="dhead"><b>Confronto</b><button data-close aria-label="Chiudi">✕</button></div><p class="note" style="margin:0">In verde il valore migliore di ogni riga.</p><div class="tbl-wrap" style="overflow:auto"><table class="cmp-table"><thead><tr><th></th>${cs.map(c=>`<th><button class="isin" data-open="${esc(c.isin)}">${esc(c.isin)}</button></th>`).join("")}</tr></thead><tbody>${R.map(([l,f,v,dir])=>{const vals=v?cs.map(c=>v(c)):[];const ok=vals.filter(x=>x!=null);const best=ok.length>1&&new Set(ok).size>1?(dir>0?Math.max(...ok):Math.min(...ok)):null;
     return `<tr><td>${l}</td>${cs.map((c,i)=>`<td${best!=null&&vals[i]===best?' class="best" title="Il migliore del confronto"':""}>${f(c)}</td>`).join("")}</tr>`}).join("")}</tbody></table></div>`;
   $("#cmp").hidden=false;document.body.style.overflow="hidden";
@@ -1913,7 +1966,7 @@ function syncSliders(){if(SLB)SL.forEach(paintSlider)}
 
 /* ---------- scelte rapide (tocchi invece di numeri da digitare) ---------- */
 const QUICK=[
-  ["acall","Richiamo anticipato (autocall)",["","3","6","12","no"],v=>ACALL[v]],
+  ["acall","Richiamo anticipato",["","far","near","3","6","12","no"],v=>ACALL[v]],
   ["freq","Frequenza cedola",["","1m","3m","6m"],v=>freqTxt(v)],
   ["n","Sottostanti",["","single","multi"],v=>v==="single"?"Singolo":"Worst-of"],
 ];
@@ -1932,7 +1985,7 @@ function renderQuick(){
 function fsumText(n){const R=`${ROWS.length.toLocaleString("it-IT")} risultati`;if(!n)return R+" · nessun filtro";const P=[];
   if(state.f.y!=null)P.push(`rend ≥${fmt(state.f.y,0)}%`);if(state.f.b!=null)P.push(`dist ≥${fmt(state.f.b,0)}%`);if(state.f.prob!=null)P.push(`prob ≥${fmt(state.f.prob,0)}%`);if(state.f.sp!=null)P.push(`spread ≤${fmt(state.f.sp,state.f.sp%1?1:0)}%`);
   if(state.f.cmin!=null)P.push(`cedola ≥${fmt(state.f.cmin,state.f.cmin%1?1:0)}%`);
-  if(state.f.acall)P.push(state.f.acall==="no"?"senza autocall":`autocall ≤${ACALL[state.f.acall].replace("entro ","")}`);
+  if(state.f.acall)P.push(state.f.acall==="no"||state.f.acall==="far"||state.f.acall==="near"?ACALL[state.f.acall].toLowerCase():`autocall ≤${ACALL[state.f.acall].replace("entro ","")}`);
   const mn=state.f.matmin,mx=state.f.mat;if(mn!=null||mx!=null)P.push(mn!=null&&mx!=null?`scad. ${mn>=1?fmt(mn,mn%1?1:0)+"–"+yrs(mx):yrs(mn)+"–"+yrs(mx)}`:mn!=null?`scad. ≥${yrs(mn)}`:`scad. ≤${yrs(mx)}`);
   return `${R} · ${P.length?P.join(" · "):n+" filtri"}`}
 
@@ -2078,7 +2131,7 @@ function pickSugg(i){const s=SG[i];if(!s)return;
 let DAILY=null;
 function pickDaily(){
   const P=PRESETS[state.profile];
-  const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.couponPa!=null&&c.spread<=2&&!c.stale&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=P.b&&c.prob!=null&&c.prob>=(P.prob??50)&&(c.ytm??-99)>=P.y&&!c.ytmHigh&&(c.years??99)<=P.mat).sort((a,b)=>b.score-a.score).slice(0,3);
+  const ok=CERTS.filter(c=>c.liq&&!c.lev&&c.couponPa!=null&&c.spread<=2&&!c.stale&&c.couponActive!==false&&(c.trigDist==null||c.trigDist>=5)&&c.dist!=null&&c.dist>=P.b&&c.prob!=null&&c.prob>=(P.prob??50)&&(c.ytm??-99)>=P.y&&!c.ytmHigh&&(c.years??99)<=P.mat&&c.call?.lvl!=="alto").sort((a,b)=>b.score-a.score).slice(0,3);
   if(!ok.length){DAILY=null;return}
   DAILY=ok;$("#daily-prof").textContent=state.profile;
   $("#dailybody").innerHTML=ok.map((c,i)=>`<button class="mini dp" data-open="${esc(c.isin)}">
@@ -2090,6 +2143,8 @@ function renderAlerts(){
   const out=[];
   for(const[isin,f]of Object.entries(FAV)){const c=BYISIN.get(isin);if(!c){out.push(`<p>☆ <span class="num">${esc(isin)}</span> non è più in archivio (scaduto o rimborsato?).</p>`);continue}
     const why=[];if(c.belowBarrier)why.push("sotto barriera");else if(c.couponActive===false)why.push("cedola sospesa (peggiore sotto il trigger)");
+    if(c.call?.lvl==="alto")why.push(`${callTxt(c,1).toLowerCase()}, incasso stimato ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}%`);
+    else if(c.callDate&&(c.callDate-today)/864e5<=14)why.push(`data di richiamo il ${dshort(c.callDate)}`);
     if(f.ask&&c.ask&&c.ask<f.ask*0.97)why.push(`prezzo sceso del ${fmt((1-c.ask/f.ask)*100,1)}% da quando l'hai salvato (${fmt(f.ask)} → ${fmt(c.ask)})`);
     if(why.length)out.push(`<p>★ <button class="isin" data-open="${esc(isin)}">${esc(isin)}</button> ${esc(c.unds.join(", "))}: <b>${why.join("; ")}</b></p>`)}
   $("#alerts").hidden=!out.length;$("#alerts").innerHTML=out.length?`<h2>Avvisi sui preferiti</h2>${out.join("")}`:"";
@@ -2117,7 +2172,7 @@ function loadXLSX(){return XP||(XP=new Promise((ok,ko)=>{const s=document.create
 $("#export").addEventListener("click",()=>{
   if(!ROWS.length){toast("Niente da esportare");return}
   if(!window.XLSX){toast("Preparo l'Excel…");loadXLSX().then(()=>$("#export").click()).catch(()=>toast("Esportazione non disponibile"));return}
-  const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Settore:c.sector==="Misto"?"Misto ("+c.secU.join(", ")+")":(c.sector||""),Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Rend. atteso %":c.retProxy==null?null:+c.retProxy.toFixed(2),"Classe emittente":c.tier||"","Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"",Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
+  const data=ROWS.map(c=>({ISIN:c.isin,Emittente:c.issuer||"",Tipo:c.type||"",Categoria:c.cat,Settore:c.sector==="Misto"?"Misto ("+c.secU.join(", ")+")":(c.sector||""),Sottostanti:c.unds.join(", "),Peggiore:c.worst||"","Dist. barriera peggiore %":c.dist,"Prob. tenuta barriera %":c.prob==null?null:+c.prob.toFixed(1),"Rend. atteso %":c.retProxy==null?null:+c.retProxy.toFixed(2),"Classe emittente":c.tier||"","Metodo prob.":c.probMethod||"","Vol peggiore %":c.wvol==null?null:+c.wvol.toFixed(1),"Dist. trigger %":c.trigDist==null?null:+c.trigDist.toFixed(2),"Barriera %":c.barrierPct??null,"Trigger %":c.triggerPct??null,"Cedola p.a. %":c.couponPa,Frequenza:freqTxt(c.freq),Memoria:c.memory?"Sì":"No",Richiamo:c.callable||"",Denaro:c.bid,Lettera:c.ask,"Prezzo del":c.priceAt||"","Prezzo %":c.pricePct==null?null:+c.pricePct.toFixed(2),"Spread %":c.spread==null?null:+c.spread.toFixed(2),"Rend. a scadenza %":c.ytm==null?null:+c.ytm.toFixed(2),"Rend. a richiamo %":c.ytc==null?null:+c.ytc.toFixed(2),"Prossima cedola":c.nextCouponDate||"","Prossimo richiamo":c.nextCallDate||"","Prob. richiamo %":c.call?+(c.call.p*100).toFixed(0):null,"Se richiamato, in tutto %":c.call?+c.call.tot.toFixed(2):null,Scadenza:c.maturity||"",Punteggio:c.score,Mercato:c.market||""}));
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(data),"Certificati");
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=`radar-certificati-${new Date().toISOString().slice(0,10)}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
