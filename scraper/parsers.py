@@ -1664,7 +1664,8 @@ LEGAL_NAMES = [(r"vontobel", "Vontobel"), (r"bnp", "BNP Paribas"), (r"unicredit|
                (r"santander", "Santander"), (r"natixis", "Natixis"), (r"nomura", "Nomura"), (r"morgan stanley", "Morgan Stanley"),
                (r"bper", "BPER Banca"), (r"j\.?p\.? ?morgan", "J.P. Morgan"), (r"bbva|bilbao", "BBVA"), (r"akros", "Banca Akros"),
                (r"smart etn", "Smart ETN"), (r"\bbil\b|internationale [aà] luxembourg", "BIL"), (r"efg", "EFG International"),
-               (r"amundi", "Amundi"), (r"exane", "Exane"), (r"ubs", "UBS")]
+               (r"amundi", "Amundi"), (r"exane", "Exane"), (r"ubs", "UBS"),
+               (r"iccrea", "Iccrea Banca"), (r"sella", "Banca Sella"), (r"equita", "Equita")]
 
 
 def legal_to_issuer(s):
@@ -1742,4 +1743,117 @@ async def borsa_scheda(DISC, src, NOW, ctx):
     SCHEDA_STATE.write_text(json.dumps(st))
     save(DISC, f"{src['name']}_parser.json", log)
     LAST_STATUS[src["name"]] = f"ok: {log['visited']} schede lette, {log['withBarrier']} con barriera, {st['remaining']} in coda"
+    return out
+
+
+# ---------------------------------------------------------------- Vorvel (ex Hi-MTF)
+# Mercato italiano dei certificati fuori da SeDeX/Cert-X (Banco BPM, Mediobanca, Intesa, Iccrea, Sella…).
+# Elenco pubblico in HTML (50 righe a pagina, ?page=N) + scheda per ISIN con tipo ACEPI, richiamo,
+# nominale, strike e book. Quasi sempre quotati solo in denaro dallo specialista.
+
+VORVEL = "https://www.vorvel.eu"
+VORVEL_LIST = VORVEL + "/en/certificates/quotazioni/investment-certificates?page={}"
+VORVEL_DET = VORVEL + "/en/hitmtf_info_cert/det/CERT{}"
+
+
+def vnum(v):
+    """Numeri in formato inglese (1,574.86)."""
+    return num(str(v).replace(",", "")) if v not in (None, "") else None
+
+
+def vorvel_rows(html):
+    import html as _html
+    out = []
+    for r in re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.S):
+        cells = [re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", "", x))).strip()
+                 for x in re.findall(r"<td[^>]*>(.*?)</td>", r, re.S)]
+        if len(cells) >= 13 and ISIN_RE.fullmatch(cells[0]):
+            out.append(cells)
+    return out
+
+
+def vorvel_detail(html):
+    """Coppie campo/valore della scheda, sottostanti (nome, ISIN, strike) e prima riga del book."""
+    import html as _html
+    rows = [[re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", x)).strip() for x in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", r, re.S)]
+            for r in re.findall(r"<tr[^>]*>(.*?)</tr>", _html.unescape(html), re.S)]
+    pairs, und, book, mode = {}, [], None, None
+    for c in rows:
+        if not c:
+            continue
+        if c[0] == "Underlying" and len(c) >= 3:
+            mode = "und"; continue
+        if c[0].startswith("Nr. of proposals"):
+            mode = "book"; continue
+        if mode == "und" and len(c) >= 5:
+            und.append({"name": c[0], "isin": c[1] if ISIN_RE.fullmatch(c[1] or "") else None, "strike": vnum(c[2])})
+            continue
+        if mode == "book" and len(c) >= 6:
+            if book is None:
+                book = {"bid": vnum(c[2]), "ask": vnum(c[3])}
+            continue
+        mode = None
+        if len(c) == 2:
+            pairs.setdefault(c[0], c[1])
+    return pairs, und, book
+
+
+async def vorvel(DISC, src, NOW, ctx):
+    import time as _time
+    from run import DATA
+    have = {c["isin"]: c for c in json.loads(DATA.read_text()).get("certs", [])} if DATA.exists() else {}
+    log = {"pages": 0, "rows": 0, "details": 0, "new": 0, "errors": 0}
+    rows, seen = [], set()
+    for pg in range(40):
+        try:
+            r = await ctx.request.get(VORVEL_LIST.format(pg), timeout=40000)
+            got = [x for x in vorvel_rows(await r.text()) if x[0] not in seen] if r.status == 200 else []
+        except Exception:
+            got = []
+        log["pages"] += 1
+        if not got:
+            break
+        seen.update(x[0] for x in got)
+        rows += got
+        await asyncio.sleep(0.7)
+    log["rows"] = len(rows)
+    out, t0 = [], _time.time()
+    for x in rows:
+        isin, desc, mat, cur, _kind, und, _ut, legal = x[:8]
+        bid, ask = vnum(x[11]), vnum(x[12])
+        prev = have.get(isin) or {}
+        own = not prev or prev.get("market") in (None, "Vorvel") or prev.get("source") == "vorvel"
+        fb = {"issuer": legal_to_issuer(legal), "underlyings": [u.strip() for u in und.split("/") if u.strip()] or None,
+              "maturity": pdate(mat), "currency": cur or None, "commercialName": desc or None,
+              "url": VORVEL_DET.format(isin), "issuerLegal": legal or None}
+        if own and _time.time() - t0 < 240:  # scheda solo per i certificati che il radar non ha da altri mercati
+            try:
+                r = await ctx.request.get(VORVEL_DET.format(isin), timeout=30000)
+                p, ud, book = vorvel_detail(await r.text()) if r.status == 200 else ({}, [], None)
+                log["details"] += 1
+            except Exception:
+                p, ud, book = {}, [], None
+                log["errors"] += 1
+            acepi = p.get("ACEPI Type") if p.get("ACEPI Type") not in (None, "", "-") else None
+            name = p.get("Instrument Name") if p.get("Instrument Name") not in (None, "", "-") else None
+            call = (p.get("Callability") or "").upper()
+            fb.update({"type": name or acepi, "typeMarket": acepi,
+                       "nominal": vnum(p.get("Nominal Value")),
+                       "callable": "Autocall" if call.startswith("AUTO") else "Callable emittente" if call in ("YES", "ISSUER", "SI") else None,
+                       "barrierPct": vnum(p.get("1st Barrier")),
+                       "underlyingsDetail": [clean({**u, "strike": None if u.get("strike") == vnum(p.get("Nominal Value")) else u.get("strike")})
+                                             for u in ud if u.get("name")] or None})
+            if book:
+                bid, ask = book["bid"] or bid, book["ask"] or ask
+            await asyncio.sleep(0.5)
+        if own:
+            if not prev:
+                log["new"] += 1
+            cert = {"isin": isin, "market": "Vorvel", "source": "vorvel", "updatedAt": NOW,
+                    "bid": bid, "ask": ask, "_fallback": clean(fb)}
+        else:  # già quotato su SeDeX/Cert-X: Vorvel completa solo i campi mancanti
+            cert = {"isin": isin, "_fallback": clean(fb)}
+        out.append(clean(cert))
+    save(DISC, f"{src['name']}_parser.json", log)
+    LAST_STATUS[src["name"]] = f"ok: {log['rows']} su Vorvel, {log['new']} nuovi, {log['details']} schede lette"
     return out

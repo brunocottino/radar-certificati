@@ -24,6 +24,8 @@ SOURCES = [
     {"name": "marex", "issuer": "Marex", "url": "https://fp.marex.com/", "max_clicks": 0, "parser": "marex_probe"},
     {"name": "unicredit", "issuer": "UniCredit", "url": "https://www.onemarkets.it/it/search-page.investment.html", "max_clicks": 0, "parser": "unicredit_pages", "categories": [129830054, 1050]},
     {"name": "citi", "issuer": "Citigroup", "url": "https://www.citivelocity.com/citifirst/it/products/tutti", "skip_page": True, "parser": "citi_api"},
+    # Vorvel (ex Hi-MTF): certificati quotati fuori da Borsa Italiana (Banco BPM, Mediobanca, Intesa, Iccrea, Sella…)
+    {"name": "vorvel", "issuer": None, "url": "https://www.vorvel.eu/", "skip_page": True, "parser": "vorvel"},
     # per ultimo: schede di Borsa Italiana a rotazione per i certificati ancora senza barriera
     {"name": "borsa_scheda", "issuer": None, "url": "https://www.borsaitaliana.it/", "skip_page": True, "parser": "borsa_scheda"},
 ]
