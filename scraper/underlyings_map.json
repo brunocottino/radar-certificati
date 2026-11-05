@@ -1357,6 +1357,17 @@
   "type": "EQUITY",
   "yahooName": "AXA SA"
  },
+ "axa bper banca unicredit": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "AXA SA|BPER Banca|UniCredit SpA",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "axa s a": {
   "checkedAt": "2026-10-09",
   "exchange": "STU",
@@ -1760,7 +1771,7 @@
   "yahooName": null
  },
  "basket 1 x ge aerospace 0 25 x ge vernova llc": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1787,6 +1798,17 @@
   "isin": null,
   "manual": null,
   "name": "BASKET RIC CGNOVNCA.S",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "basket wo commerzbank bper unicredit": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Basket WO:Commerzbank|BPER|Unicredit",
   "score": null,
   "ticker": null,
   "type": null,
@@ -2820,6 +2842,17 @@
   "isin": "FR0003500008",
   "manual": null,
   "name": "CAC40 Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "cac40 index divdax index ftsemib index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "CAC40 Index|DivDax Index|FTSEMIB Index",
   "score": null,
   "ticker": null,
   "type": null,
@@ -4133,6 +4166,19 @@
   "type": null,
   "yahooName": null
  },
+ "edenred": {
+  "checkedAt": "2026-11-05",
+  "exchange": "PAR",
+  "industry": "Credit Services",
+  "isin": "FR0010908533",
+  "manual": null,
+  "name": "Edenred",
+  "score": 1.0,
+  "sector": "Financial Services",
+  "ticker": "EDEN.PA",
+  "type": "EQUITY",
+  "yahooName": "Edenred SE"
+ },
  "edf": {
   "checkedAt": "2026-10-15",
   "exchange": "NYQ",
@@ -4304,6 +4350,28 @@
   "ticker": "ENEL.MI",
   "type": "EQUITY",
   "yahooName": "Enel SpA"
+ },
+ "eni isp srg": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ENI|ISP|SRG",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "eni kering roche": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ENI|Kering|Roche",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "eni s p a": {
   "checkedAt": "2026-10-22",
@@ -4751,7 +4819,7 @@
   "yahooName": null
  },
  "euro istoxx 50 carbon adaptation gr decrement 5": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4949,7 +5017,7 @@
   "yahooName": null
  },
  "euro istoxx responsibility screened select 30 index": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5162,15 +5230,17 @@
   "yahooName": null
  },
  "euro stoxx select dividend 30": {
-  "checkedAt": "2026-10-15",
+  "checkedAt": "2026-11-05",
   "exchange": "GER",
-  "isin": null,
+  "industry": null,
+  "isin": "CH0020751589",
   "manual": null,
   "name": "EURO STOXX SELECT DIVIDEND 30",
-  "score": 0.763,
-  "ticker": "EXSG.DE",
+  "score": 0.795,
+  "sector": null,
+  "ticker": "EL4G.DE",
   "type": "ETF",
-  "yahooName": "iShares EURO STOXX Select Dividend 30 UCITS ETF (DE)"
+  "yahooName": "Deka EURO STOXX Select Dividend 30 UCITS ETF"
  },
  "euro stoxx select dividend 30 index": {
   "checkedAt": "2026-11-04",
@@ -5327,7 +5397,7 @@
   "yahooName": null
  },
  "eurostat eurozone hicp ex tobacco unrevised series nsa": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5424,6 +5494,28 @@
   "ticker": "SYGEU.JO",
   "type": "EQUITY",
   "yahooName": "Sygnia Itrix Euro Stoxx 50 ETF"
+ },
+ "eurostoxx50 hschinaent nikkei225 s p500": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "EUROSTOXX50|HSCHINAENT|NIKKEI225|S&P500",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "eurostoxx50 nikkei225 s p500": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "EUROSTOXX50|NIKKEI225|S&P500",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "eurozone hicp ex tobacco unrevised": {
   "checkedAt": "2026-11-02",
@@ -5578,6 +5670,17 @@
   "ticker": "RACE.MI",
   "type": "EQUITY",
   "yahooName": "Ferrari N.V."
+ },
+ "ferrari renault stellantis": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Ferrari|Renault|Stellantis",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "fidelity funds european high yield fund": {
   "checkedAt": "2026-10-15",
@@ -5901,6 +6004,39 @@
   "manual": "FTSEMIB.MI",
   "name": "FTSE MIB Index",
   "ticker": null
+ },
+ "ftsemib index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": "GB00BNNLHW18",
+  "manual": null,
+  "name": "FTSEMIB Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "ftsemib index ibex index smi index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "FTSEMIB Index|Ibex Index|SMI Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "ftsemib ndx nky sx7e": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "FTSEMIB|NDX|NKY|SX7E",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "galderma": {
   "checkedAt": "2026-10-09",
@@ -6663,7 +6799,7 @@
   "yahooName": null
  },
  "inc": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13339,6 +13475,17 @@
   "type": "EQUITY",
   "yahooName": "K+S Aktiengesellschaft"
  },
+ "ker mc": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "KER|MC",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "kering": {
   "checkedAt": "2026-10-09",
   "exchange": "PAR",
@@ -13727,7 +13874,7 @@
   "yahooName": null
  },
  "leonardo stellantis telecom": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15095,6 +15242,17 @@
   "type": null,
   "yahooName": null
  },
+ "msci global ai 5 decrement eur index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "MSCI Global AI 5% Decrement EUR Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "msci global select esg multiple factor 4 decrement index": {
   "checkedAt": "2026-11-02",
   "exchange": null,
@@ -15629,6 +15787,17 @@
   "ticker": "7201.T",
   "type": "EQUITY",
   "yahooName": "Nissan Motor Co., Ltd."
+ },
+ "nky index spx index sx7e index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "NKY Index|SPX Index|SX7E Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "nn": {
   "checkedAt": "2026-10-15",
@@ -17517,6 +17686,39 @@
   "type": "EQUITY",
   "yahooName": "SCOR SE"
  },
+ "sd3e": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": "CH0020751589",
+  "manual": null,
+  "name": "SD3E",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "sd3e index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": "CH0020751589",
+  "manual": null,
+  "name": "SD3E Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "sdgp index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": "US26063V1180",
+  "manual": null,
+  "name": "SDGP Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "sea": {
   "checkedAt": "2026-10-15",
   "exchange": "NYQ",
@@ -17688,6 +17890,19 @@
   "name": "SMI",
   "ticker": null
  },
+ "smi index": {
+  "checkedAt": "2026-11-05",
+  "exchange": "LUX",
+  "industry": null,
+  "isin": "CH0009980894",
+  "manual": null,
+  "name": "SMI Index",
+  "score": 0.667,
+  "sector": null,
+  "ticker": "DE0005437461.LU",
+  "type": "ETF",
+  "yahooName": "BNPParIs SMI Index"
+ },
  "snam": {
   "checkedAt": "2026-10-09",
   "exchange": "VIE",
@@ -17820,8 +18035,19 @@
   "type": "INDEX",
   "yahooName": null
  },
+ "solactive btp 10 index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Solactive BTP 10 Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "solactive btp 10y annual comp 11am yield index": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18580,7 +18806,7 @@
   "yahooName": null
  },
  "stoxx europe 600 telecommunications index": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18664,6 +18890,17 @@
   "isin": null,
   "manual": null,
   "name": "STOXX EUROPE ESG LEADERS SELECT 30 INDEX",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "stoxx europe esg leaders select 30 price": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": "CH0298407328",
+  "manual": null,
+  "name": "STOXX Europe ESG Leaders Select 30 Price",
   "score": null,
   "ticker": null,
   "type": null,
@@ -18867,16 +19104,97 @@
   "type": "EQUITY",
   "yahooName": "Swisscom AG"
  },
- "sx7e": {
-  "checkedAt": "2026-10-19",
-  "exchange": "ZRH",
+ "sx5e": {
+  "checkedAt": "2026-11-05",
+  "exchange": "BUD",
+  "industry": null,
+  "isin": "EU0009658145",
+  "manual": null,
+  "name": "SX5E",
+  "score": 0.8,
+  "sector": null,
+  "ticker": "SX5EX.BD",
+  "type": "ETF",
+  "yahooName": "SX5EEX"
+ },
+ "sx5e index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": "EU0009658145",
+  "manual": null,
+  "name": "SX5E Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "sx6e index sx7e index": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
   "isin": null,
+  "manual": null,
+  "name": "SX6E Index|SX7E Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "sx6e sxde": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "SX6E|SXDE",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "sx6e sxde sxie": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "SX6E|SXDE|SXIE",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "sx6e sxie": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "SX6E|SXIE",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "sx7e": {
+  "checkedAt": "2026-11-05",
+  "exchange": "ZRH",
+  "industry": null,
+  "isin": "EU0009658426",
   "manual": null,
   "name": "SX7E",
   "score": 0.9,
+  "sector": null,
   "ticker": "SX7E.Z",
   "type": "INDEX",
   "yahooName": "ESTX Banks I"
+ },
+ "sx7e sxie": {
+  "checkedAt": "2026-11-05",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "SX7E|SXIE",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
  },
  "sxhca": {
   "checkedAt": "2026-11-02",
@@ -19082,7 +19400,7 @@
   "yahooName": "Telefónica, S.A."
  },
  "telefonica s a": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19291,7 +19609,7 @@
   "yahooName": "thyssenkrupp AG"
  },
  "thyssenkrupp tk accelis grp bskt": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": "DE000A4AYEL9",
   "manual": null,
@@ -19313,7 +19631,7 @@
   "yahooName": null
  },
  "thyssenkrupp tkms tkcc basket": {
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-11-05",
   "exchange": null,
   "isin": "DE000A4APUH1",
   "manual": null,
