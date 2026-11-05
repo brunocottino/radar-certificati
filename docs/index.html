@@ -1048,6 +1048,17 @@ const NUMF=["er","y","ym","cmin","b","t","prob","matmin","mat","price","sp"],SEL
 const OBJ={nuovi:["Nuove emissioni",{nuovi:true}],frontiera:["Frontiera efficiente",{front:true}],mensile:["Rendita mensile",{freq:"1m"}],pari:["Sotto la pari",{price:97}],breve:["Scadenza ≤ 2 anni",{mat:2}],memoria:["Con memoria",{mem:true}],attiva:["Cedola in pagamento",{active:true}],lontano:["Peggiore lontano (≥40%)",{b:40}],nocall:["Niente richiamo vicino",{acall:"far"}]};
 /* durata in parole: 0,5 -> "6 mesi", 1 -> "1 anno", 2,5 -> "2,5 anni" */
 const yrs=v=>v<1?Math.round(v*12)+" mesi":fmt(v,v%1?1:0)+(v===1?" anno":" anni");
+/* tipo di richiamo: dal campo "callable"; se vuoto (molte sorgenti non lo danno) lo si deduce dal tipo:
+   Express/Athena/Phoenix/Autocallable o livello di autocall = autocall, "callable" dell'emittente = softcallable */
+function callKindOf(c){
+  const v=String(c.callable||"");
+  if(/autocall/i.test(v))return "autocall";
+  if(/callable|soft/i.test(v))return "callable";
+  const t=String(c.type||""),tm=String(c.typeMarket||"");
+  if(/issuer.?callable|softcall|callable emittente/i.test(t))return "callable";
+  if(/autocall|express|athena|phoenix/i.test(t+" "+tm)||+c.autocallPct>0)return "autocall";
+  if(/callable/i.test(t))return "callable";
+  return null}
 const ACALL={"3":"entro 3 mesi","6":"entro 6 mesi","12":"entro 1 anno","no":"Senza autocall","far":"Escludi richiamo vicino","near":"Solo richiamo vicino"};
 const LABEL={cmin:v=>`Cedola ≥ ${fmt(v,v%1?1:0)}%`,acall:v=>v==="no"||v==="far"||v==="near"?ACALL[v]:"Richiamo "+ACALL[v],matmin:v=>`Scadenza ≥ ${yrs(v)}`,er:v=>`Rend. atteso ≥ ${fmt(v,1)}%`,cpn:()=>"Solo con cedola",probx:()=>"Solo con probabilità calcolata",y:v=>`Rend. annuo ≥ ${fmt(v,1)}%`,ym:v=>`Rend. annuo ≤ ${fmt(v,0)}%`,b:v=>`Dist. barriera ≥ ${fmt(v,0)}%`,t:v=>`Dist. trigger ≥ ${fmt(v,0)}%`,prob:v=>`Prob. tenuta ≥ ${fmt(v,0)}%`,mat:v=>`Scadenza ≤ ${yrs(v)}`,price:v=>`Prezzo ≤ ${fmt(v,0)}%`,sp:v=>`Spread ≤ ${fmt(v,2)}%`,
   n:v=>v==="single"?"Singolo sottostante":"Worst-of",freq:v=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[v]||v),call:v=>v==="autocall"?"Autocall":"Softcallable",cat:v=>v,
@@ -1126,7 +1137,7 @@ function enrich(c){
   r.tier=TIER[c.issuer]||null;
   r.priceAt=c.priceAt||(ask&&bid?c.updatedAt:null);
   r.stale=!!(ask&&bid&&r.priceAt&&bizDaysSince(r.priceAt)>2);
-  r.callKind=/autocall/i.test(c.callable||"")?"autocall":/callable|soft/i.test(c.callable||"")?"callable":null;
+  r.callKind=callKindOf(c);
   r.call=callRisk(r,c);
   // rendimento "realistico": se il richiamo è probabile conta quanto si incassa fino al richiamo, non fino a scadenza
   r.yEff=r.call&&r.ytm!=null&&r.call.ann!=null?r.call.p*Math.min(r.call.ann,r.ytm)+(1-r.call.p)*r.ytm:r.ytm;
