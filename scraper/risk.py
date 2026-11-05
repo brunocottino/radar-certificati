@@ -30,6 +30,8 @@ from zoneinfo import ZoneInfo
 
 import numpy as np
 
+from aliases import FIX_RAW, VOL_PROXY
+
 import os
 ROOT = Path(os.environ.get("RADAR_ROOT") or Path(__file__).resolve().parent.parent)
 DATA = ROOT / "docs" / "data" / "certs.json"
@@ -269,11 +271,34 @@ ALIASES_RAW = {
     "DJ Stoxx Auto Index": "^SXAP", "DOW JONES STOXX HEALTHCARE INDEX": "^SXDP", "SX6P": "^SX6P",
 }
 ALIASES = {norm(k): v for k, v in ALIASES_RAW.items()}
+FIX = {norm(k): v for k, v in FIX_RAW.items()}
+
+
+# indici settoriali STOXX: codice del settore; suffisso E = EURO STOXX (area euro), P = STOXX Europe 600
+STOXX_SECTORS = [(r"bank|\bban\b", "SX7"), (r"health", "SXD"), (r"utilit", "SX6"), (r"techn", "SX8"), (r"oil|energy", "SXE"),
+                 (r"insur", "SXI"), (r"auto", "SXA"), (r"basic res", "SXP"), (r"industrial", "SXN"), (r"construct", "SXO"),
+                 (r"telecom", "SXK"), (r"food", "SX3"), (r"chemic", "SX4"), (r"media", "SXM"), (r"retail", "SXR"),
+                 (r"travel", "SXT"), (r"personal", "SXQ"), (r"financial serv", "SXF")]
+
+
+def stoxx_sector(name):
+    """'STOXX® Europe 600 Basic Resources (Price) Index (EUR)' -> ^SXPP; 'EURO STOXX Technology' -> ^SX8E.
+    Solo indici di prezzo standard: niente decrement, ESG, net/gross return, iSTOXX."""
+    n = norm(name)
+    if "stoxx" not in n or re.search(r"decrement|istoxx|esg|select|dividend|\bnet\b|\bnr\b|gross|return|\b50\b|global", n):
+        return None
+    sec = next((code for rx, code in STOXX_SECTORS if re.search(rx, n)), None)
+    if not sec:
+        return None
+    area = "E" if re.search(r"euro ?stoxx|e ?stoxx|\beurostoxx", n) else "P" if re.search(r"600|europe|\bdj stoxx|stoxxeu", n) else None
+    return f"^{sec}{area}" if area else None
 
 
 def ticker_of(m, name):
+    """Ticker del sottostante: correzione a mano nella mappa, poi tabella aliases.py, indici settoriali STOXX,
+    poi ricerca automatica."""
     e = m.get(core(name) or norm(name)) or {}
-    t = e.get("manual") if e.get("manual") is not None else e.get("ticker")
+    t = e.get("manual") if e.get("manual") is not None else (FIX.get(norm(name)) or stoxx_sector(name) or e.get("ticker"))
     if not t:
         t = ALIASES.get(norm(name))
     return t if t and t != "-" else None
@@ -308,6 +333,28 @@ def stooq_symbol(t):
     return t.lower() + ".us" if "." not in t else None
 
 
+STOXX_RE = re.compile(r"^\^(S[XD][A-Z0-9]{2,4})$")  # ^SX7E, ^SXDP, ^SD3E… (non ^STOXX50E/^STOXX, che Yahoo ha)
+
+
+def stoxx_closes(ticker, cached):
+    """Indici STOXX settoriali: Yahoo non ha lo storico, il sito STOXX dà gli ultimi 3 mesi.
+    Si uniscono alla cache (data/prices, conservata tra le run) così lo storico cresce fino a un anno."""
+    sym = STOXX_RE.match(ticker).group(1).lower()
+    old = {d: v for d, v in (cached or {}).get("closes", [])}
+    try:
+        txt = http_text(f"https://www.stoxx.com/document/Indices/Current/HistoricalData/h_3m{sym}.txt")
+        for line in txt.strip().splitlines()[1:]:
+            p = line.split(";")
+            if len(p) >= 3 and re.match(r"\d{2}\.\d{2}\.\d{4}$", p[0]) and p[2].strip():
+                d = f"{p[0][6:10]}-{p[0][3:5]}-{p[0][0:2]}"
+                old[d] = float(p[2])
+    except Exception as ex:
+        log("STOXX fallito", ticker, repr(ex)[:100])
+    time.sleep(PAUSE)
+    since = (TODAY - timedelta(days=370)).isoformat()
+    return sorted((d, v) for d, v in old.items() if d >= since)
+
+
 def fetch_closes(ticker, offline):
     """[(data, chiusura)] dell'ultimo anno; cache giornaliera in data/prices/ (non pubblicata)."""
     f = PRICES / (re.sub(r"[^A-Za-z0-9._^-]", "_", ticker) + ".json")
@@ -316,6 +363,11 @@ def fetch_closes(ticker, offline):
         return [tuple(x) for x in cached["closes"]]
     if offline:
         return []
+    if STOXX_RE.match(ticker):
+        closes = stoxx_closes(ticker, cached)
+        if closes:
+            dump(f, {"fetchedAt": TODAY.isoformat(), "closes": closes}, compact=True)
+        return closes
     closes = []
     try:
         d = http_json(f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(ticker)}?range=1y&interval=1d")
@@ -351,6 +403,30 @@ def vols(closes):
     return v1, v3
 
 
+def ticker_stats(t, offline):
+    """(chiusure per le correlazioni, voce di stato) di un ticker, o (None, None) senza dati.
+    Indici senza storico su Yahoo (VOL_PROXY): volatilità dall'ETF che li replica; l'ultimo valore
+    dell'indice resta quello vero se Yahoo lo dà (serve alla distanza), altrimenti manca."""
+    cl = fetch_closes(t, offline)
+    src = cl
+    proxy = None
+    if len(cl) < 40 and t in VOL_PROXY:
+        src = fetch_closes(VOL_PROXY[t], offline)
+        proxy = VOL_PROXY[t]
+    if not src:
+        return None, None
+    v1, v3 = vols(src)
+    if v1 is None and v3 is None:
+        return None, None
+    e = {"vol1y": round(v1, 4) if v1 else None, "vol3m": round(v3, 4) if v3 else None,
+         "volUsed": round(max(x for x in (v1, v3) if x is not None), 4),
+         "observations": len(src), "lastClose": cl[-1][1] if cl else None, "lastDate": cl[-1][0] if cl else None,
+         "updatedAt": NOW}
+    if proxy:
+        e["volProxy"] = proxy
+    return src, e
+
+
 def correlation(ca, cb):
     """Correlazione dei log-rendimenti a date allineate (solo date comuni)."""
     a, b = dict(ca), dict(cb)
@@ -373,16 +449,10 @@ def update_state(certs, m, offline, force):
     log(f"scarico prezzi per {len(tickers)} ticker")
     closes, und = {}, {}
     for t in tickers:
-        cl = fetch_closes(t, offline)
-        if not cl:
+        cl, e = ticker_stats(t, offline)
+        if e is None:
             continue
-        closes[t] = cl
-        v1, v3 = vols(cl)
-        if v1 is None and v3 is None:
-            continue
-        und[t] = {"vol1y": round(v1, 4) if v1 else None, "vol3m": round(v3, 4) if v3 else None,
-                  "volUsed": round(max(x for x in (v1, v3) if x is not None), 4),
-                  "observations": len(cl), "lastClose": cl[-1][1], "lastDate": cl[-1][0], "updatedAt": NOW}
+        closes[t], und[t] = cl, e
     # correlazioni solo per le coppie che compaiono insieme in un certificato
     pairs = set()
     for c in certs:
@@ -412,23 +482,17 @@ def add_new_tickers(st, certs, m, offline):
     closes = {}
     for t in new:
         tried.add(t)
-        cl = fetch_closes(t, offline)
-        if not cl:
+        cl, e = ticker_stats(t, offline)
+        if e is None:
             continue
-        v1, v3 = vols(cl)
-        if v1 is None and v3 is None:
-            continue
-        closes[t] = cl
-        und[t] = {"vol1y": round(v1, 4) if v1 else None, "vol3m": round(v3, 4) if v3 else None,
-                  "volUsed": round(max(x for x in (v1, v3) if x is not None), 4),
-                  "observations": len(cl), "lastClose": cl[-1][1], "lastDate": cl[-1][0], "updatedAt": NOW}
+        closes[t], und[t] = cl, e
     for c in certs:
         ts = sorted({t for n, _, _ in cert_underlyings(c) if (t := ticker_of(m, n)) and t in und})
         for i, a in enumerate(ts):
             for b in ts[i + 1:]:
                 if (a in closes or b in closes) and f"{a}|{b}" not in corr:
-                    ca = closes.get(a) or fetch_closes(a, True)
-                    cb = closes.get(b) or fetch_closes(b, True)
+                    ca = closes.get(a) or ticker_stats(a, True)[0]
+                    cb = closes.get(b) or ticker_stats(b, True)[0]
                     r = correlation(ca, cb) if ca and cb else None
                     if r is not None:
                         corr[f"{a}|{b}"] = r
@@ -440,11 +504,22 @@ def add_new_tickers(st, certs, m, offline):
 
 # ---------------------------------------------------------------- distanza dai prezzi dei sottostanti
 
+def as_num(v):
+    """Numero da un campo che una sorgente può aver dato come testo ("60")."""
+    try:
+        return float(v) if v is not None and v != "" else None
+    except (TypeError, ValueError):
+        return None
+
+
 def refresh_distance(c, m, st):
     """Per i certificati con distanza non aggiornata dall'emittente (distAt valorizzato): se sono noti
     strike di ogni sottostante e barriera %, ricalcola le distanze dalle ultime chiusure.
     Altrimenti resta l'ultima distanza nota con la sua data (distAt)."""
-    det, bp = c.get("underlyingsDetail") or [], c.get("barrierPct")
+    det, bp = c.get("underlyingsDetail") or [], as_num(c.get("barrierPct"))
+    for u in det:
+        if u.get("strike") is not None and not isinstance(u["strike"], (int, float)):
+            u["strike"] = as_num(u["strike"])
     # distanza fresca dall'emittente ma solo per alcuni sottostanti (spesso BNP): le mancanti si calcolano
     # dalle chiusure; se una di queste è più vicina alla barriera, il peggiore vero è quello
     if not c.get("distAt") and any(u.get("dist") is not None and not u.get("distCalc") for u in det):
@@ -475,6 +550,7 @@ def refresh_distance(c, m, st):
     w = min(rows, key=lambda r: r[0]["dist"])
     c.update({"distBarrier": w[0]["dist"], "worstName": w[0].get("name"),
               "distAt": min(v["lastDate"] for _, v in rows), "distSource": "chiusure sottostanti"})
+    c.pop("distNote", None)  # nota di un calcolo precedente non riuscito
     return True
 
 
@@ -536,7 +612,7 @@ def write_returns(st, weeks=52):
     keys = [d.isoformat() for d in ends]
     out = {}
     for t in sorted(st.get("underlyings", {})):
-        cl = fetch_closes(t, True)
+        cl = ticker_stats(t, True)[0] or []
         if len(cl) < 40:
             continue
         last, i, row = {}, 0, []
