@@ -1702,6 +1702,19 @@
   "type": "EQUITY",
   "yahooName": "Bank of America Corporation"
  },
+ "bank of new york mellon": {
+  "checkedAt": "2026-11-05",
+  "exchange": "NYQ",
+  "industry": "Banks—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Bank of New York Mellon Corp.",
+  "score": 1.0,
+  "sector": "Financial Services",
+  "ticker": "BNY",
+  "type": "EQUITY",
+  "yahooName": "The Bank of New York Mellon Corporation"
+ },
  "barclays": {
   "checkedAt": "2026-10-09",
   "exchange": "LSE",

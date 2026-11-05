@@ -1236,6 +1236,7 @@
   "BABA|ZAL.DE": 0.0663,
   "BAC|BAMI.MI": 0.3542,
   "BAC|BNP.PA": 0.3459,
+  "BAC|BNY": 0.6054,
   "BAC|BRK-B": 0.1575,
   "BAC|C": 0.7212,
   "BAC|CBK.DE": 0.3835,
@@ -1902,6 +1903,8 @@
   "BNTX|ENPH": 0.0794,
   "BNTX|MRNA": 0.6015,
   "BNTX|TCOM": 0.1192,
+  "BNY|C": 0.5762,
+  "BNY|GS": 0.6114,
   "BN|CCJ": 0.3351,
   "BN|GEV": 0.1645,
   "BOSS.DE|BRBY.L": 0.2453,
@@ -5582,6 +5585,33 @@
   "^SXNE|^SXOP": 0.7731
  },
  "date": "2026-11-05",
+ "tried": [
+  "BNY",
+  "CED5.PA",
+  "CH0028765730.SG",
+  "DE000A0V7550.SG",
+  "DE000A0V7576.SG",
+  "DE000SL0L060.SG",
+  "DE000SL0L1D2.SG",
+  "DE000SL0MY18.SG",
+  "DE000SL0MY26.SG",
+  "DE000SL0NP34.SG",
+  "DE000SL0PQT8.SG",
+  "DE000SL0QF17.SG",
+  "DE000SLA3UK4.SG",
+  "ESE4P.AS",
+  "FPIR.MU",
+  "IT0005648149.SG",
+  "ITMC.MI",
+  "JYJ5.MU",
+  "MED5.PA",
+  "RK14.F",
+  "UET5.DU",
+  "WBD",
+  "XMHW.MU",
+  "^SPMARC5P",
+  "^XNDXJPY"
+ ],
  "underlyings": {
   "000300.SS": {
    "lastClose": 4113.4111328125,
@@ -6871,6 +6901,15 @@
    "vol1y": 0.4688,
    "vol3m": 0.5557,
    "volUsed": 0.5557
+  },
+  "BNY": {
+   "lastClose": 147.49000549316406,
+   "lastDate": "2026-11-05",
+   "observations": 251,
+   "updatedAt": "2026-11-05T21:26:03+00:00",
+   "vol1y": 0.2218,
+   "vol3m": 0.2023,
+   "volUsed": 0.2218
   },
   "BOSS.DE": {
    "lastClose": 38.689998626708984,
