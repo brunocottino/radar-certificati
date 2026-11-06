@@ -1762,7 +1762,7 @@
   "yahooName": "BASF SE"
  },
  "basket 1 x banca monte dei paschi di siena s p a": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1773,7 +1773,7 @@
   "yahooName": null
  },
  "basket 1 x continental 0 5 x aumovio": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1844,6 +1844,17 @@
   "isin": null,
   "manual": null,
   "name": "Bayer, Eli Lilly, Galderma, Sanofi",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "bayer eli lilly novo nordisk sanofi": {
+  "checkedAt": "2026-11-06",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Bayer, Eli Lilly, Novo Nordisk, Sanofi",
   "score": null,
   "ticker": null,
   "type": null,
@@ -2195,7 +2206,7 @@
   "yahooName": null
  },
  "bloomberg gold subindex": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2850,7 +2861,7 @@
   "yahooName": "CAC 40 ESG Decrement 5%"
  },
  "cac40 index": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": "FR0003500008",
   "manual": null,
@@ -5008,7 +5019,7 @@
   "yahooName": null
  },
  "euro istoxx esg leaders 50 nr decrement 5 price eur": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5465,7 +5476,7 @@
   "yahooName": null
  },
  "eurostoxx sel div30": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5663,7 +5674,7 @@
   "yahooName": "Ferrari N.V."
  },
  "ferrari it": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5974,7 +5985,7 @@
   "ticker": null
  },
  "ftse 100 index": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": "GB0001383545",
   "manual": null,
@@ -6683,6 +6694,19 @@
   "ticker": "HSTECH.HK",
   "type": "INDEX",
   "yahooName": "Hang Seng TECH Index"
+ },
+ "hua hong semiconductor": {
+  "checkedAt": "2026-11-06",
+  "exchange": "STU",
+  "industry": null,
+  "isin": "HK0000218211",
+  "manual": null,
+  "name": "Hua Hong Semiconductor Ltd",
+  "score": 1.0,
+  "sector": null,
+  "ticker": "HK0000218211.SG",
+  "type": "EQUITY",
+  "yahooName": "Hua Hong Semiconductor Ltd."
  },
  "hubspot": {
   "checkedAt": "2026-10-15",
@@ -15234,7 +15258,7 @@
   "yahooName": null
  },
  "msci europe smart security defense infrastructure top 50 select 4 5 decrement index": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15278,7 +15302,7 @@
   "yahooName": null
  },
  "msci world ai effect select 4 5 decrement index": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15300,7 +15324,7 @@
   "yahooName": null
  },
  "msci world gold uranium rare earth select 4 5 decrement idx eur net total return": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -16145,7 +16169,7 @@
   "yahooName": "On Holding AG"
  },
  "onemarkets fidelity world equity income fund c": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18632,7 +18656,7 @@
   "yahooName": null
  },
  "stoxx europe 600 automobiles parts price eur": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": "EU0009658681",
   "manual": null,
@@ -18808,7 +18832,7 @@
   "yahooName": null
  },
  "stoxx europe 600 technology price eur": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": "EU0009658921",
   "manual": null,
@@ -18830,7 +18854,7 @@
   "yahooName": null
  },
  "stoxx europe 600 telecommunications price eur": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": "EU0009658947",
   "manual": null,
@@ -18964,7 +18988,7 @@
   "yahooName": null
  },
  "stoxx global esg social leaders diversification select 30 index": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19855,6 +19879,19 @@
   "type": "EQUITY",
   "yahooName": "UBS Group AG"
  },
+ "ubtech robotics": {
+  "checkedAt": "2026-11-06",
+  "exchange": "HKG",
+  "industry": "Specialty Industrial Machinery",
+  "isin": "CNE100006CQ4",
+  "manual": null,
+  "name": "UBTech Robotics Corp Ltd",
+  "score": 1.0,
+  "sector": "Industrials",
+  "ticker": "9880.HK",
+  "type": "EQUITY",
+  "yahooName": "Ubtech Robotics Corp Ltd"
+ },
  "uc ai related agentic index": {
   "checkedAt": "2026-10-09",
   "exchange": null,
@@ -19944,7 +19981,7 @@
   "yahooName": null
  },
  "uc european sector rotation strategy index": {
-  "checkedAt": "2026-10-29",
+  "checkedAt": "2026-11-06",
   "exchange": null,
   "isin": null,
   "manual": null,
