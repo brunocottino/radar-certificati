@@ -101,6 +101,8 @@
   "6758.T|8604.T": 0.3435,
   "6758.T|DIS": 0.0338,
   "6758.T|PRX.AS": 0.2491,
+  "6857.T|NVDA": 0.2706,
+  "6857.T|QCOM": 0.1063,
   "7013.T|NIO": -0.0776,
   "7013.T|VTY.L": 0.1081,
   "7201.T|8306.T": 0.3684,
@@ -5592,6 +5594,34 @@
   "^SXNE|^SXOP": 0.7627
  },
  "date": "2026-11-06",
+ "tried": [
+  "6857.T",
+  "CED5.PA",
+  "CH0028765730.SG",
+  "DE000A0V7550.SG",
+  "DE000A0V7576.SG",
+  "DE000SL0L060.SG",
+  "DE000SL0L1D2.SG",
+  "DE000SL0MY18.SG",
+  "DE000SL0MY26.SG",
+  "DE000SL0NP34.SG",
+  "DE000SL0PQT8.SG",
+  "DE000SL0QF17.SG",
+  "DE000SLA3UK4.SG",
+  "ESE4P.AS",
+  "FPIR.MU",
+  "HK0000218211.SG",
+  "IT0005648149.SG",
+  "ITMC.MI",
+  "JYJ5.MU",
+  "MED5.PA",
+  "RK14.F",
+  "UET5.DU",
+  "WBD",
+  "XMHW.MU",
+  "^SPMARC5P",
+  "^XNDXJPY"
+ ],
  "underlyings": {
   "000300.SS": {
    "lastClose": 4054.27685546875,
@@ -5792,6 +5822,15 @@
    "vol1y": 0.341,
    "vol3m": 0.301,
    "volUsed": 0.341
+  },
+  "6857.T": {
+   "lastClose": 29485.0,
+   "lastDate": "2026-11-05",
+   "observations": 242,
+   "updatedAt": "2026-11-06T15:52:28+00:00",
+   "vol1y": 0.7463,
+   "vol3m": 0.7322,
+   "volUsed": 0.7463
   },
   "7013.T": {
    "lastClose": 2292.0,

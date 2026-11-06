@@ -379,6 +379,19 @@
   "type": "EQUITY",
   "yahooName": "Advanced Micro Devices, Inc."
  },
+ "advantest": {
+  "checkedAt": "2026-11-06",
+  "exchange": "JPX",
+  "industry": "Semiconductor Equipment & Materials",
+  "isin": "JP3122400009",
+  "manual": null,
+  "name": "ADVANTEST",
+  "score": 1.0,
+  "sector": "Technology",
+  "ticker": "6857.T",
+  "type": "EQUITY",
+  "yahooName": "Advantest Corporation"
+ },
  "ady": {
   "checkedAt": "2026-10-19",
   "exchange": "VAN",
@@ -4991,6 +5004,17 @@
   "isin": null,
   "manual": null,
   "name": "EURO ISTOXX 50 SHARING ECONOMY TILTED NR DECREMENT 5%",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "euro istoxx 50 terre rare uranio e risorse strategiche tilted nr decrement 5": {
+  "checkedAt": "2026-11-06",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "EURO ISTOXX 50 TERRE RARE URANIO E RISORSE STRATEGICHE TILTED NR DECREMENT 5%",
   "score": null,
   "ticker": null,
   "type": null,
@@ -17305,6 +17329,17 @@
   "name": "S&P 500 Index",
   "ticker": null
  },
+ "s p asia 50 5 decrement index": {
+  "checkedAt": "2026-11-06",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "S&P Asia 50 5% Decrement Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "s p asx 200": {
   "checkedAt": "2026-10-15",
   "exchange": "ASX",
@@ -18078,6 +18113,17 @@
   "isin": null,
   "manual": null,
   "name": "Solactive BTP 10 Index",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "solactive btp 10y annual comp 11am yield": {
+  "checkedAt": "2026-11-06",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "SOLACTIVE BTP 10Y ANNUAL COMP. 11AM YIELD",
   "score": null,
   "ticker": null,
   "type": null,
