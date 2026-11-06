@@ -200,6 +200,13 @@ export default {
   async scheduled(event, env, ctx) { ctx.waitUntil(clockTick(env, new Date(event.scheduledTime))); },
   async fetch(request, env, ctx) {
     const u = new URL(request.url);
+    if (u.pathname === "/api/orologio") {  // diagnosi dell'orologio: la chiave c'è e GitHub la accetta? (non avvia nulla)
+      let gh = null;
+      if (env.GH_TOKEN) gh = (await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/scrape.yml`, { headers: {
+        authorization: `Bearer ${env.GH_TOKEN}`, accept: "application/vnd.github+json", "user-agent": "radar-cron" } })).status;
+      return new Response(JSON.stringify({ chiave: !!env.GH_TOKEN, github: gh }), { headers: {
+        "content-type": "application/json", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+    }
     const l = u.pathname.match(/^\/api\/live\/([A-Z0-9]{12})$/);
     if (l) return ISIN_RE.test(l[1]) && LIVE_URL[u.searchParams.get("m")] ? live(l[1], u.searchParams.get("m"), ctx)
       : new Response('{"ok":false}', { status: 400, headers: { "content-type": "application/json" } });
