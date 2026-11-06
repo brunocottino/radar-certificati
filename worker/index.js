@@ -167,7 +167,37 @@ async function live(isin, mic, ctx) {
   return res;
 }
 
+// Orologio del robot (Cloudflare Cron Triggers, in wrangler.jsonc): GitHub ritarda di ore o salta le run
+// programmate (6/11: nessuna partita). Nelle finestre 09:35-11:59 e 16:15-18:59 di Roma, se la fascia di oggi
+// non è ancora pubblicata, avvia il workflow (input auto: salta da solo se la borsa è chiusa o la fascia è fatta).
+// Segreto richiesto nel Worker: GH_TOKEN = token GitHub fine-grained, solo questo repository, Actions: write.
+const REPO = "brunocottino/radar-certificati";
+function romeNow(d) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Rome", year: "numeric",
+    month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short", hourCycle: "h23",
+  }).formatToParts(d).map(x => [x.type, x.value]));
+  return { hm: +(p.hour + p.minute), wd: p.weekday, day: `${p.year}-${p.month}-${p.day}` };
+}
+async function clockTick(env, when) {
+  if (!env.GH_TOKEN) return console.log("Orologio: manca il segreto GH_TOKEN");
+  const { hm, wd, day } = romeNow(when);
+  if (wd === "Sat" || wd === "Sun") return;
+  const slot = hm >= 935 && hm < 1200 ? "09:35" : hm >= 1615 && hm < 1900 ? "16:15" : null;
+  if (!slot) return;  // occorrenza dell'altro fuso (ora legale/solare)
+  const h = { authorization: `Bearer ${env.GH_TOKEN}`, accept: "application/vnd.github+json",
+    "x-github-api-version": "2022-11-28", "user-agent": "radar-cron" };
+  const api = `https://api.github.com/repos/${REPO}`;
+  const c = await fetch(`${api}/commits?sha=main&per_page=15`, { headers: h }).then(r => r.ok ? r.json() : []);
+  if (c.some(x => x.commit?.message?.split("\n")[0] === `Dati certificati ${day} ${slot}`)) return;
+  const q = await fetch(`${api}/actions/workflows/scrape.yml/runs?per_page=5`, { headers: h }).then(r => r.ok ? r.json() : {});
+  if ((q.workflow_runs || []).some(r => r.status !== "completed")) return console.log("Orologio: robot già in corsa");
+  const r = await fetch(`${api}/actions/workflows/scrape.yml/dispatches`, { method: "POST", headers: h,
+    body: JSON.stringify({ ref: "main", inputs: { auto: "true" } }) });
+  console.log(`Orologio: Roma ${day} ${hm}, fascia ${slot} → avvio robot HTTP ${r.status}`);
+}
+
 export default {
+  async scheduled(event, env, ctx) { ctx.waitUntil(clockTick(env, new Date(event.scheduledTime))); },
   async fetch(request, env, ctx) {
     const u = new URL(request.url);
     const l = u.pathname.match(/^\/api\/live\/([A-Z0-9]{12})$/);

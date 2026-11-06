@@ -15,8 +15,8 @@ Niente token/routine di Claude per pianificare il robot. Non usare certificatied
   `scraper/indexnow.py` segnala le pagine a Bing & co. (chiave in `docs/<chiave>.txt`).
 - `history/` storico prezzi per ISIN + `_first_seen.json` (non pubblicato).
 - `.github/workflows/scrape.yml` robot (09:35 e 16:15 Roma, + recuperi; GitHub ritarda anche di 6 ore);
-  `diagnosi.yml` controlla dominio/sito. `cron/worker.js` orologio Cloudflare pronto ma NON attivo
-  (serve un token GitHub dell'utente).
+  `diagnosi.yml` controlla dominio/sito. orologio Cloudflare in `worker/index.js` (scheduled, crons in `wrangler.jsonc`):
+  funziona solo con il segreto GH_TOKEN nel Worker `radar-certificati` (token GitHub dell'utente, Actions: write).
 
 ## Lavorare risparmiando contesto
 - Non rileggere file interi: usa grep e sed -n su righe mirate; `index.html` è ~2000 righe.
