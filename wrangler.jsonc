@@ -8,6 +8,8 @@
   "main": "worker/index.js",
   "assets": { "directory": "./docs", "binding": "ASSETS" },
   "workers_dev": true,
+  // non cancellare a ogni push le variabili messe a mano nel pannello Cloudflare (es. GH_TOKEN come testo)
+  "keep_vars": true,
   // orologio del robot (UTC; il codice tiene solo le occorrenze giuste per l'ora di Roma): vedi worker/index.js
   "triggers": { "crons": ["35,50 7-10 * * 1-5", "15,45 14-17 * * 1-5"] },
   "routes": [
