@@ -587,6 +587,7 @@ td{font-weight:500}
 .myrows{display:grid;gap:8px}
 .myrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .myrow .who{min-width:0;cursor:pointer}
+.swap{grid-column:1/-1;display:flex;gap:8px 12px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:.82rem;line-height:1.35;padding:8px 10px;border-radius:8px;background:var(--good-bg)}.swap button{font-size:.8rem;padding:4px 10px}
 .myu{font-weight:600;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .myu b{color:var(--brass)}
 .myrow .note{font-size:.74rem}
@@ -1635,6 +1636,10 @@ function printPf(){const th=ls.get("rc-theme","auto");applyTheme("light");const 
   setTimeout(()=>{window.print();setTimeout(back,1500)},$("#pf-ana")?.textContent.includes("Calcolo")?900:50)}
 
 const pfTag=L=>L.map(x=>x.c.isin+":"+Math.round(x.inv)).join("|");
+/* nel tuo portafoglio: se sullo stesso peggiore c'è un certificato che rende di più con più distanza, lo propone */
+function swapHtml(c){const A=altsOf(c),b=A?.better.find(x=>!inMyp(x.isin));if(!b)return "";
+  const dy=b.ytm-c.ytm,dd=b.dist-c.dist;
+  return `<div class="swap noprint"><span>↑ <b>C'è di meglio</b> su ${esc(A.name)}: ${esc(b.issuer||"")} <span class="num">${esc(b.isin)}</span>${dy>=.5?`, <b class="pos">+${fmt(dy,1)} pt</b> di rendimento`:""}${dd>=.5?`, <b class="pos">+${fmt(dd,0)} pt</b> di distanza`:""}</span><span class="row"><button data-open="${esc(b.isin)}">Vedi</button><button data-swap="${esc(c.isin)}" data-to="${esc(b.isin)}">Sostituisci</button></span></div>`}
 function myEditor(L){
   return `<div class="myp">
 <div class="search myp-add"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -1642,7 +1647,7 @@ function myEditor(L){
 ${L.length?`<div class="myrows">${L.map(x=>`<div class="myrow"><div class="who" data-open="${esc(x.c.isin)}"><div class="c-iss"><b>${esc(x.c.issuer||"")}</b> · <span class="num">${esc(x.c.isin)}</span></div><div class="myu">${undsHtml(x.c)}</div>
 <div class="note">${pct(x.c.ytm)} annuo · cedola ${pct(x.c.couponPa,1)} · ${x.c.dist==null?"distanza n.d.":x.c.dist<0?"sotto barriera":pct(x.c.dist,0)+" dalla barriera"} · scade ${dshort(x.c.matDate)}</div></div>
 <label class="amt">€<input type="number" inputmode="numeric" min="0" step="500" value="${Math.round(x.inv)}" data-amt="${esc(x.c.isin)}" aria-label="Importo"></label>
-<button class="rm" data-myp-rm="${esc(x.c.isin)}" aria-label="Togli dal portafoglio">✕</button></div>`).join("")}</div>
+<button class="rm" data-myp-rm="${esc(x.c.isin)}" aria-label="Togli dal portafoglio">✕</button>${swapHtml(x.c)}</div>`).join("")}</div>
 <div class="row" style="justify-content:space-between"><span class="note">Totale <b class="num">${fmt(L.reduce((a,x)=>a+x.inv,0),0)} €</b> su ${L.length} certificati</span><span class="row"><button id="pf-eq">Importi uguali</button><button id="pf-addfav">+ Preferiti</button><button id="pf-clear">Svuota</button></span></div>`
 :`<div class="panel empty myempty"><b>Il tuo portafoglio è vuoto</b><br>Cerca qui sopra un certificato oppure apri una scheda e tocca <b>+ Portafoglio</b>.${Object.keys(FAV).length?`<br><button id="pf-addfav" style="margin-top:10px">Aggiungi i ${Object.keys(FAV).length} preferiti</button>`:""}</div>`}
 </div>`}
@@ -1762,6 +1767,7 @@ document.addEventListener("click",e=>{
   if(e.target.id==="pf-xls2"){$("#pf-xls")?.click();return}
   const pm=e.target.closest("[data-pfmode]");if(pm){PF.mode=pm.dataset.pfmode;ls.set("rc-pf",PF);renderPf();return}
   const pa=e.target.closest("[data-pfadd]");if(pa){MYP.push({isin:pa.dataset.pfadd,amt:PF.amt||5000});saveMyp();renderPf();setTimeout(()=>$("#pfq")?.focus(),0);return}
+  const sw=e.target.closest("[data-swap]");if(sw){const it=MYP.find(x=>x.isin===sw.dataset.swap);if(it&&!inMyp(sw.dataset.to)){const old=it.isin;it.isin=sw.dataset.to;saveMyp();renderPf();toast(`Sostituito ${old} con ${it.isin}`)}return}
   const pr=e.target.closest("[data-myp-rm]");if(pr){MYP=MYP.filter(x=>x.isin!==pr.dataset.mypRm);saveMyp();renderPf();return}
   const mb=e.target.closest("[data-myp]");if(mb){PF.mode="mine";ls.set("rc-pf",PF);toggleMyp(mb.dataset.myp);return}
   if(e.target.id==="pf-adopt"){(window._PF||[]).forEach(x=>{if(!inMyp(x.c.isin))MYP.push({isin:x.c.isin,amt:Math.round(x.inv)})});saveMyp();PF.mode="mine";ls.set("rc-pf",PF);renderPf();toast("Copiato nel tuo portafoglio");return}
