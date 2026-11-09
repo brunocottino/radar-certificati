@@ -17,6 +17,8 @@ Niente token/routine di Claude per pianificare il robot. Non usare certificatied
 - `.github/workflows/scrape.yml` robot (09:35 e 16:15 Roma, + recuperi; GitHub ritarda anche di 6 ore);
   `diagnosi.yml` controlla dominio/sito. orologio Cloudflare in `worker/index.js` (scheduled, crons in `wrangler.jsonc`):
   funziona solo con il segreto GH_TOKEN nel Worker `radar-certificati` (token GitHub dell'utente, Actions: write).
+  Il segreto oggi manca (/api/orologio → chiave:false): il ripiego è `sentinella.yml`, workflow sempre acceso che
+  si riavvia da solo ogni ~5h50 e avvia il robot nelle finestre se la fascia non è pubblicata (nessun token).
 
 ## Lavorare risparmiando contesto
 - Non rileggere file interi: usa grep e sed -n su righe mirate; `index.html` è ~2000 righe.

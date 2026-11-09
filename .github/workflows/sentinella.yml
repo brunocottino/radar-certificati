@@ -1,0 +1,63 @@
+name: Sentinella robot
+
+# GitHub salta spesso le run programmate (9/11: nessuna in tutta la mattina), e l'orologio Cloudflare
+# funziona solo con il segreto GH_TOKEN nel Worker. La sentinella non ha bisogno di nessun token:
+# resta accesa fino a ~5h50 controllando ogni 5 minuti; nelle finestre 09:35-11:59 e 16:15-18:59 di Roma,
+# nei giorni di borsa aperta, se la fascia non è pubblicata e il robot non è in corsa, lo avvia (input auto).
+# Prima di spegnersi si riavvia da sola (workflow_dispatch con GITHUB_TOKEN è consentito), così la catena
+# non si ferma; i cron qui sotto la riaccendono se mai si interrompe. Repository pubblico: minuti gratuiti.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 */2 * * *"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: sentinella
+  cancel-in-progress: false
+
+jobs:
+  veglia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 30
+      - name: Controlla ogni 5 minuti e avvia il robot se serve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          START=$(date +%s); LAST=0
+          while [ $(( $(date +%s) - START )) -lt $((340*60)) ]; do
+            HM=$(TZ=Europe/Rome date +%H%M); WD=$(TZ=Europe/Rome date +%u); DAY=$(TZ=Europe/Rome date +%F)
+            SLOT=""
+            if [ "$WD" -le 5 ]; then
+              if [ $((10#$HM)) -ge 935 ] && [ $((10#$HM)) -lt 1200 ]; then SLOT="09:35"
+              elif [ $((10#$HM)) -ge 1615 ] && [ $((10#$HM)) -lt 1900 ]; then SLOT="16:15"; fi
+            fi
+            if [ -n "$SLOT" ] && [ $(( $(date +%s) - LAST )) -ge 1800 ]; then
+              git fetch -q origin main 2>/dev/null || true
+              if git log origin/main --since="30 hours ago" --format=%s | grep -qxF "Dati certificati $DAY $SLOT"; then
+                :
+              elif ! python3 scraper/borsa.py "$DAY" | grep -q ": aperta"; then
+                echo "$DAY $HM: borsa chiusa"
+              elif [ -n "$(gh api "repos/$REPO/actions/workflows/scrape.yml/runs?per_page=5" --jq '.workflow_runs[] | select(.status != "completed") | .id' 2>/dev/null)" ]; then
+                echo "$DAY $HM: robot già in corsa"
+              else
+                echo "$DAY $HM: fascia $SLOT non pubblicata → avvio robot"
+                gh workflow run scrape.yml --repo "$REPO" --ref main -f auto=true && LAST=$(date +%s)
+              fi
+            fi
+            sleep 300
+          done
+      - name: Riaccende la sentinella
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run sentinella.yml --repo "${{ github.repository }}" --ref main
