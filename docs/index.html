@@ -483,6 +483,19 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 .dnav{display:flex;gap:4px;align-items:center}.dnav button{min-width:34px;padding:4px 8px}.dnav button:disabled{opacity:.35}.dnav .note{font-size:.78rem;white-space:nowrap}
 .dsk{display:grid;gap:12px}.dsk .sk{height:64px}.dsk .sk.t{height:28px;width:60%}
 .toast.err{background:var(--stale);color:#fff}
+.stress input[type=range]{width:100%;accent-color:var(--accent-fill);height:30px;margin:0}
+.st-x{font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}
+.st-q{display:flex;gap:6px;flex-wrap:wrap}.st-q button{font-size:.78rem;padding:4px 10px;border-radius:999px}
+.st-out{display:grid;gap:10px}.st-res{border:1px solid var(--line);border-left:4px solid var(--good);border-radius:10px;padding:10px 12px;display:grid;gap:4px}.st-res.ca{border-left-color:var(--caution)}.st-res.ko{border-left-color:var(--bad)}
+.st-res .big{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums}.st-res p{margin:0;font-size:.88rem;line-height:1.4}
+.st-u{display:grid;gap:4px;font-size:.85rem}.st-u div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center}.st-u .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st-u .num{font-variant-numeric:tabular-nums;color:var(--muted)}
+.st-u .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--good-bg);color:var(--good)}.st-u .tag.ca{background:var(--caution-bg);color:var(--caution)}.st-u .tag.ko{background:var(--bad-bg);color:var(--bad)}
+.alts{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:10px}.alts p{margin:0;font-size:.9rem;line-height:1.4}
+.alt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;text-align:left;width:100%;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line);cursor:pointer;font:inherit;color:inherit}
+.alt:hover{border-color:var(--accent)}.alt .who{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.alt .who small{font-weight:400;color:var(--muted)}
+.alt .nums{grid-column:1;font-size:.85rem;color:var(--muted)}.alt .nums b{color:var(--ink)}.alt .ring{grid-row:1/3;grid-column:2}
+.alts.best{border-left:4px solid var(--good)}
+.dlinks{font-size:0!important;gap:8px}.dlinks a{font-size:.88rem;padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);text-decoration:none;font-weight:600}.dlinks a:hover{border-color:var(--accent);color:var(--accent)}.dlinks a::after{content:" ↗";color:var(--muted)}
 .sk{height:148px;border-radius:var(--r);background:linear-gradient(100deg,var(--surface) 40%,var(--row) 50%,var(--surface) 60%) 0 0/200% 100%;border:1px solid var(--line);animation:shimmer 1.3s linear infinite}
 @keyframes shimmer{to{background-position:-200% 0}}
 /* colophon */
@@ -540,7 +553,7 @@ td{font-weight:500}
   #pf .pftab td.l{max-width:420px}
   #pf .cal svg{max-height:240px}
 }
-@media print{.dnav,.dwarn button{display:none!important}
+@media print{.stress input,.st-q,.dnav,.dwarn button{display:none!important}
   @page{size:A4 landscape;margin:12mm}
   @page cert{size:A4 portrait;margin:12mm}
   body{background:#fff!important;overflow:visible!important}
@@ -2006,7 +2019,7 @@ function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=
   else o.push(["na","Cedola",`${pct(c.couponPa,2)} l'anno${c.freq?", "+freqTxt(c.freq).toLowerCase():""}: condizione di pagamento non verificabile.`]);
   if(c.call)o.push([c.call.lvl==="alto"&&c.call.poor?"ko":"ca","Rimborso anticipato",callTxt(c)]);
   else if(c.callDate)o.push(["ok","Rimborso anticipato",`Prossima data ${dshort(c.callDate)}: oggi il rimborso non è probabile.`]);
-  else if(c.callKind)o.push(["na","Rimborso anticipato",`${esc(c.callable)}: date non disponibili.`]);
+  else if(c.callKind)o.push(["na","Rimborso anticipato",`${c.callable?esc(c.callable):c.callKind==="autocall"?"Autocallable":"Richiamabile dall'emittente"}: date di rimborso non pubblicate dall'emittente.`]);
   if(!c.ask)o.push(["ko","Prezzo","Nessun prezzo in lettera: oggi non si può comprare."]);
   else{const sp=c.spread;o.push([sp==null?"na":sp<=1?"ok":sp<=2?"ca":"ko","Prezzo",`${c.pricePct?`Quota <b>${fmt(c.pricePct,1)}%</b>${c.pricePct<98?" (sotto la pari: guadagno extra se rimborsa 100)":c.pricePct>101?" (sopra la pari: a scadenza riavrai 100)":""}`:"Prezzo"} · spread ${pct(sp,2)}${sp>2?": comprare e rivendere costa caro":""}${c.stale?` · <span class="ca">dato del ${dtime(c.priceAt)}</span>`:""}.`])}
   o.push([c.tier==="A"?"ok":c.tier==="B"?"ok":c.tier==="C"?"ca":"na","Emittente",`${esc(c.issuer||"n.d.")}${c.tier?` · classe ${c.tier}`:""}: se l'emittente fallisce si può perdere il capitale anche con la barriera intatta.`]);
@@ -2031,6 +2044,35 @@ function simBody(c,amt){
 ${P!=null?`<div class="pbar" title="Probabilità stimata che la barriera tenga"><i style="width:${(P*100).toFixed(0)}%"></i></div>`:""}
 <div class="scn">${sc.map(([t,h,p,v,s])=>`<div class="scn-i ${t}"><div class="scn-h"><span>${h}</span><small>${p}</small></div><div class="scn-v ${v>=0?"pos":"neg"}">${seur(v)}</div><p>${s}</p></div>`).join("")}</div>`;
 }
+/* ---------- prova di stress: cosa succede a scadenza se i sottostanti scendono tutti di X% ---------- */
+function stressHtml(c,full){const L=levels(c,full);if(!L.bp||!L.rows.length||!c.pricePct||!c.ask||c.couponPa==null)return "";
+  const D={bp:L.bp,tp:L.tp,r:L.rows.map(r=>[r.name,+r.s.toFixed(2)]),pp:c.pricePct,cp:c.couponPa,T:c.years||0,ask:c.ask,nom:c.nominal,mat:c.matDate?dshort(c.matDate):""};
+  const lim=Math.max(0,(1-L.bp/L.rows[0].s)*100),x0=ls.get("rc-stx",20);
+  return `<div class="sim stress" data-stress="${esc(JSON.stringify(D))}"><div class="sim-top"><div><div class="cap">Prova di stress</div><div class="note" style="margin:0">Se da oggi i sottostanti scendono tutti del</div></div><b class="st-x">${x0?"−"+x0+"%":"0%"}</b></div>
+<input type="range" min="0" max="80" step="1" value="${x0}" data-stx aria-label="Discesa dei sottostanti in percentuale">
+<div class="st-q">${[10,20,30,40,50].map(v=>`<button data-stq="${v}">−${v}%</button>`).join("")}<button data-stq="${Math.min(80,Math.ceil(lim+1))}" title="Appena oltre la barriera">Rottura barriera</button></div>
+<div class="st-out">${stressOut(D,x0)}</div>
+<p class="note" style="margin:0">La barriera regge fino a <b>−${fmt(lim,0)}%</b> del peggiore. Ipotesi: tutti i sottostanti scendono insieme e a scadenza sono ancora lì; importi lordi sull'importo scelto sopra.</p></div>`}
+function stressOut(D,x){const k=1-x/100,rows=D.r.map(([n,s])=>({n,s,a:s*k})),w=rows[0].a,tr=D.tp??D.bp;
+  const cap=w>=D.bp?100:w,cps=w>=tr?D.cp*D.T:0,tot=cap+cps,ret=(tot-D.pp)/D.pp*100;
+  const amt=ls.get("rc-amt",10000),q=Math.floor(amt/D.ask),inv=q*D.ask,pl=q*D.nom*tot/100-inv;
+  const t=w<D.bp?"ko":w<tr?"ca":"ok";
+  const h=t==="ok"?"Capitale intatto e cedole pagate":t==="ca"?`Capitale intatto, ma cedole ferme (sotto il trigger ${fmt(tr,0)}%)`:`Barriera rotta: rimborso al ${fmt(cap,0)}% del nominale`;
+  const d=t==="ok"?`A scadenza${D.mat?" ("+D.mat+")":""} riavresti 100 più tutte le cedole (${fmt(cps,1)}% del nominale).`:t==="ca"?"A scadenza riavresti 100, senza altre cedole finché il peggiore resta sotto il trigger.":`Il rimborso segue il peggiore (${esc(rows[0].n)}): ${fmt(cap,0)} ogni 100 di nominale, senza altre cedole.`;
+  return `<div class="st-res ${t}"><b>${h}</b><div class="big ${ret>=0?"pos":"neg"}">${q>=1?seur(pl)+" · ":""}${ret>=0?"+":"−"}${fmt(Math.abs(ret),1)}%</div><p>${d}</p></div>
+<div class="st-u">${rows.slice(0,6).map(r=>{const u=r.a<D.bp?"ko":r.a<tr?"ca":"ok";return `<div><span class="n">${esc(r.n)}</span><span class="num">${fmt(r.s,0)}% → ${fmt(r.a,0)}%</span><span class="tag ${u}">${u==="ko"?"sotto barriera":u==="ca"?"sotto trigger":"regge"}</span></div>`}).join("")}</div>`}
+function stressPaint(box,x){x=clamp(Math.round(x),0,80);const D=JSON.parse(box.dataset.stress);box.querySelector("[data-stx]").value=x;box.querySelector(".st-x").textContent=x?"−"+x+"%":"0%";box.querySelector(".st-out").innerHTML=stressOut(D,x);ls.set("rc-stx",x)}
+/* ---------- alternative: stesso sottostante peggiore, più rendimento e più distanza insieme ---------- */
+function altsOf(c){if(c.ytm==null||c.dist==null||c.ytmHigh||c.lev)return null;
+  const k=c.worst?undKey(c.worst):null,bk=c.unds.map(undKey).sort().join("|");if(!k&&!bk)return null;
+  const pool=CERTS.filter(x=>x!==c&&x.liq&&!x.lev&&!x.stale&&!x.ytmHigh&&!x.belowBarrier&&x.ytm!=null&&x.dist!=null&&x.couponPa!=null&&(k?x.worst&&undKey(x.worst)===k:x.unds.map(undKey).sort().join("|")===bk));
+  const better=pool.filter(x=>x.ytm>=c.ytm&&x.dist>=c.dist&&(x.ytm>=c.ytm+1||x.dist>=c.dist+3)&&(c.years==null||x.years==null||x.years<=c.years+1)).sort((a,b)=>(b.score||0)-(a.score||0));
+  return {name:k?c.worst:"questo paniere",n:pool.length,better}}
+function altsHtml(c){const A=altsOf(c);if(!A||!A.n)return "";const nm=esc(A.name),N=A.n.toLocaleString("it-IT");
+  if(!A.better.length)return `<div class="alts best"><div class="cap">Si può fare di meglio?</div><p>Ho confrontato gli altri <b>${N}</b> certificat${A.n===1?"o":"i"} quotat${A.n===1?"o":"i"} con <b>${nm}</b> come peggiore: <b class="pos">nessuno offre insieme più rendimento e più distanza</b> dalla barriera, con scadenza simile.</p></div>`;
+  const d=(v,u)=>v>=.5?` <span class="pos">+${fmt(v,v<10?1:0)}${u}</span>`:"";
+  return `<div class="alts"><div class="cap">Si può fare di meglio?</div><p>Sì: su <b>${N}</b> certificati con <b>${nm}</b> come peggiore, <b>${A.better.length}</b> ${A.better.length===1?"rende":"rendono"} di più con uguale o maggiore distanza.${A.better.length>3?" Ecco i primi 3.":""}</p>
+${A.better.slice(0,3).map(x=>`<button class="alt" data-open="${esc(x.isin)}"><span class="who">${esc(x.issuer||"")} <small>${esc(x.type||"")} · ${esc(x.isin)}</small></span><span class="ring ${scls(x.score)}" style="--s:${x.score||0}">${x.score}</span><span class="nums">rend. <b>${pct(x.ytm)}</b>${d(x.ytm-c.ytm," pt")} · dist. <b>${pct(x.dist,0)}</b>${d(x.dist-c.dist," pt")} · ${x.matDate?"scade "+dshort(x.matDate):""}</span></button>`).join("")}</div>`}
 function simHtml(c){const amt=ls.get("rc-amt",10000);
   return `<div class="sim"><div class="sim-top"><div class="cap">Cosa succede con</div><label class="amt"><input type="number" inputmode="numeric" min="100" step="1000" value="${amt}" data-amt="${esc(c.isin)}" aria-label="Importo da investire"> €</label></div>
 <div class="sim-body">${simBody(c,amt)}</div><p class="note">Importi lordi, prima di tasse e commissioni. Stime statistiche, non previsioni.</p></div>`}
@@ -2073,11 +2115,13 @@ async function detailHtml(c){
 <div class="kmini"><span>Cedola <b>${pct(c.couponPa,2)}</b>${c.freq?" "+freqTxt(c.freq).toLowerCase():""}</span><span>Prob. tenuta <b class="${pcls(c.prob)}">${probTxt(c)}</b></span><span>Prezzo <b>${c.pricePct?fmt(c.pricePct,1)+"%":"—"}</b></span><span>Scadenza <b>${c.years!=null&&c.years>0?yrs(c.years<1?c.years:Math.round(c.years*10)/10):"—"}</b></span></div>
 ${peerPlot(c)}
 <ul class="checks">${CK.map(([t,l,s])=>`<li class="${t}"><i>${ICO[t]}</i><div><strong class="cl">${l}</strong><span>${s}</span></div></li>`).join("")}</ul>
+${altsHtml(c)}
 ${simHtml(c)}
+${stressHtml(c,full)}
 ${calendar1(c,full)}
 <div class="row dtools"><button data-ctext="${esc(c.isin)}">📋 Copia sintesi per il cliente</button><button data-pcert class="only-wide">🖨 Stampa scheda</button></div>`;
   const und=`${verdict(c,full)}${barrierMap(c,full)||ladder(c,full)}${undChart(c,full)}${barrierMap(c,full)?ladder(c,full):""}<div class="duo">${payoff(c,full)}</div>`;
-  const pr=`${LIVE_MIC[c.market]?`<div class="live" data-live="${esc(c.isin)}" data-m="${LIVE_MIC[c.market]}" hidden></div>`:""}<div class="facts">${PRICE.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>${chart(j?.history)||`<p class="note">Storico prezzi non ancora disponibile.</p>`}<div class="row" style="font-size:.88rem">${links(full)}</div>`;
+  const pr=`${LIVE_MIC[c.market]?`<div class="live" data-live="${esc(c.isin)}" data-m="${LIVE_MIC[c.market]}" hidden></div>`:""}<div class="facts">${PRICE.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>${chart(j?.history)||`<p class="note">Storico prezzi non ancora disponibile.</p>`}<div class="row dlinks">${links(full)}</div>`;
   const det=`<div class="badges">${badges(c)}</div><div class="facts">${F.map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("")}</div>${scenarios(c)}${scoreBars(c)}
 <details open><summary>Tutti i dati dell'emittente</summary><div class="kv" style="margin-top:10px">${KV.map(([l,k])=>`<div><span>${l}</span><span>${kvVal(k,full[k])}</span></div>`).join("")}</div></details>
 <p class="note">Probabilità e scenari sono stime statistiche (volatilità storica, nessun salto di mercato, nessun rischio emittente): non sono previsioni né consulenza. Verificare sempre KID e term sheet.</p>`;
@@ -2453,6 +2497,7 @@ document.addEventListener("click",e=>{
   const st=e.target.closest("[data-fav]");if(st){e.stopPropagation();toggleFav(st.dataset.fav);return}
   const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};update();return}
   const cl=e.target.closest("[data-close]");if(cl){closeDrawers();return}
+  const sq=e.target.closest("[data-stq]");if(sq){stressPaint(sq.closest(".stress"),+sq.dataset.stq);return}
   const dn=e.target.closest("[data-dnav]");if(dn){navDetail(+dn.dataset.dnav);return}
   const dr=e.target.closest("[data-dretry]");if(dr){DETAIL.delete(dr.dataset.dretry);const box=dr.closest("#isinbox");if(box){box.dataset.isin="";renderIsinBox()}else openDetail(dr.dataset.dretry,true);return}
   if(e.target.closest("[data-reload]")){load();return}
@@ -2482,6 +2527,13 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawers();open
   const tb=e.target.closest("[data-dtab]");
   if(tb&&(e.key==="ArrowLeft"||e.key==="ArrowRight")){const all=[...tb.parentNode.querySelectorAll("[data-dtab]")],n=all[(all.indexOf(tb)+(e.key==="ArrowRight"?1:-1)+all.length)%all.length];n.click();n.focus();e.preventDefault();return}
   if(e.key==="ArrowLeft"||e.key==="ArrowRight"){navDetail(e.key==="ArrowRight"?1:-1);e.preventDefault()}});
+document.addEventListener("input",e=>{if(e.target.matches?.("[data-stx]"))stressPaint(e.target.closest(".stress"),+e.target.value);
+  if(e.target.dataset?.amt&&e.target.closest(".sim")){const st=e.target.closest(".dview")?.querySelector(".stress");if(st)setTimeout(()=>stressPaint(st,+st.querySelector("[data-stx]").value),0)}});
+document.addEventListener("keydown",e=>{if(e.key==="/"&&!e.ctrlKey&&!e.metaKey&&!e.target.closest("input,select,textarea")&&$("#drawer").hidden){e.preventDefault();$("#q").focus();$("#q").select()}});
+/* telefono: scorri col dito a sinistra/destra sulla scheda per passare al certificato successivo/precedente */
+{let sx=0,sy=0,ok=false;const b=$("#dbody");
+  b.addEventListener("touchstart",e=>{const t=e.touches[0];ok=e.touches.length===1&&!e.target.closest("svg,input,.dtabs,.chart,.uchart,[style*='overflow']");sx=t.clientX;sy=t.clientY},{passive:true});
+  b.addEventListener("touchend",e=>{if(!ok)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)>90&&Math.abs(dy)<45)navDetail(dx<0?1:-1)},{passive:true})}
 addEventListener("offline",()=>toast("Sei offline: vedi i dati già scaricati",1));
 addEventListener("online",()=>{toast("Di nuovo online");if(!CERTS.length)load()});
 addEventListener("hashchange",()=>{if(fromHash()){rescore();render()}});
