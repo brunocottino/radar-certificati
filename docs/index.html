@@ -1119,6 +1119,7 @@ function enrich(c){
   r.secOf=new Map((Array.isArray(c.underlyings)?c.underlyings:[]).map((u,i)=>[u,(c.sectors||[])[i]||null]));
   r.secU=[...new Set((c.sectors||[]).filter(Boolean))];r.sector=c.sector||null;
   r.unds=Array.isArray(c.underlyings)?c.underlyings.filter(u=>u&&!/^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$/.test(u)):String(c.underlyings||"").split("|").map(s=>s.trim()).filter(Boolean);
+  r.unds=r.unds.reduce((a,u)=>{if(a.length&&/^(inc|corp|ltd|co|plc|llc|s\.?a|n\.?v|s\.?p\.?a|ag|se)\.?$/i.test(u.trim()))a[a.length-1]+=", "+u.trim();else a.push(u);return a},[]);
   r.n=r.unds.length;
   r.dist=c.distBarrier==null||c.distBarrier===""?null:+c.distBarrier;
   // barriere sopra il 100% (bonus, protetti, reverse) e distanze ≥100%: la distanza "dal basso" non ha senso
@@ -1162,9 +1163,12 @@ function enrich(c){
   r.call=callRisk(r,c);
   // rendimento "realistico": se il richiamo è probabile conta quanto si incassa fino al richiamo, non fino a scadenza
   r.yEff=r.call&&r.ytm!=null&&r.call.ann!=null?r.call.p*Math.min(r.call.ann,r.ytm)+(1-r.call.p)*r.ytm:r.ytm;
-  r.cat=c.category||"Altro";
+  r.cat=c.category||"Altro";r.prot=r.cat==="Protetto";
+  // capitale protetto: se va male si perdono le cedole, non il capitale (rimborso ≈ 100)
+  if(r.prot&&r.prob!=null&&r.ytmGood!=null){r.ytmBad=((100-r.pricePct)/Math.max(ya,1))/r.pricePct*100;r.expRet=r.prob/100*r.ytmGood+(1-r.prob/100)*r.ytmBad;r.retProxy=r.expRet}
   r.lev=r.cat==="Leva";
-  r.liq=!!(ask&&bid)&&!r.priceBad;
+  r.expired=!!(r.matDate&&r.matDate<=today); // scade oggi o è già scaduto: è in rimborso, non si valuta più
+  r.liq=!!(ask&&bid)&&!r.priceBad&&!r.expired;
   // nuove emissioni: comparse nel radar negli ultimi 14 giorni (l'archivio è partito il 15/10)
   r.firstSeen=c.firstSeen||null;
   r.isNew=!!(r.firstSeen&&r.firstSeen>"2026-10-15"&&(today-parseDate(r.firstSeen))/864e5<=14);
@@ -2004,6 +2008,8 @@ const seur=v=>v==null||!isFinite(v)?"—":(v>=0?"+":"−")+fmt(Math.abs(Math.rou
 // giudizio in parole, per il profilo scelto
 function judge(c){const pr=state.profile,w=esc(c.worst||"il peggiore");
   if(c.priceBad)return {t:"ko",h:"Dati da verificare",s:"Il prezzo pubblicato non è coerente: controlla su Borsa Italiana prima di qualsiasi valutazione."};
+  if(c.expired)return {t:"ca",h:"In rimborso",s:"Il certificato è arrivato a scadenza: non è più da valutare come investimento."};
+  if(c.belowBarrier&&c.prot)return {t:"ca",h:"Cedole a rischio, capitale protetto",s:`${w} è sotto la barriera: a rischio sono le cedole o il premio; il capitale è protetto a scadenza nella misura indicata nel KID.`};
   if(c.belowBarrier)return {t:"ko",h:"Capitale a rischio",s:`${w} è sotto la barriera: se a scadenza resta lì, il rimborso sarà pari al suo valore, cioè meno del capitale.`};
   if(c.call?.lvl==="alto"&&c.call.poor)return {t:"ko",h:"Sta per essere rimborsato",s:`Il ${dshort(c.callDate)} probabilmente rimborsa: comprando oggi incassi circa ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto. Il rendimento annuo a scadenza non è realistico.`};
   const sc=c.score??0;
@@ -2017,6 +2023,7 @@ function judge(c){const pr=state.profile,w=esc(c.worst||"il peggiore");
 // semafori: capitale, cedola, richiamo, prezzo, emittente
 function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=full.barrierType&&full.barrierType!=="scadenza"?" (osservata anche durante la vita)":c.barrierPct?" (osservata a scadenza)":"";
   if(c.dist==null)o.push(["na","Capitale",c.barrierPct&&+c.barrierPct>100?"Struttura senza barriera classica: leggi il term sheet.":"Distanza dalla barriera non disponibile."]);
+  else if(c.prot)o.push(["ok","Capitale",`<b>Capitale protetto</b> a scadenza (livello di protezione nel KID). La barriera al ${fmt(+c.barrierPct,0)}% riguarda cedole o premio: ${w} ${c.dist<0?`è sotto del ${fmt(-c.dist,0)}%`:`ha un margine del ${pct(c.dist,0)}`}.`]);
   else if(c.dist<0)o.push(["ko","Capitale",`${w} è <b>sotto la barriera</b> del ${fmt(-c.dist,0)}%${bt}.`]);
   else o.push([c.dist>=30?"ok":"ca","Capitale",`${w} può scendere ancora del <b>${pct(c.dist,0)}</b> prima della barriera al ${fmt(+c.barrierPct,0)}%${bt}.`]);
   if(c.couponPa==null)o.push(["na","Cedola","Nessuna cedola periodica nota."]);
@@ -2045,14 +2052,16 @@ function simBody(c,amt){
   const sc=[];
   if(c.call)sc.push(["ca",`Rimborso anticipato il ${dshort(c.callDate)}`,`stima ${fmt(c.call.p*100,0)}%`,nom*(100+c.call.cps)/100-inv,`Riavrai ${eur(nom)} più le cedole fino a quella data, poi dovrai reinvestire.`]);
   sc.push(["ok","Va bene: la barriera tiene",P!=null?`probabilità ${fmt(P*100,0)}%`:"probabilità n.d.",good,`${n?`${n} cedole${each?` da ${eur(each)}`:""} e `:all?`cedole ≈ ${eur(all)} e `:""}rimborso di ${eur(nom)} il ${dshort(c.matDate)}.`]);
-  if(bp)sc.push(["ko","Va male: barriera rotta a scadenza",P!=null?`probabilità ${fmt((1-P)*100,0)}%`:"",bad,`Esempio: il peggiore chiude al ${fmt(Math.round(bp*.85),0)}% dello strike → rimborso ${eur(badRed)}. Le cedole incassate prima${all?` (fino a ${eur(all)})`:""} riducono la perdita: dipende da quando scende.`]);
+  if(bp&&c.prot)sc.push(["ca","Va male: barriera rotta",P!=null?`probabilità ${fmt((1-P)*100,0)}%`:"",nom-inv,`Capitale protetto: a scadenza riavresti comunque il livello di protezione (qui ipotizzato 100: verificalo nel KID), ma senza le cedole o il premio legati alla barriera.`]);
+  else if(bp)sc.push(["ko","Va male: barriera rotta a scadenza",P!=null?`probabilità ${fmt((1-P)*100,0)}%`:"",bad,`Esempio: il peggiore chiude al ${fmt(Math.round(bp*.85),0)}% dello strike → rimborso ${eur(badRed)}. Le cedole incassate prima${all?` (fino a ${eur(all)})`:""} riducono la perdita: dipende da quando scende.`]);
   return `<div class="sim-buy">Compri <b>${q.toLocaleString("it-IT")}</b> certificat${q===1?"o":"i"} a ${eur(c.ask)} = <b>${eur(inv)}</b>${each?` · cedola di <b>${eur(each)}</b> ${perTxt(per)}`:cp?` · cedole ≈ ${eur(nom*cp/100)} l'anno`:""}</div>
 ${P!=null?`<div class="pbar" title="Probabilità stimata che la barriera tenga"><i style="width:${(P*100).toFixed(0)}%"></i></div>`:""}
 <div class="scn">${sc.map(([t,h,p,v,s])=>`<div class="scn-i ${t}"><div class="scn-h"><span>${h}</span><small>${p}</small></div><div class="scn-v ${v>=0?"pos":"neg"}">${seur(v)}</div><p>${s}</p></div>`).join("")}</div>`;
 }
 /* ---------- prova di stress: cosa succede a scadenza se i sottostanti scendono tutti di X% ---------- */
-function stressHtml(c,full){const L=levels(c,full);if(!L.bp||!L.rows.length||!c.pricePct||!c.ask||c.couponPa==null)return "";
-  const D={bp:L.bp,tp:L.tp,r:L.rows.map(r=>[r.name,+r.s.toFixed(2)]),pp:c.pricePct,cp:c.couponPa,T:c.years||0,ask:c.ask,nom:c.nominal,mat:c.matDate?dshort(c.matDate):""};
+function stressHtml(c,full){const L=levels(c,full);if(!L.bp||!L.rows.length||!c.pricePct||!c.ask||c.couponPa==null||c.prot||c.expired||c.lev||!/Cash Collect|Express/.test(c.cat))return "";
+  const per=PERM[c.freq],ncp=c.matDate&&per?cpDates(c,c.matDate).length||Math.max(1,Math.round((c.years||0)*12/per)):0,cpt=per?c.couponPa*per/12*ncp:c.couponPa*(c.years||0);
+  const D={bp:L.bp,tp:L.tp,r:L.rows.map(r=>[r.name,+r.s.toFixed(2)]),pp:c.pricePct,cpt,ask:c.ask,nom:c.nominal,mat:c.matDate?dshort(c.matDate):""};
   const lim=Math.max(0,(1-L.bp/L.rows[0].s)*100),x0=ls.get("rc-stx",20);
   return `<div class="sim stress" data-stress="${esc(JSON.stringify(D))}"><div class="sim-top"><div><div class="cap">Prova di stress</div><div class="note" style="margin:0">Se da oggi i sottostanti scendono tutti del</div></div><b class="st-x">${x0?"−"+x0+"%":"0%"}</b></div>
 <input type="range" min="0" max="80" step="1" value="${x0}" data-stx aria-label="Discesa dei sottostanti in percentuale">
@@ -2060,19 +2069,19 @@ function stressHtml(c,full){const L=levels(c,full);if(!L.bp||!L.rows.length||!c.
 <div class="st-out">${stressOut(D,x0)}</div>
 <p class="note" style="margin:0">La barriera regge fino a <b>−${fmt(lim,0)}%</b> del peggiore. Ipotesi: tutti i sottostanti scendono insieme e a scadenza sono ancora lì; importi lordi sull'importo scelto sopra.</p></div>`}
 function stressOut(D,x){const k=1-x/100,rows=D.r.map(([n,s])=>({n,s,a:s*k})),w=rows[0].a,tr=D.tp??D.bp;
-  const cap=w>=D.bp?100:w,cps=w>=tr?D.cp*D.T:0,tot=cap+cps,ret=(tot-D.pp)/D.pp*100;
+  const cap=w>=D.bp?100:w,cps=w>=tr?D.cpt:0,tot=cap+cps,ret=(tot-D.pp)/D.pp*100;
   const amt=ls.get("rc-amt",10000),q=Math.floor(amt/D.ask),inv=q*D.ask,pl=q*D.nom*tot/100-inv;
   const t=w<D.bp?"ko":w<tr?"ca":"ok";
   const h=t==="ok"?"Capitale intatto e cedole pagate":t==="ca"?`Capitale intatto, ma cedole ferme (sotto il trigger ${fmt(tr,0)}%)`:`Barriera rotta: rimborso al ${fmt(cap,0)}% del nominale`;
-  const d=t==="ok"?`A scadenza${D.mat?" ("+D.mat+")":""} riavresti 100 più tutte le cedole (${fmt(cps,1)}% del nominale).`:t==="ca"?"A scadenza riavresti 100, senza altre cedole finché il peggiore resta sotto il trigger.":`Il rimborso segue il peggiore (${esc(rows[0].n)}): ${fmt(cap,0)} ogni 100 di nominale, senza altre cedole.`;
+  const d=t==="ok"?`A scadenza${D.mat?" ("+D.mat+")":""} riavresti 100 più tutte le cedole (${fmt(cps,1)}% del nominale).`:t==="ca"?"A scadenza riavresti 100, senza altre cedole finché il peggiore resta sotto il trigger.":`Il rimborso segue il peggiore (${esc(rows[0].n)}): ${fmt(cap,0)} ogni 100 di nominale${cps?`, più le cedole (${fmt(cps,1)}%) perché il trigger al ${fmt(tr,0)}% è più basso della barriera`:", senza altre cedole"}.`;
   return `<div class="st-res ${t}"><b>${h}</b><div class="big ${ret>=0?"pos":"neg"}">${q>=1?seur(pl)+" · ":""}${ret>=0?"+":"−"}${fmt(Math.abs(ret),1)}%</div><p>${d}</p></div>
 <div class="st-u">${rows.slice(0,6).map(r=>{const u=r.a<D.bp?"ko":r.a<tr?"ca":"ok";return `<div><span class="n">${esc(r.n)}</span><span class="num">${fmt(r.s,0)}% → ${fmt(r.a,0)}%</span><span class="tag ${u}">${u==="ko"?"sotto barriera":u==="ca"?"sotto trigger":"regge"}</span></div>`}).join("")}</div>`}
 function stressPaint(box,x){x=clamp(Math.round(x),0,80);const D=JSON.parse(box.dataset.stress);box.querySelector("[data-stx]").value=x;box.querySelector(".st-x").textContent=x?"−"+x+"%":"0%";box.querySelector(".st-out").innerHTML=stressOut(D,x);ls.set("rc-stx",x)}
 /* ---------- alternative: stesso sottostante peggiore, più rendimento e più distanza insieme ---------- */
-function altsOf(c){if(c.ytm==null||c.dist==null||c.ytmHigh||c.lev)return null;
+function altsOf(c){if(c.ytm==null||c.dist==null||c.ytmHigh||c.lev||c.expired)return null;
   const k=c.worst?undKey(c.worst):null,bk=c.unds.map(undKey).sort().join("|");if(!k&&!bk)return null;
-  const pool=CERTS.filter(x=>x!==c&&x.liq&&!x.lev&&!x.stale&&!x.ytmHigh&&!x.belowBarrier&&x.ytm!=null&&x.dist!=null&&x.couponPa!=null&&(k?x.worst&&undKey(x.worst)===k:x.unds.map(undKey).sort().join("|")===bk));
-  const better=pool.filter(x=>x.ytm>=c.ytm&&x.dist>=c.dist&&(x.ytm>=c.ytm+1||x.dist>=c.dist+3)&&(c.years==null||x.years==null||x.years<=c.years+1)).sort((a,b)=>(b.score||0)-(a.score||0));
+  const pool=CERTS.filter(x=>x!==c&&x.cat===c.cat&&x.liq&&!x.lev&&!x.stale&&!x.ytmHigh&&!x.belowBarrier&&x.ytm!=null&&x.dist!=null&&x.couponPa!=null&&(k?x.worst&&undKey(x.worst)===k:x.unds.map(undKey).sort().join("|")===bk));
+  const better=pool.filter(x=>x.ytm>=c.ytm&&x.dist>=c.dist&&(x.ytm>=c.ytm+1||x.dist>=c.dist+3)&&(c.prob==null||x.prob==null||x.prob>=c.prob-2)&&(c.years==null||x.years==null||x.years<=c.years+1)).sort((a,b)=>(b.score||0)-(a.score||0));
   return {name:k?c.worst:"questo paniere",n:pool.length,better}}
 function altsHtml(c){const A=altsOf(c);if(!A||!A.n)return "";const nm=esc(A.name),N=A.n.toLocaleString("it-IT");
   if(!A.better.length)return `<div class="alts best"><div class="cap">Si può fare di meglio?</div><p>Ho confrontato gli altri <b>${N}</b> certificat${A.n===1?"o":"i"} quotat${A.n===1?"o":"i"} con <b>${nm}</b> come peggiore: <b class="pos">nessuno offre insieme più rendimento e più distanza</b> dalla barriera, con scadenza simile.</p></div>`;
@@ -2091,7 +2100,7 @@ function clientText(c){const L=[];
   if(c.ytm!=null)L.push(`• Rendimento annuo se la barriera tiene: ${pct(c.ytm)} al prezzo di oggi (${fmt(c.pricePct,1)}%).`);
   if(c.prob!=null)L.push(`• Probabilità stimata che la barriera tenga: ${probTxt(c)}.`);
   if(c.call)L.push(`• ${callTxt(c).replace(/<[^>]+>/g,"")}`);
-  L.push(`• Rischio emittente: ${c.issuer||"n.d."}.`);L.push("");
+  L.push(`• Rischio emittente: ${(c.issuer||"n.d.").replace(/\.$/,"")}.`);L.push("");
   L.push("Stime statistiche, non una raccomandazione: leggere KID e term sheet.");L.push(`https://radarcertificati.com/certificato/${c.isin}`);
   return L.join("\n")}
 function printCert(){const th=ls.get("rc-theme","auto");applyTheme("light");document.body.classList.add("pcert");
@@ -2101,8 +2110,8 @@ async function detailHtml(c){
   let [j]=await Promise.all([loadDetail(c.isin),loadReturns()]);const jerr=!!j?.err;if(jerr)j=null;const full=j?.certificate||c;
   const nb=c.priceAt?bizDaysSince(c.priceAt):null;
   const WARN=[...(jerr?[[`${OFFLINE()?"Sei offline":"Connessione lenta o interrotta"}: mostro i dati principali, mancano storico e dettagli dell'emittente.`,`<button data-dretry="${esc(c.isin)}">Riprova</button>`]]:[]),
-    ...(!c.ask&&!c.bid?[["Nessun prezzo in borsa al momento: rendimento e punteggio non sono calcolabili.",""]]:c.stale&&nb!=null?[[`Prezzo vecchio di ${nb} giorni di borsa (${dtime(c.priceAt)}): il certificato scambia poco, rendimento e distanza potrebbero non essere attuali.`,""]]:[]),
-    ...(c.matDate&&c.years!=null&&c.years<=0?[["Il certificato è arrivato a scadenza o è in rimborso.",""]]:[])];
+    ...(c.expired?[]:!c.ask&&!c.bid?[["Nessun prezzo in borsa al momento: rendimento e punteggio non sono calcolabili.",""]]:c.stale&&nb!=null?[[`Prezzo vecchio di ${nb} giorni di borsa (${dtime(c.priceAt)}): il certificato scambia poco, rendimento e distanza potrebbero non essere attuali.`,""]]:[]),
+    ...(c.expired?[["Il certificato è arrivato a scadenza ed è in rimborso: rendimento e punteggio non sono più significativi.",""]]:[])];
   const warn=WARN.map(([t,b])=>`<div class="dwarn"><span>⚠</span><span>${t}</span>${b}</div>`).join("");const own=full.url&&/borsaitaliana\.it/.test(full.url);
   const J=judge(c),CK=checks(c,full);
   const PRICE=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],["Da ieri",c.chg==null?"—":chgHtml(c.chg)||"invariato"],

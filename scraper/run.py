@@ -292,10 +292,21 @@ def coupon_check(c):
     return c
 
 
+SUFFIX_UND = re.compile(r"^(inc|corp|ltd|co|plc|llc|s\.?a|n\.?v|s\.?p\.?a|ag|se)\.?$", re.I)
+
+
 def clean_underlyings(c):
     """Toglie dai sottostanti le voci spurie lette dalle tabelle (es. "ISIN DE000…") e normalizza il nominale."""
     if isinstance(c.get("underlyings"), list):
         c["underlyings"] = [u for u in c["underlyings"] if u and not JUNK_UND.match(str(u).strip())]
+        # nomi spezzati dalla virgola: "The Goldman Sachs Group", "Inc." -> un solo sottostante
+        out = []
+        for u in c["underlyings"]:
+            if out and SUFFIX_UND.match(str(u).strip()):
+                out[-1] = f"{out[-1]}, {str(u).strip()}"
+            else:
+                out.append(u)
+        c["underlyings"] = out
     if isinstance(c.get("nominal"), str):
         c["nominal"] = num(c["nominal"])
     # Vontobel cash collect a sottostante singolo: la colonna "barriera" è il livello assoluto, non la %
