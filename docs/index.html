@@ -478,6 +478,11 @@ h2{font-family:var(--f-ui);letter-spacing:.14em;font-size:.72rem}
 /* mappa */
 .legend .fr{border-top-color:var(--gold)!important}
 /* caricamento */
+.errbox{display:grid;gap:10px;justify-items:center;text-align:center;padding:28px 14px;color:var(--muted)}.errbox b{color:var(--ink);font-size:1.02rem}.errbox .row{justify-content:center}
+.dwarn{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:var(--r);background:var(--stale-bg);color:var(--stale);font-size:.88rem;line-height:1.4}.dwarn button{margin-left:auto;flex:none}
+.dnav{display:flex;gap:4px;align-items:center}.dnav button{min-width:34px;padding:4px 8px}.dnav button:disabled{opacity:.35}.dnav .note{font-size:.78rem;white-space:nowrap}
+.dsk{display:grid;gap:12px}.dsk .sk{height:64px}.dsk .sk.t{height:28px;width:60%}
+.toast.err{background:var(--stale);color:#fff}
 .sk{height:148px;border-radius:var(--r);background:linear-gradient(100deg,var(--surface) 40%,var(--row) 50%,var(--surface) 60%) 0 0/200% 100%;border:1px solid var(--line);animation:shimmer 1.3s linear infinite}
 @keyframes shimmer{to{background-position:-200% 0}}
 /* colophon */
@@ -535,7 +540,7 @@ td{font-weight:500}
   #pf .pftab td.l{max-width:420px}
   #pf .cal svg{max-height:240px}
 }
-@media print{
+@media print{.dnav,.dwarn button{display:none!important}
   @page{size:A4 landscape;margin:12mm}
   @page cert{size:A4 portrait;margin:12mm}
   body{background:#fff!important;overflow:visible!important}
@@ -1009,7 +1014,9 @@ const pct=(v,d=1)=>v==null||isNaN(v)?"—":fmt(v,d)+"%";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2400)}
+function toast(t,err){const el=$("#toast");el.textContent=t;el.hidden=false;el.classList.toggle("err",!!err);el.setAttribute("role",err?"alert":"status");clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,err?5000:2400)}
+const OFFLINE=()=>navigator.onLine===false;
+function errBox(title,msg,btn){return `<div class="errbox" role="alert"><b>${title}</b><span>${msg}</span>${btn?`<div class="row">${btn}</div>`:""}</div>`}
 const norm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 
 /* ---------- date e calendario di borsa ---------- */
@@ -1072,7 +1079,7 @@ state.view=ls.get("rc-view",null)||(innerWidth>=820?"table":"cards");
 function toHash(){const p=new URLSearchParams();if(state.q)p.set("q",state.q);p.set("p",state.profile);
   NUMF.forEach(k=>{if(state.f[k]!=null)p.set(k,state.f[k])});SELF.forEach(k=>{if(state.f[k])p.set(k,state.f[k])});BOOLF.forEach(k=>{if(state.f[k])p.set(k,"1")});
   if(state.iss.size)p.set("iss",[...state.iss].join("|"));if(state.sec.size)p.set("sec",[...state.sec].join("|"));if(state.sort.key!=="score"||state.sort.dir!==-1)p.set("s",state.sort.key+":"+state.sort.dir);
-  const h="#"+p.toString();if(location.hash!==h)history.replaceState(null,"",h)}
+  const h="#"+p.toString();if(location.hash!==h)history.replaceState(history.state,"",h)}
 function fromHash(){const h=location.hash.slice(1);if(!h)return false;const p=new URLSearchParams(h);
   state.q=p.get("q")||"";state.profile=W[p.get("p")]?p.get("p"):"bilanciato";state.f=neutral();
   NUMF.forEach(k=>{const v=parseFloat(p.get(k));state.f[k]=isNaN(v)?null:v});SELF.forEach(k=>state.f[k]=p.get(k)||"");BOOLF.forEach(k=>state.f[k]=p.get(k)==="1");
@@ -1778,7 +1785,7 @@ async function loadDetail(isin){
   /* i certificati sono raggruppati in 256 file (FNV-1a dell'ISIN mod 256, come isin_bucket in scraper/api.py) */
   let h=0x811c9dc5;for(const ch of isin)h=Math.imul(h^ch.charCodeAt(0),0x01000193)>>>0;const g=(h%256).toString(16).padStart(2,"0");
   try{const r=await fetch(`api/v1/isin/${g}.json`,{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
-    for(const[k,v]of Object.entries(j.certificates||{}))DETAIL.set(k,v);return DETAIL.get(isin)||null}catch(e){return null}
+    for(const[k,v]of Object.entries(j.certificates||{}))DETAIL.set(k,v);if(!DETAIL.has(isin))DETAIL.set(isin,null);return DETAIL.get(isin)}catch(e){return {err:1}}
 }
 function ladder(c,full){
   const det=(full.underlyingsDetail||[]).filter(u=>u.name);
@@ -2043,7 +2050,12 @@ function printCert(){const th=ls.get("rc-theme","auto");applyTheme("light");docu
   const back=()=>{document.body.classList.remove("pcert");applyTheme(th);removeEventListener("afterprint",back)};addEventListener("afterprint",back);setTimeout(()=>print(),60)}
 
 async function detailHtml(c){
-  const [j]=await Promise.all([loadDetail(c.isin),loadReturns()]);const full=j?.certificate||c;const own=full.url&&/borsaitaliana\.it/.test(full.url);
+  let [j]=await Promise.all([loadDetail(c.isin),loadReturns()]);const jerr=!!j?.err;if(jerr)j=null;const full=j?.certificate||c;
+  const nb=c.priceAt?bizDaysSince(c.priceAt):null;
+  const WARN=[...(jerr?[[`${OFFLINE()?"Sei offline":"Connessione lenta o interrotta"}: mostro i dati principali, mancano storico e dettagli dell'emittente.`,`<button data-dretry="${esc(c.isin)}">Riprova</button>`]]:[]),
+    ...(!c.ask&&!c.bid?[["Nessun prezzo in borsa al momento: rendimento e punteggio non sono calcolabili.",""]]:c.stale&&nb!=null?[[`Prezzo vecchio di ${nb} giorni di borsa (${dtime(c.priceAt)}): il certificato scambia poco, rendimento e distanza potrebbero non essere attuali.`,""]]:[]),
+    ...(c.matDate&&c.years!=null&&c.years<=0?[["Il certificato è arrivato a scadenza o è in rimborso.",""]]:[])];
+  const warn=WARN.map(([t,b])=>`<div class="dwarn"><span>⚠</span><span>${t}</span>${b}</div>`).join("");const own=full.url&&/borsaitaliana\.it/.test(full.url);
   const J=judge(c),CK=checks(c,full);
   const PRICE=[["Lettera",c.ask?`${fmt(c.ask)}${c.pricePct?` (${fmt(c.pricePct,1)}%)`:""}`:"—"],["Denaro",fmt(c.bid)],["Spread",pct(c.spread,2)],["Prezzo del",c.priceAt?dtime(c.priceAt):"—"],["Da ieri",c.chg==null?"—":chgHtml(c.chg)||"invariato"],
     ...(FAV[c.isin]?.ask&&c.ask?[["Da quando l'hai salvato",chgHtml((c.ask/FAV[c.isin].ask-1)*100)||"invariato"]]:[]),["Nominale",fmt(c.nominal,0)+" "+esc(full.currency||"EUR")],["Mercato",esc(c.market||"—")]];
@@ -2053,7 +2065,7 @@ async function detailHtml(c){
     ["Scadenza",dshort(c.matDate)],["Rend. a scadenza",pct(c.ytm)],["Rend. a richiamo",pct(c.ytc)],["Rend. atteso",pct(c.retProxy)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Vol peggiore",pct(c.wvol,0)],["Classe emittente",c.tier||"n.d."]];
   const sub=[c.matDate?`Scade ${dshort(c.matDate)}${c.years!=null&&c.years>0?` · ${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}`:""}`:"",c.n>1?`Worst-of ${c.n}`:c.n===1?"Singolo sottostante":"",c.freq?"Cedola "+freqTxt(c.freq).toLowerCase():"",c.memory?"Memoria":"",c.isNew?"Nuovo":""].filter(Boolean);
   const pane=(id,html,on)=>`<section class="dpane" data-pane="${id}" ${on?"":"hidden"}>${html}</section>`;
-  const ov=`<div class="judge v-${J.t}"><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><div><div class="j-h">${J.h}</div><div class="j-s">${J.s}</div></div></div>
+  const ov=`${warn}<div class="judge v-${J.t}"><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><div><div class="j-h">${J.h}</div><div class="j-s">${J.s}</div></div></div>
 <div class="rd">
 <div class="rd-i"><div class="k">Rendimento annuo</div><div class="v hi">${pct(c.ytm)}${c.ytmHigh?"!":""}</div><div class="s">${c.call?.lvl==="alto"?`<span class="${c.call.poor?"neg":"ca"}">se richiamato ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto · realistico ${pct(c.yEff)}</span>`:c.ytmHigh?"troppo alto: il mercato prezza una perdita":"cedole + rimborso a 100, sul prezzo di oggi"}</div>${peerLineY(c)}</div>
 <div class="rd-i"><div class="k">Distanza dalla barriera</div><div class="v ${cls(c.dist)}">${pct(c.dist,0)}</div><div class="s">${c.dist==null?"non disponibile":c.dist<0?"il peggiore è sotto la barriera":`quanto può scendere ${esc(c.worst||"il peggiore")}`}${c.sigma!=null?` · ${fmt(c.sigma,1)} dev. std`:""}</div>${c.dist!=null&&c.dist>=0?`<span class="ruler ${cls(c.dist)}" style="--d:${(clamp(c.dist,0,60)/60*100).toFixed(0)}%"><i></i></span>`:""}${peerLineD(c)}</div>
@@ -2071,7 +2083,7 @@ ${calendar1(c,full)}
 <p class="note">Probabilità e scenari sono stime statistiche (volatilità storica, nessun salto di mercato, nessun rischio emittente): non sono previsioni né consulenza. Verificare sempre KID e term sheet.</p>`;
   return `<div class="dview"><div class="ponly"><b>Radar Certificati</b> · scheda al ${new Date().toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})} · prezzi del ${c.priceAt?dtime(c.priceAt):"n.d."} · radarcertificati.com/certificato/${esc(c.isin)}</div><div class="dtop"><div class="dhead"><div style="min-width:0"><div class="c-iss"><b>${esc(c.issuer||"")}</b>${c.type?" · "+esc(c.type):""}</div>
 <div class="row" style="gap:6px;font-size:.85rem"><button class="isin" data-copy="${esc(c.isin)}" title="Copia ISIN">${esc(c.isin)}</button>${starBtn(c)}<span class="only-wide"><label class="check">${cmpBox(c)} confronta</label></span><button class="share only-wide ${inMyp(c.isin)?"on":""}" data-myp="${esc(c.isin)}">${inMyp(c.isin)?"✓ Portafoglio":"+ Portafoglio"}</button><button class="share" data-share="${esc(c.isin)}" aria-label="Condividi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Condividi</button></div></div>
-<button data-close aria-label="Chiudi">✕</button></div>
+<div class="dnav">${dnavHtml(c)}<button data-close aria-label="Chiudi" title="Chiudi (Esc)">✕</button></div></div>
 <nav class="dtabs" role="tablist">${[["o","Panoramica"],["u","Sottostanti"],["p","Prezzo"],["d","Dettagli"]].map(([k,t],i)=>`<button role="tab" data-dtab="${k}" aria-selected="${!i}">${t}</button>`).join("")}</nav></div>
 <div class="dtitle">${undsHtml(c)}</div>${sub.length?`<div class="dsub">${sub.map(esc).join(" · ")}</div>`:""}
 ${pane("o",ov,1)}${pane("u",und)}${pane("p",pr)}${pane("d",det)}
@@ -2091,12 +2103,30 @@ async function wireLive(root){
     el.hidden=false;el.querySelector("[data-relive]").onclick=()=>{el.querySelector("[data-relive]").disabled=true;wireLive(root)};
   }catch(e){}
 }
-async function openDetail(isin){
-  const c=BYISIN.get(isin);if(!c)return;
-  const d=$("#drawer"),b=$("#dbody");d.hidden=false;document.body.style.overflow="hidden";b.innerHTML=`<p class="note">Caricamento ${esc(isin)}…</p>`;
-  b.innerHTML=await detailHtml(c);b.scrollTop=0;wireChart(b);wireUChart(b);wireLive(b);b.querySelector("[data-close]").focus();
+/* frecce precedente/successivo: scorrono la lista dei risultati senza chiudere la scheda */
+function dnavHtml(c){const i=ROWS.indexOf(c);if(i<0||ROWS.length<2)return "";
+  return `<button data-dnav="-1" aria-label="Certificato precedente" title="Precedente (←)" ${i?"":"disabled"}>‹</button><span class="note only-wide">${(i+1).toLocaleString("it-IT")} di ${ROWS.length.toLocaleString("it-IT")}</span><button data-dnav="1" aria-label="Certificato successivo" title="Successivo (→)" ${i<ROWS.length-1?"":"disabled"}>›</button>`}
+let DSEQ=0,DLAST=null,DFOCUS=null,BACKING=false;
+async function openDetail(isin,keepTab){
+  const c=BYISIN.get(isin);
+  if(!c){toast(`${isin} non è più nel radar: lo cerco nell'archivio`,1);state.q=isin;$("#q").value=isin;update();scrollTo({top:0});return}
+  const d=$("#drawer"),b=$("#dbody"),seq=++DSEQ,tab=keepTab&&!d.hidden?b.querySelector("[data-dtab][aria-selected=true]")?.dataset.dtab:null;
+  if(d.hidden){DFOCUS=document.activeElement;if(!history.state?.rc)try{history.pushState({rc:1},"",location.href)}catch(e){}}
+  d.hidden=false;document.body.style.overflow="hidden";DLAST=isin;
+  if(!b.querySelector(".dview")||!keepTab)b.innerHTML=`<div class="dsk" aria-busy="true" aria-label="Caricamento ${esc(isin)}"><div class="sk t"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>`;
+  let html;try{html=await detailHtml(c)}catch(e){html=null}
+  if(seq!==DSEQ||d.hidden)return; // l'utente ha già aperto un altro certificato o chiuso la scheda
+  if(!html){b.innerHTML=`<div class="dhead"><b>${esc(isin)}</b><button data-close aria-label="Chiudi">✕</button></div>`+errBox("Scheda non disponibile",OFFLINE()?"Sei offline: riconnettiti e riprova.":"Qualcosa è andato storto nel preparare la scheda.",`<button data-dretry="${esc(isin)}">Riprova</button><a href="${esc(bi(c))}" target="_blank" rel="noopener">Apri su Borsa Italiana ↗</a>`);return}
+  b.innerHTML=html;b.scrollTop=0;wireChart(b);wireUChart(b);wireLive(b);
+  if(tab&&tab!=="o")b.querySelector(`[data-dtab="${tab}"]`)?.click();
+  (b.querySelector(keepTab?"[data-dnav]:not([disabled])":"[data-close]")||b.querySelector("[data-close]"))?.focus({preventScroll:true});
 }
-function closeDrawers(){$("#drawer").hidden=true;$("#cmp").hidden=true;$("#pf").hidden=true;document.body.style.overflow=""}
+function navDetail(k){if($("#drawer").hidden)return;const c=BYISIN.get(DLAST),i=ROWS.indexOf(c),n=ROWS[i+k];if(i<0||!n)return;openDetail(n.isin,true)}
+function closeDrawers(){const was=!$("#drawer").hidden||!$("#cmp").hidden||!$("#pf").hidden;$("#drawer").hidden=true;$("#cmp").hidden=true;$("#pf").hidden=true;document.body.style.overflow="";DSEQ++;
+  if(was&&DFOCUS&&document.contains(DFOCUS))try{DFOCUS.focus({preventScroll:true})}catch(e){}DFOCUS=null;
+  if(was&&history.state?.rc){BACKING=true;history.back()}} // al ritorno toHash() riscrive l'indirizzo con i filtri di adesso
+/* tasto Indietro del telefono: chiude la scheda invece di uscire dal sito */
+addEventListener("popstate",()=>{if(BACKING){BACKING=false;toHash()}if(!$("#drawer").hidden||!$("#cmp").hidden||!$("#pf").hidden){$("#drawer").hidden=true;$("#cmp").hidden=true;$("#pf").hidden=true;document.body.style.overflow="";DSEQ++;if(DFOCUS&&document.contains(DFOCUS))try{DFOCUS.focus({preventScroll:true})}catch(e){}DFOCUS=null}});
 
 /* ---------- confronto ---------- */
 function renderCmpBar(){$("#cmpbar").hidden=!CMP.size;$("#cmptxt").textContent=`${CMP.size} da confrontare (max 4)`}
@@ -2280,15 +2310,15 @@ async function renderIsinBox(){
   else box.innerHTML=ROWS.length?`<p class="note">${ROWS.length} certificati iniziano con ${esc(ISIN)}: tutti i filtri sono ignorati. Completa l'ISIN o apri una riga.</p>`:`<div class="panel">Nessun ISIN in archivio inizia con <span class="num">${esc(ISIN)}</span>.</div>`;
 }
 // certificati a leva: file separato (docs/data/leva.json), scaricato solo quando servono
-let LEVA=null;
-async function ensureLeva(){
-  if(LEVA||!(state.f.lev||state.f.cat==="Leva"))return;
+let LEVA=null,LEVP=null,LEVERR=0;
+function ensureLeva(){if(LEVA==="loading")return LEVP;if(LEVA||!(state.f.lev||state.f.cat==="Leva")||Date.now()-LEVERR<60000)return Promise.resolve();return LEVP=ensureLeva2()}
+async function ensureLeva2(){
   LEVA="loading";$("#count").textContent="Carico i certificati a leva…";
-  try{const r=await fetch("data/leva.json?t="+Date.now(),{cache:"no-store"});const j=await r.json();
+  try{const r=await fetch("data/leva.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
     const add=j.rows.map(row=>{const o={};j.cols.forEach((k,i)=>{if(row[i]!=null)o[k]=row[i]});o.category="Leva";o.type=o.typeMarket;return o}).filter(o=>!BYISIN.has(o.isin));
     add.forEach(enrich);const w=W[state.profile];add.forEach(c=>c.score=score(c,w));CERTS=CERTS.concat(add);add.forEach(c=>BYISIN.set(c.isin,c));buildIndex();LEVA=add.length;
     toast(`Aggiunti ${add.length.toLocaleString("it-IT")} certificati a leva`);
-  }catch(e){LEVA=null;toast("Certificati a leva non disponibili")}
+  }catch(e){LEVA=null;LEVERR=Date.now();toast(OFFLINE()?"Sei offline: certificati a leva non caricati":"Certificati a leva non disponibili: riprovo tra un minuto",1)}
   render();
 }
 function update(){render();ensureLeva();}
@@ -2423,6 +2453,9 @@ document.addEventListener("click",e=>{
   const st=e.target.closest("[data-fav]");if(st){e.stopPropagation();toggleFav(st.dataset.fav);return}
   const th=e.target.closest("th[data-sort]");if(th){const k=th.dataset.sort;state.sort=state.sort.key===k?{key:k,dir:-state.sort.dir}:{key:k,dir:-1};update();return}
   const cl=e.target.closest("[data-close]");if(cl){closeDrawers();return}
+  const dn=e.target.closest("[data-dnav]");if(dn){navDetail(+dn.dataset.dnav);return}
+  const dr=e.target.closest("[data-dretry]");if(dr){DETAIL.delete(dr.dataset.dretry);const box=dr.closest("#isinbox");if(box){box.dataset.isin="";renderIsinBox()}else openDetail(dr.dataset.dretry,true);return}
+  if(e.target.closest("[data-reload]")){load();return}
   const dt=e.target.closest("[data-dtab]");if(dt){const v=dt.closest(".dview");v.querySelectorAll("[data-dtab]").forEach(b=>b.setAttribute("aria-selected",b===dt));
     v.querySelectorAll("[data-pane]").forEach(p=>p.hidden=p.dataset.pane!==dt.dataset.dtab);const db=dt.closest(".dbody"),tt=v.querySelector(".dtitle");
     if(db&&tt&&db.scrollTop>tt.offsetTop)db.scrollTop=tt.offsetTop-8;if(dt.dataset.dtab==="p")wireLive(v);return}
@@ -2444,7 +2477,13 @@ $("#cmp").addEventListener("click",e=>{if(e.target.id==="cmp")closeDrawers()});
 $("#pf").addEventListener("click",e=>{if(e.target.id==="pf")closeDrawers()});
 $("#b-pf").addEventListener("click",openPf);
 $("#cmpgo").addEventListener("click",openCmp);$("#cmpclr").addEventListener("click",()=>{CMP.clear();renderCmpBar();render(false)});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawers();openSheet(false)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawers();openSheet(false);return}
+  if($("#drawer").hidden||e.altKey||e.ctrlKey||e.metaKey||e.target.closest("input,select,textarea"))return;
+  const tb=e.target.closest("[data-dtab]");
+  if(tb&&(e.key==="ArrowLeft"||e.key==="ArrowRight")){const all=[...tb.parentNode.querySelectorAll("[data-dtab]")],n=all[(all.indexOf(tb)+(e.key==="ArrowRight"?1:-1)+all.length)%all.length];n.click();n.focus();e.preventDefault();return}
+  if(e.key==="ArrowLeft"||e.key==="ArrowRight"){navDetail(e.key==="ArrowRight"?1:-1);e.preventDefault()}});
+addEventListener("offline",()=>toast("Sei offline: vedi i dati già scaricati",1));
+addEventListener("online",()=>{toast("Di nuovo online");if(!CERTS.length)load()});
 addEventListener("hashchange",()=>{if(fromHash()){rescore();render()}});
 let rT=null;addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>{setTopH();render(false)},200)});
 /* telefono: profilo e obiettivi scorrono con la pagina; in alto restano fissi solo ricerca e conteggio */
@@ -2500,17 +2539,22 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>apply
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});
 fromHash();setTopH();syncControls();
 if(innerWidth<820)$("#q").placeholder="Cerca ISIN, sottostante, emittente";
+let LOADN=0,LOADN_DONE=0;
 async function load(){
-  let j;
+  let j;$("#results").setAttribute("aria-busy","true");const di=new URLSearchParams(location.hash.slice(1)).get("isin"); // letto subito: render() riscrive l'indirizzo
   try{const r=await fetch("data/list.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;j=await r.json();
     CERTS=j.rows.map(row=>{const o={};j.cols.forEach((k,i)=>{if(row[i]!=null)o[k]=row[i]});return o})}
   catch(e){ // ripiego: archivio completo
     try{const r=await fetch("data/certs.json?t="+Date.now(),{cache:"no-store"});j=await r.json();CERTS=j.certs||[]}
-    catch(e2){$("#results").innerHTML=`<div class="empty">Dati non disponibili: riprova tra poco.</div>`;$("#status").textContent="Dati non disponibili";return}}
+    catch(e2){const off=OFFLINE(),n=++LOADN;
+      $("#results").innerHTML=errBox(off?"Sei offline":"Dati non disponibili",off?"Il radar si carica appena torna la connessione.":`Il server non risponde. ${n<4?"Riprovo da solo tra pochi secondi.":"Riprova tra qualche minuto."}`,`<button data-reload>Riprova ora</button>`);
+      $("#results").setAttribute("aria-busy","false");$("#status").textContent=off?"Offline":"Dati non disponibili";
+      if(!off&&n<4)setTimeout(()=>{if(!CERTS.length)load()},n*4000);return}}
+  $("#results").setAttribute("aria-busy","false");
   META=j;CERTS.forEach(enrich);peerStats();BYISIN=new Map(CERTS.map(c=>[c.isin,c]));
   rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();ensureLeva();
   // arrivo dalla scheda statica /certificato/<ISIN>: apre subito il dettaglio
-  const di=new URLSearchParams(location.hash.slice(1)).get("isin");if(di&&BYISIN.has(di))openDetail(di);
+  if(di&&!LOADN_DONE++){if(!BYISIN.has(di))await ensureLeva();openDetail(di)}
   if(START_PF)openPf();
 }
 load();
