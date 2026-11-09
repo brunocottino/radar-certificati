@@ -679,7 +679,7 @@
   "yahooName": "Altria Group, Inc."
  },
  "aluminium copper zinc": {
-  "checkedAt": "2026-10-30",
+  "checkedAt": "2026-11-09",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4735,7 +4735,7 @@
   "yahooName": null
  },
  "euribor 3 mesi": {
-  "checkedAt": "2026-10-30",
+  "checkedAt": "2026-11-09",
   "exchange": null,
   "isin": "EU0009652783",
   "manual": null,
@@ -5904,7 +5904,7 @@
   "yahooName": "Ford Motor Company"
  },
  "ford renault stellantis": {
-  "checkedAt": "2026-10-30",
+  "checkedAt": "2026-11-09",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15337,7 +15337,7 @@
   "yahooName": null
  },
  "msci world ex usa with minimum economic exposure to usa top 50 select 3 5 decrement idx eur net return": {
-  "checkedAt": "2026-10-30",
+  "checkedAt": "2026-11-09",
   "exchange": null,
   "isin": null,
   "manual": null,
