@@ -2,7 +2,7 @@
 
 > Screener gratuito e indipendente dei certificati d'investimento quotati in Italia (SeDeX di Borsa Italiana, Cert-X/EuroTLX di Euronext): 14227 certificati di 34 emittenti con cedola annua, frequenza, effetto memoria, barriera capitale, distanza del sottostante peggiore dalla barriera, scadenza, prezzo denaro/lettera e probabilità stimata di tenuta della barriera (simulazione Monte Carlo sulla volatilità storica). Aggiornato ogni giorno di borsa alle 09:35 e alle 16:15 ora di Roma. Senza registrazione.
 
-Dati aggiornati al 09/11/2026. I dati sono indicativi e raccolti da fonti pubbliche (siti degli emittenti, Borsa Italiana, Euronext); non sono consulenza. In italiano.
+Dati aggiornati al 10/11/2026. I dati sono indicativi e raccolti da fonti pubbliche (siti degli emittenti, Borsa Italiana, Euronext); non sono consulenza. In italiano.
 
 ## Pagine principali
 - [Radar (app di ricerca)](https://radarcertificati.com/): ricerca per ISIN, sottostante, emittente, tipologia; filtri, profili di rischio, confronto, portafoglio, esportazione Excel
@@ -11,8 +11,8 @@ Dati aggiornati al 09/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - Scheda di ogni certificato: https://radarcertificati.com/certificato/{ISIN} (es. https://radarcertificati.com/certificato/CA32076V1031)
 
 ## Liste
-- [Certificati con le cedole più alte](https://radarcertificati.com/certificati/cedole-piu-alte): 2735 certificati
-- [Certificati difensivi con cedola](https://radarcertificati.com/certificati/difensivi): 1618 certificati
+- [Certificati con le cedole più alte](https://radarcertificati.com/certificati/cedole-piu-alte): 2748 certificati
+- [Certificati difensivi con cedola](https://radarcertificati.com/certificati/difensivi): 1609 certificati
 - [Certificati con cedola mensile](https://radarcertificati.com/certificati/cedola-mensile): 3067 certificati
 - [Certificati con effetto memoria](https://radarcertificati.com/certificati/effetto-memoria): 3741 certificati
 - [Nuove emissioni di certificati](https://radarcertificati.com/certificati/nuove-emissioni): 639 certificati
