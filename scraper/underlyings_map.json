@@ -758,6 +758,17 @@
   "type": null,
   "yahooName": null
  },
+ "amd intel sandisk": {
+  "checkedAt": "2026-11-11",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "AMD, Intel, Sandisk",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "amd marvell taiwan semiconductor": {
   "checkedAt": "2026-10-30",
   "exchange": "NYQ",
@@ -3556,7 +3567,7 @@
   "yahooName": "CrowdStrike Holdings, Inc."
  },
  "crypto market neutral strategy": {
-  "checkedAt": "2026-11-03",
+  "checkedAt": "2026-11-11",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13924,7 +13935,7 @@
   "yahooName": "Leonardo S.p.a."
  },
  "leonardo stellantis poste italiane": {
-  "checkedAt": "2026-10-09",
+  "checkedAt": "2026-11-11",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -16170,6 +16181,19 @@
   "type": null,
   "yahooName": null
  },
+ "omx": {
+  "checkedAt": "2026-11-11",
+  "exchange": "STO",
+  "industry": null,
+  "isin": "SE0000337842",
+  "manual": null,
+  "name": "OMX",
+  "score": 0.9,
+  "sector": null,
+  "ticker": "^OMX",
+  "type": "INDEX",
+  "yahooName": "OMX Stockholm 30 Index"
+ },
  "omx stockholm 30 index": {
   "checkedAt": "2026-10-09",
   "exchange": "STO",
@@ -16985,7 +17009,7 @@
   "yahooName": "Repsol, S.A."
  },
  "repsol ypf s a": {
-  "checkedAt": "2026-11-03",
+  "checkedAt": "2026-11-11",
   "exchange": null,
   "isin": null,
   "manual": null,
