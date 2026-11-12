@@ -48,3 +48,6 @@ summary{cursor:pointer;font-weight:700}
 details p{margin:8px 0 2px;max-width:76ch}
 .foot{border-top:1px solid var(--line);padding:18px 0 28px;color:var(--muted);font-size:13px}
 .foot p{margin:4px 0}
+.warn{font-size:13.5px;line-height:1.5;color:var(--ink);background:var(--row);border:1px solid var(--line);border-left:4px solid var(--brass);border-radius:10px;padding:10px 14px;margin:16px 0;max-width:86ch}
+.def dt{font-weight:700;margin-top:12px}.def dd{margin:2px 0 0;max-width:76ch}
+.foot a{color:var(--muted)}

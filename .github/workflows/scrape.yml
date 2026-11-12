@@ -165,7 +165,7 @@ jobs:
         run: |
           git config user.name "radar-bot"
           git config user.email "radar-bot@users.noreply.github.com"
-          git add docs/data docs/api docs/certificati docs/sitemap.xml docs/llms.txt docs/guida-certificati.html history scraper/underlyings_map.json $(ls scraper/risk_state.json scraper/leonteq_state.json scraper/scheda_state.json scraper/bnp_detail_state.json scraper/intesa_detail_state.json scraper/vontobel_detail_state.json scraper/marex_detail_state.json scraper/leonteq_detail_state.json scraper/unicredit_detail_state.json 2>/dev/null)
+          git add docs/data docs/api docs/certificati docs/sitemap.xml docs/llms.txt docs/guida-certificati.html docs/note-legali.html docs/metodologia.html history scraper/underlyings_map.json $(ls scraper/risk_state.json scraper/leonteq_state.json scraper/scheda_state.json scraper/bnp_detail_state.json scraper/intesa_detail_state.json scraper/vontobel_detail_state.json scraper/marex_detail_state.json scraper/leonteq_detail_state.json scraper/unicredit_detail_state.json 2>/dev/null)
           # le run programmate firmano il commit con la fascia (09:35 / 16:15): serve al controllo d'orario
           SLOT="${{ steps.ora.outputs.slot }}"
           MSG="Dati certificati $(TZ=Europe/Rome date +%F)"

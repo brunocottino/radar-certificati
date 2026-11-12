@@ -1,7 +1,7 @@
 // Service worker minimo: rende il sito installabile e usabile offline.
 // Sempre prima la rete. I dati (data/, api/) non vengono mai salvati in cache: una copia vecchia
 // mostrata senza avviso è peggio di un errore. Il resto (pagina, icone) resta disponibile offline.
-const CACHE = "radar-v44";
+const CACHE = "radar-v45";
 self.addEventListener("install", e => self.skipWaiting());
 self.addEventListener("activate", e => e.waitUntil(
   caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())

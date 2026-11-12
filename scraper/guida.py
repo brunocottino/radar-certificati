@@ -43,6 +43,21 @@ SECTIONS = [
         ("Cosa sono i certificati Bonus Cap?",
          "Pagano a scadenza un bonus prefissato se il sottostante non ha mai toccato la barriera (o non è sotto la barriera a scadenza, "
          "secondo il prodotto); il guadagno massimo è limitato dal cap. Se la barriera viene violata, il certificato segue il sottostante."),
+        ("Cosa sono i Maxi Cash Collect?",
+         "Sono Cash Collect che pagano una prima cedola molto alta (anche oltre il 10-20% del nominale) poco dopo l'emissione e poi cedole "
+         "più piccole. Dopo lo stacco della maxi cedola il prezzo scende di un importo simile: non è un guadagno gratuito. Elenco aggiornato: "
+         "<a href=\"/certificati/maxi-cash-collect\">certificati Maxi Cash Collect</a>."),
+        ("Cosa sono i certificati Low Barrier?",
+         "Sono certificati con la barriera capitale molto bassa, di solito tra il 30% e il 50% del valore iniziale: il sottostante deve "
+         "perdere più della metà prima che il capitale sia a rischio. In cambio le cedole sono più contenute. Vedi i "
+         "<a href=\"/certificati/barriera-bassa\">certificati con barriera bassa</a>."),
+        ("Dove si comprano i certificati?",
+         "In borsa, tramite la propria banca o il proprio broker, come un'azione: basta l'ISIN. In Italia sono quotati sul SeDeX di Borsa "
+         "Italiana, su Cert-X/EuroTLX di Euronext e su Vorvel. Alcuni si sottoscrivono anche in collocamento, prima della quotazione."),
+        ("Meglio i certificati o gli ETF?",
+         "Sono strumenti diversi. L'ETF replica un mercato e ne segue per intero salite e discese, con costi bassi e senza rischio emittente "
+         "sul patrimonio. Il certificato ha un profilo costruito (cedole, barriera, protezione) e una scadenza, ma porta rischio emittente e "
+         "regole più complesse. Dipende dall'obiettivo: non esiste una risposta valida per tutti."),
     ]),
     ("Le caratteristiche da capire", [
         ("Cos'è la barriera di un certificato?",
@@ -76,6 +91,16 @@ SECTIONS = [
         ("Cos'è il KID di un certificato?",
          "Il KID (Key Information Document) è il documento di 3 pagine, obbligatorio, con caratteristiche, rischi, scenari e costi del "
          "prodotto. Va letto prima di comprare insieme ai Final Terms (term sheet)."),
+        ("Cos'è lo strike di un certificato?",
+         "È il valore iniziale del sottostante, fissato all'emissione: barriera, trigger cedola e livello di rimborso anticipato sono espressi "
+         "in percentuale dello strike. Una barriera al 60% su uno strike di 10 euro è a 6 euro."),
+        ("Cosa vuol dire che un certificato è sotto la pari?",
+         "Che quota sotto il suo valore nominale (per esempio 92 su 100). Se a scadenza rimborsa il nominale, alla somma delle cedole si "
+         "aggiunge la differenza; ma un prezzo sotto la pari di solito segnala che il mercato vede più rischio. Elenco: "
+         "<a href=\"/certificati/sotto-la-pari\">certificati sotto la pari</a>."),
+        ("Cos'è la cedola incondizionata?",
+         "È una cedola pagata comunque, qualunque sia l'andamento dei sottostanti (certificati Fixed Cash Collect). La cedola condizionata, "
+         "invece, è pagata solo se alla data di osservazione i sottostanti sono sopra il livello trigger."),
     ]),
     ("Rischi e tasse", [
         ("I certificati sono sicuri?",
@@ -94,6 +119,17 @@ SECTIONS = [
          "Con i certificati a capitale condizionatamente protetto sì, in teoria: se a scadenza il sottostante peggiore vale zero, si riceve "
          "zero. In pratica la perdita è pari al calo del sottostante peggiore quando la barriera è violata. Con i certificati a leva la "
          "perdita totale è un'eventualità concreta."),
+        ("Si possono recuperare le minusvalenze con i certificati?",
+         "In generale sì: per una persona fisica i proventi dei certificati (cedole comprese) sono redditi diversi e possono compensare le "
+         "minusvalenze dei quattro anni precedenti presenti nello zainetto fiscale. Conta però come e quando il provento viene incassato e "
+         "come opera il proprio intermediario: prima di muoversi per questo motivo verificare il proprio caso con la banca o il commercialista."),
+        ("Quali sono i migliori certificati?",
+         "Non esiste un certificato migliore in assoluto. Una cedola alta di solito corrisponde a sottostanti più volatili o a barriere più "
+         "vicine; una barriera lontana a cedole più basse. Si confrontano cedola, distanza dalla barriera, scadenza, qualità dell'emittente e "
+         "prezzo rispetto al nominale: le <a href=\"/certificati/\">raccolte</a> del radar li ordinano con criteri dichiarati, senza dare consigli."),
+        ("Quanto costano i certificati?",
+         "Non hanno commissioni di gestione esplicite: i costi sono dentro il prezzo (margine dell'emittente, riportato nel KID) e nella "
+         "differenza tra denaro e lettera. A questi si aggiungono le commissioni di negoziazione della banca o del broker."),
     ]),
     ("Usare Radar Certificati", [
         ("Cos'è Radar Certificati?",

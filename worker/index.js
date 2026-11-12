@@ -29,15 +29,16 @@ function page({ title, desc, canonical, body, ld, noindex }) {
 ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${canonical}">`}
 <meta property="og:type" content="website"><meta property="og:site_name" content="Radar Certificati"><meta property="og:locale" content="it_IT">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${canonical || SITE}">
-<meta property="og:image" content="${SITE}/icon-512.png?v=10"><meta name="twitter:card" content="summary">
-<link rel="icon" href="/icon.svg?v=10" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=10"><link rel="stylesheet" href="/seo.css?v=1">
+<meta property="og:image" content="${SITE}/og.png?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg?v=10" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=10"><link rel="stylesheet" href="/seo.css?v=2">
 ${ld ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>` : ""}
 </head><body>
 <header class="top"><div><a class="brand" href="/"><img src="/icon-192.png" alt="" width="32" height="32">Radar Certificati</a>
 <nav><a href="/">Cerca nel radar</a><a href="/certificati/">Raccolte</a><a href="/guida-certificati">Guida</a></nav></div></header>
 <main>${body}</main>
 <footer class="foot"><div><p>Radar Certificati è uno screener gratuito e indipendente dei certificati d'investimento quotati in Italia (SeDeX, Cert-X/EuroTLX), aggiornato ogni giorno di borsa alle 09:35 e alle 16:15.</p>
-<p>Dati indicativi raccolti da fonti pubbliche. Le probabilità sono stime statistiche, non previsioni né consulenza: prima di investire leggere KID e term sheet dell'emittente.</p></div></footer>
+<p><b>Avvertenze.</b> Il sito ha solo scopo informativo: non offre consulenza, non fa raccomandazioni d'investimento e non sollecita l'acquisto o la vendita di strumenti finanziari. I dati sono indicativi, raccolti da fonti pubbliche, e possono essere incompleti, in ritardo o errati; le probabilità sono stime statistiche, non previsioni. I certificati sono strumenti complessi che possono far perdere tutto il capitale investito: fanno fede solo KID, prospetto e quotazioni ufficiali. Il sito non è collegato agli emittenti e non riceve compensi da loro.</p>
+<p><a href="/note-legali">Note legali e avvertenze</a> · <a href="/metodologia">Metodologia e fonti</a> · <a href="/guida-certificati">Guida ai certificati</a> · <a href="/certificati/">Tutte le raccolte</a> · <a href="/">Cerca nel radar</a></p></div></footer>
 </body></html>`;
 }
 
@@ -91,7 +92,14 @@ function certPage(isin, c, hist, hubs) {
   for (const n of unds) { const h = hubs?.tickers?.[tick.get(n)]; if (h) links.push(`<a href="/certificati/${h}">Certificati su ${esc(n)}</a>`); }
   if (c.sector && hubs?.sectors?.[c.sector]) links.push(`<a href="/certificati/${hubs.sectors[c.sector]}">Settore ${esc(c.sector)}</a>`);
 
-  const title = `${isin} · ${type} su ${undTxt} | Radar Certificati`;
+  const nums = [c.couponPa && `cedola ${pct(c.couponPa)}`, c.barrierPct && `barriera ${pct(c.barrierPct, 0)}`].filter(Boolean).join(", ");
+  const title = `${isin}: ${type} su ${undTxt}${nums ? ` · ${nums}` : ""} | Radar Certificati`;
+  // domande in chiaro sotto la scheda: sono quelle che si scrivono cercando un ISIN
+  const qa = [];
+  if (c.couponPa) qa.push([`Quanto rende il certificato ${isin}?`, `Prevede una cedola${c.triggerPct ? " condizionata" : ""} del ${pct(c.couponPa)} annuo${freq ? ` con pagamento ${freq}` : ""}${c.memory ? " ed effetto memoria" : ""}. ${c.triggerPct ? "La cedola è pagata solo se alla data di osservazione i sottostanti sono sopra il livello trigger: non è garantita." : "Il rendimento effettivo dipende dal prezzo di acquisto e dal rimborso a scadenza."}`]);
+  if (c.barrierPct) qa.push([`Dov'è la barriera del certificato ${isin}?`, `La barriera capitale è al ${pct(c.barrierPct, 1)} del valore iniziale${c.distBarrier != null ? (c.distBarrier >= 0 ? `; oggi il sottostante peggiore è sopra la barriera del ${pct(c.distBarrier, 1)}` : `; oggi il sottostante peggiore è sotto la barriera del ${pct(-c.distBarrier, 1)}`) : ""}. Se a scadenza il peggiore è sotto la barriera, il rimborso segue la sua perdita.`]);
+  if (c.maturity) qa.push([`Quando scade il certificato ${isin}?`, `Scade il ${day(c.maturity)}${c.callable || c.autocallPct ? `, ma può essere rimborsato in anticipo${c.nextCallDate ? ` (prossima data ${day(c.nextCallDate)})` : ""}` : ""}.`]);
+  if (c.issuer) qa.push([`Chi emette il certificato ${isin}?`, `È emesso da ${c.issuer}${c.market ? ` ed è quotato su ${c.market}` : ""}. Chi lo compra è esposto anche al rischio che l'emittente non sia in grado di pagare.`]);
   const desc = [`${type} di ${c.issuer || "emittente n.d."} su ${undTxt}`, c.couponPa && `cedola ${pct(c.couponPa)} annua`,
     c.barrierPct && `barriera ${pct(c.barrierPct, 1)}`, c.distBarrier != null && `distanza ${pct(c.distBarrier, 1)}`,
     c.maturity && `scadenza ${day(c.maturity)}`].filter(Boolean).join(", ") + ". Prezzo, probabilità di tenuta della barriera e storico.";
@@ -106,7 +114,7 @@ function certPage(isin, c, hist, hubs) {
       { "@type": "ListItem", position: 1, name: "Radar Certificati", item: SITE + "/" },
       ...(iss ? [{ "@type": "ListItem", position: 2, name: c.issuer, item: `${SITE}/certificati/${iss}` }] : []),
       { "@type": "ListItem", position: iss ? 3 : 2, name: isin, item: url }],
-  }];
+  }, ...(qa.length ? [{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: qa.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }] : [])];
   const body = `<p class="crumbs"><a href="/">Radar Certificati</a> › ${iss ? `<a href="/certificati/${iss}">${esc(c.issuer)}</a> › ` : ""}${esc(isin)}</p>
 <h1>${esc(type)} su ${esc(undTxt)}</h1><p class="sub">ISIN ${esc(isin)} · ${esc(c.issuer || "")}${c.updatedAt ? ` · dati del ${day(c.updatedAt)}` : ""}</p>
 <p class="lead">${s.join(" ")}</p>
@@ -115,8 +123,10 @@ function certPage(isin, c, hist, hubs) {
 <h2>Dati principali</h2><div class="card"><dl class="kv">${kv.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl></div>
 ${unds.length ? `<h2>Sottostanti</h2><div class="tw"><table><thead><tr><th>Sottostante</th><th class="r">Strike</th><th class="r">Distanza barriera</th><th class="r">Volatilità 1 anno</th></tr></thead><tbody>${undRows}</tbody></table></div>` : ""}
 ${spark(hist)}
+${qa.length ? `<h2>Domande frequenti su ${esc(isin)}</h2>${qa.map(([q, a]) => `<details open><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}` : ""}
 ${links.length ? `<h2>Certificati simili</h2><ul class="tags">${links.map(l => `<li>${l}</li>`).join("")}</ul>` : ""}
-<p class="note">Fonte: ${esc(c.source || "fonti pubbliche")}${c.priceSource ? `; prezzi: ${esc(c.priceSource)}` : ""}. Le informazioni possono essere incomplete o non aggiornate: verificare sempre KID e term sheet.</p>`;
+<p class="note">Fonte: ${esc(c.source || "fonti pubbliche")}${c.priceSource ? `; prezzi: ${esc(c.priceSource)}` : ""}. Le informazioni possono essere incomplete o non aggiornate: verificare sempre KID e term sheet.</p>
+<p class="warn"><b>Non è una raccomandazione.</b> Questa scheda descrive il certificato con dati pubblici e calcoli automatici; non dice se è adatto a chi legge. I certificati sono strumenti complessi: si può perdere anche tutto il capitale investito. <a href="/note-legali">Avvertenze complete</a> · <a href="/metodologia">Come sono calcolati i dati</a> · <a href="/guida-certificati">Guida ai certificati</a></p>`;
   return page({ title, desc, canonical: url, body, ld });
 }
 
@@ -200,6 +210,8 @@ export default {
   async scheduled(event, env, ctx) { ctx.waitUntil(clockTick(env, new Date(event.scheduledTime))); },
   async fetch(request, env, ctx) {
     const u = new URL(request.url);
+    // Un solo indirizzo per i motori di ricerca: www rimanda al dominio principale (prima erano due copie dello stesso sito).
+    if (u.hostname === "www.radarcertificati.com") return Response.redirect(SITE + u.pathname + u.search, 301);
     if (u.pathname === "/api/orologio") {  // diagnosi dell'orologio: la chiave c'è e GitHub la accetta? (non avvia nulla)
       let gh = null;
       if (env.GH_TOKEN) gh = (await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/scrape.yml`, { headers: {
@@ -211,7 +223,18 @@ export default {
     if (l) return ISIN_RE.test(l[1]) && LIVE_URL[u.searchParams.get("m")] ? live(l[1], u.searchParams.get("m"), ctx)
       : new Response('{"ok":false}', { status: 400, headers: { "content-type": "application/json" } });
     const m = u.pathname.match(/^\/certificato\/([A-Za-z0-9]{12})\/?$/);
-    if (!m) return notFound(null);
+    if (!m) {
+      // pagine e file del sito (il worker passa per primo sulle pagine: vedi run_worker_first in wrangler.jsonc)
+      if (request.method !== "GET" && request.method !== "HEAD") return notFound(null);
+      const r = await env.ASSETS.fetch(request);
+      if (r.status === 404) return notFound(null);
+      const dev = u.hostname.endsWith(".workers.dev"), sw = u.pathname === "/sw.js";
+      if (!dev && !sw) return r;
+      const h = new Headers(r.headers);
+      if (dev) h.set("x-robots-tag", "noindex");  // l'indirizzo tecnico serve al robot, non deve finire su Google
+      if (sw) h.set("cache-control", "no-cache");
+      return new Response(r.body, { status: r.status, statusText: r.statusText, headers: h });
+    }
     const isin = m[1].toUpperCase();
     if (m[1] !== isin || u.pathname.endsWith("/")) return Response.redirect(`${u.origin}/certificato/${isin}`, 301);
     if (!ISIN_RE.test(isin)) return notFound(isin);

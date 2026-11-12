@@ -3,19 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Screener gratuito dei certificati d'investimento quotati in Italia: cedole, rendimento annuo, distanza dalla barriera, probabilità di tenuta, settori. Dati aggiornati due volte al giorno.">
+<meta name="description" content="Cerca e confronta oltre 14.000 certificati d'investimento quotati in Italia: Cash Collect, Phoenix, Express, capitale protetto. Cedole, barriere, distanza dalla barriera, probabilità di tenuta. Gratis, senza registrazione, aggiornato due volte al giorno.">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Radar Certificati">
-<meta property="og:description" content="Cedole, rendimento, distanza dalla barriera e probabilità di tenuta di oltre 13.000 certificati quotati in Italia.">
-<meta property="og:image" content="https://radarcertificati.com/icon-512.png?v=10">
+<meta property="og:title" content="Radar Certificati · tutti i certificati d'investimento quotati in Italia">
+<meta property="og:description" content="Cedole, rendimento, distanza dalla barriera e probabilità di tenuta di oltre 14.000 certificati quotati in Italia. Gratis, senza registrazione.">
+<meta property="og:image" content="https://radarcertificati.com/og.png?v=1">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="https://radarcertificati.com/">
 <meta property="og:site_name" content="Radar Certificati">
 <meta property="og:locale" content="it_IT">
 <link rel="canonical" href="https://radarcertificati.com/">
-<meta name="twitter:card" content="summary">
-<title>Radar Certificati · screener di certificati d'investimento</title>
+<meta name="twitter:card" content="summary_large_image">
+<title>Certificati d'investimento: screener gratuito di Cash Collect, Phoenix, Express | Radar Certificati</title>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"Radar Certificati","alternateName":"radarcertificati.com","url":"https://radarcertificati.com/","inLanguage":"it","description":"Screener gratuito dei certificati d'investimento quotati in Italia.","potentialAction":{"@type":"SearchAction","target":"https://radarcertificati.com/#q={search_term_string}","query-input":"required name=search_term_string"}},
-{"@context":"https://schema.org","@type":"WebApplication","name":"Radar Certificati","url":"https://radarcertificati.com/","applicationCategory":"FinanceApplication","operatingSystem":"Web, iOS, Android","inLanguage":"it","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Cerca e confronta oltre 13.000 certificati d'investimento quotati su SeDeX e Cert-X: cedola annua, effetto memoria, barriera, distanza dalla barriera, scadenza, prezzo e probabilità di tenuta della barriera. Aggiornato due volte al giorno.","featureList":["Ricerca per ISIN, sottostante, emittente e tipologia","Distanza dalla barriera e probabilità di tenuta","Profili prudente, bilanciato, aggressivo","Confronto e portafoglio","Esportazione Excel","API JSON aperta"]}]</script>
+{"@context":"https://schema.org","@type":"WebApplication","name":"Radar Certificati","url":"https://radarcertificati.com/","applicationCategory":"FinanceApplication","operatingSystem":"Web, iOS, Android","inLanguage":"it","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Cerca e confronta oltre 13.000 certificati d'investimento quotati su SeDeX e Cert-X: cedola annua, effetto memoria, barriera, distanza dalla barriera, scadenza, prezzo e probabilità di tenuta della barriera. Aggiornato due volte al giorno.","featureList":["Ricerca per ISIN, sottostante, emittente e tipologia","Distanza dalla barriera e probabilità di tenuta","Profili prudente, bilanciato, aggressivo","Confronto e portafoglio","Esportazione Excel","API JSON aperta"]},{"@context":"https://schema.org","@type":"Organization","name":"Radar Certificati","url":"https://radarcertificati.com/","logo":"https://radarcertificati.com/icon-512.png?v=10","description":"Screener gratuito e indipendente dei certificati d'investimento quotati in Italia.","publishingPrinciples":"https://radarcertificati.com/metodologia"}]</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg?v=10" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=10">
@@ -836,7 +838,7 @@ td{font-weight:500}
 <body>
 <noscript><p>Radar Certificati è uno screener gratuito dei certificati d'investimento quotati in Italia (SeDeX, Cert-X, EuroTLX):
 cedole, rendimento annuo, distanza dalla barriera, probabilità di tenuta e settori dei sottostanti, con dati aggiornati due volte al giorno.
-Per usarlo serve JavaScript.</p></noscript>
+Per usare la ricerca serve JavaScript; senza, si possono sfogliare <a href="/certificati/">tutte le raccolte di certificati</a>, la <a href="/guida-certificati">guida ai certificati</a>, la <a href="/metodologia">metodologia</a> e le <a href="/note-legali">note legali</a>.</p></noscript>
 <div id="banner" class="banner" role="alert" hidden></div>
 <header class="top" id="top">
   <div class="top-in">
@@ -956,7 +958,7 @@ Per usarlo serve JavaScript.</p></noscript>
   </section>
 
   <section class="panel" id="daily" hidden>
-    <h2>Scelte del giorno · profilo <span id="daily-prof"></span></h2>
+    <h2>In evidenza oggi · profilo <span id="daily-prof"></span></h2>
     <div id="dailybody" class="daily-row"></div>
   </section>
   </details>
@@ -974,18 +976,19 @@ Per usarlo serve JavaScript.</p></noscript>
   <details class="panel legal" id="legal">
     <summary>Note legali, fonti e privacy</summary>
     <div class="legal-body">
-      <p><b>Non è consulenza finanziaria.</b> Radar Certificati è uno strumento gratuito di ricerca e confronto. Nulla di quanto pubblicato è una raccomandazione, un invito all'acquisto o alla vendita, né una consulenza in materia di investimenti. I certificati sono prodotti complessi che possono far perdere in tutto o in parte il capitale investito: prima di qualsiasi decisione leggi il KID e il prospetto dell'emittente e, se serve, rivolgiti a un consulente abilitato.</p>
+      <p><b>Non è consulenza finanziaria.</b> Radar Certificati è uno strumento gratuito di ricerca e confronto. Nulla di quanto pubblicato è una raccomandazione, un invito all'acquisto o alla vendita, né una consulenza in materia di investimenti. Classifiche, punteggi, profili e certificati in evidenza sono ordinamenti automatici su criteri numerici, uguali per tutti: non tengono conto della situazione di chi legge (<a href="/note-legali">avvertenze complete</a>, <a href="/metodologia">metodologia</a>). I certificati sono prodotti complessi che possono far perdere in tutto o in parte il capitale investito: prima di qualsiasi decisione leggi il KID e il prospetto dell'emittente e, se serve, rivolgiti a un consulente abilitato.</p>
       <p><b>Dati indicativi.</b> I dati sono raccolti automaticamente da fonti pubbliche due volte al giorno nei giorni di borsa e possono essere incompleti, in ritardo o errati. Rendimenti, distanze, probabilità, punteggi e settori sono calcoli e stime del sito, non dati ufficiali: le probabilità sono stime statistiche basate su volatilità storiche, non previsioni. Fanno fede solo i documenti e le quotazioni ufficiali dell'emittente e del mercato.</p>
       <p><b>Fonti.</b> Liste e prezzi: Borsa Italiana, Euronext e i siti pubblici degli emittenti (tra cui BNP Paribas, UniCredit, Intesa Sanpaolo, Vontobel, Leonteq, Marex, Citigroup, Société Générale). Prezzi storici dei sottostanti: Yahoo Finance. Il sito non è affiliato né collegato agli emittenti, ai mercati o ai fornitori di dati; nomi e marchi appartengono ai rispettivi titolari.</p>
       <p><b>Privacy.</b> Il sito non usa cookie, non ha pubblicità né strumenti di tracciamento o statistiche. Preferiti, profilo, tema e impostazioni restano solo nel tuo browser (memoria locale) e non vengono inviati a nessuno. Il sito è ospitato da Cloudflare, che tratta i dati tecnici delle connessioni (es. indirizzo IP) per erogarlo. I caratteri sono serviti dal sito stesso; la libreria per l'Excel si scarica da cdnjs (Cloudflare) solo quando premi "Esporta".</p>
     </div>
   </details>
   <nav class="panel seolinks" aria-label="Raccolte e guida">
-    <p><b>Radar Certificati</b> è uno screener gratuito e indipendente di oltre 13.000 certificati d'investimento quotati in Italia (SeDeX, Cert-X/EuroTLX, Vorvel): cedole, barriere, distanze, probabilità di tenuta, aggiornati ogni giorno di borsa alle 09:35 e alle 16:15. Ogni certificato ha anche una scheda propria (radarcertificati.com/certificato/ISIN).</p>
-    <p><b>Guida e raccolte:</b> <a href="/guida-certificati">Guida ai certificati</a> · <a href="/certificati/">Tutte le raccolte</a> · <a href="/certificati/cedole-piu-alte">Cedole più alte</a> · <a href="/certificati/difensivi">Difensivi</a> · <a href="/certificati/cedola-mensile">Cedola mensile</a> · <a href="/certificati/effetto-memoria">Effetto memoria</a> · <a href="/certificati/nuove-emissioni">Nuove emissioni</a></p>
-    <p><b>Tipologie:</b> <a href="/certificati/cash-collect">Cash Collect</a> · <a href="/certificati/phoenix">Phoenix</a> · <a href="/certificati/express-autocallable">Express e Autocallable</a> · <a href="/certificati/credit-linked">Credit Linked</a> · <a href="/certificati/capitale-protetto">Capitale protetto</a> · <a href="/certificati/bonus-cap">Bonus Cap</a> · <a href="/certificati/reverse-convertible">Reverse Convertible</a></p>
+    <p><b>Radar Certificati</b> è uno screener gratuito e indipendente di oltre 14.000 certificati d'investimento quotati in Italia (SeDeX, Cert-X/EuroTLX, Vorvel): cedole, barriere, distanze, probabilità di tenuta, aggiornati ogni giorno di borsa alle 09:35 e alle 16:15. Ogni certificato ha anche una scheda propria (radarcertificati.com/certificato/ISIN).</p>
+    <p><b>Guida e raccolte:</b> <a href="/guida-certificati">Guida ai certificati</a> · <a href="/certificati/">Tutte le raccolte</a> · <a href="/certificati/cedole-piu-alte">Cedole più alte</a> · <a href="/certificati/difensivi">Difensivi</a> · <a href="/certificati/cedola-mensile">Cedola mensile</a> · <a href="/certificati/effetto-memoria">Effetto memoria</a> · <a href="/certificati/nuove-emissioni">Nuove emissioni</a> · <a href="/certificati/sotto-la-pari">Sotto la pari</a> · <a href="/certificati/barriera-bassa">Barriera bassa</a> · <a href="/certificati/in-scadenza">In scadenza</a> · <a href="/certificati/prossime-cedole">Calendario cedole</a></p>
+    <p><b>Tipologie:</b> <a href="/certificati/cash-collect">Cash Collect</a> · <a href="/certificati/phoenix">Phoenix</a> · <a href="/certificati/express-autocallable">Express e Autocallable</a> · <a href="/certificati/credit-linked">Credit Linked</a> · <a href="/certificati/capitale-protetto">Capitale protetto</a> · <a href="/certificati/bonus-cap">Bonus Cap</a> · <a href="/certificati/reverse-convertible">Reverse Convertible</a> · <a href="/certificati/maxi-cash-collect">Maxi Cash Collect</a> · <a href="/certificati/low-barrier">Low Barrier</a> · <a href="/certificati/fixed-cash-collect">Fixed Cash Collect</a> · <a href="/certificati/airbag">Airbag</a> · <a href="/certificati/twin-win">Twin Win</a></p>
     <p><b>Emittenti:</b> <a href="/certificati/emittente-bnp-paribas">BNP Paribas</a> · <a href="/certificati/emittente-unicredit">UniCredit</a> · <a href="/certificati/emittente-vontobel">Vontobel</a> · <a href="/certificati/emittente-barclays">Barclays</a> · <a href="/certificati/emittente-societe-generale">Société Générale</a> · <a href="/certificati/emittente-intesa-sanpaolo">Intesa Sanpaolo</a> · <a href="/certificati/emittente-leonteq-securities">Leonteq</a> · <a href="/certificati/emittente-mediobanca">Mediobanca</a> · <a href="/certificati/emittente-marex">Marex</a></p>
     <p><b>Sottostanti:</b> <a href="/certificati/su-enel">Enel</a> · <a href="/certificati/su-unicredit">UniCredit</a> · <a href="/certificati/su-intesa-sanpaolo">Intesa Sanpaolo</a> · <a href="/certificati/su-eni">Eni</a> · <a href="/certificati/su-stellantis">Stellantis</a> · <a href="/certificati/su-stmicroelectronics">STMicroelectronics</a> · <a href="/certificati/su-leonardo">Leonardo</a> · <a href="/certificati/su-ferrari">Ferrari</a> · <a href="/certificati/su-tesla">Tesla</a> · <a href="/certificati/su-nvidia">Nvidia</a> · <a href="/certificati/su-euro-stoxx-50">Euro Stoxx 50</a> · <a href="/certificati/su-ftse-mib">FTSE MIB</a></p>
+    <p><b>Avvertenze:</b> il sito ha solo scopo informativo. Non offre consulenza, non fa raccomandazioni d'investimento e non sollecita l'acquisto o la vendita di strumenti finanziari; elenchi, punteggi e certificati in evidenza sono ordinamenti automatici di dati, uguali per tutti. I certificati sono strumenti complessi e possono far perdere tutto il capitale investito. <a href="/note-legali">Note legali e avvertenze</a> · <a href="/metodologia">Metodologia e fonti</a></p>
   </nav>
   <div class="colophon" aria-label="Palette"><span class="cap">Palette ispirata a PANTONE®</span><div class="pchip" style="--c:#f0eee9"><i></i><span><b>11-4201</b>Cloud Dancer · la carta</span></div><div class="pchip" style="--c:#0f4c81"><i></i><span><b>19-4052</b>Classic Blue · l'accento</span></div><div class="pchip" style="--c:#d69a2d"><i></i><span><b>7563 C</b>Oro · la frontiera</span></div><div class="pchip" style="--c:#101820"><i></i><span><b>Black 6 C</b>Inchiostro · il testo</span></div><div class="pchip" style="--c:#d7d2cb"><i></i><span><b>Warm Gray 1 C</b>Linee · la griglia</span></div></div>
 </main>
