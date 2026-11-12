@@ -1119,6 +1119,7 @@ function enrich(c){
   r.secOf=new Map((Array.isArray(c.underlyings)?c.underlyings:[]).map((u,i)=>[u,(c.sectors||[])[i]||null]));
   r.secU=[...new Set((c.sectors||[]).filter(Boolean))];r.sector=c.sector||null;
   r.unds=Array.isArray(c.underlyings)?c.underlyings.filter(u=>u&&!/^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$/.test(u)):String(c.underlyings||"").split("|").map(s=>s.trim()).filter(Boolean);
+  r.undCanon=Array.isArray(c.undCanon)?c.undCanon.filter(Boolean):[];
   r.unds=r.unds.reduce((a,u)=>{if(a.length&&/^(inc|corp|ltd|co|plc|llc|s\.?a|n\.?v|s\.?p\.?a|ag|se)\.?$/i.test(u.trim()))a[a.length-1]+=", "+u.trim();else a.push(u);return a},[]);
   r.n=r.unds.length;
   r.dist=c.distBarrier==null||c.distBarrier===""?null:+c.distBarrier;
@@ -1256,6 +1257,8 @@ function buildIndex(){
   CERTS.forEach((c,i)=>{
     c.undW=c.unds.map(u=>norm(u).split(" ").filter(Boolean));
     c.undW.forEach(ws=>ws.forEach(w=>add(w,i)));
+    /* stesso sottostante scritto in modi diversi (S&P500, S AND P 500, Nikkei225): nome canonico e forma compatta, per trovarli tutti */
+    [...c.unds,...c.undCanon].forEach(u=>{const ws=norm(u).split(" ").filter(Boolean);if(c.undCanon.includes(u))ws.forEach(w=>add(w,i));if(ws.length>1)add(ws.join(""),i)});
     c.unds.forEach(u=>addS(u,"Sottostante"));
     for(const s of [c.issuer,c.platform,c.type,c.cat])norm(s).split(" ").forEach(w=>w&&add(w,i));
     if(c.issuer)addS(c.issuer,"Emittente");if(c.platform)addS(c.platform,"Emittente");if(c.type)addS(c.type,"Tipologia");addS(c.cat,"Categoria");
@@ -1282,10 +1285,13 @@ function matchWords(t){
   INDEX.cache.set(t,out);return out;
 }
 function searchSet(q){
-  const toks=norm(q).split(" ").filter(Boolean);if(!toks.length)return null;
+  const toks=norm(q).replace(/\bs and p\b/,"s p").split(" ").filter(Boolean);if(!toks.length)return null;
   let res=null;const matched=new Set();
+  /* "s&p 500" o "s p500" devono trovare anche "S&P500": provo anche la versione senza spazi */
+  const glue=toks.length>1?INDEX.vocab.get(toks.join("")):null;if(glue)matched.add(toks.join(""));
   for(const t of toks){const ws=matchWords(t);ws.forEach(w=>matched.add(w));const s=new Set();for(const w of ws)for(const i of INDEX.vocab.get(w))s.add(i);
     res=res?new Set([...res].filter(i=>s.has(i))):s;if(!res.size)break}
+  if(glue){res=new Set([...(res||[]),...glue])}
   return {set:res,matched,toks};
 }
 
