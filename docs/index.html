@@ -1398,6 +1398,7 @@ function scenarios(c){if(c.ytmGood==null)return "";
 const freqTxt=f=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[f]||f||"—");
 function badges(c){
   const b=[];
+  if(c.matDate&&!c.expired){const dm=Math.round((c.matDate-today)/864e5);if(dm<=30)b.push(`<span class="b ko" title="Scade il ${dshort(c.matDate)}">Scade tra ${dm} g</span>`)}
   if(c.front)b.push(`<span class="b fr">Frontiera efficiente</span>`);
   if(c.sector)b.push(`<span class="sec ${c.sector==="Misto"?"mix":""}">${esc(secTxt(c))}</span>`);
   b.push(`<span class="b">${c.n>1?"Worst-of "+c.n:"Singolo"}</span>`);
@@ -1471,12 +1472,14 @@ const scls=v=>v>=70?"":v>=50?"ca":"neg";
 // variazione del prezzo dalla seduta precedente: piccola freccia, verde/rossa, nascosta sotto lo 0,05%
 const chgHtml=(v,lab="")=>v==null||Math.abs(v)<.05?"":`<span class="chg ${v>0?"up":"dn"}" title="Variazione del prezzo dalla seduta precedente">${lab}${v>0?"▲":"▼"}${fmt(Math.abs(v),Math.abs(v)<10?1:0)}%</span>`;
 function keyBadges(c){const b=[];if(c.call)b.push(callBadge(c));if(c.isNew)b.push(`<span class="b nw" title="Comparso nel radar il ${dshort(parseDate(c.firstSeen))}: probabilmente una nuova emissione">Nuovo</span>`);if(c.front)b.push(`<span class="b fr" title="Frontiera efficiente: nessun altro risultato ha insieme più rendimento e più distanza dalla barriera">Frontiera</span>`);
+  const dm=c.matDate&&!c.expired?Math.round((c.matDate-today)/864e5):null;
+  if(dm!=null&&dm<=30)b.push(`<span class="b ko" title="Il certificato scade il ${dshort(c.matDate)}: restano pochi giorni per incassare cedole">Scade tra ${dm} g</span>`);
   if(c.priceBad)b.push(`<span class="b ko">Prezzo anomalo</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
   if(c.ytmHigh)b.push(`<span class="b ca">Rend. sospetto</span>`);
   if(c.stale)b.push(`<span class="b st">Prezzo vecchio</span>`);
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
-  if(c.callKind==="autocall"&&!c.call)b.push(`<span class="b" title="Prossima data di possibile rimborso anticipato">Autocall${c.callDate?" "+dshort(c.callDate):""}</span>`);
+  if(c.callKind==="autocall"&&!c.call)b.push(`<span class="b${c.callDate&&(c.callDate-today)/864e5<=14?" ca":""}" title="${c.callDate?"Prossima data di possibile rimborso anticipato":"Autocall: date non lette dal radar, controlla il KID"}">Autocall${c.callDate?" "+dshort(c.callDate):" · date n.d."}</span>`);
   return b.slice(0,3).join("")}
 function cardHtml(c,i){const sp=pcol(c.prob);
   return `<article class="card${(i||0)<8?" anim":""}" data-open="${esc(c.isin)}" style="--i:${i||0};--spine:${sp==="none"?"var(--line)":sp}">
@@ -2048,7 +2051,8 @@ function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=
   else o.push(["na","Cedola",`${pct(c.couponPa,2)} l'anno${c.freq?", "+freqTxt(c.freq).toLowerCase():""}: condizione di pagamento non verificabile.`]);
   if(c.call)o.push([c.call.lvl==="alto"&&c.call.poor?"ko":"ca","Rimborso anticipato",callTxt(c)]);
   else if(c.callDate)o.push(["ok","Rimborso anticipato",`Prossima data ${dshort(c.callDate)}: oggi il rimborso non è probabile.`]);
-  else if(c.callKind)o.push(["na","Rimborso anticipato",`${c.callable?esc(c.callable):c.callKind==="autocall"?"Autocallable":"Richiamabile dall'emittente"}: date di rimborso non pubblicate dall'emittente.`]);
+  else if(c.callKind)o.push(["na","Rimborso anticipato",`${c.callable?esc(c.callable):c.callKind==="autocall"?"Autocallable":"Richiamabile dall'emittente"}: il radar non ha le date di rimborso anticipato: <b>può essere richiamato prima della scadenza</b>, controlla il KID prima di comprare.`]);
+  if(c.matDate&&!c.expired){const dm=Math.round((c.matDate-today)/864e5);if(dm<=30)o.unshift(["ko","Scadenza",`Scade il ${dshort(c.matDate)}, <b>tra ${dm} giorni</b>: restano poche cedole e il prezzo converge al rimborso.`])}
   if(!c.ask)o.push(["ko","Prezzo","Nessun prezzo in lettera: oggi non si può comprare."]);
   else{const sp=c.spread;o.push([sp==null?"na":sp<=1?"ok":sp<=2?"ca":"ko","Prezzo",`${c.pricePct?`Quota <b>${fmt(c.pricePct,1)}%</b>${c.pricePct<98?" (sotto la pari: guadagno extra se rimborsa 100)":c.pricePct>101?" (sopra la pari: a scadenza riavrai 100)":""}`:"Prezzo"} · spread ${pct(sp,2)}${sp>2?": comprare e rivendere costa caro":""}${c.stale?` · <span class="ca">dato del ${dtime(c.priceAt)}</span>`:""}.`])}
   o.push([c.tier==="A"?"ok":c.tier==="B"?"ok":c.tier==="C"?"ca":"na","Emittente",`${esc(c.issuer||"n.d.")}${c.tier?` · classe ${c.tier}`:""}: se l'emittente fallisce si può perdere il capitale anche con la barriera intatta.`]);
