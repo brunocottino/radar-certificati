@@ -412,6 +412,12 @@ async def main():
             found += certs
         await browser.close()
     certs = merge(old, found)
+    # via le righe che non sono certificati (ISIN di azioni letti come prodotti: senza tipo, cedola, barriera, scadenza, prezzo)
+    keep = ("type", "typeMarket", "couponPa", "barrierPct", "bid", "maturity", "underlyings")
+    n0 = len(certs)
+    certs = [c for c in certs if any(c.get(k) for k in keep)]
+    if n0 != len(certs):
+        print(f"[merge] scartate {n0 - len(certs)} righe che non sono certificati", flush=True)
     # stato per sorgente: quelle non eseguite in questa run mantengono i dati precedenti
     names = {s["name"] for s in SOURCES}
     srcs = {s["name"]: s for s in old_meta.get("sources", []) if s["name"] in names}

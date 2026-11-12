@@ -14,6 +14,8 @@ import random
 import re
 from pathlib import Path
 
+from bnpcal import call_info
+from datetime import date
 from run import ISIN_RE, accept_cookies, freq_of, norm, num, pdate
 
 
@@ -148,7 +150,9 @@ def bnp_cert(r, src, NOW):
         "maturity": pdate(kf.get("maturityDate") or r.get("maturityDate")),
         "bid": r.get("bid") or None, "ask": r.get("ask") or None,
         "nominal": kf.get("issuancePrice"),
-        "callable": {1: "Callable emittente", 2: "Autocall"}.get(act),
+        # act==2 («Automatico») non vuol dire richiamo anticipato: molti Cash Collect lo portano e rimborsano solo a scadenza.
+        # L'autocall si deduce dal calendario (bnp_details): qui solo il richiamo a discrezione dell'emittente
+        "callable": "Callable emittente" if act == 1 else None,
         "memory": bool((r.get("config") or {}).get("hasMemoryEffect")),
         "currency": (r.get("currency") or {}).get("isoCode"), "market": r.get("exchange"),
         "nextCouponDate": pdate(f.get("nextObservationDate")),
@@ -333,6 +337,16 @@ async def bnp_details(DISC, src, NOW, ctx):
             r["isin"] = isin
             cert = bnp_cert(r, src, NOW)
             cert["market"] = c.get("market") or cert.get("market")
+            # calendario di valutazione: date e livelli dei richiami anticipati veri
+            s3, t3 = await fetch(page, BNP_V1 + "calendar/table/" + isin, "GET", None, BNP_HDR)
+            ci = call_info(json.loads(t3), date.today().isoformat()) if s3 == 200 else None
+            if ci:
+                cert["callSchedule"] = ci["callSchedule"]
+                cert["nextCallDate"], cert["autocallPct"] = ci["nextCallDate"], ci["autocallPct"]
+                if ci["callSchedule"]:
+                    cert["callable"] = "Autocall"
+                elif cert.get("callable") != "Callable emittente":
+                    cert["callable"] = "No"  # esplicito: l'unione ignora i valori vuoti e terrebbe un vecchio «Autocall» sbagliato
             if r.get("derivativeTypeName"):
                 cert["type"] = r["derivativeTypeName"]
             return cert

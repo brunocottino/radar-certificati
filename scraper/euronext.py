@@ -42,7 +42,7 @@ ISSUERS = {
     "BPA": "BNP Paribas", "UCH": "UniCredit", "GSF": "Goldman Sachs", "GSE": "Goldman Sachs", "GSG": "Goldman Sachs",
     "CFS": "Crédit Agricole", "CAG": "Crédit Agricole", "SAN": "Santander", "NSI": "Natixis", "NOM": "Nomura",
     "BPE": "BPER Banca", "JPS": "J.P. Morgan", "BVA": "BBVA", "MSI": "Morgan Stanley", "MBI": "Mediobanca",
-    "AMU": "Amundi", "BP": "Banco BPM", "EXS": "Exane", "EXF": "Exane",
+    "AMU": "Amundi", "BBI": "Barclays", "BP": "Banco BPM", "EXS": "Exane", "EXF": "Exane",
 }
 
 LEVA_RX = re.compile(r"turbo|mini ?future|leva fissa|leverage|factor|covered warrant|\bwarrant|knock.?out|\bcall\b|\bput\b|stayhigh|stay high", re.I)

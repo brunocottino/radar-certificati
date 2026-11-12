@@ -114,7 +114,7 @@ FIRST = ROOT / "history" / "_first_seen.json"
 LIST_COLS = ["isin", "issuer", "platform", "type", "typeMarket", "category", "underlyings", "worstName", "distBarrier", "distAt",
              "barrierPct", "barrierType", "triggerPct", "autocallPct", "couponPa", "freq", "memory", "callable",
              "maturity", "bid", "ask", "nominal", "priceAt", "nextCouponDate", "nextCallDate", "market", "currency",
-             "probBarrierHold", "probMethod", "worstVol", "updatedAt", "sector", "sectors", "firstSeen", "chg1d"]
+             "probBarrierHold", "probMethod", "worstVol", "updatedAt", "sector", "sectors", "firstSeen", "chg1d", "undCanon"]
 
 CATEGORIES = [  # (categoria, regex sul testo tipo/nome/richiamo) - il primo che corrisponde vince
     ("Leva", r"turbo|mini ?future|leva fissa|leverage|factor|warrant|knock.?out|\bcw\b"),
@@ -123,6 +123,32 @@ CATEGORIES = [  # (categoria, regex sul testo tipo/nome/richiamo) - il primo che
     ("Cash Collect/Phoenix", r"cash ?collect|phoenix|premi|coupon|cedol|memory|income|step ?down|softcall|reverse conv"),
     ("Express", r"express|athena|autocall"),
 ]
+
+
+MARKET_FIX = {"sedex": "SeDeX", "eurotlx": "Cert-X", "cert-x": "Cert-X", "euronext milan": "Euronext Milan"}
+# stessi indici con ticker Yahoo diversi: un solo nome per la ricerca
+TICKER_SAME = {"^SPX": "^GSPC", "SPX": "^GSPC", "^NKX": "^N225", "N225": "^N225"}
+
+
+def is_certificate(c):
+    """Scarta le righe che non sono certificati: ISIN di azioni letti come prodotti (Leonteq elenca anche i sottostanti)."""
+    return bool(c.get("type") or c.get("typeMarket") or c.get("couponPa") or c.get("barrierPct") or c.get("bid")
+                or c.get("maturity") or c.get("underlyings"))
+
+
+def canonical_names(certs):
+    """Nome canonico per ticker: il più frequente tra quelli senza simboli di marca (S&P 500, non S&P 500® (Price Return) Index)."""
+    by = {}
+    for c in certs:
+        for u in c.get("underlyingsRisk") or []:
+            t = TICKER_SAME.get(u.get("ticker"), u.get("ticker"))
+            if t and u.get("name"):
+                by.setdefault(t, Counter())[u["name"]] += 1
+    out = {}
+    for t, cn in by.items():
+        clean = [(n, k) for n, k in cn.items() if not re.search(r"[®™]|\bindex\b|\(|\bprice\b", n, re.I)] or list(cn.items())
+        out[t] = max(clean, key=lambda x: (x[1], -len(x[0])))[0]
+    return out
 
 
 def category(c):
@@ -165,9 +191,26 @@ def main():
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     updated = meta.get("updatedAt") or now
 
+    n0 = len(certs)
+    certs = [c for c in certs if is_certificate(c)]
+    canon = canonical_names(certs)
+    print(f"[api] scartate {n0 - len(certs)} righe che non sono certificati")
     m = load(MAP, {})
     for c in certs:
         c["category"] = category(c)
+        if c.get("market"):
+            c["market"] = MARKET_FIX.get(c["market"].strip().lower(), c["market"])
+        # nomi canonici dei sottostanti (solo se diversi dal nome scritto dall'emittente): per cercare S&P 500 anche in "S&P500"
+        alt = []
+        for u in c.get("underlyingsRisk") or []:
+            n = canon.get(TICKER_SAME.get(u.get("ticker"), u.get("ticker")))
+            if n and n != u.get("name") and n not in alt:
+                alt.append(n)
+        c["undCanon"] = alt or None
+        # date "prossima cedola/richiamo" già passate (sorgente non riletta): meglio nessuna data che una data sbagliata
+        for k in ("nextCouponDate", "nextCallDate"):
+            if c.get(k) and c[k] < TODAY and not c.get("callSchedule"):
+                c[k] = None
         # settore di ogni sottostante (stesso ordine di underlyings) e del certificato ("Misto" se diversi)
         secs = [classify_name(n, lambda p: m.get(core(p) or norm(p))) for n in c.get("underlyings") or []]
         c["sectors"] = secs or None

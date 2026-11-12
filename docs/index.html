@@ -65,7 +65,7 @@
   --q1:#2b4767; --q2:#3d6ea3; --q3:#6a9fd6; --q4:#b7d5f2; color-scheme:dark}
 html,body{overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45}
-.wrap{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:14px 80px;display:grid;gap:14px}
+.wrap{max-width:min(1680px,100% - 24px);margin:0 auto;padding-inline:16px;padding-block:14px 80px;display:grid;gap:14px}
 h1{font-size:1.15rem;margin:0;letter-spacing:-.01em}
 h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px;font-weight:600}
 .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
@@ -82,7 +82,7 @@ button:disabled{opacity:.55;cursor:default}
 .num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
 /* barra in alto */
 .top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgb(0 0 0 / .04)}
-.top-in{max-width:1320px;margin:0 auto;padding:10px 16px 8px;display:grid;gap:8px}
+.top-in{max-width:min(1680px,100% - 24px);margin:0 auto;padding:10px 16px 8px;display:grid;gap:8px}
 .top-in>*,.top-in .row>*{min-width:0}
 .brand .row{flex-wrap:wrap;min-width:0}
 .brand{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -139,6 +139,14 @@ details summary::after{content:" ▾";color:var(--muted)}
 }
 @media (min-width:820px){.only-narrow{display:none!important}}
 .scrim{position:fixed;inset:0;background:rgb(0 0 0 / .35);z-index:35}
+.ov{margin:0 0 12px}
+.ov>summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:10px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:.9rem}
+.ov>summary::-webkit-details-marker{display:none}
+.ov>summary::after{content:"▾";margin-left:auto;color:var(--muted)}
+.ov[open]>summary::after{content:"▴"}
+.ov[open]>summary{margin-bottom:12px}
+.ov>summary #ov-s{color:var(--muted)}
+.ov:not(:has(#plate:not([hidden]),#daily:not([hidden]))){display:none}
 /* tabella virtualizzata */
 .vt{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);height:calc(100dvh - var(--top-h,190px) - 24px);min-height:320px;contain:strict}
 table{border-collapse:collapse;width:100%;font-size:.84rem}
@@ -934,6 +942,7 @@ Per usarlo serve JavaScript.</p></noscript>
 
   <section id="isinbox" hidden></section>
 
+  <details class="ov" id="ov"><summary><b>Panoramica del giorno</b> <span id="ov-s"></span></summary>
   <section class="plate" id="plate" hidden aria-live="polite">
     <div class="pl-main"><div class="pl-tag">Tavola del giorno <span id="pl-date"></span></div>
       <div class="pl-head"><span class="pl-n" id="pl-n">0</span><span class="pl-t" id="pl-t"></span></div></div>
@@ -950,6 +959,7 @@ Per usarlo serve JavaScript.</p></noscript>
     <h2>Scelte del giorno · profilo <span id="daily-prof"></span></h2>
     <div id="dailybody" class="daily-row"></div>
   </section>
+  </details>
 
   <section id="results" style="min-width:0" aria-busy="true"><div class="list" aria-label="Caricamento dei certificati"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></section>
   <div class="only-narrow" style="display:grid"><button id="export2">Esporta i risultati in Excel</button></div>
@@ -1073,6 +1083,7 @@ const yrs=v=>v<1?Math.round(v*12)+" mesi":fmt(v,v%1?1:0)+(v===1?" anno":" anni")
    Express/Athena/Phoenix/Autocallable o livello di autocall = autocall, "callable" dell'emittente = softcallable */
 function callKindOf(c){
   const v=String(c.callable||"");
+  if(/^(no|-)$/i.test(v.trim()))return null; // calendario dell'emittente letto: nessun richiamo anticipato
   if(/autocall/i.test(v))return "autocall";
   if(/callable|soft/i.test(v))return "callable";
   const t=String(c.type||""),tm=String(c.typeMarket||"");
@@ -1119,6 +1130,7 @@ function enrich(c){
   r.secOf=new Map((Array.isArray(c.underlyings)?c.underlyings:[]).map((u,i)=>[u,(c.sectors||[])[i]||null]));
   r.secU=[...new Set((c.sectors||[]).filter(Boolean))];r.sector=c.sector||null;
   r.unds=Array.isArray(c.underlyings)?c.underlyings.filter(u=>u&&!/^ISIN\b|^[A-Z]{2}[A-Z0-9]{9}\d$/.test(u)):String(c.underlyings||"").split("|").map(s=>s.trim()).filter(Boolean);
+  r.undCanon=Array.isArray(c.undCanon)?c.undCanon.filter(Boolean):[];
   r.unds=r.unds.reduce((a,u)=>{if(a.length&&/^(inc|corp|ltd|co|plc|llc|s\.?a|n\.?v|s\.?p\.?a|ag|se)\.?$/i.test(u.trim()))a[a.length-1]+=", "+u.trim();else a.push(u);return a},[]);
   r.n=r.unds.length;
   r.dist=c.distBarrier==null||c.distBarrier===""?null:+c.distBarrier;
@@ -1256,6 +1268,8 @@ function buildIndex(){
   CERTS.forEach((c,i)=>{
     c.undW=c.unds.map(u=>norm(u).split(" ").filter(Boolean));
     c.undW.forEach(ws=>ws.forEach(w=>add(w,i)));
+    /* stesso sottostante scritto in modi diversi (S&P500, S AND P 500, Nikkei225): nome canonico e forma compatta, per trovarli tutti */
+    [...c.unds,...c.undCanon].forEach(u=>{const ws=norm(u).split(" ").filter(Boolean);if(c.undCanon.includes(u))ws.forEach(w=>add(w,i));if(ws.length>1)add(ws.join(""),i)});
     c.unds.forEach(u=>addS(u,"Sottostante"));
     for(const s of [c.issuer,c.platform,c.type,c.cat])norm(s).split(" ").forEach(w=>w&&add(w,i));
     if(c.issuer)addS(c.issuer,"Emittente");if(c.platform)addS(c.platform,"Emittente");if(c.type)addS(c.type,"Tipologia");addS(c.cat,"Categoria");
@@ -1282,10 +1296,13 @@ function matchWords(t){
   INDEX.cache.set(t,out);return out;
 }
 function searchSet(q){
-  const toks=norm(q).split(" ").filter(Boolean);if(!toks.length)return null;
+  const toks=norm(q).replace(/\bs and p\b/,"s p").split(" ").filter(Boolean);if(!toks.length)return null;
   let res=null;const matched=new Set();
+  /* "s&p 500" o "s p500" devono trovare anche "S&P500": provo anche la versione senza spazi */
+  const glue=toks.length>1?INDEX.vocab.get(toks.join("")):null;if(glue)matched.add(toks.join(""));
   for(const t of toks){const ws=matchWords(t);ws.forEach(w=>matched.add(w));const s=new Set();for(const w of ws)for(const i of INDEX.vocab.get(w))s.add(i);
     res=res?new Set([...res].filter(i=>s.has(i))):s;if(!res.size)break}
+  if(glue){res=new Set([...(res||[]),...glue])}
   return {set:res,matched,toks};
 }
 
@@ -1382,12 +1399,13 @@ function scenarios(c){if(c.ytmGood==null)return "";
 const freqTxt=f=>({"1m":"Mensile","3m":"Trimestrale","6m":"Semestrale","12m":"Annuale"}[f]||f||"—");
 function badges(c){
   const b=[];
+  if(c.matDate&&!c.expired){const dm=Math.round((c.matDate-today)/864e5);if(dm<=30)b.push(`<span class="b ko" title="Scade il ${dshort(c.matDate)}">Scade tra ${dm} g</span>`)}
   if(c.front)b.push(`<span class="b fr">Frontiera efficiente</span>`);
   if(c.sector)b.push(`<span class="sec ${c.sector==="Misto"?"mix":""}">${esc(secTxt(c))}</span>`);
   b.push(`<span class="b">${c.n>1?"Worst-of "+c.n:"Singolo"}</span>`);
   b.push(`<span class="b">${esc(c.cat)}</span>`);
   if(c.freq)b.push(`<span class="b ${c.freq==="1m"?"pk":""}">${freqTxt(c.freq)}</span>`);
-  if(c.callable)b.push(`<span class="b pk">${esc(c.callable)}</span>`);
+  if(c.callable&&!/^(no|-)$/i.test(c.callable))b.push(`<span class="b pk">${esc(c.callable)}</span>`);
   if(c.call)b.push(callBadge(c));
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
   if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
@@ -1455,12 +1473,14 @@ const scls=v=>v>=70?"":v>=50?"ca":"neg";
 // variazione del prezzo dalla seduta precedente: piccola freccia, verde/rossa, nascosta sotto lo 0,05%
 const chgHtml=(v,lab="")=>v==null||Math.abs(v)<.05?"":`<span class="chg ${v>0?"up":"dn"}" title="Variazione del prezzo dalla seduta precedente">${lab}${v>0?"▲":"▼"}${fmt(Math.abs(v),Math.abs(v)<10?1:0)}%</span>`;
 function keyBadges(c){const b=[];if(c.call)b.push(callBadge(c));if(c.isNew)b.push(`<span class="b nw" title="Comparso nel radar il ${dshort(parseDate(c.firstSeen))}: probabilmente una nuova emissione">Nuovo</span>`);if(c.front)b.push(`<span class="b fr" title="Frontiera efficiente: nessun altro risultato ha insieme più rendimento e più distanza dalla barriera">Frontiera</span>`);
+  const dm=c.matDate&&!c.expired?Math.round((c.matDate-today)/864e5):null;
+  if(dm!=null&&dm<=30)b.push(`<span class="b ko" title="Il certificato scade il ${dshort(c.matDate)}: restano pochi giorni per incassare cedole">Scade tra ${dm} g</span>`);
   if(c.priceBad)b.push(`<span class="b ko">Prezzo anomalo</span>`);
   if(c.belowBarrier)b.push(`<span class="b ko">Sotto barriera</span>`);else if(c.couponActive===false)b.push(`<span class="b ca">Cedola sospesa</span>`);
   if(c.ytmHigh)b.push(`<span class="b ca">Rend. sospetto</span>`);
   if(c.stale)b.push(`<span class="b st">Prezzo vecchio</span>`);
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
-  if(c.callKind==="autocall"&&!c.call)b.push(`<span class="b" title="Prossima data di possibile rimborso anticipato">Autocall${c.callDate?" "+dshort(c.callDate):""}</span>`);
+  if(c.callKind==="autocall"&&!c.call)b.push(`<span class="b${c.callDate&&(c.callDate-today)/864e5<=14?" ca":""}" title="${c.callDate?"Prossima data di possibile rimborso anticipato":"Autocall: date non lette dal radar, controlla il KID"}">Autocall${c.callDate?" "+dshort(c.callDate):" · date n.d."}</span>`);
   return b.slice(0,3).join("")}
 function cardHtml(c,i){const sp=pcol(c.prob);
   return `<article class="card${(i||0)<8?" anim":""}" data-open="${esc(c.isin)}" style="--i:${i||0};--spine:${sp==="none"?"var(--line)":sp}">
@@ -2032,7 +2052,9 @@ function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=
   else o.push(["na","Cedola",`${pct(c.couponPa,2)} l'anno${c.freq?", "+freqTxt(c.freq).toLowerCase():""}: condizione di pagamento non verificabile.`]);
   if(c.call)o.push([c.call.lvl==="alto"&&c.call.poor?"ko":"ca","Rimborso anticipato",callTxt(c)]);
   else if(c.callDate)o.push(["ok","Rimborso anticipato",`Prossima data ${dshort(c.callDate)}: oggi il rimborso non è probabile.`]);
-  else if(c.callKind)o.push(["na","Rimborso anticipato",`${c.callable?esc(c.callable):c.callKind==="autocall"?"Autocallable":"Richiamabile dall'emittente"}: date di rimborso non pubblicate dall'emittente.`]);
+  else if(c.callKind)o.push(["na","Rimborso anticipato",`${c.callable?esc(c.callable):c.callKind==="autocall"?"Autocallable":"Richiamabile dall'emittente"}: il radar non ha le date di rimborso anticipato: <b>può essere richiamato prima della scadenza</b>, controlla il KID prima di comprare.`]);
+  if(!c.callKind&&/^no$/i.test(c.callable||"")&&!c.call)o.push(["ok","Rimborso anticipato","Nessun richiamo anticipato (calendario dell'emittente): il certificato dura fino a "+dshort(c.matDate)+"."]);
+  if(c.matDate&&!c.expired){const dm=Math.round((c.matDate-today)/864e5);if(dm<=30)o.unshift(["ko","Scadenza",`Scade il ${dshort(c.matDate)}, <b>tra ${dm} giorni</b>: restano poche cedole e il prezzo converge al rimborso.`])}
   if(!c.ask)o.push(["ko","Prezzo","Nessun prezzo in lettera: oggi non si può comprare."]);
   else{const sp=c.spread;o.push([sp==null?"na":sp<=1?"ok":sp<=2?"ca":"ko","Prezzo",`${c.pricePct?`Quota <b>${fmt(c.pricePct,1)}%</b>${c.pricePct<98?" (sotto la pari: guadagno extra se rimborsa 100)":c.pricePct>101?" (sopra la pari: a scadenza riavrai 100)":""}`:"Prezzo"} · spread ${pct(sp,2)}${sp>2?": comprare e rivendere costa caro":""}${c.stale?` · <span class="ca">dato del ${dtime(c.priceAt)}</span>`:""}.`])}
   o.push([c.tier==="A"?"ok":c.tier==="B"?"ok":c.tier==="C"?"ca":"na","Emittente",`${esc(c.issuer||"n.d.")}${c.tier?` · classe ${c.tier}`:""}: se l'emittente fallisce si può perdere il capitale anche con la barriera intatta.`]);
@@ -2327,6 +2349,7 @@ function countUp(el,to){const from=+el.dataset.v||0;el.dataset.v=to;
   if(from===to||matchMedia("(prefers-reduced-motion: reduce)").matches){el.textContent=to.toLocaleString("it-IT");return}
   const t0=performance.now(),d=700;cancelAnimationFrame(el._r);
   const step=t=>{const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=Math.round(from+(to-from)*e).toLocaleString("it-IT");if(k<1)el._r=requestAnimationFrame(step)};el._r=requestAnimationFrame(step)}
+(()=>{const ov=$("#ov");if(!ov)return;ov.open=ls.get("rc-ov",innerWidth<820);ov.addEventListener("toggle",()=>ls.set("rc-ov",ov.open))})();
 function renderPlate(){const el=$("#plate");const show=!ISIN&&!state.q&&CERTS.length>0;el.hidden=!show;if(!show)return;
   const med=f=>{const a=[];for(const c of ROWS){const v=f(c);if(v!=null&&isFinite(v))a.push(v)}a.sort((x,y)=>x-y);return a.length?a[a.length>>1]:null};
   const f=state.f,P=[];if(f.y!=null)P.push(`rendono almeno il <em>${fmt(f.y,0)}%</em> l'anno`);if(f.b!=null)P.push(`con il peggiore ad almeno il <em>${fmt(f.b,0)}%</em> dalla barriera`);
@@ -2338,6 +2361,7 @@ function renderPlate(){const el=$("#plate");const show=!ISIN&&!state.q&&CERTS.le
   // nuove emissioni tra i certificati con prezzo: scorciatoia al filtro
   const nn=CERTS.filter(c=>c.isNew&&c.liq&&c.couponPa!=null).length,pn=$("#pl-new");
   pn.hidden=!nn||state.f.nuovi;pn.innerHTML=`<b>${nn}</b> nuove emissioni con cedola negli ultimi 14 giorni <span aria-hidden="true">→</span>`;
+  $("#ov-s").textContent=n.toLocaleString("it-IT")+" "+w+" · "+(P.length?$("#pl-t").textContent.replace(/Profilo.*$/,"").replace(w,"").trim():"nei risultati")+" · mediana rend. "+$("#pl-y").textContent;
   $("#pl-date").textContent=META?.updatedAt?"· "+new Date(META.updatedAt).toLocaleDateString("it-IT",{day:"numeric",month:"long"}):"";
 }
 function render(recompute=true){
