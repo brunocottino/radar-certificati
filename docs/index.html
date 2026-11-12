@@ -65,7 +65,7 @@
   --q1:#2b4767; --q2:#3d6ea3; --q3:#6a9fd6; --q4:#b7d5f2; color-scheme:dark}
 html,body{overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45}
-.wrap{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:14px 80px;display:grid;gap:14px}
+.wrap{max-width:min(1680px,100% - 24px);margin:0 auto;padding-inline:16px;padding-block:14px 80px;display:grid;gap:14px}
 h1{font-size:1.15rem;margin:0;letter-spacing:-.01em}
 h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px;font-weight:600}
 .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
@@ -82,7 +82,7 @@ button:disabled{opacity:.55;cursor:default}
 .num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
 /* barra in alto */
 .top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgb(0 0 0 / .04)}
-.top-in{max-width:1320px;margin:0 auto;padding:10px 16px 8px;display:grid;gap:8px}
+.top-in{max-width:min(1680px,100% - 24px);margin:0 auto;padding:10px 16px 8px;display:grid;gap:8px}
 .top-in>*,.top-in .row>*{min-width:0}
 .brand .row{flex-wrap:wrap;min-width:0}
 .brand{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -139,6 +139,14 @@ details summary::after{content:" ▾";color:var(--muted)}
 }
 @media (min-width:820px){.only-narrow{display:none!important}}
 .scrim{position:fixed;inset:0;background:rgb(0 0 0 / .35);z-index:35}
+.ov{margin:0 0 12px}
+.ov>summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:10px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:.9rem}
+.ov>summary::-webkit-details-marker{display:none}
+.ov>summary::after{content:"▾";margin-left:auto;color:var(--muted)}
+.ov[open]>summary::after{content:"▴"}
+.ov[open]>summary{margin-bottom:12px}
+.ov>summary #ov-s{color:var(--muted)}
+.ov:not(:has(#plate:not([hidden]),#daily:not([hidden]))){display:none}
 /* tabella virtualizzata */
 .vt{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);height:calc(100dvh - var(--top-h,190px) - 24px);min-height:320px;contain:strict}
 table{border-collapse:collapse;width:100%;font-size:.84rem}
@@ -934,6 +942,7 @@ Per usarlo serve JavaScript.</p></noscript>
 
   <section id="isinbox" hidden></section>
 
+  <details class="ov" id="ov"><summary><b>Panoramica del giorno</b> <span id="ov-s"></span></summary>
   <section class="plate" id="plate" hidden aria-live="polite">
     <div class="pl-main"><div class="pl-tag">Tavola del giorno <span id="pl-date"></span></div>
       <div class="pl-head"><span class="pl-n" id="pl-n">0</span><span class="pl-t" id="pl-t"></span></div></div>
@@ -950,6 +959,7 @@ Per usarlo serve JavaScript.</p></noscript>
     <h2>Scelte del giorno · profilo <span id="daily-prof"></span></h2>
     <div id="dailybody" class="daily-row"></div>
   </section>
+  </details>
 
   <section id="results" style="min-width:0" aria-busy="true"><div class="list" aria-label="Caricamento dei certificati"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></section>
   <div class="only-narrow" style="display:grid"><button id="export2">Esporta i risultati in Excel</button></div>
@@ -2333,6 +2343,7 @@ function countUp(el,to){const from=+el.dataset.v||0;el.dataset.v=to;
   if(from===to||matchMedia("(prefers-reduced-motion: reduce)").matches){el.textContent=to.toLocaleString("it-IT");return}
   const t0=performance.now(),d=700;cancelAnimationFrame(el._r);
   const step=t=>{const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=Math.round(from+(to-from)*e).toLocaleString("it-IT");if(k<1)el._r=requestAnimationFrame(step)};el._r=requestAnimationFrame(step)}
+(()=>{const ov=$("#ov");if(!ov)return;ov.open=ls.get("rc-ov",innerWidth<820);ov.addEventListener("toggle",()=>ls.set("rc-ov",ov.open))})();
 function renderPlate(){const el=$("#plate");const show=!ISIN&&!state.q&&CERTS.length>0;el.hidden=!show;if(!show)return;
   const med=f=>{const a=[];for(const c of ROWS){const v=f(c);if(v!=null&&isFinite(v))a.push(v)}a.sort((x,y)=>x-y);return a.length?a[a.length>>1]:null};
   const f=state.f,P=[];if(f.y!=null)P.push(`rendono almeno il <em>${fmt(f.y,0)}%</em> l'anno`);if(f.b!=null)P.push(`con il peggiore ad almeno il <em>${fmt(f.b,0)}%</em> dalla barriera`);
@@ -2344,6 +2355,7 @@ function renderPlate(){const el=$("#plate");const show=!ISIN&&!state.q&&CERTS.le
   // nuove emissioni tra i certificati con prezzo: scorciatoia al filtro
   const nn=CERTS.filter(c=>c.isNew&&c.liq&&c.couponPa!=null).length,pn=$("#pl-new");
   pn.hidden=!nn||state.f.nuovi;pn.innerHTML=`<b>${nn}</b> nuove emissioni con cedola negli ultimi 14 giorni <span aria-hidden="true">→</span>`;
+  $("#ov-s").textContent=n.toLocaleString("it-IT")+" "+w+" · "+(P.length?$("#pl-t").textContent.replace(/Profilo.*$/,"").replace(w,"").trim():"nei risultati")+" · mediana rend. "+$("#pl-y").textContent;
   $("#pl-date").textContent=META?.updatedAt?"· "+new Date(META.updatedAt).toLocaleDateString("it-IT",{day:"numeric",month:"long"}):"";
 }
 function render(recompute=true){
