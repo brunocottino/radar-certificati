@@ -1083,6 +1083,7 @@ const yrs=v=>v<1?Math.round(v*12)+" mesi":fmt(v,v%1?1:0)+(v===1?" anno":" anni")
    Express/Athena/Phoenix/Autocallable o livello di autocall = autocall, "callable" dell'emittente = softcallable */
 function callKindOf(c){
   const v=String(c.callable||"");
+  if(/^(no|-)$/i.test(v.trim()))return null; // calendario dell'emittente letto: nessun richiamo anticipato
   if(/autocall/i.test(v))return "autocall";
   if(/callable|soft/i.test(v))return "callable";
   const t=String(c.type||""),tm=String(c.typeMarket||"");
@@ -1404,7 +1405,7 @@ function badges(c){
   b.push(`<span class="b">${c.n>1?"Worst-of "+c.n:"Singolo"}</span>`);
   b.push(`<span class="b">${esc(c.cat)}</span>`);
   if(c.freq)b.push(`<span class="b ${c.freq==="1m"?"pk":""}">${freqTxt(c.freq)}</span>`);
-  if(c.callable)b.push(`<span class="b pk">${esc(c.callable)}</span>`);
+  if(c.callable&&!/^(no|-)$/i.test(c.callable))b.push(`<span class="b pk">${esc(c.callable)}</span>`);
   if(c.call)b.push(callBadge(c));
   if(c.memory===true)b.push(`<span class="b pk">Memoria</span>`);
   if(c.market)b.push(`<span class="b">${esc(c.market)}</span>`);
@@ -2052,6 +2053,7 @@ function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=
   if(c.call)o.push([c.call.lvl==="alto"&&c.call.poor?"ko":"ca","Rimborso anticipato",callTxt(c)]);
   else if(c.callDate)o.push(["ok","Rimborso anticipato",`Prossima data ${dshort(c.callDate)}: oggi il rimborso non è probabile.`]);
   else if(c.callKind)o.push(["na","Rimborso anticipato",`${c.callable?esc(c.callable):c.callKind==="autocall"?"Autocallable":"Richiamabile dall'emittente"}: il radar non ha le date di rimborso anticipato: <b>può essere richiamato prima della scadenza</b>, controlla il KID prima di comprare.`]);
+  if(!c.callKind&&/^no$/i.test(c.callable||"")&&!c.call)o.push(["ok","Rimborso anticipato","Nessun richiamo anticipato (calendario dell'emittente): il certificato dura fino a "+dshort(c.matDate)+"."]);
   if(c.matDate&&!c.expired){const dm=Math.round((c.matDate-today)/864e5);if(dm<=30)o.unshift(["ko","Scadenza",`Scade il ${dshort(c.matDate)}, <b>tra ${dm} giorni</b>: restano poche cedole e il prezzo converge al rimborso.`])}
   if(!c.ask)o.push(["ko","Prezzo","Nessun prezzo in lettera: oggi non si può comprare."]);
   else{const sp=c.spread;o.push([sp==null?"na":sp<=1?"ok":sp<=2?"ca":"ko","Prezzo",`${c.pricePct?`Quota <b>${fmt(c.pricePct,1)}%</b>${c.pricePct<98?" (sotto la pari: guadagno extra se rimborsa 100)":c.pricePct>101?" (sopra la pari: a scadenza riavrai 100)":""}`:"Prezzo"} · spread ${pct(sp,2)}${sp>2?": comprare e rivendere costa caro":""}${c.stale?` · <span class="ca">dato del ${dtime(c.priceAt)}</span>`:""}.`])}
