@@ -152,7 +152,7 @@ def page(title, desc, canonical, body, ld=None):
 <meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{SITE}/og.png?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
-<link rel="icon" href="/icon.svg?v=10" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=10"><link rel="stylesheet" href="/seo.css?v=2">
+<link rel="icon" href="/icon.svg?v=10" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=10"><link rel="preload" href="/fonts/geist-400-800-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/seo.css?v=2">
 {ldj}
 </head><body>
 <header class="top"><div><a class="brand" href="/"><img src="/icon-192.png" alt="" width="32" height="32">Radar Certificati</a>
