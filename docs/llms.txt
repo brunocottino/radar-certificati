@@ -13,19 +13,19 @@ Dati aggiornati al 13/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - Scheda di ogni certificato: https://radarcertificati.com/certificato/{ISIN} (es. https://radarcertificati.com/certificato/CH0587328193)
 
 ## Liste
-- [Certificati con le cedole più alte](https://radarcertificati.com/certificati/cedole-piu-alte): 2759 certificati
-- [Certificati difensivi con cedola](https://radarcertificati.com/certificati/difensivi): 1680 certificati
-- [Certificati con cedola mensile](https://radarcertificati.com/certificati/cedola-mensile): 3079 certificati
-- [Certificati con effetto memoria](https://radarcertificati.com/certificati/effetto-memoria): 3757 certificati
-- [Certificati con barriera bassa](https://radarcertificati.com/certificati/barriera-bassa): 432 certificati
-- [Certificati sotto la pari](https://radarcertificati.com/certificati/sotto-la-pari): 1947 certificati
+- [Certificati con le cedole più alte](https://radarcertificati.com/certificati/cedole-piu-alte): 2753 certificati
+- [Certificati difensivi con cedola](https://radarcertificati.com/certificati/difensivi): 1675 certificati
+- [Certificati con cedola mensile](https://radarcertificati.com/certificati/cedola-mensile): 3084 certificati
+- [Certificati con effetto memoria](https://radarcertificati.com/certificati/effetto-memoria): 3768 certificati
+- [Certificati con barriera bassa](https://radarcertificati.com/certificati/barriera-bassa): 433 certificati
+- [Certificati sotto la pari](https://radarcertificati.com/certificati/sotto-la-pari): 1970 certificati
 - [Certificati in scadenza nei prossimi 6 mesi](https://radarcertificati.com/certificati/in-scadenza): 1324 certificati
-- [Calendario cedole dei certificati](https://radarcertificati.com/certificati/prossime-cedole): 1596 certificati
+- [Calendario cedole dei certificati](https://radarcertificati.com/certificati/prossime-cedole): 1597 certificati
 - [Nuove emissioni di certificati](https://radarcertificati.com/certificati/nuove-emissioni): 737 certificati
 
 ## Per tipologia
 - [Certificati Cash Collect](https://radarcertificati.com/certificati/cash-collect): 3252 certificati
-- [Certificati Phoenix](https://radarcertificati.com/certificati/phoenix): 1071 certificati
+- [Certificati Phoenix](https://radarcertificati.com/certificati/phoenix): 1073 certificati
 - [Certificati Express e Autocallable](https://radarcertificati.com/certificati/express-autocallable): 7076 certificati
 - [Certificati Credit Linked](https://radarcertificati.com/certificati/credit-linked): 2102 certificati
 - [Certificati a capitale protetto](https://radarcertificati.com/certificati/capitale-protetto): 2594 certificati
@@ -34,7 +34,7 @@ Dati aggiornati al 13/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati Discount](https://radarcertificati.com/certificati/discount): 320 certificati
 - [Certificati Twin Win](https://radarcertificati.com/certificati/twin-win): 61 certificati
 - [Certificati Airbag](https://radarcertificati.com/certificati/airbag): 114 certificati
-- [Certificati Digital](https://radarcertificati.com/certificati/digital): 348 certificati
+- [Certificati Digital](https://radarcertificati.com/certificati/digital): 349 certificati
 - [Certificati a leva (Turbo, Mini Future)](https://radarcertificati.com/certificati/leva): 13 certificati
 - [Certificati Maxi Cash Collect](https://radarcertificati.com/certificati/maxi-cash-collect): 161 certificati
 - [Certificati Low Barrier](https://radarcertificati.com/certificati/low-barrier): 125 certificati
