@@ -985,6 +985,20 @@
   "type": "EQUITY",
   "yahooName": "Anthem Biosciences Limited"
  },
+ "anthropic pbc": {
+  "checkedAt": "2026-11-17",
+  "exchange": "NAS",
+  "industry": null,
+  "isin": null,
+  "manual": null,
+  "name": "Anthropic PBC",
+  "score": 1.0,
+  "sector": null,
+  "sectorCheckedAt": "2026-11-17",
+  "ticker": "ANT",
+  "type": "EQUITY",
+  "yahooName": "Anthropic, PBC"
+ },
  "apollo global managament": {
   "checkedAt": "2026-10-15",
   "exchange": "NYQ",
@@ -4748,7 +4762,7 @@
   "yahooName": null
  },
  "euribor 3 mesi": {
-  "checkedAt": "2026-11-09",
+  "checkedAt": "2026-11-17",
   "exchange": null,
   "isin": "EU0009652783",
   "manual": null,
@@ -15361,7 +15375,7 @@
   "yahooName": null
  },
  "msci world ex usa with minimum economic exposure to usa top 50 select 3 5 decrement idx eur net return": {
-  "checkedAt": "2026-11-09",
+  "checkedAt": "2026-11-17",
   "exchange": null,
   "isin": null,
   "manual": null,
