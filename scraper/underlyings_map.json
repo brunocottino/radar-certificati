@@ -6015,6 +6015,17 @@
   "type": "EQUITY",
   "yahooName": "Fresenius Medical Care AG"
  },
+ "ftmib": {
+  "checkedAt": "2026-11-16",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "FTMIB",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "ftse 100": {
   "isin": "GB0001383545",
   "manual": "^FTSE",
@@ -15861,6 +15872,19 @@
   "ticker": "7201.T",
   "type": "EQUITY",
   "yahooName": "Nissan Motor Co., Ltd."
+ },
+ "nky": {
+  "checkedAt": "2026-11-16",
+  "exchange": "SHZ",
+  "industry": "Specialty Chemicals",
+  "isin": null,
+  "manual": null,
+  "name": "NKY",
+  "score": 1.0,
+  "sector": "Basic Materials",
+  "ticker": "300109.SZ",
+  "type": "EQUITY",
+  "yahooName": "Boai NKY Medical Holdings Ltd."
  },
  "nky index spx index sx7e index": {
   "checkedAt": "2026-11-13",
