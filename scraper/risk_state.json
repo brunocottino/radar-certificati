@@ -1509,6 +1509,7 @@
   "BBVA.MC|BX": 0.3025,
   "BBVA.MC|CBK.DE": 0.711,
   "BBVA.MC|CS.PA": 0.4995,
+  "BBVA.MC|DB": 0.6554,
   "BBVA.MC|DBK.DE": 0.7486,
   "BBVA.MC|DTE.DE": 0.091,
   "BBVA.MC|ENEL.MI": 0.3596,
@@ -2630,6 +2631,8 @@
   "DBK.DE|UCG.MI": 0.7694,
   "DBK.DE|VOW3.DE": 0.4402,
   "DBK.DE|WFC": 0.3223,
+  "DB|DBK.DE": 0.8714,
+  "DB|UBSG.SW": 0.6369,
   "DELL|ENR.DE": 0.3156,
   "DELL|GOOG": 0.1337,
   "DELL|GS": 0.3512,
@@ -5593,6 +5596,35 @@
   "^SXNE|^SXOP": 0.7706
  },
  "date": "2026-11-17",
+ "tried": [
+  "ANT",
+  "CED5.PA",
+  "CH0028765730.SG",
+  "DB",
+  "DE000A0V7550.SG",
+  "DE000A0V7576.SG",
+  "DE000SL0L060.SG",
+  "DE000SL0L1D2.SG",
+  "DE000SL0MY18.SG",
+  "DE000SL0MY26.SG",
+  "DE000SL0NP34.SG",
+  "DE000SL0PQT8.SG",
+  "DE000SL0QF17.SG",
+  "DE000SLA3UK4.SG",
+  "ESE4P.AS",
+  "FPIR.MU",
+  "HK0000218211.SG",
+  "IT0005648149.SG",
+  "ITMC.MI",
+  "JYJ5.MU",
+  "MED5.PA",
+  "RK14.F",
+  "UET5.DU",
+  "WBD",
+  "XMHW.MU",
+  "^SPMARC5P",
+  "^XNDXJPY"
+ ],
  "underlyings": {
   "000300.SS": {
    "lastClose": 3979.803466796875,
@@ -7431,6 +7463,15 @@
    "vol1y": 0.3391,
    "vol3m": 0.3765,
    "volUsed": 0.3765
+  },
+  "DB": {
+   "lastClose": 35.84000015258789,
+   "lastDate": "2026-11-16",
+   "observations": 251,
+   "updatedAt": "2026-11-17T09:10:36+00:00",
+   "vol1y": 0.3491,
+   "vol3m": 0.3519,
+   "volUsed": 0.3519
   },
   "DBK.DE": {
    "lastClose": 33.185001373291016,
