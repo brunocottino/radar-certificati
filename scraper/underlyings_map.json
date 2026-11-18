@@ -436,6 +436,19 @@
   "type": "EQUITY",
   "yahooName": "Aegon Ltd."
  },
+ "aegon swiss re unipol assicurazioni unitedhealth": {
+  "checkedAt": "2026-11-18",
+  "exchange": "NYQ",
+  "industry": "Insurance—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Aegon, Swiss Re, Unipol Assicurazioni, UnitedHealth",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "AEG",
+  "type": "EQUITY",
+  "yahooName": "Aegon Ltd."
+ },
  "affirm": {
   "checkedAt": "2026-10-15",
   "exchange": "NMS",
@@ -487,6 +500,19 @@
   "manual": null,
   "name": "Air France-KLM",
   "score": 1.0,
+  "ticker": "AF.PA",
+  "type": "EQUITY",
+  "yahooName": "Air France-KLM SA"
+ },
+ "air france klm airbnb booking royal caribbean cruises": {
+  "checkedAt": "2026-11-18",
+  "exchange": "PAR",
+  "industry": "Airlines",
+  "isin": null,
+  "manual": null,
+  "name": "Air France-KLM, Airbnb, Booking, Royal Caribbean Cruises",
+  "score": 0.8,
+  "sector": "Industrials",
   "ticker": "AF.PA",
   "type": "EQUITY",
   "yahooName": "Air France-KLM SA"
@@ -781,6 +807,19 @@
   "ticker": "TSM",
   "type": "EQUITY",
   "yahooName": "Taiwan Semiconductor Manufacturing Company Limited"
+ },
+ "amd sandisk western digital": {
+  "checkedAt": "2026-11-18",
+  "exchange": "NMS",
+  "industry": "Computer Hardware",
+  "isin": null,
+  "manual": null,
+  "name": "AMD, Sandisk, Western Digital",
+  "score": 0.714,
+  "sector": "Technology",
+  "ticker": "WDC",
+  "type": "EQUITY",
+  "yahooName": "Western Digital Corporation"
  },
  "american airlines": {
   "checkedAt": "2026-10-09",
@@ -1089,6 +1128,17 @@
   "type": "EQUITY",
   "yahooName": "ArcelorMittal S.A."
  },
+ "arcelormittal general electric siemens tenaris": {
+  "checkedAt": "2026-11-18",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "ArcelorMittal, General Electric, Siemens, Tenaris",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "arcelormittal s a": {
   "checkedAt": "2026-10-15",
   "exchange": "AMS",
@@ -1245,6 +1295,19 @@
   "type": "EQUITY",
   "yahooName": "Assicurazioni Generali S.p.A."
  },
+ "assicurazioni generali enel eni unicredit": {
+  "checkedAt": "2026-11-18",
+  "exchange": "MIL",
+  "industry": "Insurance—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Assicurazioni Generali, Enel, Eni, UniCredit",
+  "score": 0.725,
+  "sector": "Financial Services",
+  "ticker": "G.MI",
+  "type": "EQUITY",
+  "yahooName": "Assicurazioni Generali S.p.A."
+ },
  "assicurazioni generali enel saipem": {
   "checkedAt": "2026-10-21",
   "exchange": "MIL",
@@ -1300,6 +1363,19 @@
   "manual": null,
   "name": "ASTERA LABS",
   "score": 1.0,
+  "ticker": "ALAB",
+  "type": "EQUITY",
+  "yahooName": "Astera Labs, Inc."
+ },
+ "astera labs coreweave nebius": {
+  "checkedAt": "2026-11-18",
+  "exchange": "NMS",
+  "industry": "Semiconductors",
+  "isin": null,
+  "manual": null,
+  "name": "Astera Labs, CoreWeave, Nebius",
+  "score": 0.8,
+  "sector": "Technology",
   "ticker": "ALAB",
   "type": "EQUITY",
   "yahooName": "Astera Labs, Inc."
@@ -1685,6 +1761,19 @@
   "type": "EQUITY",
   "yahooName": "Banco BPM S.p.A."
  },
+ "banco bpm poste italiane unicredit unipol assicurazioni": {
+  "checkedAt": "2026-11-18",
+  "exchange": "MIL",
+  "industry": "Banks—Regional",
+  "isin": null,
+  "manual": null,
+  "name": "Banco BPM, Poste Italiane, UniCredit, Unipol Assicurazioni",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "BAMI.MI",
+  "type": "EQUITY",
+  "yahooName": "Banco BPM S.p.A."
+ },
  "banco bpm s p a": {
   "checkedAt": "2026-10-15",
   "exchange": "MIL",
@@ -1893,6 +1982,17 @@
   "isin": null,
   "manual": null,
   "name": "Bayer, Eli Lilly, Novo Nordisk, Sanofi",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "bayer moderna novo nordisk": {
+  "checkedAt": "2026-11-18",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Bayer, Moderna, Novo Nordisk",
   "score": null,
   "ticker": null,
   "type": null,
@@ -2723,6 +2823,19 @@
   "manual": null,
   "name": "Brunello Cucinelli SpA",
   "score": 1.0,
+  "ticker": "BC.MI",
+  "type": "EQUITY",
+  "yahooName": "Brunello Cucinelli S.p.A."
+ },
+ "brunello cucinelli kering ralph lauren swatch": {
+  "checkedAt": "2026-11-18",
+  "exchange": "MIL",
+  "industry": "Luxury Goods",
+  "isin": null,
+  "manual": null,
+  "name": "Brunello Cucinelli, Kering, Ralph Lauren, The Swatch Group",
+  "score": 0.8,
+  "sector": "Consumer Cyclical",
   "ticker": "BC.MI",
   "type": "EQUITY",
   "yahooName": "Brunello Cucinelli S.p.A."
@@ -4312,6 +4425,19 @@
   "type": "EQUITY",
   "yahooName": "Enel SpA"
  },
+ "enel engie vistra": {
+  "checkedAt": "2026-11-18",
+  "exchange": "MIL",
+  "industry": "Utilities—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Enel, Engie, Vistra",
+  "score": 0.8,
+  "sector": "Utilities",
+  "ticker": "ENEL.MI",
+  "type": "EQUITY",
+  "yahooName": "Enel SpA"
+ },
  "enel leonardo prysmian": {
   "checkedAt": "2026-10-30",
   "exchange": "MIL",
@@ -4534,6 +4660,19 @@
   "manual": null,
   "name": "ERG",
   "score": 1.0,
+  "ticker": "ERG.MI",
+  "type": "EQUITY",
+  "yahooName": "ERG S.p.A."
+ },
+ "erg ferrari moncler stmicroelectronics": {
+  "checkedAt": "2026-11-18",
+  "exchange": "MIL",
+  "industry": "Utilities—Renewable",
+  "isin": null,
+  "manual": null,
+  "name": "ERG, Ferrari, Moncler, STMicroelectronics",
+  "score": 0.8,
+  "sector": "Utilities",
   "ticker": "ERG.MI",
   "type": "EQUITY",
   "yahooName": "ERG S.p.A."
@@ -6610,6 +6749,19 @@
   "manual": null,
   "name": "Hensoldt AG",
   "score": 1.0,
+  "ticker": "HAG.DE",
+  "type": "EQUITY",
+  "yahooName": "Hensoldt AG"
+ },
+ "hensoldt leonardo boeing": {
+  "checkedAt": "2026-11-18",
+  "exchange": "GER",
+  "industry": "Aerospace & Defense",
+  "isin": null,
+  "manual": null,
+  "name": "Hensoldt, Leonardo, The Boeing",
+  "score": 0.8,
+  "sector": "Industrials",
   "ticker": "HAG.DE",
   "type": "EQUITY",
   "yahooName": "Hensoldt AG"
@@ -14982,6 +15134,17 @@
   "type": "EQUITY",
   "yahooName": "Meta Platforms, Inc."
  },
+ "meta nvidia oracle palantir": {
+  "checkedAt": "2026-11-18",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Meta, Nvidia, Oracle, Palantir",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "meta platforms": {
   "checkedAt": "2026-10-09",
   "exchange": "NMS",
@@ -17788,6 +17951,17 @@
   "isin": null,
   "manual": null,
   "name": "Santander, Barclays, Deutsche Bank",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
+ "santander bper banca commerzbank deutsche bank": {
+  "checkedAt": "2026-11-18",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "Santander, BPER Banca, Commerzbank, Deutsche Bank",
   "score": null,
   "ticker": null,
   "type": null,
