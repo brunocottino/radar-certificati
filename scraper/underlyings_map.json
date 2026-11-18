@@ -11,7 +11,7 @@
   "yahooName": null
  },
  "0 5 honeywell international 0 5 honeywell aerospace": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "XXUS43851600",
   "manual": null,
@@ -22,7 +22,7 @@
   "yahooName": null
  },
  "10 year constant maturity yield rate of u s treasury securities": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -33,7 +33,7 @@
   "yahooName": null
  },
  "10 year tec": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -44,7 +44,7 @@
   "yahooName": null
  },
  "10y eur tasso misto callable notes": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -55,7 +55,7 @@
   "yahooName": null
  },
  "10y usd sofr callable notes": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -613,7 +613,7 @@
   "yahooName": "Allianz SE"
  },
  "alluminio": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1101,7 +1101,7 @@
   "yahooName": "ArcelorMittal S.A."
  },
  "argento": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1833,7 +1833,7 @@
   "yahooName": null
  },
  "basket ric cgholnca s": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1844,7 +1844,7 @@
   "yahooName": null
  },
  "basket ric cgnovnca s": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2189,7 +2189,7 @@
   "yahooName": "iPath Bloomberg Commodity Index Total Return(SM) ETN"
  },
  "bloomberg cybersecurity aggregate decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2200,7 +2200,7 @@
   "yahooName": null
  },
  "bloomberg dm artificial intelligence 5 decrement index eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2211,7 +2211,7 @@
   "yahooName": null
  },
  "bloomberg europe sovereignty decrement 5 index eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EUSOVERGNE00",
   "manual": null,
@@ -2222,7 +2222,7 @@
   "yahooName": null
  },
  "bloomberg europe us top pharmaceuticals 2022 decrement 5 index eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2233,7 +2233,7 @@
   "yahooName": null
  },
  "bloomberg eurozone titans select decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EUTITANESE00",
   "manual": null,
@@ -2255,7 +2255,7 @@
   "yahooName": null
  },
  "bloomberg metaverse decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2266,7 +2266,7 @@
   "yahooName": null
  },
  "bloomberg metaverse net return index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EUBMETANE000",
   "manual": null,
@@ -2277,7 +2277,7 @@
   "yahooName": null
  },
  "bloomberg transatlantic defense fixed selection decrement 5 eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EUDEFPE00000",
   "manual": null,
@@ -2288,7 +2288,7 @@
   "yahooName": null
  },
  "bloomberg transatlantic tech titans 2023 decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2299,7 +2299,7 @@
   "yahooName": null
  },
  "bloomberg transatlantic top brands fixed selection decrement 5 index eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2343,7 +2343,7 @@
   "yahooName": "BNP Paribas SA"
  },
  "bnp paribas 5 volatility control on msci ai index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2354,7 +2354,7 @@
   "yahooName": null
  },
  "bnp paribas 5 volatility control on msci ai index in eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2365,7 +2365,7 @@
   "yahooName": null
  },
  "bnp paribas exane clean energy opportunities": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2376,7 +2376,7 @@
   "yahooName": null
  },
  "bnp paribas exane clean energy opportunities er rc8 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2387,7 +2387,7 @@
   "yahooName": null
  },
  "bnp paribas exane healthy living opportunities er rc5 index eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2398,7 +2398,7 @@
   "yahooName": null
  },
  "bnp paribas exane nuclear economy rc5 ar index in eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2409,7 +2409,7 @@
   "yahooName": null
  },
  "bnp paribas exane strategic metals er 8 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2442,7 +2442,7 @@
   "yahooName": "BNP Paribas Global Waste Management Total Return Index (USD)"
  },
  "bnp paribas global water er rc8": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2464,7 +2464,7 @@
   "yahooName": "BNP Paribas Global Water Total Return Index (USD)"
  },
  "bnp paribas guru all country esg er rc8 eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "FRBNPIDX2HS0",
   "manual": null,
@@ -2475,7 +2475,7 @@
   "yahooName": null
  },
  "bnp paribas new technology total return": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "FRBNPIDX0UP3",
   "manual": null,
@@ -2486,7 +2486,7 @@
   "yahooName": null
  },
  "bnp paribas rc5 msci world quality innovation select 50 ar index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2508,7 +2508,7 @@
   "yahooName": "BNP Paribas SA"
  },
  "bnp paribas smart food": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2519,7 +2519,7 @@
   "yahooName": null
  },
  "bnp paribas technology balanced index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2530,7 +2530,7 @@
   "yahooName": null
  },
  "bnp paribas transatlantic defense fixed selection 5 vol control er eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2541,7 +2541,7 @@
   "yahooName": null
  },
  "bnp paribas us patriot technologies rc5 ar index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "XS2945519564",
   "manual": null,
@@ -3009,7 +3009,7 @@
   "yahooName": "Carrefour SA"
  },
  "carrefour benckiser": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3363,7 +3363,7 @@
   "yahooName": "Compass Group PLC"
  },
  "compounded daily sofr": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3429,7 +3429,7 @@
   "yahooName": "Continental Aktiengesellschaft"
  },
  "continental aumovio basket": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "DE000A4APUF5",
   "manual": null,
@@ -3440,7 +3440,7 @@
   "yahooName": null
  },
  "copper wti crude oil": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3638,7 +3638,7 @@
   "yahooName": "CSI 300 Index"
  },
  "csi smallcap 500 index shanghai cnh": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3685,7 +3685,7 @@
   "yahooName": "D-Wave Quantum Inc."
  },
  "daily euro short term rate": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3801,7 +3801,7 @@
   "ticker": null
  },
  "dax eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3950,7 +3950,7 @@
   "yahooName": "Devon Energy Corporation"
  },
  "diaman equity trend following tr eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3961,7 +3961,7 @@
   "yahooName": null
  },
  "diaman factor rotation tr eur index in eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4038,7 +4038,7 @@
   "yahooName": "Direxion Daily 20+ Year Treasury Bull 3X Shares"
  },
  "dj global titans usd index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4060,7 +4060,7 @@
   "yahooName": "iShares STOXX Europe 600 UCITS ETF (DE)"
  },
  "dj stoxx auto index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658681",
   "manual": null,
@@ -4517,7 +4517,7 @@
   "yahooName": "Equinor ASA"
  },
  "equity europe select climate care ntr index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4663,7 +4663,7 @@
   "yahooName": "Etsy, Inc."
  },
  "eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4685,7 +4685,7 @@
   "yahooName": "LPX Europe CHF"
  },
  "eur cms 1y": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4696,7 +4696,7 @@
   "yahooName": null
  },
  "eur tec10": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4784,7 +4784,7 @@
   "yahooName": null
  },
  "euribor 3m": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4806,7 +4806,7 @@
   "yahooName": null
  },
  "euro 10y irs swap rate": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4817,7 +4817,7 @@
   "yahooName": null
  },
  "euro 20y irs swap rate": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4828,7 +4828,7 @@
   "yahooName": null
  },
  "euro 3 month euribor": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4839,7 +4839,7 @@
   "yahooName": null
  },
  "euro istoxx 50 aerospace defense tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4850,7 +4850,7 @@
   "yahooName": null
  },
  "euro istoxx 50 artificial intelligence tilted nr decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4861,7 +4861,7 @@
   "yahooName": null
  },
  "euro istoxx 50 basic resources tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4872,7 +4872,7 @@
   "yahooName": null
  },
  "euro istoxx 50 broad infrastructure tilted nr decrement 4 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4894,7 +4894,7 @@
   "yahooName": null
  },
  "euro istoxx 50 decrement 5 eur price": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4905,7 +4905,7 @@
   "yahooName": null
  },
  "euro istoxx 50 digital security tilted nr decrement 4 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4916,7 +4916,7 @@
   "yahooName": null
  },
  "euro istoxx 50 electric vehicles tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4927,7 +4927,7 @@
   "yahooName": null
  },
  "euro istoxx 50 esg nr decrement 4 75": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4938,7 +4938,7 @@
   "yahooName": null
  },
  "euro istoxx 50 future healthcare tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4949,7 +4949,7 @@
   "yahooName": null
  },
  "euro istoxx 50 global ai infrastructure tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4960,7 +4960,7 @@
   "yahooName": null
  },
  "euro istoxx 50 global space satellites tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4971,7 +4971,7 @@
   "yahooName": null
  },
  "euro istoxx 50 health fitness tilted nr decrement 4 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4982,7 +4982,7 @@
   "yahooName": null
  },
  "euro istoxx 50 industrial revolution 4 0 tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4993,7 +4993,7 @@
   "yahooName": null
  },
  "euro istoxx 50 low carbon nr decrement 3 75": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5004,7 +5004,7 @@
   "yahooName": null
  },
  "euro istoxx 50 precious and industrial metal miners tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5015,7 +5015,7 @@
   "yahooName": null
  },
  "euro istoxx 50 recovery tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5026,7 +5026,7 @@
   "yahooName": null
  },
  "euro istoxx 50 sharing economy tilted nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5048,7 +5048,7 @@
   "yahooName": null
  },
  "euro istoxx 50 utilities tilted nr decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5059,7 +5059,7 @@
   "yahooName": null
  },
  "euro istoxx esg leaders 50 nr decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5081,7 +5081,7 @@
   "yahooName": null
  },
  "euro istoxx megatrends select 30 nr decrement 3 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5131,7 +5131,7 @@
   "yahooName": "EURO STOXX 50 I"
  },
  "euro stoxx 50 ftse 100 index msci emerging markets price index usd nikkei 225 s p 500": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5159,7 +5159,7 @@
   "yahooName": "EURO STOXX 50 I"
  },
  "euro stoxx 50 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658145",
   "manual": null,
@@ -5170,7 +5170,7 @@
   "yahooName": null
  },
  "euro stoxx automobiles parts index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658301",
   "manual": null,
@@ -5217,7 +5217,7 @@
   "yahooName": "Amundi Euro Stoxx Banks UCITS ETF Acc"
  },
  "euro stoxx banks price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658426",
   "manual": null,
@@ -5228,7 +5228,7 @@
   "yahooName": null
  },
  "euro stoxx basic resources index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658244",
   "manual": null,
@@ -5250,7 +5250,7 @@
   "yahooName": null
  },
  "euro stoxx esg x select dividend 30 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH0581652788",
   "manual": null,
@@ -5283,7 +5283,7 @@
   "yahooName": null
  },
  "euro stoxx oil gas": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5329,7 +5329,7 @@
   "yahooName": null
  },
  "euro stoxx select dividend 30 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH0020751589",
   "manual": null,
@@ -5373,7 +5373,7 @@
   "yahooName": null
  },
  "euro stoxx utilities price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658582",
   "manual": null,
@@ -5384,7 +5384,7 @@
   "yahooName": null
  },
  "euronext core euro global climate change ew dec 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5395,7 +5395,7 @@
   "yahooName": null
  },
  "euronext eurozone 150 decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "NL0012949135",
   "manual": null,
@@ -5417,7 +5417,7 @@
   "yahooName": "Euronext Eurozone ESG Leaders 4"
  },
  "euronext eurozone esg leaders select 40 ew decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "FR0013477049",
   "manual": null,
@@ -5428,7 +5428,7 @@
   "yahooName": null
  },
  "euronext eurozone select 30 climate resilient vol target decrement 0 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5439,7 +5439,7 @@
   "yahooName": null
  },
  "euronext transatlantic select 40 climate resilient vol target decrement 0 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5461,7 +5461,7 @@
   "yahooName": "European Biotech Index (Net Return) (EUR)"
  },
  "european oil gas": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658780",
   "manual": null,
@@ -5483,7 +5483,7 @@
   "yahooName": null
  },
  "eurostoxx 50 index eurostoxx banks": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5494,7 +5494,7 @@
   "yahooName": null
  },
  "eurostoxx 50 index eurostoxx banks index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5538,7 +5538,7 @@
   "yahooName": null
  },
  "eurostoxx select dividend 30": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH0020751589",
   "manual": null,
@@ -5898,7 +5898,7 @@
   "yahooName": "Fiserv, Inc."
  },
  "fondo theam quant equity europe climate care i md distribution": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -6075,7 +6075,7 @@
   "ticker": null
  },
  "ftse mib idx": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "GB00BNNLHW18",
   "manual": null,
@@ -6290,7 +6290,7 @@
   "yahooName": "Glencore plc"
  },
  "glencore international": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -6483,7 +6483,7 @@
   "ticker": null
  },
  "hang seng china entreprises index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "HKEXTIDX0001",
   "manual": null,
@@ -6714,7 +6714,7 @@
   "yahooName": "Howmet Aerospace Inc."
  },
  "hp dell meta": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -6887,7 +6887,7 @@
   "yahooName": "IHI Corporation"
  },
  "iliad": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "FR0004035913",
   "manual": null,
@@ -6997,13 +6997,15 @@
   "yahooName": "ING Groep N.V."
  },
  "ing groep n v": {
-  "checkedAt": "2026-10-09",
-  "exchange": "NYQ",
-  "isin": null,
+  "checkedAt": "2026-11-18",
+  "exchange": "AMS",
+  "industry": "Banks—Diversified",
+  "isin": "NL0011821202",
   "manual": null,
   "name": "ING Groep N.V.",
   "score": 1.0,
-  "ticker": "ING",
+  "sector": "Financial Services",
+  "ticker": "INGA.AS",
   "type": "EQUITY",
   "yahooName": "ING Groep N.V."
  },
@@ -7030,7 +7032,7 @@
   "yahooName": "Interactive Brokers Group, Inc."
  },
  "intermonte global brands flex tr eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -7041,7 +7043,7 @@
   "yahooName": null
  },
  "intermonte global geopolitical trends tr eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -7283,7 +7285,7 @@
   "yahooName": "iShares China Large-Cap ETF"
  },
  "ishares china large cap etf 600 utilities pri": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -7294,7 +7296,7 @@
   "yahooName": null
  },
  "ishares china large cap etf select dividend 30": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -7512,6 +7514,19 @@
   "ticker": "EWT",
   "type": "ETF",
   "yahooName": "iShares MSCI Taiwan ETF"
+ },
+ "ishares semiconductor etf": {
+  "checkedAt": "2026-11-18",
+  "exchange": "NGM",
+  "industry": null,
+  "isin": "US4642875235",
+  "manual": null,
+  "name": "iShares Semiconductor ETF",
+  "score": 1.0,
+  "sector": null,
+  "ticker": "SOXX",
+  "type": "ETF",
+  "yahooName": "iShares Semiconductor ETF"
  },
  "ishares silver trust": {
   "checkedAt": "2026-10-15",
@@ -13036,7 +13051,7 @@
   "yahooName": null
  },
  "istoxx bp gr decrement 37 price gbp": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1105672435",
   "manual": null,
@@ -13047,7 +13062,7 @@
   "yahooName": null
  },
  "istoxx core euro global water decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13058,7 +13073,7 @@
   "yahooName": null
  },
  "istoxx dpw gr decrement 1 35 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1105447366",
   "manual": null,
@@ -13069,7 +13084,7 @@
   "yahooName": null
  },
  "istoxx eni gr decrement 0 55 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1105672062",
   "manual": null,
@@ -13080,7 +13095,7 @@
   "yahooName": null
  },
  "istoxx europe 600 esg x fintech tilted nr decrement 4 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13091,7 +13106,7 @@
   "yahooName": null
  },
  "istoxx europe 600 esg x longevity tilted nr decrement 4": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13102,7 +13117,7 @@
   "yahooName": null
  },
  "istoxx europe 600 esg x water depletion tilted nr decrement 4": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13113,7 +13128,7 @@
   "yahooName": null
  },
  "istoxx fp gr decrement 2 64 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1105671965",
   "manual": null,
@@ -13124,7 +13139,7 @@
   "yahooName": null
  },
  "istoxx isp gr decrement 0 197 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1105672039",
   "manual": null,
@@ -13135,7 +13150,7 @@
   "yahooName": null
  },
  "istoxx rep gr decrement 0 83 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1124145165",
   "manual": null,
@@ -13146,7 +13161,7 @@
   "yahooName": null
  },
  "istoxx single stock on allianz gr decrement 10 44 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123981",
   "manual": null,
@@ -13157,7 +13172,7 @@
   "yahooName": null
  },
  "istoxx single stock on axa gr decrement 1 69 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123124054",
   "manual": null,
@@ -13168,7 +13183,7 @@
   "yahooName": null
  },
  "istoxx single stock on bayer gr decrement 2 32 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123124112",
   "manual": null,
@@ -13179,7 +13194,7 @@
   "yahooName": null
  },
  "istoxx single stock on bbva gr decrement 0 34 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123124070",
   "manual": null,
@@ -13190,7 +13205,7 @@
   "yahooName": null
  },
  "istoxx single stock on bmw gr decrement 4 68 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123882",
   "manual": null,
@@ -13201,7 +13216,7 @@
   "yahooName": null
  },
  "istoxx single stock on bnp paribas gr decrement 3 85 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123841",
   "manual": null,
@@ -13212,7 +13227,7 @@
   "yahooName": null
  },
  "istoxx single stock on credit agricole gr decrement 0 86 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123858",
   "manual": null,
@@ -13223,7 +13238,7 @@
   "yahooName": null
  },
  "istoxx single stock on credit agricole gr decrement 1 05 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1213356160",
   "manual": null,
@@ -13234,7 +13249,7 @@
   "yahooName": null
  },
  "istoxx single stock on daimler gr decrement 4 43 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123908",
   "manual": null,
@@ -13245,7 +13260,7 @@
   "yahooName": null
  },
  "istoxx single stock on enel gr decrement 0 38 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1169653123",
   "manual": null,
@@ -13256,7 +13271,7 @@
   "yahooName": null
  },
  "istoxx single stock on eni gr decrement 0 88 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123999",
   "manual": null,
@@ -13267,7 +13282,7 @@
   "yahooName": null
  },
  "istoxx single stock on mercedes benz gr decrement 5 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1169653255",
   "manual": null,
@@ -13278,7 +13293,7 @@
   "yahooName": null
  },
  "istoxx single stock on societe generale gr decrement 2 08 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123124146",
   "manual": null,
@@ -13289,7 +13304,7 @@
   "yahooName": null
  },
  "istoxx single stock on stellantis gr decrement 0 9 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1169653081",
   "manual": null,
@@ -13300,7 +13315,7 @@
   "yahooName": null
  },
  "istoxx single stock on stellantis gr decrement 1 34 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1213355667",
   "manual": null,
@@ -13311,7 +13326,7 @@
   "yahooName": null
  },
  "istoxx single stock on stellantis gr decrement 1 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1169653099",
   "manual": null,
@@ -13322,7 +13337,7 @@
   "yahooName": null
  },
  "istoxx single stock on total gr decrement 2 76 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123940",
   "manual": null,
@@ -13333,7 +13348,7 @@
   "yahooName": null
  },
  "istoxx single stock on unicredit gr decrement 0 99 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1213356178",
   "manual": null,
@@ -13344,7 +13359,7 @@
   "yahooName": null
  },
  "istoxx single stock on vinci gr decrement 3 28 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123874",
   "manual": null,
@@ -13355,7 +13370,7 @@
   "yahooName": null
  },
  "istoxx single stock on volkswagen gr decrement 7 17 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1123123890",
   "manual": null,
@@ -13366,7 +13381,7 @@
   "yahooName": null
  },
  "istoxx single stock on volkswagen gr decrement 8 76 eur price": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1213355709",
   "manual": null,
@@ -13377,7 +13392,7 @@
   "yahooName": null
  },
  "istoxx tef gr decrement 0 45 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1124145207",
   "manual": null,
@@ -13388,7 +13403,7 @@
   "yahooName": null
  },
  "istoxx ubsg gr decrement 0 55 price chf": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1103543638",
   "manual": null,
@@ -13399,7 +13414,7 @@
   "yahooName": null
  },
  "istoxx ucg gr decrement 0 48 price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "CH1103543737",
   "manual": null,
@@ -13432,7 +13447,7 @@
   "yahooName": null
  },
  "itraxx europe": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13443,7 +13458,7 @@
   "yahooName": null
  },
  "itraxx europe crossover series 45 version 1": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13454,7 +13469,7 @@
   "yahooName": null
  },
  "itraxx europe series 38 version 1": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13465,7 +13480,7 @@
   "yahooName": null
  },
  "itraxx europe series 44 version 1 credit index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13685,7 +13700,7 @@
   "yahooName": "Koninklijke Philips N.V."
  },
  "korea stock exchange kospi 200 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "KRD020020016",
   "manual": null,
@@ -13839,7 +13854,7 @@
   "yahooName": "L'Oréal S.A."
  },
  "l oreal american tobacco": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13885,7 +13900,7 @@
   "yahooName": "Lazard, Inc."
  },
  "lbma gold price": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14847,7 +14862,7 @@
   "yahooName": "Mediobanca Banca di Credito Finanziario S.p.A."
  },
  "mediobanca banca di credito finanziario societa per azioni": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15199,7 +15214,7 @@
   "yahooName": "Morgan Stanley"
  },
  "morningstar europe infrastructure decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15232,7 +15247,7 @@
   "yahooName": "MPS Limited"
  },
  "msci acwi investable market innovation quality sustainable 100 select 10 risk control 3 decrement index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15243,7 +15258,7 @@
   "yahooName": null
  },
  "msci daily ntr world eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15265,7 +15280,7 @@
   "yahooName": "iShares MSCI Emerging Markets ETF"
  },
  "msci emerging markets 9 risk control 2 decrement": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15287,7 +15302,7 @@
   "yahooName": "BMO MSCI Emerging Markets Index ETF"
  },
  "msci euro blue select and world water enablers 5 risk control eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15298,7 +15313,7 @@
   "yahooName": null
  },
  "msci euro blue select and world water enablers decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15331,7 +15346,7 @@
   "yahooName": null
  },
  "msci eurozone social select 30 decrement 5 ntr eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15353,7 +15368,7 @@
   "yahooName": null
  },
  "msci global select esg multiple factor 4 decrement index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15397,7 +15412,7 @@
   "yahooName": null
  },
  "msci world imi digital health select 5 risk control eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EUMXWDH5XE00",
   "manual": null,
@@ -15408,7 +15423,7 @@
   "yahooName": null
  },
  "msci world imi digital health select 5 risk control eur index in eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15430,7 +15445,7 @@
   "yahooName": "iShares MSCI World Index ETF"
  },
  "msci world innovation technology 50 select 5 risk control exer": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15441,7 +15456,7 @@
   "yahooName": null
  },
  "msci world net total return usd": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15452,7 +15467,7 @@
   "yahooName": null
  },
  "msci world price index usd": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "GB00BJDQQQ59",
   "manual": null,
@@ -15463,7 +15478,7 @@
   "yahooName": null
  },
  "msci world quality innovation select 50 decrement 50 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15474,7 +15489,7 @@
   "yahooName": null
  },
  "msci world select clean energy infrastructure tilted 3 5 decrement": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15485,7 +15500,7 @@
   "yahooName": null
  },
  "msci world select emerging markets tilted 5 decrement eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15496,7 +15511,7 @@
   "yahooName": null
  },
  "msci world select food revolution tilted 3 5 decrement": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15507,7 +15522,7 @@
   "yahooName": null
  },
  "msci world select humanoid robots tilted 5 decrement eur index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15518,7 +15533,7 @@
   "yahooName": null
  },
  "msci world select hydrogen tilted 4 5 decrement": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15529,7 +15544,7 @@
   "yahooName": null
  },
  "msci world select robotics tilted 3 5 decrement index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15540,7 +15555,7 @@
   "yahooName": null
  },
  "msci world select smart security and defense tilted 4 5 decrement net": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15629,7 +15644,7 @@
   "ticker": null
  },
  "nasdaq 100 stock index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "US6311011026",
   "manual": null,
@@ -15651,7 +15666,7 @@
   "yahooName": "Nasdaq-100 Total Return Index J"
  },
  "nasdaq yewno non esg": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15956,7 +15971,7 @@
   "yahooName": "NEXT FUNDS Nikkei 225 Exchange Traded Fund"
  },
  "nordea 1 sicav european high yield bond fund eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "LU0141799501",
   "manual": null,
@@ -16077,7 +16092,7 @@
   "yahooName": "Novo Nordisk A/S"
  },
  "novo nordisk a s american tobacco": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -16154,7 +16169,7 @@
   "yahooName": "O'Reilly Automotive, Inc."
  },
  "obbligazione tasso fisso illimity": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -16211,7 +16226,7 @@
   "yahooName": "Okta, Inc."
  },
  "old mutual dublin funds equity absolute return fund": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "IE00BLP5S460",
   "manual": null,
@@ -16411,7 +16426,7 @@
   "yahooName": "Pandora A/S"
  },
  "parvest bond euro high yield classic": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "LU0823380802",
   "manual": null,
@@ -16488,7 +16503,7 @@
   "yahooName": null
  },
  "petrolio wti": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "US12573F1084",
   "manual": null,
@@ -16917,7 +16932,7 @@
   "yahooName": null
  },
  "rame jul 26": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17060,7 +17075,7 @@
   "yahooName": null
  },
  "republic of italy": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "XS2509390949",
   "manual": null,
@@ -17332,7 +17347,7 @@
   "yahooName": "S&P 500"
  },
  "s and p asx 200": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17343,7 +17358,7 @@
   "yahooName": null
  },
  "s p 10y us t note fut excess return index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17366,7 +17381,7 @@
   "ticker": null
  },
  "s p 500 dynamic rebalancing risk control 10 ntr 2 decrement index tr": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17377,7 +17392,7 @@
   "yahooName": null
  },
  "s p 500 futures excess return index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17416,7 +17431,7 @@
   "yahooName": "S&P/ASX 200 [XJO]"
  },
  "s p euro 50 equal weight synthetic 5 pr": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17427,7 +17442,7 @@
   "yahooName": null
  },
  "s p eurousajapan 100 net zero 2050 paris aligned select 5 decrement index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17438,7 +17453,7 @@
   "yahooName": null
  },
  "s p eurousajapan 100 net zero 2050 paris aligned select decrement 5": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17460,7 +17475,7 @@
   "yahooName": "S&P Global Inc."
  },
  "s p gsci excess return": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17471,7 +17486,7 @@
   "yahooName": null
  },
  "s p gsci gold excess return": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17482,7 +17497,7 @@
   "yahooName": null
  },
  "s p gsci gold excess return index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17493,7 +17508,7 @@
   "yahooName": null
  },
  "s p gsci industrial metals excess return": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17504,7 +17519,7 @@
   "yahooName": null
  },
  "s p nextgenerationeu recovery equity 5 decrement index ntr": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EUSPNGF5EN00",
   "manual": null,
@@ -17515,7 +17530,7 @@
   "yahooName": null
  },
  "s p nextgenerationeu recovery equity decrement 5 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17526,7 +17541,7 @@
   "yahooName": null
  },
  "s p transatlantic 100 esg select equal weight 5 decrement index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17548,7 +17563,7 @@
   "yahooName": "S&P 500"
  },
  "s p500 sector rotator 5 daily rc2 0 5 decrement index er": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17559,7 +17574,7 @@
   "yahooName": null
  },
  "s p500 sector rotator 5 daily rc2 0 5 decrement index er in eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17768,7 +17783,7 @@
   "yahooName": "Santos Limited"
  },
  "santander barclays deutsche bank": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17801,7 +17816,7 @@
   "yahooName": "Schneider Electric S.E."
  },
  "schroder isf euro high yield eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "LU0849399786",
   "manual": null,
@@ -17911,7 +17926,7 @@
   "yahooName": "Shake Shack Inc."
  },
  "shanghai shenzhen csi 300 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18128,7 +18143,7 @@
   "yahooName": "SoftBank Group Corp."
  },
  "solactive 5g 14 risk control 5 decrement net index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18216,7 +18231,7 @@
   "yahooName": null
  },
  "solactive cloud computing 14 risk control 5 decrement net index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18227,7 +18242,7 @@
   "yahooName": null
  },
  "solactive constant maturity eu nxg 10y 11am yield index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18238,7 +18253,7 @@
   "yahooName": null
  },
  "solactive cyber security select 15 risk control 4 decrement net index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18260,7 +18275,7 @@
   "yahooName": "Solactive Defensive Funds 3% RC Index"
  },
  "solactive developed markets aerospace and satellite eur vt": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18271,7 +18286,7 @@
   "yahooName": null
  },
  "solactive digital entertainment 14 risk control 5 decrement net index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18293,7 +18308,7 @@
   "yahooName": null
  },
  "solactive eccellenze europee 16 risk control 3 decrement net index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18337,7 +18352,7 @@
   "yahooName": "Solactive European Deep Value Select 50 Index"
  },
  "solactive eurozone equity select 5 decrement index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18370,7 +18385,7 @@
   "yahooName": "SOLACTIVE NEW MOBILITY 16% RISK CONTROL 5% DECREMENT NET (EUR) Index"
  },
  "solactive north america gold miners top 20 index 5 decrement": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18392,7 +18407,7 @@
   "yahooName": "SOLACTIVE SEMICONDUCTOR 16% RISK CONTROL 4% DECREMENT NET (EUR) Index"
  },
  "solactive space economy 14 risk control 5 decrement net index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18414,7 +18429,7 @@
   "yahooName": null
  },
  "solactive us pharma 10 risk control 3 decrement net index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18447,7 +18462,7 @@
   "yahooName": "SolarEdge Technologies, Inc."
  },
  "solde 10y": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18622,6 +18637,19 @@
   "type": "INDEX",
   "yahooName": "S&P 500 INDEX"
  },
+ "standard chartered": {
+  "checkedAt": "2026-11-18",
+  "exchange": "LSE",
+  "industry": "Banks—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Standard Chartered PLC",
+  "score": 1.0,
+  "sector": "Financial Services",
+  "ticker": "STAN.L",
+  "type": "EQUITY",
+  "yahooName": "Standard Chartered PLC"
+ },
  "stellantis": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
@@ -18700,7 +18728,7 @@
   "yahooName": "STMicroelectronics N.V."
  },
  "stoxx 600 basic resources": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658624",
   "manual": null,
@@ -18711,7 +18739,7 @@
   "yahooName": null
  },
  "stoxx 600 health care": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658723",
   "manual": null,
@@ -18755,7 +18783,7 @@
   "yahooName": "iShares STOXX Europe 600 Automobiles & Parts UCITS ETF (DE) EUR acc"
  },
  "stoxx europe 600 automobiles parts index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658681",
   "manual": null,
@@ -18788,7 +18816,7 @@
   "yahooName": "iShares STOXX Europe 600 Basic Resources UCITS ETF (DE)"
  },
  "stoxx europe 600 basic resources index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658624",
   "manual": null,
@@ -18810,7 +18838,7 @@
   "yahooName": null
  },
  "stoxx europe 600 esg x index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18821,7 +18849,7 @@
   "yahooName": null
  },
  "stoxx europe 600 esg x nr decrement 4 75 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18843,7 +18871,7 @@
   "yahooName": null
  },
  "stoxx europe 600 health care price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658723",
   "manual": null,
@@ -18854,7 +18882,7 @@
   "yahooName": null
  },
  "stoxx europe 600 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658202",
   "manual": null,
@@ -18865,7 +18893,7 @@
   "yahooName": null
  },
  "stoxx europe 600 insurance index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18887,7 +18915,7 @@
   "yahooName": "iShares STOXX Europe 600 Oil & Gas UCITS ETF (DE)"
  },
  "stoxx europe 600 oil gas index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658780",
   "manual": null,
@@ -18898,7 +18926,7 @@
   "yahooName": null
  },
  "stoxx europe 600 supersector health care": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18909,7 +18937,7 @@
   "yahooName": null
  },
  "stoxx europe 600 supersector utilities": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18999,7 +19027,7 @@
   "yahooName": null
  },
  "stoxx europe 600 utilities price eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "EU0009658962",
   "manual": null,
@@ -19032,7 +19060,7 @@
   "yahooName": null
  },
  "stoxx europe esg leaders select 30 index": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19109,7 +19137,7 @@
   "yahooName": null
  },
  "stoxx global infrastructure select 30": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19164,7 +19192,7 @@
   "yahooName": "Strategy Inc"
  },
  "stxe 600 realestate eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19344,7 +19372,7 @@
   "yahooName": null
  },
  "sxhca": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19476,7 +19504,7 @@
   "yahooName": "Tate & Lyle plc"
  },
  "tech adv": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19701,7 +19729,7 @@
   "yahooName": "Thales S.A."
  },
  "theam quant equity eur climate care": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19712,7 +19740,7 @@
   "yahooName": null
  },
  "theam quant equity eurozone guru i md distribuion 4": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19723,7 +19751,7 @@
   "yahooName": null
  },
  "theam quant world climate carbon offset plan i md distribution": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19789,7 +19817,7 @@
   "yahooName": null
  },
  "tka tkms basket": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "DE000A4APUH1",
   "manual": null,
@@ -19869,7 +19897,7 @@
   "yahooName": "The Trade Desk, Inc."
  },
  "transition metals er 8": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19935,7 +19963,7 @@
   "yahooName": null
  },
  "u access irl campbell absolute return ucits eur": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "IE00BKYBHJ61",
   "manual": null,
@@ -20333,7 +20361,7 @@
   "yahooName": null
  },
  "usd sofr floater to fix notes": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20344,7 +20372,7 @@
   "yahooName": null
  },
  "usd sofr ice swap rate 1 year": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20421,7 +20449,7 @@
   "yahooName": null
  },
  "valori sicav subordinated debt fund": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20432,7 +20460,7 @@
   "yahooName": null
  },
  "vaneck gold miners etf usa": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20872,7 +20900,7 @@
   "yahooName": "Wolfspeed, Inc."
  },
  "world bank sustainable bond": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20894,7 +20922,7 @@
   "yahooName": "Worldline SA"
  },
  "worldline s a basket 1": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": "DE000A4ATUS0",
   "manual": null,
@@ -20918,7 +20946,7 @@
   "yahooName": "WisdomTree WTI Crude Oil"
  },
  "wti oil future apr 24": {
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-18",
   "exchange": null,
   "isin": null,
   "manual": null,
