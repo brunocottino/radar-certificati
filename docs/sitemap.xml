@@ -232,11 +232,11 @@
 <url><loc>https://radarcertificati.com/certificati/su-spotify</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-cac-40</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-stoxx-europe-600-technology</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
+<url><loc>https://radarcertificati.com/certificati/su-crowdstrike-holdings</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-webuild</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-hang-seng</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-solaredge-technologies</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-unitedhealth</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
-<url><loc>https://radarcertificati.com/certificati/su-crowdstrike-holdings</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-deutsche-telekom</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-banca-mediolanum</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-adyen</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
@@ -358,6 +358,7 @@
 <url><loc>https://radarcertificati.com/certificati/su-intuitive-surgical</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-ast-spacemobile</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-danone</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
+<url><loc>https://radarcertificati.com/certificati/su-anthropic-pbc</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-biontech</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-cisco-systems</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-pernod-ricard</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
@@ -404,7 +405,6 @@
 <url><loc>https://radarcertificati.com/certificati/su-on</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-rtx</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-prudential-financial</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
-<url><loc>https://radarcertificati.com/certificati/su-anthropic-pbc</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-tripadvisor</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-lenovo</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
 <url><loc>https://radarcertificati.com/certificati/su-sony</loc><lastmod>2026-11-19</lastmod><priority>0.8</priority></url>
@@ -1990,6 +1990,8 @@
 <url><loc>https://radarcertificati.com/certificato/DE000BE3VGN2</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/DE000BE3X0Z1</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/DE000BE3XNN4</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
+<url><loc>https://radarcertificati.com/certificato/DE000BE41Q14</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
+<url><loc>https://radarcertificati.com/certificato/DE000BE41Q22</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/DE000BE4DVJ5</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/DE000BE4DVL1</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/DE000BE4DVM9</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
@@ -15051,5 +15053,8 @@
 <url><loc>https://radarcertificati.com/certificato/XS3555742702</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/XS3555745630</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/XS3556733247</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
+<url><loc>https://radarcertificati.com/certificato/XS3563207862</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 <url><loc>https://radarcertificati.com/certificato/XS3563587164</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
+<url><loc>https://radarcertificati.com/certificato/XS3564427097</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
+<url><loc>https://radarcertificati.com/certificato/XS3564432410</loc><lastmod>2026-11-19</lastmod><priority>0.6</priority></url>
 </urlset>

@@ -3695,6 +3695,19 @@
   "type": "EQUITY",
   "yahooName": "CrowdStrike Holdings, Inc."
  },
+ "crowdstrike palantir palo alto networks": {
+  "checkedAt": "2026-11-19",
+  "exchange": "NMS",
+  "industry": "Software—Infrastructure",
+  "isin": null,
+  "manual": null,
+  "name": "Crowdstrike, Palantir, Palo Alto Networks",
+  "score": 0.8,
+  "sector": "Technology",
+  "ticker": "CRWD",
+  "type": "EQUITY",
+  "yahooName": "CrowdStrike Holdings, Inc."
+ },
  "crypto market neutral strategy": {
   "checkedAt": "2026-11-19",
   "exchange": null,
@@ -5335,6 +5348,19 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "euro stoxx banks euro stoxx stoxx europe 600 health care": {
+  "checkedAt": "2026-11-19",
+  "exchange": "GER",
+  "industry": null,
+  "isin": null,
+  "manual": null,
+  "name": "EURO STOXX Banks, Euro Stoxx , STOXX Europe 600 Health Care",
+  "score": 0.608,
+  "sector": null,
+  "ticker": "EXV4.DE",
+  "type": "ETF",
+  "yahooName": "iShares STOXX Europe 600 Health Care UCITS ETF (DE)"
  },
  "euro stoxx banks index": {
   "isin": "EU0009658426",
