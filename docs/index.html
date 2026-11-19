@@ -2180,7 +2180,12 @@ async function wireLive(root){
   const c=BYISIN.get(el.dataset.live);
   try{
     const j=await (await fetch(`/api/live/${el.dataset.live}?m=${el.dataset.m}`)).json();
-    if(!j.ok||!(j.bid||j.ask))return;
+    if(!j.ok||!(j.bid||j.ask||j.last))return;
+    if(!(j.bid||j.ask)){ // book non disponibile: si mostra solo l'ultimo contratto di oggi, se c'è
+      const m=(j.lastAt||"").match(/^(\d\d)\/(\d\d)\/(\d\d) - (\d\d)\.(\d\d)/),td=new Date();
+      if(!m||+m[1]!==td.getDate()||+m[2]!==td.getMonth()+1)return;
+      el.innerHTML=`<b>In borsa oggi</b><span>ultimo contratto <b>${fmt(j.last)}</b> alle ${m[4]}:${m[5]}</span><span class="lt">ritardo 15 min · Borsa Italiana</span><button data-relive>Aggiorna</button>`;
+      el.hidden=false;el.querySelector("[data-relive]").onclick=()=>{el.querySelector("[data-relive]").disabled=true;wireLive(root)};return}
     const t=new Date(Date.parse(j.at)-15*60000).toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
     const d=c?.ask&&j.ask?(j.ask/c.ask-1)*100:null;
     el.innerHTML=`<b>In borsa ora</b><span>denaro <b>${fmt(j.bid)}</b></span><span>lettera <b>${fmt(j.ask)}</b></span>${d!=null&&Math.abs(d)>=0.05?`<span>${chgHtml(d)} sul radar</span>`:""}<span class="lt">ore ${t} · ritardo 15 min · Borsa Italiana</span><button data-relive>Aggiorna</button>`;

@@ -137,7 +137,7 @@ function notFound(isin) {
     { status: 404, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=600" } });
 }
 
-// Prezzo "live" di una scheda: denaro/lettera dal book di Borsa Italiana (ritardo 15 min, gratis),
+// Prezzo "live" di una scheda: ultimo contratto (e denaro/lettera se presenti nell'HTML: di solito il book arriva via JS ed è vuoto) da Borsa Italiana (ritardo 15 min, gratis),
 // chiesto solo quando qualcuno apre il certificato e tenuto 2 minuti nella cache di Cloudflare.
 // Se Borsa non risponde si restituisce {ok:false} e il sito mostra il prezzo del robot.
 const LIVE_URL = {
@@ -153,11 +153,16 @@ function parseBook(html) {
   if (a < 0) return null;
   let h = a; while (h > 0 && /^(N|Numero Proposte|Volume Acquisto)$/.test(t[h - 1])) h--;
   let e = a; while (/^(Prezzo Acquisto|Prezzo Vendita|Volume Vendita|Numero Proposte)$/.test(t[e])) e++;
-  const head = t.slice(h, e), row = t.slice(e, e + head.length);
-  const bid = itNum(row[head.indexOf("Prezzo Acquisto")]), ask = itNum(row[head.indexOf("Prezzo Vendita")]);
+  // prima riga del book: dal livello "1" al livello "2", che deve cadere esattamente dopo una riga piena. Con il book vuoto Borsa scrive solo "1 2 3 4 5":
+  // senza questo controllo i numeri dei livelli venivano letti come prezzi (denaro 4, lettera 5)
+  const head = t.slice(h, e);
+  const row = t[e] === "1" && t[e + head.length] === "2" ? t.slice(e, e + head.length) : [];
+  let bid = itNum(row[head.indexOf("Prezzo Acquisto")]), ask = itNum(row[head.indexOf("Prezzo Vendita")]);
   const after = k => { const i = t.indexOf(k); return i < 0 ? null : t[i + 1]; };
   const last = itNum(after("Prezzo Ultimo Contratto")), lastAt = (after("Data - Ora Ultimo Contratto") || "").match(/^\d\d\/\d\d\/\d\d - [\d.]+$/)?.[0] || null;
   if (bid && ask && (bid > ask || ask / bid > 1.5)) return null;  // book incoerente: meglio niente
+  const ref = last || itNum(after("Prezzo di riferimento"));
+  if (ref && [bid, ask].some(v => v && (v / ref > 2 || v / ref < 0.5))) bid = ask = null;  // lontano dall'ultimo prezzo: lettura sbagliata
   return bid || ask || last ? { bid, ask, last, lastAt } : null;
 }
 
