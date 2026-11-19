@@ -16,7 +16,7 @@ function bucket(isin) {
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const num = (v, d = 2) => v == null || isNaN(v) ? null : Number(v).toLocaleString("it-IT", { minimumFractionDigits: 0, maximumFractionDigits: d });
 const pct = (v, d = 2) => v == null ? null : num(v, d) + "%";
-const day = s => { if (!s) return null; const [y, m, d] = String(s).slice(0, 10).split("-"); return d && `${d}/${m}/${y}`; };
+const day = s => { if (!s) return null; const [y, m, d] = String(s).slice(0, 10).split("-"); return +y >= 2090 ? "open end (senza scadenza)" : d && `${d}/${m}/${y}`; };
 
 async function asset(env, path) {
   const r = await env.ASSETS.fetch(new Request(SITE + path));
@@ -68,7 +68,7 @@ function certPage(isin, c, hist, hubs) {
   if (c.couponPa) s.push(`Prevede una cedola${c.triggerPct ? " condizionata" : ""} del <b>${pct(c.couponPa)} annuo</b>${freq ? `, pagata con frequenza ${freq}` : ""}${c.triggerPct ? `, se ${unds.length > 1 ? "tutti i sottostanti sono" : "il sottostante è"} sopra il ${pct(c.triggerPct, 1)} dello strike` : ""}${c.memory ? ", con effetto memoria (le cedole non pagate vengono recuperate)" : ""}.`);
   if (c.barrierPct) s.push(`La barriera capitale è al <b>${pct(c.barrierPct, 1)}</b> dello strike${c.barrierType ? ` (osservazione ${c.barrierType === "continua" ? "continua" : "solo a scadenza"})` : ""}${c.distBarrier != null ? `; il sottostante peggiore${c.worstName ? `, ${esc(c.worstName)},` : ""} ${c.distBarrier >= 0 ? `può scendere ancora del ${pct(c.distBarrier, 1)} prima di toccarla` : `è <b class="bad">sotto la barriera</b> (${pct(c.distBarrier, 1)})`}` : ""}.`);
   if (c.autocallPct || c.callable) s.push(`Rimborso anticipato: ${esc(c.callable || "previsto")}${c.autocallPct ? ` se i sottostanti sono sopra il ${pct(c.autocallPct, 1)} dello strike` : ""}${c.nextCallDate ? `, prossima data ${day(c.nextCallDate)}` : ""}.`);
-  if (c.maturity) s.push(`Scadenza il <b>${day(c.maturity)}</b>.`);
+  if (c.maturity) s.push(c.maturity >= "2090" ? "È un certificato <b>open end</b>, senza scadenza." : `Scadenza il <b>${day(c.maturity)}</b>.`);
   if (price) s.push(`Ultimo prezzo denaro/lettera: ${price}${c.nominal ? ` su nominale ${num(c.nominal)}` : ""}${c.priceAt ? ` (${day(c.priceAt)})` : ""}.`);
   if (prob != null) s.push(`Probabilità stimata che la barriera tenga fino a scadenza: <b>${prob}%</b> (simulazione statistica sulla volatilità storica, non una previsione).`);
 
@@ -98,7 +98,7 @@ function certPage(isin, c, hist, hubs) {
   const qa = [];
   if (c.couponPa) qa.push([`Quanto rende il certificato ${isin}?`, `Prevede una cedola${c.triggerPct ? " condizionata" : ""} del ${pct(c.couponPa)} annuo${freq ? ` con pagamento ${freq}` : ""}${c.memory ? " ed effetto memoria" : ""}. ${c.triggerPct ? "La cedola è pagata solo se alla data di osservazione i sottostanti sono sopra il livello trigger: non è garantita." : "Il rendimento effettivo dipende dal prezzo di acquisto e dal rimborso a scadenza."}`]);
   if (c.barrierPct) qa.push([`Dov'è la barriera del certificato ${isin}?`, `La barriera capitale è al ${pct(c.barrierPct, 1)} del valore iniziale${c.distBarrier != null ? (c.distBarrier >= 0 ? `; oggi il sottostante peggiore è sopra la barriera del ${pct(c.distBarrier, 1)}` : `; oggi il sottostante peggiore è sotto la barriera del ${pct(-c.distBarrier, 1)}`) : ""}. Se a scadenza il peggiore è sotto la barriera, il rimborso segue la sua perdita.`]);
-  if (c.maturity) qa.push([`Quando scade il certificato ${isin}?`, `Scade il ${day(c.maturity)}${c.callable || c.autocallPct ? `, ma può essere rimborsato in anticipo${c.nextCallDate ? ` (prossima data ${day(c.nextCallDate)})` : ""}` : ""}.`]);
+  if (c.maturity) qa.push([`Quando scade il certificato ${isin}?`, `${c.maturity >= "2090" ? "Non ha una scadenza (open end)" : `Scade il ${day(c.maturity)}`}${c.callable || c.autocallPct ? `, ma può essere rimborsato in anticipo${c.nextCallDate ? ` (prossima data ${day(c.nextCallDate)})` : ""}` : ""}.`]);
   if (c.issuer) qa.push([`Chi emette il certificato ${isin}?`, `È emesso da ${c.issuer}${c.market ? ` ed è quotato su ${c.market}` : ""}. Chi lo compra è esposto anche al rischio che l'emittente non sia in grado di pagare.`]);
   const desc = [`${type} di ${c.issuer || "emittente n.d."} su ${undTxt}`, c.couponPa && `cedola ${pct(c.couponPa)} annua`,
     c.barrierPct && `barriera ${pct(c.barrierPct, 1)}`, c.distBarrier != null && `distanza ${pct(c.distBarrier, 1)}`,

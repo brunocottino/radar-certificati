@@ -208,8 +208,9 @@ def main():
                 alt.append(n)
         c["undCanon"] = alt or None
         # date "prossima cedola/richiamo" già passate (sorgente non riletta): meglio nessuna data che una data sbagliata
+        # (il richiamo con calendario completo è ricalcolato sotto; la cedola no, quindi si azzera sempre)
         for k in ("nextCouponDate", "nextCallDate"):
-            if c.get(k) and c[k] < TODAY and not c.get("callSchedule"):
+            if c.get(k) and c[k] < TODAY and (k == "nextCouponDate" or not c.get("callSchedule")):
                 c[k] = None
         # settore di ogni sottostante (stesso ordine di underlyings) e del certificato ("Misto" se diversi)
         secs = [classify_name(n, lambda p: m.get(core(p) or norm(p))) for n in c.get("underlyings") or []]

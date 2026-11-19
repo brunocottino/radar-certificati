@@ -116,7 +116,7 @@ def day(s):
     if not s:
         return None
     y, m, d = str(s)[:10].split("-")
-    return f"{d}/{m}/{y}"
+    return "open end" if int(y) >= 2090 else f"{d}/{m}/{y}"
 
 
 def slugify(s):
@@ -199,7 +199,7 @@ def stats(certs, what):
     mem = sum(1 for c in certs if c.get("memory"))
     mon = sum(1 for c in certs if c.get("freq") == "1m")
     under = sum(1 for c in certs if c.get("distBarrier") is not None and c["distBarrier"] < 0)
-    mats = sorted(c["maturity"] for c in certs if c.get("maturity"))
+    mats = sorted(c["maturity"] for c in certs if c.get("maturity") and c["maturity"] < "2090")  # 2099 = open end
     s = [f"Il radar segue <b>{n} certificati {what}</b>" + (f" di {len(iss)} emittenti" if len(iss) > 1 else (f" emessi da {esc(next(iter(iss)))}" if iss and next(iter(iss)) not in what else "")) + "."]
     if len(iss) > 1:
         s.append("I più presenti: " + ", ".join(f"{esc(k)} ({v})" for k, v in iss.most_common(5)) + ".")

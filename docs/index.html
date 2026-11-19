@@ -886,7 +886,7 @@ Per usare la ricerca serve JavaScript; senza, si possono sfogliare <a href="/cer
     <ol>
       <li><b>Scegli il profilo</b><span>Prudente, Bilanciato o Aggressivo: imposta da solo rendimento minimo, distanza dalla barriera e scadenza.</span></li>
       <li><b>Restringi</b><span>Cerca un ISIN, un sottostante o un emittente, oppure tocca un obiettivo rapido (es. Rendita mensile).</span></li>
-      <li><b>Apri un certificato</b><span>Il punteggio 0–100 mette in alto i più convenienti per il tuo profilo; la scheda mostra grafico, rischi e cedole.</span></li>
+      <li><b>Apri un certificato</b><span>Il punteggio 0–100 ordina i certificati con i criteri del profilo scelto (non è un consiglio); la scheda mostra grafico, rischi e cedole.</span></li>
     </ol>
     <button class="howto-x" id="howto-x" aria-label="Chiudi la guida">✕</button>
   </section>
@@ -1056,7 +1056,7 @@ const holi={};function isOpen(d){const w=d.getDay();if(w===0||w===6)return false
   return !holi[y].has(d.toDateString())}
 function tradingDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;const t=new Date(x);t.setDate(t.getDate()+1);for(;t<=today;t.setDate(t.getDate()+1))if(isOpen(t))n++;return n}
 function bizDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;for(const t=new Date(x);t<today;t.setDate(t.getDate()+1)){const w=t.getDay();if(w&&w!==6)n++}return n}
-const DF=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"});const dshort=d=>d?DF.format(d):"—";
+const DF=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"});const dshort=d=>!d?"—":d.getFullYear()>=2090?"Open end":DF.format(d); // 31/12/2099 = certificato senza scadenza
 const dtime=s=>s?new Date(s).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
 
 /* ---------- stato ---------- */
@@ -2034,9 +2034,9 @@ function judge(c){const pr=state.profile,w=esc(c.worst||"il peggiore");
   if(c.expired)return {t:"ca",h:"In rimborso",s:"Il certificato è arrivato a scadenza: non è più da valutare come investimento."};
   if(c.belowBarrier&&c.prot)return {t:"ca",h:"Cedole a rischio, capitale protetto",s:`${w} è sotto la barriera: a rischio sono le cedole o il premio; il capitale è protetto a scadenza nella misura indicata nel KID.`};
   if(c.belowBarrier)return {t:"ko",h:"Capitale a rischio",s:`${w} è sotto la barriera: se a scadenza resta lì, il rimborso sarà pari al suo valore, cioè meno del capitale.`};
-  if(c.call?.lvl==="alto"&&c.call.poor)return {t:"ko",h:"Sta per essere rimborsato",s:`Il ${dshort(c.callDate)} probabilmente rimborsa: comprando oggi incassi circa ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto. Il rendimento annuo a scadenza non è realistico.`};
+  if(c.call?.lvl==="alto"&&c.call.poor)return {t:"ko",h:"Sta per essere rimborsato",s:`Il ${dshort(c.callDate)} probabilmente rimborsa: al prezzo di oggi il risultato sarebbe circa ${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto. Il rendimento annuo a scadenza non è realistico.`};
   const sc=c.score??0;
-  const h=sc>=75?`Interessante per il profilo ${pr}`:sc>=60?`Buono per il profilo ${pr}`:sc>=45?"Da valutare con attenzione":`Poco adatto al profilo ${pr}`;
+  const h=sc>=75?`Punteggio alto con i criteri ${pr}`:sc>=60?`Punteggio buono con i criteri ${pr}`:sc>=45?"Punteggio medio: guardare bene i rischi":`Punteggio basso con i criteri ${pr}`; // descrive il punteggio, non giudica se è adatto a chi legge
   const t=sc>=60?"ok":sc>=45?"ca":"ko";
   const s=c.ytm!=null&&c.dist!=null?`Rende <b>${pct(c.ytm)} l'anno</b> se a scadenza ${w} non ha perso più del <b>${pct(c.dist,0)}</b> da oggi${c.prob!=null?`; la probabilità stimata è <b>${probTxt(c)}</b>`:""}.`
     :c.ytm!=null?`Rende ${pct(c.ytm)} l'anno se tutte le cedole sono pagate e rimborsa 100 a scadenza.`:"Mancano prezzo o distanza dalla barriera: il radar non può stimare il rendimento.";
