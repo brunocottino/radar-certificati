@@ -16,7 +16,7 @@ Niente token/routine di Claude per pianificare il robot. Non usare certificatied
   `seo.py` scrive anche `note-legali.html` e `metodologia.html`, le liste (sotto la pari, barriera bassa, in scadenza, calendario cedole)
   e le raccolte tipologia × emittente; ogni pagina porta l'avvertenza `WARN` («non è una raccomandazione»): non toglierla e non usare
   parole da consiglio (es. «scelte», «da comprare»). Indirizzo unico: il worker rimanda www al dominio principale e mette noindex
-  su workers.dev (`run_worker_first` in `wrangler.jsonc`: il worker passa per primo sulle pagine, non su /api, /data, /fonts).
+  su workers.dev (`run_worker_first` in `wrangler.jsonc`: il worker passa per primo sulle pagine, non su /api/v1, /data, /fonts: /api/live e /api/orologio devono passare dal worker).
 - `history/` storico prezzi per ISIN + `_first_seen.json` (non pubblicato).
 - `.github/workflows/scrape.yml` robot (09:35 e 16:15 Roma, + recuperi; GitHub ritarda anche di 6 ore);
   `diagnosi.yml` controlla dominio/sito. orologio Cloudflare in `worker/index.js` (scheduled, crons in `wrangler.jsonc`):

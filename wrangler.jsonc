@@ -7,7 +7,7 @@
   "compatibility_date": "2026-10-01",
   "main": "worker/index.js",
   // il worker passa per primo sulle pagine (per rimandare www al dominio principale); dati, API e caratteri restano file diretti
-  "assets": { "directory": "./docs", "binding": "ASSETS", "run_worker_first": ["/*", "!/api/*", "!/data/*", "!/fonts/*"] },
+  "assets": { "directory": "./docs", "binding": "ASSETS", "run_worker_first": ["/*", "!/api/v1/*", "!/data/*", "!/fonts/*"] },
   "workers_dev": true,
   // non cancellare a ogni push le variabili messe a mano nel pannello Cloudflare (es. GH_TOKEN come testo)
   "keep_vars": true,
