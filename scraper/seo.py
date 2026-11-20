@@ -140,7 +140,19 @@ def und_name(names):
     c = Counter(clean_name(n) for n in names if n)
     mixed = [(k, v) for k, v in c.most_common() if re.search(r"[a-z]", k) and len(k) > 2]
     best = (mixed or c.most_common())[0][0]
-    return best if re.search(r"[a-z]", best) or len(best) <= 5 else best.title()
+    return pretty(best if re.search(r"[a-z]", best) or len(best) <= 5 else best.title())
+
+
+# nomi scritti male dalle fonti (maiuscole, ®, refusi): come compaiono nei titoli delle pagine
+PRETTY = [(r"\s*®", ""), (r"\bFtse\b", "FTSE"), (r"\bFTSE Mib\b", "FTSE MIB"), (r"(\w)[’']S\b", r"\1’s"), (r"Ressources", "Resources"),
+          (r"\bEuro ?stoxx\b|\bEURO STOXX\b|\bEuro STOXX\b", "Euro Stoxx"), (r"^Eurostoxx ?50$", "Euro Stoxx 50"), (r"Nasdaq-100", "Nasdaq 100"),
+          (r"^STOXXEU 600 Auto Parts$", "STOXX Europe 600 Automobiles & Parts"), (r"\s*Inc\./VA$", ""), (r"\bEsg\b", "ESG"), (r"\bEtf\b", "ETF")]
+
+
+def pretty(n):
+    for a, b in PRETTY:
+        n = re.sub(a, b, n)
+    return n.strip()
 
 
 def page(title, desc, canonical, body, ld=None):
@@ -492,7 +504,7 @@ def main():
     # stesso titolo con più ticker (borse diverse) o nomi troncati ("...Paschi di Sien"): si uniscono per inizio del nome
     merged, tick_of = {}, {}
     for t, cs in sorted(by_t.items(), key=lambda x: -len(x[1])):
-        key = slugify(und_name(names[t]))[:22]
+        key = slugify(und_name(names[t])).replace("-", "")[:22]  # "Euro Stoxx 50" e "Eurostoxx50" sono lo stesso indice
         g = merged.setdefault(key, {"certs": {}, "names": [], "tickers": []})
         g["certs"].update(cs)
         g["names"] += names[t]

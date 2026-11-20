@@ -4,6 +4,11 @@
 // 14.000 pagine sempre aggiornate senza scrivere 14.000 file a ogni run.
 const SITE = "https://radarcertificati.com";
 const ISIN_RE = /^[A-Z]{2}[A-Z0-9]{9}\d$/;
+const MOVED = {
+  "/certificati/su-eurostoxx50": "/certificati/su-euro-stoxx-50",
+  "/certificati/su-dominion-ressources-inc-va": "/certificati/su-dominion-resources",
+  "/certificati/su-stoxxeu-600-auto-parts": "/certificati/su-stoxx-europe-600-automobiles-parts",
+};
 const FREQ = { "1m": "mensile", "2m": "bimestrale", "3m": "trimestrale", "6m": "semestrale", "12m": "annuale" };
 
 // stesso gruppo di isin_bucket in scraper/api.py: FNV-1a a 32 bit mod 256, due cifre esadecimali
@@ -231,6 +236,8 @@ export default {
     if (!m) {
       // pagine e file del sito (il worker passa per primo sulle pagine: vedi run_worker_first in wrangler.jsonc)
       if (request.method !== "GET" && request.method !== "HEAD") return notFound(null);
+      const moved = MOVED[u.pathname.replace(/\.html$/, "")];  // raccolte unite o rinominate: niente 404 per chi arriva da Google
+      if (moved) return Response.redirect(SITE + moved, 301);
       const r = await env.ASSETS.fetch(request);
       if (r.status === 404) return notFound(null);
       const dev = u.hostname.endsWith(".workers.dev"), sw = u.pathname === "/sw.js";

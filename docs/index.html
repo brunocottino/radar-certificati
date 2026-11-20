@@ -2038,7 +2038,8 @@ function judge(c){const pr=state.profile,w=esc(c.worst||"il peggiore");
   const sc=c.score??0;
   const h=sc>=75?`Punteggio alto con i criteri ${pr}`:sc>=60?`Punteggio buono con i criteri ${pr}`:sc>=45?"Punteggio medio: guardare bene i rischi":`Punteggio basso con i criteri ${pr}`; // descrive il punteggio, non giudica se è adatto a chi legge
   const t=sc>=60?"ok":sc>=45?"ca":"ko";
-  const s=c.ytm!=null&&c.dist!=null?`Rende <b>${pct(c.ytm)} l'anno</b> se a scadenza ${w} non ha perso più del <b>${pct(c.dist,0)}</b> da oggi${c.prob!=null?`; la probabilità stimata è <b>${probTxt(c)}</b>`:""}.`
+  const tg=+c.triggerPct>0&&+c.triggerPct<=130&&+c.barrierPct>0&&+c.triggerPct>=+c.barrierPct+5?+c.triggerPct:null; // cedola con soglia più alta della barriera
+  const s=c.ytm!=null&&c.dist!=null?`Rende <b>${pct(c.ytm)} l'anno</b> se tutte le cedole sono pagate${tg?` (serve che i sottostanti siano sopra il <b>${fmt(tg,0)}%</b> del valore iniziale alle date di osservazione)`:""} e se a scadenza ${w} non ha perso più del <b>${pct(c.dist,0)}</b> da oggi${c.prob!=null?`; la probabilità stimata che la barriera tenga è <b>${probTxt(c)}</b>`:""}.`
     :c.ytm!=null?`Rende ${pct(c.ytm)} l'anno se tutte le cedole sono pagate e rimborsa 100 a scadenza.`:"Mancano prezzo o distanza dalla barriera: il radar non può stimare il rendimento.";
   const px=c.xr==null?"":c.xr>=3&&c.prob!=null&&c.prob<75?` Rende più dei simili a parità di distanza <b>perché i sottostanti oscillano molto</b>${c.wvol!=null?` (volatilità del peggiore ${pct(c.wvol,0)})`:""}: la distanza da sola non basta.`:c.xr>=3&&(c.xd??0)>=0?" Rispetto ai simili <b>rende di più a parità di rischio</b>.":c.xr<=-3?" Rispetto ai simili <b>rende meno</b> a parità di distanza.":"";
   return {t,h,s:s+px};
@@ -2056,7 +2057,7 @@ function checks(c,full){const o=[];const w=esc(c.worst||"il peggiore");const bt=
   if(c.call)o.push([c.call.lvl==="alto"&&c.call.poor?"ko":"ca","Rimborso anticipato",callTxt(c)]);
   else if(c.callDate)o.push(["ok","Rimborso anticipato",`Prossima data ${dshort(c.callDate)}: oggi il rimborso non è probabile.`]);
   else if(c.callKind)o.push(["na","Rimborso anticipato",`${c.callable?esc(c.callable):c.callKind==="autocall"?"Autocallable":"Richiamabile dall'emittente"}: il radar non ha le date di rimborso anticipato: <b>può essere richiamato prima della scadenza</b>, controlla il KID prima di comprare.`]);
-  if(!c.callKind&&/^no$/i.test(c.callable||"")&&!c.call)o.push(["ok","Rimborso anticipato","Nessun richiamo anticipato (calendario dell'emittente): il certificato dura fino a "+dshort(c.matDate)+"."]);
+  if(!c.callKind&&/^no$/i.test(c.callable||"")&&!c.call)o.push(["ok","Rimborso anticipato","Nessun richiamo anticipato (calendario dell'emittente): "+(c.matDate&&c.matDate.getFullYear()>=2090?"il certificato non ha scadenza (open end).":"il certificato dura fino a "+dshort(c.matDate)+".")]);
   if(c.matDate&&!c.expired){const dm=Math.round((c.matDate-today)/864e5);if(dm<=30)o.unshift(["ko","Scadenza",`Scade il ${dshort(c.matDate)}, <b>tra ${dm} giorni</b>: restano poche cedole e il prezzo converge al rimborso.`])}
   if(!c.ask)o.push(["ko","Prezzo","Nessun prezzo in lettera: oggi non si può comprare."]);
   else{const sp=c.spread;o.push([sp==null?"na":sp<=1?"ok":sp<=2?"ca":"ko","Prezzo",`${c.pricePct?`Quota <b>${fmt(c.pricePct,1)}%</b>${c.pricePct<98?" (sotto la pari: guadagno extra se rimborsa 100)":c.pricePct>101?" (sopra la pari: a scadenza riavrai 100)":""}`:"Prezzo"} · spread ${pct(sp,2)}${sp>2?": comprare e rivendere costa caro":""}${c.stale?` · <span class="ca">dato del ${dtime(c.priceAt)}</span>`:""}.`])}
@@ -2076,7 +2077,7 @@ function simBody(c,amt){
   const P=c.prob!=null?c.prob/100:null;
   const sc=[];
   if(c.call)sc.push(["ca",`Rimborso anticipato il ${dshort(c.callDate)}`,`stima ${fmt(c.call.p*100,0)}%`,nom*(100+c.call.cps)/100-inv,`Riavrai ${eur(nom)} più le cedole fino a quella data, poi dovrai reinvestire.`]);
-  sc.push(["ok","Va bene: la barriera tiene",P!=null?`probabilità ${fmt(P*100,0)}%`:"probabilità n.d.",good,`${n?`${n} cedole${each?` da ${eur(each)}`:""} e `:all?`cedole ≈ ${eur(all)} e `:""}rimborso di ${eur(nom)} il ${dshort(c.matDate)}.`]);
+  sc.push(["ok","Va bene: la barriera tiene",P!=null?`probabilità ${fmt(P*100,0)}%`:"probabilità n.d.",good,`${n?`${n} cedole${each?` da ${eur(each)}`:""} e `:all?`cedole ≈ ${eur(all)} e `:""}rimborso di ${eur(nom)} ${c.matDate&&c.matDate.getFullYear()>=2090?"quando l'emittente lo richiama (open end)":"il "+dshort(c.matDate)}.`]);
   if(bp&&c.prot)sc.push(["ca","Va male: barriera rotta",P!=null?`probabilità ${fmt((1-P)*100,0)}%`:"",nom-inv,`Capitale protetto: a scadenza riavresti comunque il livello di protezione (qui ipotizzato 100: verificalo nel KID), ma senza le cedole o il premio legati alla barriera.`]);
   else if(bp)sc.push(["ko","Va male: barriera rotta a scadenza",P!=null?`probabilità ${fmt((1-P)*100,0)}%`:"",bad,`Esempio: il peggiore chiude al ${fmt(Math.round(bp*.85),0)}% dello strike → rimborso ${eur(badRed)}. Le cedole incassate prima${all?` (fino a ${eur(all)})`:""} riducono la perdita: dipende da quando scende.`]);
   return `<div class="sim-buy">Compri <b>${q.toLocaleString("it-IT")}</b> certificat${q===1?"o":"i"} a ${eur(c.ask)} = <b>${eur(inv)}</b>${each?` · cedola di <b>${eur(each)}</b> ${perTxt(per)}`:cp?` · cedole ≈ ${eur(nom*cp/100)} l'anno`:""}</div>
@@ -2145,7 +2146,7 @@ async function detailHtml(c){
     ["Barriera",c.barrierPct?pct(+c.barrierPct,0)+(full.barrierType?` · ${full.barrierType==="scadenza"?"a scadenza":esc(full.barrierType)}`:""):"—"],["Trigger cedola",c.triggerPct?pct(+c.triggerPct,0):"—"],["Dist. trigger",pct(c.trigDist)],
     ["Prossima cedola",dshort(c.couponDate)],["Prossimo richiamo",c.callDate?dshort(c.callDate)+(c.autocallPct?` · se ≥ ${fmt(+c.autocallPct,0)}%`:""):"—"],...(c.call?[["Prob. richiamo",`<span class="${c.call.lvl==="alto"?"neg":"ca"}">${fmt(c.call.p*100,0)}% il ${dshort(c.callDate)}</span>`],["Se richiamato",`${c.call.tot>=0?"+":""}${fmt(c.call.tot,1)}% in tutto`]]:[]),
     ["Scadenza",dshort(c.matDate)],["Rend. a scadenza",pct(c.ytm)],["Rend. a richiamo",pct(c.ytc)],["Rend. atteso",pct(c.retProxy)],["Margine",c.sigma!=null?fmt(c.sigma,1)+" dev. std":"—"],["Vol peggiore",pct(c.wvol,0)],["Classe emittente",c.tier||"n.d."]];
-  const sub=[c.matDate?`Scade ${dshort(c.matDate)}${c.years!=null&&c.years>0?` · ${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}`:""}`:"",c.n>1?`Worst-of ${c.n}`:c.n===1?"Singolo sottostante":"",c.freq?"Cedola "+freqTxt(c.freq).toLowerCase():"",c.memory?"Memoria":"",c.isNew?"Nuovo":""].filter(Boolean);
+  const sub=[c.matDate?c.matDate.getFullYear()>=2090?"Open end, senza scadenza":`Scade ${dshort(c.matDate)}${c.years!=null&&c.years>0?` · ${yrs(c.years<1?c.years:Math.round(c.years*10)/10)}`:""}`:"",c.n>1?`Worst-of ${c.n}`:c.n===1?"Singolo sottostante":"",c.freq?"Cedola "+freqTxt(c.freq).toLowerCase():"",c.memory?"Memoria":"",c.isNew?"Nuovo":""].filter(Boolean);
   const pane=(id,html,on)=>`<section class="dpane" data-pane="${id}" ${on?"":"hidden"}>${html}</section>`;
   const ov=`${warn}<div class="judge v-${J.t}"><span class="ring ${scls(c.score)}" style="--s:${c.score||0}" title="Punteggio · ${esc(scoreTitle(c))}">${c.score}</span><div><div class="j-h">${J.h}</div><div class="j-s">${J.s}</div></div></div>
 <div class="rd">

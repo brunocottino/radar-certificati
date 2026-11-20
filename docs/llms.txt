@@ -2,7 +2,7 @@
 
 > Screener gratuito e indipendente dei certificati d'investimento quotati in Italia (SeDeX di Borsa Italiana, Cert-X/EuroTLX di Euronext): 14419 certificati di 33 emittenti con cedola annua, frequenza, effetto memoria, barriera capitale, distanza del sottostante peggiore dalla barriera, scadenza, prezzo denaro/lettera e probabilità stimata di tenuta della barriera (simulazione Monte Carlo sulla volatilità storica). Aggiornato ogni giorno di borsa alle 09:35 e alle 16:15 ora di Roma. Senza registrazione.
 
-Dati aggiornati al 19/11/2026. I dati sono indicativi e raccolti da fonti pubbliche (siti degli emittenti, Borsa Italiana, Euronext); non sono consulenza. In italiano.
+Dati aggiornati al 20/11/2026. I dati sono indicativi e raccolti da fonti pubbliche (siti degli emittenti, Borsa Italiana, Euronext); non sono consulenza. In italiano.
 
 ## Pagine principali
 - [Radar (app di ricerca)](https://radarcertificati.com/): ricerca per ISIN, sottostante, emittente, tipologia; filtri, profili di rischio, confronto, portafoglio, esportazione Excel
@@ -19,9 +19,9 @@ Dati aggiornati al 19/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati con effetto memoria](https://radarcertificati.com/certificati/effetto-memoria): 3798 certificati
 - [Certificati con barriera bassa](https://radarcertificati.com/certificati/barriera-bassa): 443 certificati
 - [Certificati sotto la pari](https://radarcertificati.com/certificati/sotto-la-pari): 2077 certificati
-- [Certificati in scadenza nei prossimi 6 mesi](https://radarcertificati.com/certificati/in-scadenza): 1331 certificati
-- [Calendario cedole dei certificati](https://radarcertificati.com/certificati/prossime-cedole): 1433 certificati
-- [Nuove emissioni di certificati](https://radarcertificati.com/certificati/nuove-emissioni): 775 certificati
+- [Certificati in scadenza nei prossimi 6 mesi](https://radarcertificati.com/certificati/in-scadenza): 1319 certificati
+- [Calendario cedole dei certificati](https://radarcertificati.com/certificati/prossime-cedole): 1389 certificati
+- [Nuove emissioni di certificati](https://radarcertificati.com/certificati/nuove-emissioni): 745 certificati
 
 ## Per tipologia
 - [Certificati Cash Collect](https://radarcertificati.com/certificati/cash-collect): 3308 certificati
@@ -83,11 +83,11 @@ Dati aggiornati al 19/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati su STMicroelectronics](https://radarcertificati.com/certificati/su-stmicroelectronics): 929 certificati
 - [Certificati su Intesa Sanpaolo](https://radarcertificati.com/certificati/su-intesa-sanpaolo): 908 certificati
 - [Certificati su Banco BPM](https://radarcertificati.com/certificati/su-banco-bpm): 877 certificati
-- [Certificati su EURO STOXX Banks](https://radarcertificati.com/certificati/su-euro-stoxx-banks): 781 certificati
+- [Certificati su Euro Stoxx Banks](https://radarcertificati.com/certificati/su-euro-stoxx-banks): 781 certificati
 - [Certificati su Enel](https://radarcertificati.com/certificati/su-enel): 746 certificati
 - [Certificati su Eni](https://radarcertificati.com/certificati/su-eni): 709 certificati
 - [Certificati su Banca Monte dei Paschi di Siena](https://radarcertificati.com/certificati/su-banca-monte-dei-paschi-di-siena): 697 certificati
-- [Certificati su Euro STOXX 50](https://radarcertificati.com/certificati/su-euro-stoxx-50): 653 certificati
+- [Certificati su Euro Stoxx 50](https://radarcertificati.com/certificati/su-euro-stoxx-50): 695 certificati
 - [Certificati su Leonardo](https://radarcertificati.com/certificati/su-leonardo): 644 certificati
 - [Certificati su BPER Banca](https://radarcertificati.com/certificati/su-bper-banca): 548 certificati
 - [Certificati su Ferrari](https://radarcertificati.com/certificati/su-ferrari): 439 certificati
@@ -96,16 +96,16 @@ Dati aggiornati al 19/11/2026. I dati sono indicativi e raccolti da fonti pubbli
 - [Certificati su Société Générale](https://radarcertificati.com/certificati/su-societe-generale): 362 certificati
 - [Certificati su Nikkei 225](https://radarcertificati.com/certificati/su-nikkei-225): 349 certificati
 - [Certificati su S&P 500](https://radarcertificati.com/certificati/su-s-p-500): 339 certificati
-- [Certificati su Ftse Mib](https://radarcertificati.com/certificati/su-ftse-mib): 331 certificati
+- [Certificati su FTSE MIB](https://radarcertificati.com/certificati/su-ftse-mib): 331 certificati
 - [Certificati su Kering](https://radarcertificati.com/certificati/su-kering): 330 certificati
 - [Certificati su Nvidia](https://radarcertificati.com/certificati/su-nvidia): 321 certificati
 - [Certificati su Moncler](https://radarcertificati.com/certificati/su-moncler): 314 certificati
 - [Certificati su Intel](https://radarcertificati.com/certificati/su-intel): 284 certificati
 - [Certificati su Deutsche Bank](https://radarcertificati.com/certificati/su-deutsche-bank): 284 certificati
-- [Certificati su Nasdaq-100®](https://radarcertificati.com/certificati/su-nasdaq-100): 251 certificati
+- [Certificati su Nasdaq 100](https://radarcertificati.com/certificati/su-nasdaq-100): 251 certificati
 - [Certificati su BNP Paribas](https://radarcertificati.com/certificati/su-bnp-paribas): 247 certificati
 - [Certificati su Tesla](https://radarcertificati.com/certificati/su-tesla): 231 certificati
-- [Certificati su EURO STOXX® Select Dividend 30](https://radarcertificati.com/certificati/su-euro-stoxx-select-dividend-30): 229 certificati
+- [Certificati su Euro Stoxx Select Dividend 30](https://radarcertificati.com/certificati/su-euro-stoxx-select-dividend-30): 229 certificati
 - [Certificati su Saipem](https://radarcertificati.com/certificati/su-saipem): 215 certificati
 - [Certificati su LVMH Moet Hennessy Louis Vuitt](https://radarcertificati.com/certificati/su-lvmh-moet-hennessy-louis-vuitt): 210 certificati
 - [Certificati su Poste Italiane](https://radarcertificati.com/certificati/su-poste-italiane): 206 certificati
