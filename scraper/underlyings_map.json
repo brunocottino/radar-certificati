@@ -1,6 +1,6 @@
 {
  "0 5 france govt": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "FR0014001NN8",
   "manual": null,
@@ -66,7 +66,7 @@
   "yahooName": null
  },
  "2 15 btps italia": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "IT0005441883",
   "manual": null,
@@ -436,6 +436,19 @@
   "type": "EQUITY",
   "yahooName": "Aegon Ltd."
  },
+ "aegon assicurazioni generali prudential unipol assicurazioni": {
+  "checkedAt": "2026-11-20",
+  "exchange": "NYQ",
+  "industry": "Insurance—Diversified",
+  "isin": null,
+  "manual": null,
+  "name": "Aegon, Assicurazioni Generali, Prudential, Unipol Assicurazioni",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "AEG",
+  "type": "EQUITY",
+  "yahooName": "Aegon Ltd."
+ },
  "aegon swiss re unipol assicurazioni unitedhealth": {
   "checkedAt": "2026-11-18",
   "exchange": "NYQ",
@@ -661,7 +674,7 @@
   "yahooName": "Alphabet Inc."
  },
  "alphabet a": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "US02079K3059",
   "manual": null,
@@ -2827,6 +2840,19 @@
   "type": "EQUITY",
   "yahooName": "Brunello Cucinelli S.p.A."
  },
+ "brunello cucinelli carrefour intesa sanpaolo rwe": {
+  "checkedAt": "2026-11-20",
+  "exchange": "MIL",
+  "industry": "Luxury Goods",
+  "isin": null,
+  "manual": null,
+  "name": "Brunello Cucinelli, Carrefour, Intesa Sanpaolo, RWE",
+  "score": 0.8,
+  "sector": "Consumer Cyclical",
+  "ticker": "BC.MI",
+  "type": "EQUITY",
+  "yahooName": "Brunello Cucinelli S.p.A."
+ },
  "brunello cucinelli kering ralph lauren swatch": {
   "checkedAt": "2026-11-18",
   "exchange": "MIL",
@@ -2863,7 +2889,7 @@
   "yahooName": "BT Group plc"
  },
  "btps 0 95 06 01 32": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "IT0005466013",
   "manual": null,
@@ -2874,7 +2900,7 @@
   "yahooName": null
  },
  "btps 1 8 03 01 41": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "IT0005421703",
   "manual": null,
@@ -2885,7 +2911,7 @@
   "yahooName": null
  },
  "btps 2 45 09 01 50": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "IT0005398406",
   "manual": null,
@@ -4236,7 +4262,7 @@
   "ticker": null
  },
  "dow jones stoxx healthcare index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658343",
   "manual": null,
@@ -4346,7 +4372,7 @@
   "yahooName": "EchoStar Corporation"
  },
  "ecpi global esg recovery 10 risk control index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4738,7 +4764,7 @@
   "yahooName": "The Estée Lauder Companies Inc."
  },
  "estee lauder cos": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4749,7 +4775,7 @@
   "yahooName": null
  },
  "estoxx 50": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4760,7 +4786,7 @@
   "yahooName": null
  },
  "estoxx banks": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4771,7 +4797,7 @@
   "yahooName": null
  },
  "estxbanks": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4782,7 +4808,7 @@
   "yahooName": null
  },
  "estxtechnology": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4793,7 +4819,7 @@
   "yahooName": null
  },
  "estxutilities": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4859,7 +4885,7 @@
   "yahooName": null
  },
  "eur usd": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4870,7 +4896,7 @@
   "yahooName": null
  },
  "eur versus brl": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0006169823",
   "manual": null,
@@ -4881,7 +4907,7 @@
   "yahooName": null
  },
  "eur versus mxn": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0006169898",
   "manual": null,
@@ -4892,7 +4918,7 @@
   "yahooName": null
  },
  "eur versus zar": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0006169989",
   "manual": null,
@@ -5426,7 +5452,7 @@
   "yahooName": null
  },
  "euro stoxx industrial good service": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658525",
   "manual": null,
@@ -5437,7 +5463,7 @@
   "yahooName": null
  },
  "euro stoxx insurance index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5459,7 +5485,7 @@
   "yahooName": null
  },
  "euro stoxx oil gas index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5483,7 +5509,7 @@
   "yahooName": "Deka EURO STOXX Select Dividend 30 UCITS ETF"
  },
  "euro stoxx select dividend 30 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "CH0020751589",
   "manual": null,
@@ -5505,7 +5531,7 @@
   "yahooName": null
  },
  "euro stoxx technology index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5516,7 +5542,7 @@
   "yahooName": null
  },
  "euro stoxx utilities": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658582",
   "manual": null,
@@ -5527,7 +5553,7 @@
   "yahooName": null
  },
  "euro stoxx utilities index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5670,7 +5696,7 @@
   "yahooName": null
  },
  "eurostoxx insurance": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658442",
   "manual": null,
@@ -5681,7 +5707,7 @@
   "yahooName": null
  },
  "eurostoxx oil gas": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658400",
   "manual": null,
@@ -5714,7 +5740,7 @@
   "yahooName": null
  },
  "eurostoxx technology": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658541",
   "manual": null,
@@ -5780,7 +5806,7 @@
   "yahooName": "S&P MARC 5% Excess Return Index"
  },
  "excess return index on franklin ftse china etf": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5791,7 +5817,7 @@
   "yahooName": null
  },
  "excess return index on m g high yield fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5802,7 +5828,7 @@
   "yahooName": null
  },
  "excess return index on man glg high yield opps fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -13614,7 +13640,7 @@
   "yahooName": "Italgas S.p.A."
  },
  "italy cpi foi ex tobacco unrevised": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14177,7 +14203,7 @@
   "yahooName": null
  },
  "leonteq 10y us treasury 9 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14188,7 +14214,7 @@
   "yahooName": null
  },
  "leonteq 17 rc index on axa im nasdaq 100 etf fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14199,7 +14225,7 @@
   "yahooName": null
  },
  "leonteq 4 rc index on pimco gis income fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14210,7 +14236,7 @@
   "yahooName": null
  },
  "leonteq big data robotics 11 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14221,7 +14247,7 @@
   "yahooName": null
  },
  "leonteq brazil equity dec 5 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14232,7 +14258,7 @@
   "yahooName": null
  },
  "leonteq china multi asset 10 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14243,7 +14269,7 @@
   "yahooName": null
  },
  "leonteq cross asset basket 8 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14254,7 +14280,7 @@
   "yahooName": null
  },
  "leonteq cross asset basket 9 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14265,7 +14291,7 @@
   "yahooName": null
  },
  "leonteq dynamic income fund 4 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14276,7 +14302,7 @@
   "yahooName": null
  },
  "leonteq electric vehicles 11 risk control index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14287,7 +14313,7 @@
   "yahooName": null
  },
  "leonteq emerging markets bond funds 5 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14298,7 +14324,7 @@
   "yahooName": null
  },
  "leonteq emerging markets high yield 4 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14309,7 +14335,7 @@
   "yahooName": null
  },
  "leonteq equity absolute return funds 5 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14320,7 +14346,7 @@
   "yahooName": null
  },
  "leonteq europe renewable energy 11 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14331,7 +14357,7 @@
   "yahooName": null
  },
  "leonteq european banks futures decrement 6 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14342,7 +14368,7 @@
   "yahooName": null
  },
  "leonteq european defense 12 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14353,7 +14379,7 @@
   "yahooName": null
  },
  "leonteq european equity tr futures decrement 3 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14364,7 +14390,7 @@
   "yahooName": null
  },
  "leonteq european high yield bond funds 4 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14375,7 +14401,7 @@
   "yahooName": null
  },
  "leonteq european high yield bonds 4 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14386,7 +14412,7 @@
   "yahooName": null
  },
  "leonteq european high yield bonds iii 4 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14397,7 +14423,7 @@
   "yahooName": null
  },
  "leonteq european high yield funds index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14408,7 +14434,7 @@
   "yahooName": null
  },
  "leonteq european high yield futures 5 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14419,7 +14445,7 @@
   "yahooName": null
  },
  "leonteq excess return index on amundi euro high yield fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14430,7 +14456,7 @@
   "yahooName": null
  },
  "leonteq excess return index on dnca alpha bonds": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14441,7 +14467,7 @@
   "yahooName": null
  },
  "leonteq excess return index on gs india fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14452,7 +14478,7 @@
   "yahooName": null
  },
  "leonteq excess return index on pimco gis income fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14463,7 +14489,7 @@
   "yahooName": null
  },
  "leonteq fixed income basket 4 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14474,7 +14500,7 @@
   "yahooName": null
  },
  "leonteq global high yield bonds 4 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14485,7 +14511,7 @@
   "yahooName": null
  },
  "leonteq global hydrogen technology 15 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14496,7 +14522,7 @@
   "yahooName": null
  },
  "leonteq italian equity 16 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14507,7 +14533,7 @@
   "yahooName": null
  },
  "leonteq italian equity tr dec 4 5 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14518,7 +14544,7 @@
   "yahooName": null
  },
  "leonteq japan eq tr futures dec 2 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14529,7 +14555,7 @@
   "yahooName": null
  },
  "leonteq metaverse 15 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14540,7 +14566,7 @@
   "yahooName": null
  },
  "leonteq multi asset etf 10 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14551,7 +14577,7 @@
   "yahooName": null
  },
  "leonteq multi asset etf 6 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14562,7 +14588,7 @@
   "yahooName": null
  },
  "leonteq risk control 20 index on franklin templeton em etfs": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14573,7 +14599,7 @@
   "yahooName": null
  },
  "leonteq select artificial intelligence equity 15 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14584,7 +14610,7 @@
   "yahooName": null
  },
  "leonteq single index euro stoxx select d 6 decrement index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14595,7 +14621,7 @@
   "yahooName": null
  },
  "leonteq single index ishares china large 2 5 decrement index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14606,7 +14632,7 @@
   "yahooName": null
  },
  "leonteq single index ishares msci emergi 2 5 decrement index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14617,7 +14643,7 @@
   "yahooName": null
  },
  "leonteq single index on us tech equity decrement 2 00 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14628,7 +14654,7 @@
   "yahooName": null
  },
  "leonteq single stock abn amro bank decrement 7 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14639,7 +14665,7 @@
   "yahooName": null
  },
  "leonteq single stock banco bpm decrement 6 25 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14650,7 +14676,7 @@
   "yahooName": null
  },
  "leonteq single stock bper banca decrement 5 00 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14661,7 +14687,7 @@
   "yahooName": null
  },
  "leonteq single stock enel decrement 5 50 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14672,7 +14698,7 @@
   "yahooName": null
  },
  "leonteq single stock eni decrement 6 00 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14683,7 +14709,7 @@
   "yahooName": null
  },
  "leonteq single stock intesa sanpaolo decrement 7 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14694,7 +14720,7 @@
   "yahooName": null
  },
  "leonteq single stock kering decrement 2 5 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14705,7 +14731,7 @@
   "yahooName": null
  },
  "leonteq single stock novo nordisk a s decrement 2 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14716,7 +14742,7 @@
   "yahooName": null
  },
  "leonteq single stock stellantis decrement 7 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14727,7 +14753,7 @@
   "yahooName": null
  },
  "leonteq single stock unicredit decrement 4 5 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14738,7 +14764,7 @@
   "yahooName": null
  },
  "leonteq us equity tr futures decrement 3 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -14749,7 +14775,7 @@
   "yahooName": null
  },
  "leonteq world balanced 10 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15249,7 +15275,7 @@
   "yahooName": "Microsoft Corporation"
  },
  "microstrategy incorporated": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15513,7 +15539,7 @@
   "yahooName": null
  },
  "msci europe esg leaders 5 decrement index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -16681,7 +16707,7 @@
   "yahooName": "Pernod Ricard SA"
  },
  "petrolio grezzo": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "XC000A0G9CM8",
   "manual": null,
@@ -16747,7 +16773,7 @@
   "yahooName": "Phillips 66"
  },
  "pimco global investors income fund": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "IE00B84J9L26",
   "manual": null,
@@ -17110,7 +17136,7 @@
   "yahooName": "Ralph Lauren Corporation"
  },
  "rame": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "XD0014933523",
   "manual": null,
@@ -17176,7 +17202,7 @@
   "yahooName": "Reddit, Inc."
  },
  "reddito index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18321,7 +18347,7 @@
   "yahooName": "Société Générale Société anonyme"
  },
  "societe generale s a": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18497,7 +18523,7 @@
   "yahooName": null
  },
  "solactive eastern europe 12 rc index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18684,7 +18710,7 @@
   "yahooName": "Sony Group Corporation"
  },
  "sony sony financial basket": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18794,7 +18820,7 @@
   "yahooName": "Spotify Technology S.A."
  },
  "spotify technologies": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18884,7 +18910,7 @@
   "yahooName": "Stellantis N.V."
  },
  "stl": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19027,7 +19053,7 @@
   "yahooName": null
  },
  "stoxx europe 600 construction materials index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658889",
   "manual": null,
@@ -19060,7 +19086,7 @@
   "yahooName": null
  },
  "stoxx europe 600 health care index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658723",
   "manual": null,
@@ -19159,7 +19185,7 @@
   "yahooName": "iShares STOXX Europe 600 Technology UCITS ETF (DE) EUR dis"
  },
  "stoxx europe 600 technology index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "EU0009658921",
   "manual": null,
@@ -19216,7 +19242,7 @@
   "yahooName": "iShares (DE) I - iShares STOXX Europe 600 Utilities UCITS ETF (DE)"
  },
  "stoxx europe 600 utilities index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19238,7 +19264,7 @@
   "yahooName": null
  },
  "stoxx europe esg environmental leaders select 30 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19249,7 +19275,7 @@
   "yahooName": null
  },
  "stoxx europe esg leaders 50": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19282,7 +19308,7 @@
   "yahooName": null
  },
  "stoxx europe esg leaders select 30 price eur index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19293,7 +19319,7 @@
   "yahooName": null
  },
  "stoxx europe sustainability select 30 index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19304,7 +19330,7 @@
   "yahooName": null
  },
  "stoxx global esg leaders index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19315,7 +19341,7 @@
   "yahooName": null
  },
  "stoxx global esg leaders select 50 eur index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19359,7 +19385,7 @@
   "yahooName": "iShares STOXX Global Select Dividend 100 UCITS ETF (DE)"
  },
  "stoxxeu 600 auto parts": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19863,7 +19889,7 @@
   "yahooName": "Terna S.p.A."
  },
  "terna rete elettrica nazionale s p a": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20275,7 +20301,7 @@
   "yahooName": null
  },
  "uc european essence index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20308,7 +20334,7 @@
   "yahooName": null
  },
  "uc european quintessence index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20341,7 +20367,7 @@
   "yahooName": null
  },
  "uc next generation energy index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20528,7 +20554,7 @@
   "yahooName": "United Parcel Service, Inc."
  },
  "us consumer price index urban consumers nsa": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20638,7 +20664,7 @@
   "yahooName": "Vallourec S.A."
  },
  "valore index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20715,7 +20741,7 @@
   "yahooName": "VanEck Semiconductor ETF"
  },
  "varta": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "DE000A0TGJ55",
   "manual": null,
@@ -20814,7 +20840,7 @@
   "yahooName": "V.F. Corporation"
  },
  "vici balanced growth index": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -21223,7 +21249,7 @@
   "yahooName": "Zijin Mining Group Company Limited"
  },
  "zinco": {
-  "checkedAt": "2026-11-12",
+  "checkedAt": "2026-11-20",
   "exchange": null,
   "isin": "XD0002746051",
   "manual": null,
