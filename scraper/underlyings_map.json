@@ -18030,6 +18030,19 @@
   "type": "EQUITY",
   "yahooName": "SAP SE"
  },
+ "schaeffler": {
+  "checkedAt": "2026-11-23",
+  "exchange": "GER",
+  "industry": "Auto Parts",
+  "isin": null,
+  "manual": null,
+  "name": "Schaeffler AG",
+  "score": 1.0,
+  "sector": "Consumer Cyclical",
+  "ticker": "SHA0.DE",
+  "type": "EQUITY",
+  "yahooName": "Schaeffler AG"
+ },
  "schneider electric": {
   "checkedAt": "2026-10-09",
   "exchange": "PAR",
