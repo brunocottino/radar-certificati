@@ -41,7 +41,7 @@
   /* palette ispirata a PANTONE: 11-4201 Cloud Dancer (carta), 19-4052 Classic Blue (accento),
      7563 C (oro della frontiera), Black 6 C (inchiostro), Warm Gray 1 C (linee) */
   --bg:#f0eee9; --surface:#fbfaf7; --ink:#101820; --muted:#5d636b; --line:#dcd7cf; --row:#f5f3ee;
-  --accent:#0f4c81; --accent-soft:#e3ebf4; --brass:#94600f; --brass-soft:#f6ead3; --gold:#d69a2d;
+  --accent:#0f4c81; --accent-soft:#e3ebf4; --brass:#8a590c; --brass-soft:#f6ead3; --gold:#d69a2d;
   --good:#1f7a43; --good-bg:#e4f2e8; --caution:#7a5f00; --caution-bg:#f8efcb; --bad:#b0282a; --bad-bg:#f9e4e2;
   --stale:#b35400; --stale-bg:#fbe8d5;
   --f-ui:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -72,7 +72,7 @@ h1{font-size:1.15rem;margin:0;letter-spacing:-.01em}
 h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px;font-weight:600}
 .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
 .note{font-size:.78rem;color:var(--muted);max-width:90ch}
-.seolinks{font-size:.8rem;color:var(--muted);line-height:1.6}.seolinks p{margin:4px 0}.seolinks a{color:var(--accent);text-decoration:none}.seolinks b{color:var(--ink)}
+.seolinks{font-size:.8rem;color:var(--muted);line-height:1.6}.seolinks p{margin:4px 0}.seolinks a{color:var(--accent);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent);text-underline-offset:2px}.seolinks b{color:var(--ink)}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
 textarea,input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -148,6 +148,9 @@ details summary::after{content:" ▾";color:var(--muted)}
 .ov[open]>summary::after{content:"▴"}
 .ov[open]>summary{margin-bottom:12px}
 .ov>summary #ov-s{color:var(--muted)}
+/* spazio tenuto per panoramica e «in evidenza» finché arrivano i dati: la lista non salta giù (CLS) */
+.plate.pre{min-height:176px}.panel.pre#daily{min-height:226px}
+@media (max-width:480px){.plate.pre{min-height:224px}}
 .ov:not(:has(#plate:not([hidden]),#daily:not([hidden]))){display:none}
 /* tabella virtualizzata */
 .vt{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);height:calc(100dvh - var(--top-h,190px) - 24px);min-height:320px;contain:strict}
@@ -867,7 +870,7 @@ Per usare la ricerca serve JavaScript; senza, si possono sfogliare <a href="/cer
     </div>
     <div class="row resrow" style="justify-content:space-between">
       <div class="chiprow only-wide" id="chips"></div>
-      <button class="fsum only-narrow" id="fsum" aria-label="Modifica filtri"></button>
+      <button class="fsum only-narrow" id="fsum" title="Modifica filtri"></button>
       <div class="row">
         <span class="count" id="count" aria-live="polite"></span>
         <label class="note" style="display:flex;gap:6px;align-items:center">Ordina<select id="sortsel" style="width:auto;padding:5px 8px">
@@ -945,7 +948,7 @@ Per usare la ricerca serve JavaScript; senza, si possono sfogliare <a href="/cer
   <section id="isinbox" hidden></section>
 
   <details class="ov" id="ov"><summary><b>Panoramica del giorno</b> <span id="ov-s"></span></summary>
-  <section class="plate" id="plate" hidden aria-live="polite">
+  <section class="plate pre" id="plate" aria-live="polite">
     <div class="pl-main"><div class="pl-tag">Tavola del giorno <span id="pl-date"></span></div>
       <div class="pl-head"><span class="pl-n" id="pl-n">0</span><span class="pl-t" id="pl-t"></span></div></div>
     <dl class="pl-cells">
@@ -957,7 +960,7 @@ Per usare la ricerca serve JavaScript; senza, si possono sfogliare <a href="/cer
     <button class="pl-new" id="pl-new" hidden></button>
   </section>
 
-  <section class="panel" id="daily" hidden>
+  <section class="panel pre" id="daily">
     <h2>In evidenza oggi · profilo <span id="daily-prof"></span></h2>
     <div id="dailybody" class="daily-row"></div>
   </section>
@@ -979,7 +982,7 @@ Per usare la ricerca serve JavaScript; senza, si possono sfogliare <a href="/cer
       <p><b>Non è consulenza finanziaria.</b> Radar Certificati è uno strumento gratuito di ricerca e confronto. Nulla di quanto pubblicato è una raccomandazione, un invito all'acquisto o alla vendita, né una consulenza in materia di investimenti. Classifiche, punteggi, profili e certificati in evidenza sono ordinamenti automatici su criteri numerici, uguali per tutti: non tengono conto della situazione di chi legge (<a href="/note-legali">avvertenze complete</a>, <a href="/metodologia">metodologia</a>). I certificati sono prodotti complessi che possono far perdere in tutto o in parte il capitale investito: prima di qualsiasi decisione leggi il KID e il prospetto dell'emittente e, se serve, rivolgiti a un consulente abilitato.</p>
       <p><b>Dati indicativi.</b> I dati sono raccolti automaticamente da fonti pubbliche due volte al giorno nei giorni di borsa e possono essere incompleti, in ritardo o errati. Rendimenti, distanze, probabilità, punteggi e settori sono calcoli e stime del sito, non dati ufficiali: le probabilità sono stime statistiche basate su volatilità storiche, non previsioni. Fanno fede solo i documenti e le quotazioni ufficiali dell'emittente e del mercato.</p>
       <p><b>Fonti.</b> Liste e prezzi: Borsa Italiana, Euronext e i siti pubblici degli emittenti (tra cui BNP Paribas, UniCredit, Intesa Sanpaolo, Vontobel, Leonteq, Marex, Citigroup, Société Générale). Prezzi storici dei sottostanti: Yahoo Finance. Il sito non è affiliato né collegato agli emittenti, ai mercati o ai fornitori di dati; nomi e marchi appartengono ai rispettivi titolari.</p>
-      <p><b>Privacy.</b> Il sito non usa cookie, non ha pubblicità né strumenti di tracciamento o statistiche. Preferiti, profilo, tema e impostazioni restano solo nel tuo browser (memoria locale) e non vengono inviati a nessuno. Il sito è ospitato da Cloudflare, che tratta i dati tecnici delle connessioni (es. indirizzo IP) per erogarlo. I caratteri sono serviti dal sito stesso; la libreria per l'Excel si scarica da cdnjs (Cloudflare) solo quando premi "Esporta".</p>
+      <p><b>Privacy.</b> Il sito non usa cookie, non ha pubblicità né strumenti di profilazione. Per sapere quante pagine vengono viste usa Cloudflare Web Analytics, che conta le visite in forma aggregata senza cookie e senza identificare chi naviga. Preferiti, profilo, tema e impostazioni restano solo nel tuo browser (memoria locale) e non vengono inviati a nessuno. Il sito è ospitato da Cloudflare, che tratta i dati tecnici delle connessioni (es. indirizzo IP) per erogarlo. I caratteri sono serviti dal sito stesso; la libreria per l'Excel si scarica da cdnjs (Cloudflare) solo quando premi "Esporta".</p>
     </div>
   </details>
   <nav class="panel seolinks" aria-label="Raccolte e guida">
@@ -1044,7 +1047,8 @@ const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.par
 function toast(t,err){const el=$("#toast");el.textContent=t;el.hidden=false;el.classList.toggle("err",!!err);el.setAttribute("role",err?"alert":"status");clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,err?5000:2400)}
 const OFFLINE=()=>navigator.onLine===false;
 function errBox(title,msg,btn){return `<div class="errbox" role="alert"><b>${title}</b><span>${msg}</span>${btn?`<div class="row">${btn}</div>`:""}</div>`}
-const norm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const NORMC=new Map(); // stessi nomi (emittenti, sottostanti, tipi) normalizzati migliaia di volte all'avvio: si ricorda il risultato
+const norm=s=>{const k=String(s??"");let v=NORMC.get(k);if(v===undefined){v=k.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();if(NORMC.size<60000)NORMC.set(k,v)}return v};
 
 /* ---------- date e calendario di borsa ---------- */
 const today=new Date();today.setHours(0,0,0,0);
@@ -1055,7 +1059,8 @@ const holi={};function isOpen(d){const w=d.getDay();if(w===0||w===6)return false
     holi[y]=new Set([f(0,1),gf.toDateString(),em.toDateString(),f(4,1),f(7,15),f(11,24),f(11,25),f(11,26),f(11,31)])}
   return !holi[y].has(d.toDateString())}
 function tradingDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;const t=new Date(x);t.setDate(t.getDate()+1);for(;t<=today;t.setDate(t.getDate()+1))if(isOpen(t))n++;return n}
-function bizDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);let n=0;for(const t=new Date(x);t<today;t.setDate(t.getDate()+1)){const w=t.getDay();if(w&&w!==6)n++}return n}
+function bizDaysSince(iso){const x=new Date(iso);if(isNaN(x))return null;x.setHours(0,0,0,0);const k=x.getTime();if(BDC.has(k))return BDC.get(k);let n=0;for(const t=new Date(x);t<today;t.setDate(t.getDate()+1)){const w=t.getDay();if(w&&w!==6)n++}BDC.set(k,n);return n}
+const BDC=new Map(); // giorni lavorativi per data (migliaia di certificati hanno le stesse date)
 const DF=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit"});const dshort=d=>!d?"—":d.getFullYear()>=2090?"Open end":DF.format(d); // 31/12/2099 = certificato senza scadenza
 const dtime=s=>s?new Date(s).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
 
@@ -2359,7 +2364,7 @@ function countUp(el,to){const from=+el.dataset.v||0;el.dataset.v=to;
   const t0=performance.now(),d=700;cancelAnimationFrame(el._r);
   const step=t=>{const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=Math.round(from+(to-from)*e).toLocaleString("it-IT");if(k<1)el._r=requestAnimationFrame(step)};el._r=requestAnimationFrame(step)}
 (()=>{const ov=$("#ov");if(!ov)return;ov.open=ls.get("rc-ov",innerWidth<820);ov.addEventListener("toggle",()=>ls.set("rc-ov",ov.open))})();
-function renderPlate(){const el=$("#plate");const show=!ISIN&&!state.q&&CERTS.length>0;el.hidden=!show;if(!show)return;
+function renderPlate(){const el=$("#plate");el.classList.remove("pre");const show=!ISIN&&!state.q&&CERTS.length>0;el.hidden=!show;if(!show)return;
   const med=f=>{const a=[];for(const c of ROWS){const v=f(c);if(v!=null&&isFinite(v))a.push(v)}a.sort((x,y)=>x-y);return a.length?a[a.length>>1]:null};
   const f=state.f,P=[];if(f.y!=null)P.push(`rendono almeno il <em>${fmt(f.y,0)}%</em> l'anno`);if(f.b!=null)P.push(`con il peggiore ad almeno il <em>${fmt(f.b,0)}%</em> dalla barriera`);
   const n=ROWS.length,w=f.fav?(n===1?"preferito":"preferiti"):(n===1?"certificato":"certificati");
@@ -2382,7 +2387,7 @@ function render(recompute=true){
   $("#sheet-apply").textContent=ROWS.length?`Mostra ${ROWS.length.toLocaleString("it-IT")} risultati`:"Nessun risultato";
   $("#n-fav").textContent=Object.keys(FAV).length;
   renderIsinBox();renderPlate();$("#results").removeAttribute("aria-busy");
-  $("#daily").hidden=!!ISIN||!!state.q||!DAILY;
+  $("#daily").classList.remove("pre");$("#daily").hidden=!!ISIN||!!state.q||!DAILY;
   lastPaint="";
   if(!CERTS.length)return;
   if(!ROWS.length&&!ISIN){$("#results").innerHTML=`<div class="empty">Nessun certificato con questa ricerca e questi filtri. Togli qualche filtro dai chip in alto o usa "Azzera tutto".</div>`;vt=null;return}
@@ -2649,6 +2654,7 @@ async function load(){
     catch(e2){const off=OFFLINE(),n=++LOADN;
       $("#results").innerHTML=errBox(off?"Sei offline":"Dati non disponibili",off?"Il radar si carica appena torna la connessione.":`Il server non risponde. ${n<4?"Riprovo da solo tra pochi secondi.":"Riprova tra qualche minuto."}`,`<button data-reload>Riprova ora</button>`);
       $("#results").setAttribute("aria-busy","false");$("#status").textContent=off?"Offline":"Dati non disponibili";
+      for(const x of ["#plate","#daily"]){$(x).classList.remove("pre");$(x).hidden=true}
       if(!off&&n<4)setTimeout(()=>{if(!CERTS.length)load()},n*4000);return}}
   $("#results").setAttribute("aria-busy","false");
   META=j;CERTS.forEach(enrich);peerStats();BYISIN=new Map(CERTS.map(c=>[c.isin,c]));

@@ -167,7 +167,7 @@ def page(title, desc, canonical, body, ld=None):
 <link rel="icon" href="/icon.svg?v=10" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=10"><link rel="preload" href="/fonts/geist-400-800-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/seo.css?v=2">
 {ldj}
 </head><body>
-<header class="top"><div><a class="brand" href="/"><img src="/icon-192.png" alt="" width="32" height="32">Radar Certificati</a>
+<header class="top"><div><a class="brand" href="/"><img src="/icon-64.png" alt="" width="32" height="32">Radar Certificati</a>
 <nav><a href="/">Cerca nel radar</a><a href="/certificati/">Raccolte</a><a href="/guida-certificati">Guida</a></nav></div></header>
 <main>{body}</main>
 <footer class="foot"><div><p>Radar Certificati è uno screener gratuito e indipendente dei certificati d'investimento quotati in Italia (SeDeX, Cert-X/EuroTLX), aggiornato ogni giorno di borsa alle 09:35 e alle 16:15. Pagina aggiornata il {OGGI}.</p>
@@ -387,7 +387,8 @@ LEGAL = [
         "Leonteq, Marex, Citigroup, Société Générale). Prezzi storici dei sottostanti: Yahoo Finance. Nomi e marchi appartengono ai rispettivi "
         "titolari e sono citati solo per identificare gli strumenti."]),
     ("Privacy e cookie", [
-        "Il sito non usa cookie, non ha pubblicità né strumenti di tracciamento o statistiche, e non chiede registrazione. Preferiti, profilo, "
+        "Il sito non usa cookie, non ha pubblicità né strumenti di profilazione, e non chiede registrazione. Per sapere quante pagine vengono "
+        "viste usa Cloudflare Web Analytics, che conta le visite in forma aggregata senza cookie e senza identificare chi naviga. Preferiti, profilo, "
         "tema e impostazioni restano solo nel browser di chi lo usa (memoria locale) e non vengono inviati a nessuno. Il sito è ospitato da "
         "Cloudflare, che tratta i dati tecnici delle connessioni (per esempio l'indirizzo IP) per erogarlo."]),
 ]
