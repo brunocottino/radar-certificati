@@ -6248,6 +6248,17 @@
   "type": null,
   "yahooName": null
  },
+ "ftse 100 index large cap etf": {
+  "checkedAt": "2026-11-24",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "FTSE 100 Index Large-Cap ETF",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "ftse italia mid cap index": {
   "checkedAt": "2026-10-09",
   "exchange": "MIL",
