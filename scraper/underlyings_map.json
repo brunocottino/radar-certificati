@@ -1902,7 +1902,7 @@
   "yahooName": "BASF SE"
  },
  "basket 1 x banca monte dei paschi di siena s p a": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -1913,7 +1913,7 @@
   "yahooName": null
  },
  "basket 1 x continental 0 5 x aumovio": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -2357,7 +2357,7 @@
   "yahooName": null
  },
  "bloomberg gold subindex": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -3038,7 +3038,7 @@
   "yahooName": "CAC 40 ESG Decrement 5%"
  },
  "cac40 index": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": "FR0003500008",
   "manual": null,
@@ -5215,7 +5215,7 @@
   "yahooName": null
  },
  "euro istoxx 50 terre rare uranio e risorse strategiche tilted nr decrement 5": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5248,7 +5248,7 @@
   "yahooName": null
  },
  "euro istoxx esg leaders 50 nr decrement 5 price eur": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5718,7 +5718,7 @@
   "yahooName": null
  },
  "eurostoxx sel div30": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -5916,7 +5916,7 @@
   "yahooName": "Ferrari N.V."
  },
  "ferrari it": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -6221,7 +6221,7 @@
   "yahooName": "Fresenius Medical Care AG"
  },
  "ftmib": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -6238,7 +6238,7 @@
   "ticker": null
  },
  "ftse 100 index": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": "GB0001383545",
   "manual": null,
@@ -15550,7 +15550,7 @@
   "yahooName": null
  },
  "msci europe smart security defense infrastructure top 50 select 4 5 decrement index": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15594,7 +15594,7 @@
   "yahooName": null
  },
  "msci world ai effect select 4 5 decrement index": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -15616,7 +15616,7 @@
   "yahooName": null
  },
  "msci world gold uranium rare earth select 4 5 decrement idx eur net total return": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -16487,7 +16487,7 @@
   "yahooName": "On Holding AG"
  },
  "onemarkets fidelity world equity income fund c": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17624,7 +17624,7 @@
   "ticker": null
  },
  "s p asia 50 5 decrement index": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -18437,7 +18437,7 @@
   "yahooName": null
  },
  "solactive btp 10y annual comp 11am yield": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -19033,7 +19033,7 @@
   "yahooName": null
  },
  "stoxx europe 600 automobiles parts price eur": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": "EU0009658681",
   "manual": null,
@@ -19209,7 +19209,7 @@
   "yahooName": null
  },
  "stoxx europe 600 technology price eur": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": "EU0009658921",
   "manual": null,
@@ -19231,7 +19231,7 @@
   "yahooName": null
  },
  "stoxx europe 600 telecommunications price eur": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": "EU0009658947",
   "manual": null,
@@ -19365,7 +19365,7 @@
   "yahooName": null
  },
  "stoxx global esg social leaders diversification select 30 index": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -20358,7 +20358,7 @@
   "yahooName": null
  },
  "uc european sector rotation strategy index": {
-  "checkedAt": "2026-11-16",
+  "checkedAt": "2026-11-24",
   "exchange": null,
   "isin": null,
   "manual": null,
