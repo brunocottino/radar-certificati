@@ -1622,6 +1622,7 @@ function calSvg(M){const W=640,H=200,m={l:8,r:8,t:22,b:24},bw=(W-m.l-m.r)/12,mx=
 function expoHtml(title,map,tot){const e=[...map.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
   return `<div><div class="cap" style="margin-bottom:6px">${title}</div><div class="expo">${e.map(([k,v])=>`<div class="e"><span title="${esc(k)}">${esc(k)}</span><span class="bar"><i style="width:${v/tot*100}%"></i></span><span>${fmt(v/tot*100,0)}%</span></div>`).join("")}</div></div>`}
 function renderPf(){
+  if(PF.mode==="mine"&&MYP.some(x=>!BYISIN.has(x.isin)&&!PFTRY.has(x.isin)))setTimeout(pfFill,0);
   const mine=PF.mode==="mine",L=mine?buildMine():buildPf(PF),inv=L.reduce((a,x)=>a+x.inv,0),inc=L.reduce((a,x)=>a+x.inc,0);
   const w=f=>inv?L.reduce((a,x)=>a+x.inv*(f(x.c)??0),0)/inv:null;
   const probs=L.map(x=>x.c.prob),allP=L.length&&probs.every(p=>p!=null)?probs.reduce((a,p)=>a*p/100,1)*100:null;
@@ -1676,13 +1677,27 @@ function myEditor(L){
   return `<div class="myp">
 <div class="search myp-add"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
 <input id="pfq" type="text" autocomplete="off" spellcheck="false" placeholder="Aggiungi un certificato: ISIN, sottostante, emittente… (o usa i filtri)" aria-label="Cerca un certificato da aggiungere"><ul id="pfsugg" class="sugg" hidden></ul></div>
-${L.length?`<div class="myrows">${L.map(x=>`<div class="myrow"><div class="who" data-open="${esc(x.c.isin)}"><div class="c-iss"><b>${esc(x.c.issuer||"")}</b> · <span class="num">${esc(x.c.isin)}</span></div><div class="myu">${undsHtml(x.c)}</div>
+${pfMissHtml()}${L.length?`<div class="myrows">${L.map(x=>`<div class="myrow"><div class="who" data-open="${esc(x.c.isin)}"><div class="c-iss"><b>${esc(x.c.issuer||"")}</b> · <span class="num">${esc(x.c.isin)}</span></div><div class="myu">${undsHtml(x.c)}</div>
 <div class="note">${pct(x.c.ytm)} annuo · cedola ${pct(x.c.couponPa,1)} · ${x.c.dist==null?"distanza n.d.":x.c.dist<0?"sotto barriera":pct(x.c.dist,0)+" dalla barriera"} · scade ${dshort(x.c.matDate)}</div></div>
 <label class="amt">€<input type="number" inputmode="numeric" min="0" step="500" value="${Math.round(x.inv)}" data-amt="${esc(x.c.isin)}" aria-label="Importo"></label>
 <button class="rm" data-myp-rm="${esc(x.c.isin)}" aria-label="Togli dal portafoglio">✕</button>${swapHtml(x.c)}</div>`).join("")}</div>
 <div class="row" style="justify-content:space-between"><span class="note">Totale <b class="num">${fmt(L.reduce((a,x)=>a+x.inv,0),0)} €</b> su ${L.length} certificati</span><span class="row"><button id="pf-eq">Importi uguali</button><button id="pf-addfav">+ Preferiti</button><button id="pf-clear">Svuota</button></span></div>`
-:`<div class="panel empty myempty"><b>Il tuo portafoglio è vuoto</b><br>Cerca qui sopra un certificato oppure apri una scheda e tocca <b>+ Portafoglio</b>.${Object.keys(FAV).length?`<br><button id="pf-addfav" style="margin-top:10px">Aggiungi i ${Object.keys(FAV).length} preferiti</button>`:""}</div>`}
+:MYP.length?"":`<div class="panel empty myempty"><b>Il tuo portafoglio è vuoto</b><br>Cerca qui sopra un certificato oppure apri una scheda e tocca <b>+ Portafoglio</b>.${Object.keys(FAV).length?`<br><button id="pf-addfav" style="margin-top:10px">Aggiungi i ${Object.keys(FAV).length} preferiti</button>`:""}</div>`}
 </div>`}
+/* certificati del portafoglio che non sono nella lista caricata (a leva, usciti dalla lista, dati non ancora arrivati):
+   prima non comparivano e il portafoglio sembrava sparire. Ora si caricano dai dati per ISIN o dalla lista a leva; se non ci sono più si dice */
+const PFTRY=new Set();let PFBUSY=0;
+function pfMissHtml(){const miss=MYP.filter(x=>!BYISIN.has(x.isin));if(!miss.length)return "";
+  const wait=!CERTS.length||PFBUSY||miss.some(x=>!PFTRY.has(x.isin));
+  return `<div class="panel note" style="margin:8px 0">${wait?`Carico ${miss.length===1?"1 certificato":miss.length+" certificati"} del tuo portafoglio…`:`<b>${miss.length===1?"Un certificato del tuo portafoglio non è":miss.length+" certificati del tuo portafoglio non sono"} nei dati di oggi</b> (scaduti, rimborsati o non più quotati). Restano salvati finché non li togli.`}
+${wait?"":miss.map(x=>`<div class="row" style="justify-content:space-between;margin-top:6px"><span class="num">${esc(x.isin)} · ${fmt(x.amt||0,0)} €</span><button class="rm" data-myp-rm="${esc(x.isin)}" aria-label="Togli ${esc(x.isin)} dal portafoglio">Togli</button></div>`).join("")}</div>`}
+async function pfFill(){
+  if(!CERTS.length||PFBUSY)return;const miss=MYP.map(x=>x.isin).filter(i=>!BYISIN.has(i)&&!PFTRY.has(i));if(!miss.length)return;PFBUSY=1;
+  try{
+    for(const i of miss){const e=await loadDetail(i);if(e&&e.certificate&&!BYISIN.has(i)){const c={...e.certificate};enrich(c);c.score=score(c,W[state.profile]);BYISIN.set(i,c)}}
+    if(miss.some(i=>!BYISIN.has(i))&&!LEVA)await ensureLeva2(true);
+  }catch(e){}
+  miss.forEach(i=>PFTRY.add(i));PFBUSY=0;if(!$("#pf").hidden)renderPf()}
 function pfSuggest(){const el=$("#pfq");if(!el)return;const v=el.value.trim(),ul=$("#pfsugg"),nf=pffN();if(!v&&!nf){ul.hidden=true;return}
   const S=v?searchSet(v):null,isin=v?isinMode(v):null;
   let list=!v?CERTS.filter(c=>c.liq&&c.ytm!=null&&!c.ytmHigh&&!c.belowBarrier):isin?CERTS.filter(c=>c.isin.startsWith(isin)):S?[...S.set].map(i=>CERTS[i]):[];
@@ -2409,12 +2424,12 @@ async function renderIsinBox(){
 // certificati a leva: file separato (docs/data/leva.json), scaricato solo quando servono
 let LEVA=null,LEVP=null,LEVERR=0;
 function ensureLeva(){if(LEVA==="loading")return LEVP;if(LEVA||!(state.f.lev||state.f.cat==="Leva")||Date.now()-LEVERR<60000)return Promise.resolve();return LEVP=ensureLeva2()}
-async function ensureLeva2(){
-  LEVA="loading";$("#count").textContent="Carico i certificati a leva…";
+async function ensureLeva2(quiet){ // quiet: chiamata dal portafoglio, senza messaggi
+  LEVA="loading";if(!quiet)$("#count").textContent="Carico i certificati a leva…";
   try{const r=await fetch("data/leva.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
     const add=j.rows.map(row=>{const o={};j.cols.forEach((k,i)=>{if(row[i]!=null)o[k]=row[i]});o.category="Leva";o.type=o.typeMarket;return o}).filter(o=>!BYISIN.has(o.isin));
     add.forEach(enrich);const w=W[state.profile];add.forEach(c=>c.score=score(c,w));CERTS=CERTS.concat(add);add.forEach(c=>BYISIN.set(c.isin,c));buildIndex();LEVA=add.length;
-    toast(`Aggiunti ${add.length.toLocaleString("it-IT")} certificati a leva`);
+    if(!quiet)toast(`Aggiunti ${add.length.toLocaleString("it-IT")} certificati a leva`);
   }catch(e){LEVA=null;LEVERR=Date.now();toast(OFFLINE()?"Sei offline: certificati a leva non caricati":"Certificati a leva non disponibili: riprovo tra un minuto",1)}
   render();
 }
@@ -2659,6 +2674,7 @@ async function load(){
   $("#results").setAttribute("aria-busy","false");
   META=j;CERTS.forEach(enrich);peerStats();BYISIN=new Map(CERTS.map(c=>[c.isin,c]));
   rescore();buildIndex();renderStatus();pickDaily();renderAlerts();render();ensureLeva();
+  if(!$("#pf").hidden)renderPf(); // portafoglio aperto mentre i dati arrivavano: si ridisegna con i certificati
   // arrivo dalla scheda statica /certificato/<ISIN>: apre subito il dettaglio
   if(di&&!LOADN_DONE++){if(!BYISIN.has(di))await ensureLeva();openDetail(di)}
   if(START_PF)openPf();
