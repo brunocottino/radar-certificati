@@ -5225,6 +5225,17 @@
   "type": null,
   "yahooName": null
  },
+ "euro istoxx 50 utilities tilted nr decrement 5": {
+  "checkedAt": "2026-11-25",
+  "exchange": null,
+  "isin": null,
+  "manual": null,
+  "name": "EURO ISTOXX 50 UTILITIES TILTED NR DECREMENT 5%",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "euro istoxx 50 utilities tilted nr decrement 5 index": {
   "checkedAt": "2026-11-18",
   "exchange": null,
