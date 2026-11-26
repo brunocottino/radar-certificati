@@ -5429,6 +5429,17 @@
   "type": null,
   "yahooName": null
  },
+ "euro stoxx basic resources": {
+  "checkedAt": "2026-11-26",
+  "exchange": null,
+  "isin": "EU0009658244",
+  "manual": null,
+  "name": "Euro Stoxx Basic Resources",
+  "score": null,
+  "ticker": null,
+  "type": null,
+  "yahooName": null
+ },
  "euro stoxx basic resources index": {
   "checkedAt": "2026-11-26",
   "exchange": null,
