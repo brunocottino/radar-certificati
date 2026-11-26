@@ -1774,6 +1774,19 @@
   "type": "EQUITY",
   "yahooName": "Banco BPM S.p.A."
  },
+ "banco bpm bper banca intesa sanpaolo unicredit": {
+  "checkedAt": "2026-11-27",
+  "exchange": "MIL",
+  "industry": "Banks—Regional",
+  "isin": null,
+  "manual": null,
+  "name": "Banco BPM, BPER Banca, Intesa Sanpaolo, UniCredit",
+  "score": 0.8,
+  "sector": "Financial Services",
+  "ticker": "BAMI.MI",
+  "type": "EQUITY",
+  "yahooName": "Banco BPM S.p.A."
+ },
  "banco bpm poste italiane unicredit unipol assicurazioni": {
   "checkedAt": "2026-11-18",
   "exchange": "MIL",
@@ -3735,7 +3748,7 @@
   "yahooName": "CrowdStrike Holdings, Inc."
  },
  "crypto market neutral strategy": {
-  "checkedAt": "2026-11-19",
+  "checkedAt": "2026-11-27",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -4601,6 +4614,19 @@
   "ticker": null,
   "type": null,
   "yahooName": null
+ },
+ "eni prysmian": {
+  "checkedAt": "2026-11-27",
+  "exchange": "MIL",
+  "industry": "Electrical Equipment & Parts",
+  "isin": null,
+  "manual": null,
+  "name": "Eni, Prysmian",
+  "score": 0.8,
+  "sector": "Industrials",
+  "ticker": "PRY.MI",
+  "type": "EQUITY",
+  "yahooName": "Prysmian S.p.A."
  },
  "eni s p a": {
   "checkedAt": "2026-10-22",
@@ -14214,7 +14240,7 @@
   "yahooName": "Leonardo S.p.a."
  },
  "leonardo stellantis poste italiane": {
-  "checkedAt": "2026-11-19",
+  "checkedAt": "2026-11-27",
   "exchange": null,
   "isin": null,
   "manual": null,
@@ -17312,7 +17338,7 @@
   "yahooName": "Repsol, S.A."
  },
  "repsol ypf s a": {
-  "checkedAt": "2026-11-19",
+  "checkedAt": "2026-11-27",
   "exchange": null,
   "isin": null,
   "manual": null,
